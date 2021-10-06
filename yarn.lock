@@ -11598,6 +11598,11 @@ usb@^1.7.0:
     node-addon-api "3.0.2"
     prebuild-install "^5.3.3"
 
+use-mobile-detect-hook@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/use-mobile-detect-hook/-/use-mobile-detect-hook-1.0.4.tgz#99dbded06d9e326c36fad19fb39b5ad3df37e499"
+  integrity sha512-2LchNLtoWmllIGE3obppw2R2Q1a17yZBtWgnYiVkSksU4IaK5L8AE7qGPn0s00J8AydlmRDnDhuSNfULf1EGuQ==
+
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.npmjs.org/use/-/use-3.1.1.tgz"
