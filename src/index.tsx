@@ -1,13 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+import { Modal } from './components'
 import { initContract } from './utils'
 
 //@ts-ignore
 window.nearInitPromise = initContract()
   .then(() => {
     ReactDOM.render(
-      <App />,
+      <Modal>
+        <App />
+      </Modal>
+      ,
       document.querySelector('#root')
     )
   })
