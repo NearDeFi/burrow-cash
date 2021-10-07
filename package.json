@@ -1,5 +1,5 @@
 {
-  "name": "near-dapp",
+  "name": "burrow-cash",
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
@@ -22,6 +22,7 @@
     "jest-environment-node": "~26.6.2",
     "near-cli": "~1.6.0",
     "parcel-bundler": "~1.12.4",
+    "prettier": "^2.4.1",
     "react-test-renderer": "~17.0.1",
     "shelljs": "~0.8.4",
     "tslint-config-prettier": "^1.18.0"
@@ -41,7 +42,7 @@
     "@types/react-virtualized": "^9.21.13",
     "@types/react-window": "^1.8.5",
     "@types/styled-components": "^5.1.14",
-    "near-api-js": "~0.41.0",
+    "near-api-js": "~0.43.1",
     "react": "^17.0.2",
     "react-dom": "^15.3.0 || ^16.0.0-alpha",
     "react-router-dom": "^5.3.0",
