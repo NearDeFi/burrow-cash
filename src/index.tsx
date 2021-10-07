@@ -1,7 +1,7 @@
-import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import { Modal } from './components'
+import './global.css'
 import { initContract } from './utils'
 
 //@ts-ignore
