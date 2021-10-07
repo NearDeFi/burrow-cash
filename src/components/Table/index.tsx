@@ -1,4 +1,3 @@
-//@ts-nocheck
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import { createTheme } from '@mui/material/styles';
@@ -14,24 +13,26 @@ import {
 	TableCellRenderer,
 	TableHeaderProps
 } from 'react-virtualized';
+import { ModalContext } from '../Modal';
 import { styles } from './style';
+import { MuiVirtualizedTableProps, Row } from './types';
 
-class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> {
-	static defaultProps = {
-		headerHeight: 18,
-		rowHeight: 80,
-	};
+const HEADER_HEIGHT = 18;
+const ROW_HEIGHT = 80;
 
-	getRowClassName = ({ index }: Row) => {
-		const { classes, onRowClick } = this.props;
+export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
+	const modal = React.useContext(ModalContext);
+  console.log("🚀  25  modal", modal)
+	const getRowClassName = ({ index }: Row) => {
+		const { classes, onRowClick } = props;
 
 		return clsx(classes.tableRow, classes.flexContainer, {
 			[classes.tableRowHover]: index !== -1 && onRowClick != null,
 		});
 	};
 
-	SwitchcellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, rowHeight, onRowClick } = this.props;
+	const SwitchcellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
+		const { columns, classes, onRowClick } = props;
 		return (
 			<TableCell
 				component="div"
@@ -39,7 +40,7 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: rowHeight, color: "white" }}
+				style={{ height: ROW_HEIGHT, color: "white" }}
 				align={"left"}
 			>
 				<Switch
@@ -54,8 +55,8 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 		);
 	};
 
-	NamecellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, rowHeight, onRowClick } = this.props;
+	const NamecellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
+		const { columns, classes, onRowClick } = props;
 		return (
 			<TableCell
 				component="div"
@@ -63,23 +64,22 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: rowHeight, color: "#000741" }}
+				style={{ height: ROW_HEIGHT, color: "#000741" }}
 				align={"left"}
 			>
-				<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+				<div onClick={modal.handleOpen} style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
 					<Avatar
 					/>
-				<div style={{display: "flex", flexDirection: "column", flexGrow: "1", paddingLeft: "0.3em"}}>
+				<div style={{display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: "0.3em"}}>
 					<div>{cellData}</div>
-					<div>{'$10.00'}</div>
 					</div>
 				</div>
 			</TableCell>
 		);
 	};
 
-	cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, rowHeight, onRowClick } = this.props;
+	const cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
+		const { columns, classes, onRowClick } = props;
 		return (
 			<TableCell
 				component="div"
@@ -87,27 +87,30 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: rowHeight, color: "#000741" }}
-				align={
-					"left"}
+				style={{ height: ROW_HEIGHT, color: "#000741" }}
+				align={"left"}
 			>
-				{`${cellData}.00%`}
+				<div onClick={modal.handleOpen} style={{ display: "grid" }}>
+					<div style={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: "0.3em" }}>
+						<div>{cellData}</div>
+					</div>
+				</div>
 			</TableCell>
 		);
 	};
 
-	headerRenderer = ({
+	const headerRenderer = ({
 		label,
 		columnIndex,
 	}: TableHeaderProps & { columnIndex: number }) => {
-		const { headerHeight, columns, classes } = this.props;
+		const { columns, classes } = props;
 
 		return (
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.noClick)}
 				variant="head"
-				style={{ height: headerHeight, color: "#000741" }}
+				style={{ height: HEADER_HEIGHT, color: "#000741" }}
 				align={"left"}
 			>
 				<span>{label}</span>
@@ -115,40 +118,38 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 		);
 	};
 
-	render() {
-		const { classes, columns, rowHeight, headerHeight, ...tableProps } = this.props;
+		const { classes, columns, ...tableProps } = props;
 		return (
 			<AutoSizer>
 				{({ height, width }) => (
 					<Table
 						height={height}
 						width={width}
-						rowHeight={rowHeight!}
+						rowHeight={ROW_HEIGHT}
 						gridStyle={{
 							direction: 'inherit',
 						}}
-						headerHeight={headerHeight!}
+						headerHeight={HEADER_HEIGHT}
 						className={classes.table}
 						{...tableProps}
-						rowClassName={this.getRowClassName}
+						rowClassName={getRowClassName}
 					>
 						{columns.map(({ dataKey, ...other }, index) => {
 							return (
 								<Column
 									key={dataKey}
 									headerRenderer={(headerProps) =>
-										this.headerRenderer({
+										headerRenderer({
 											...headerProps,
 											columnIndex: index,
 										})
 									}
 									className={classes.flexContainer}
 									cellRenderer={dataKey === "collateral"
-										? this.SwitchcellRenderer
+										? SwitchcellRenderer
 										: dataKey === "name"
-											? this.NamecellRenderer
-											:
-											this.cellRenderer}
+											? NamecellRenderer
+											: cellRenderer}
 									dataKey={dataKey}
 									{...other}
 								/>
@@ -158,7 +159,7 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 				)}
 			</AutoSizer>
 		);
-	}
+
 }
 
 const defaultTheme = createTheme();
@@ -166,16 +167,18 @@ const VirtualizedTable = withStyles(styles, { defaultTheme })(MuiVirtualizedTabl
 
 interface TableProps {
 	rows: any,
-	columns: any
+	columns: any,
+	height?: number,
 }
 
-const ReactVirtualizedTable = ({ rows = [], columns = [] }: TableProps) => {
+const ReactVirtualizedTable = ({ rows = [], columns = [], height = 400 }: TableProps) => {
 	return (
-		<Paper style={{ paddingTop: "2em", height: 400, width: '100%' , backgroundColor: 'transparent', boxShadow: "none" }}>
+		<Paper style={{ paddingTop: "2em", height, width: '100%', backgroundColor: 'transparent', boxShadow: "none" }}>
 			<VirtualizedTable
 				rowCount={rows?.length}
 				rowGetter={({ index }) => rows[index]}
 				columns={columns}
+				
 			/>
 		</Paper>
 	);
