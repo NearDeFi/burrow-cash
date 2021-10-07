@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { Header, Table } from '../../components';
 import * as SC from './style';
+import Footer from "../../components/Footer"
 
 const Supply = () => {
 	const columns = [
@@ -41,6 +42,7 @@ const Supply = () => {
 					<br />{' 10,000,000$ '}
 				</Button>
 			</div>
+			<Footer />
 		</>
 	)
 }

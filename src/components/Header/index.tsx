@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router";
 import { login, logout } from "../../utils";
 //@ts-ignore
-import Logo from "./logo.svg";
+import Logo from "../../assets/logo.svg";
 
 const TopHeader = () => {
 	//@ts-ignore

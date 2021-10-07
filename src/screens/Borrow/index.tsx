@@ -1,6 +1,7 @@
 import { Header, Table } from '../../components';
 import { TotalSupply } from '../../shared';
 import * as SC from './style';
+import Footer from "../../components/Footer"
 
 const Borrow = () => {
 	const columns = [
@@ -25,11 +26,12 @@ const Borrow = () => {
 	return (
 		<>
 			<Header />
-				<SC.TitleWrapper>
-					Available <span style={{ color: "green" }}>Borrow</span> Assets
-				</SC.TitleWrapper>
+      <SC.TitleWrapper>
+        Available <span style={{ color: "green" }}>Borrow</span> Assets
+      </SC.TitleWrapper>
 			<Table rows={data} columns={columns} />
 			<TotalSupply />
+      <Footer />
 		</>
 	)
 }
