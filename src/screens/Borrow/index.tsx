@@ -5,15 +5,14 @@ import * as SC from './style';
 const Borrow = () => {
 	const columns = [
 		{
-			width: 200,
+			width: 300,
 			label: 'Name',
 			dataKey: 'name',
 		},
 		{
-			width: 120,
+			width: 300,
 			label: 'Borrow APY',
 			dataKey: 'borrowAPY',
-			numeric: true,
 		},
 	]
 	const data = [

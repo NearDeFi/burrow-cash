@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { initContract } from "./utils";
 import { Account, Contract, WalletConnection } from "near-api-js";
+import "./global.css";
+import { Modal } from "./components";
 
 export const Near = React.createContext<{
 	walletConnection: WalletConnection | null;
@@ -22,9 +24,11 @@ export const Near = React.createContext<{
 window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(
-			<Near.Provider value={initResults}>
-				<App />,
-			</Near.Provider>,
+			<Modal>
+				<Near.Provider value={initResults}>
+					<App />,
+				</Near.Provider>
+			</Modal>,
 			document.querySelector("#root"),
 		);
 	})
