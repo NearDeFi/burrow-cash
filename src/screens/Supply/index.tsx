@@ -5,21 +5,19 @@ import * as SC from './style';
 const Supply = () => {
 	const columns = [
 		{
-			width: 120,
+			width: 200,
 			label: 'Name',
 			dataKey: 'name',
 		},
 		{
-			width: 120,
+			width: 200,
 			label: 'APY',
 			dataKey: 'apy',
-			numeric: false,
 		},
 		{
-			width: 120,
+			width: 200,
 			label: 'Collateral',
 			dataKey: 'collateral',
-			numeric: false,
 		},
 	]
 	const data = [

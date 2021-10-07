@@ -1,4 +1,5 @@
 import Borrow from './Borrow';
+import Portfolio from './Portfolio';
 import Supply from './Supply';
 
-export { Supply, Borrow };
+export { Portfolio, Supply, Borrow };

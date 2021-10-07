@@ -7,10 +7,15 @@ export const styles = (theme: Theme) =>
 		display: 'flex',
 		alignItems: 'center',
 	},
+	headerFlexContainer: {
+		display: 'flex',
+		// alignItems: 'center',
+		boxSizing: 'border-box',
+	},
 	flexContainer: {
 		display: 'flex',
 		alignItems: 'center',
-		// boxSizing: 'border-box',
+		boxSizing: 'border-box',
 	},
 	table: {
 		// temporary right-to-left patch, waiting for

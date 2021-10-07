@@ -2216,6 +2216,14 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-virtualized@^9.21.13":
+  version "9.21.13"
+  resolved "https://registry.yarnpkg.com/@types/react-virtualized/-/react-virtualized-9.21.13.tgz#4222173abe7c9ed7504c75886c8367502ac7b9f1"
+  integrity sha512-tCIQ5wDKj+QJ3sMzjPKSLY0AXsznt+ovAUcq+JCLjPBOcAHbPt4FraGT9HKYEFfmp9E6+ELuN49i5bWtuBmi3w==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/react" "*"
+
 "@types/react-window@^1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-1.8.5.tgz#285fcc5cea703eef78d90f499e1457e9b5c02fc1"
@@ -11597,6 +11605,11 @@ usb@^1.7.0:
     bindings "^1.4.0"
     node-addon-api "3.0.2"
     prebuild-install "^5.3.3"
+
+use-mobile-detect-hook@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/use-mobile-detect-hook/-/use-mobile-detect-hook-1.0.4.tgz#99dbded06d9e326c36fad19fb39b5ad3df37e499"
+  integrity sha512-2LchNLtoWmllIGE3obppw2R2Q1a17yZBtWgnYiVkSksU4IaK5L8AE7qGPn0s00J8AydlmRDnDhuSNfULf1EGuQ==
 
 use@^3.1.0:
   version "3.1.1"
