@@ -1,7 +1,7 @@
 import {
 	BrowserRouter as Router, Route, Switch
 } from "react-router-dom";
-import { Borrow, Supply } from "./screens";
+import { Borrow, Portfolio, Supply } from "./screens";
 
 const AppRouter = () => {
 	return (
@@ -11,6 +11,7 @@ const AppRouter = () => {
 					<Route exact path="/" component={() => {return <div> Home </div>}} />
 					<Route path="/supply" component={Supply} />
 					<Route path="/borrow" component={Borrow} />
+					<Route path="/portfolio" component={Portfolio} />
 				</Switch>
 			</div>
 		</Router>
