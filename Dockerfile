@@ -13,4 +13,4 @@ ENV NODE_ENV=production
 
 EXPOSE 1234
 
-ENTRYPOINT yarn run
+ENTRYPOINT yarn prod
