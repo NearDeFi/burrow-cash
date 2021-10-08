@@ -4,19 +4,24 @@ import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router";
 import { login, logout } from "../../utils";
 import { useContext, useEffect, useState } from "react";
-import { Near } from "../../index";
-import { ViewMethods } from "../../config";
+import { Burrow, IBurrow } from "../../index";
+import { ViewMethodsLogic } from "../../config";
 //@ts-ignore
 import Logo from "../../assets/logo.svg";
 
 const TopHeader = () => {
-	//@ts-ignore
-	const near = useContext<Near>(Near);
-	const [version, setVersion] = useState<string>("");
+	const burrow = useContext<IBurrow | null>(Burrow);
+	const [oracle, setOracle] = useState<string>("");
+	const [owner, setOwner] = useState<string>("");
 
 	useEffect(() => {
 		(async () => {
-			setVersion(await near.view(ViewMethods.get_config));
+			const config = await burrow?.view(
+				burrow?.logicContract,
+				ViewMethodsLogic[ViewMethodsLogic.get_config],
+			);
+			setOracle(config.oracle_account_id);
+			setOwner(config.owner_id);
 		})();
 	}, []);
 
@@ -39,15 +44,16 @@ const TopHeader = () => {
 						size="small"
 						variant="contained"
 						onClick={() => {
-							near.walletConnection.isSignedIn()
-								? logout(near.walletConnection)
-								: login(near.walletConnection);
+							burrow?.walletConnection.isSignedIn()
+								? logout(burrow!.walletConnection)
+								: login(burrow!.walletConnection);
 						}}
 					>
-						{near.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
+						{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
 					</Button>
-					<div>{version}</div>
-					<div>{near.account.accountId}</div>
+					<div>{owner}</div>
+					<div>{oracle}</div>
+					<div>{burrow?.account.accountId}</div>
 				</div>
 			</div>
 		</Toolbar>

@@ -1,12 +1,23 @@
 import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
-import getConfig, { ChangeMethods, ViewMethods } from "./config";
+import getConfig, {
+	LOGIC_CONTRACT_NAME,
+	ORACLE_CONTRACT_NAME,
+	ChangeMethodsLogic,
+	ChangeMethodsOracle,
+	ViewMethodsLogic,
+	ViewMethodsOracle,
+} from "./config";
+import { IBurrow } from "./index";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
 console.log(`Using network ${nearConfig.networkId}!`);
 
-// Initialize contract & set global variables
-export async function initContract() {
+let burrow: IBurrow;
+
+export const getBurrow = async (): Promise<IBurrow> => {
+	if (burrow) return burrow;
+
 	// Initialize connection to the NEAR testnet
 	const near = await connect(
 		Object.assign(
@@ -24,30 +35,51 @@ export async function initContract() {
 	// Getting the Account ID. If still unauthorized, it's just empty string
 	const account: Account = await near.account(walletConnection.getAccountId());
 
-	const contract: Contract = new Contract(walletConnection.account(), nearConfig.contractName, {
+	const logicContract: Contract = new Contract(walletConnection.account(), LOGIC_CONTRACT_NAME, {
 		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethods)
+		viewMethods: Object.values(ViewMethodsLogic)
 			// @ts-ignore
 			.filter((m) => typeof m === "string")
 			.map((m) => m as string),
 		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethods)
+		changeMethods: Object.values(ChangeMethodsLogic)
 			// @ts-ignore
 			.filter((m) => typeof m === "string")
 			.map((m) => m as string),
 	});
 
-	const view = async (methodName: ViewMethods, args: Object = {}) => {
-		return await account.viewFunction(contract.contractId, ViewMethods[methodName], args, {
+	const oracleContract: Contract = new Contract(walletConnection.account(), ORACLE_CONTRACT_NAME, {
+		// View methods are read only. They don't modify the state, but usually return some value.
+		viewMethods: Object.values(ViewMethodsOracle)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+		// Change methods can modify the state. But you don't receive the returned value when called.
+		changeMethods: Object.values(ChangeMethodsOracle)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+	});
+
+	const view = async (
+		contract: Contract,
+		methodName: string,
+		args: Object = {},
+		json: boolean = true,
+	): Promise<Object | string> => {
+		return await account.viewFunction(contract.contractId, methodName, args, {
 			// always parse to string, JSON parser will fail if its not a json
-			parse: (a: Uint8Array) => Buffer.from(a).toString(),
+			parse: (data: Uint8Array) => {
+				const result = Buffer.from(data).toString();
+				return json ? JSON.parse(result) : result;
+			},
 		});
 	};
 
-	const send = async (methodName: ChangeMethods, args: Object = {}) => {
+	const send = async (contract: Contract, methodName: string, args: Object = {}) => {
 		return await account.functionCall({
 			contractId: contract.contractId,
-			methodName: ChangeMethods[methodName],
+			methodName,
 			args,
 		});
 	};
@@ -64,13 +96,21 @@ export async function initContract() {
 	// console.log(account.accountId, await account.getAccountBalance());
 	// console.log(await account.state());
 
-	return {
+	burrow = {
 		walletConnection,
 		account,
-		contract,
+		logicContract,
+		oracleContract,
 		view,
 		send,
-	};
+	} as IBurrow;
+
+	return burrow;
+};
+
+// Initialize contract & set global variables
+export async function initContract() {
+	return await getBurrow();
 }
 
 export function logout(walletConnection: WalletConnection) {
@@ -79,10 +119,10 @@ export function logout(walletConnection: WalletConnection) {
 	window.location.replace(window.location.origin + window.location.pathname);
 }
 
-export function login(walletConnection: WalletConnection) {
+export async function login(walletConnection: WalletConnection) {
 	// Allow the current app to make calls to the specified contract on the
 	// user's behalf.
 	// This works by creating a new access key for the user's account and storing
 	// the private key in localStorage.
-	walletConnection.requestSignIn(nearConfig.contractName);
+	await walletConnection.requestSignIn(LOGIC_CONTRACT_NAME);
 }
