@@ -3,6 +3,8 @@ import getConfig, { ChangeMethods, ViewMethods } from "./config";
 
 const nearConfig = getConfig(process.env.NODE_ENV || "development");
 
+console.log(`Using network ${nearConfig.networkId}!`);
+
 // Initialize contract & set global variables
 export async function initContract() {
 	// Initialize connection to the NEAR testnet
@@ -51,13 +53,13 @@ export async function initContract() {
 	};
 
 	/*
-	await send("new", {
-		config: {
-			oracle_account_id: "vvs111.testnet",
-			owner_id: "vvs111.testnet",
-		},
-	});
-	*/
+  await send("new", {
+    config: {
+      oracle_account_id: "vvs111.testnet",
+      owner_id: "vvs111.testnet",
+    },
+  });
+  */
 
 	// console.log(account.accountId, await account.getAccountBalance());
 	// console.log(await account.state());
