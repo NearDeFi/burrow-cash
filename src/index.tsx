@@ -6,28 +6,25 @@ import { Account, Contract, WalletConnection } from "near-api-js";
 import "./global.css";
 import { Modal } from "./components";
 
-export const Near = React.createContext<{
-	walletConnection: WalletConnection | null;
-	account: Account | null;
-	contract: Contract | null;
-	view: Function | null;
-	send: Function | null;
-}>({
-	walletConnection: null,
-	account: null,
-	contract: null,
-	view: null,
-	send: null,
-});
+export interface IBurrow {
+	walletConnection: WalletConnection;
+	account: Account;
+	logicContract: Contract;
+	oracleContract: Contract;
+	view: Function;
+	send: Function;
+}
+
+export const Burrow = React.createContext<IBurrow | null>(null);
 
 //@ts-ignore
 window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(
 			<Modal>
-				<Near.Provider value={initResults}>
+				<Burrow.Provider value={initResults}>
 					<App />,
-				</Near.Provider>
+				</Burrow.Provider>
 			</Modal>,
 			document.querySelector("#root"),
 		);
