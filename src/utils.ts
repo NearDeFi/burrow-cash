@@ -1,7 +1,7 @@
 import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
 import getConfig, { ChangeMethods, ViewMethods } from "./config";
 
-const nearConfig = getConfig(process.env.NODE_ENV || "development");
+const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
 console.log(`Using network ${nearConfig.networkId}!`);
 
