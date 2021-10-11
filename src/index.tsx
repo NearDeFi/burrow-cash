@@ -26,7 +26,7 @@ window.nearInitPromise = initContract()
 					<App />
 				</Burrow.Provider>
 			</Modal>,
-			document.querySelector("#root")
+			document.querySelector("#root"),
 		);
 	})
 	.catch(console.error);

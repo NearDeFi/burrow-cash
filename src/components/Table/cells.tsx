@@ -1,4 +1,4 @@
-export { };
+export {};
 // import Avatar from '@mui/material/Avatar';
 // import Switch from '@mui/material/Switch';
 // import TableCell from '@mui/material/TableCell';
@@ -7,7 +7,6 @@ export { };
 // import {
 // 	TableCellRenderer
 // } from 'react-virtualized';
-
 
 // export const SwitchcellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
 // 	const { columns, classes, rowHeight, onRowClick } = this.props;
