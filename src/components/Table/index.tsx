@@ -22,7 +22,6 @@ const ROW_HEIGHT = 80;
 
 export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 	const modal = React.useContext(ModalContext);
-  console.log("🚀  25  modal", modal)
 	const getRowClassName = ({ index }: Row) => {
 		const { classes, onRowClick } = props;
 
@@ -57,6 +56,7 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 
 	const NamecellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
 		const { columns, classes, onRowClick } = props;
+		const tokenPrice = "2.00"
 		return (
 			<TableCell
 				component="div"
@@ -67,11 +67,12 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 				style={{ height: ROW_HEIGHT, color: "#000741" }}
 				align={"left"}
 			>
-				<div onClick={modal.handleOpen} style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+				<div onClick={modal.handleOpen} style={{ display: "grid", gridTemplateColumns: "0.5fr 1fr" }}>
 					<Avatar
 					/>
 				<div style={{display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: "0.3em"}}>
 					<div>{cellData}</div>
+					<div>{`$ ${tokenPrice}`}</div>
 					</div>
 				</div>
 			</TableCell>
@@ -80,6 +81,7 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 
 	const cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
 		const { columns, classes, onRowClick } = props;
+		const data = String(cellData) + ".00%"
 		return (
 			<TableCell
 				component="div"
@@ -87,13 +89,13 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: ROW_HEIGHT, color: "#000741" }}
+				style={{ height: ROW_HEIGHT, color: "#000741", display: "grid" }}
 				align={"left"}
 			>
-				<div onClick={modal.handleOpen} style={{ display: "grid" }}>
-					<div style={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: "0.3em" }}>
-						<div>{cellData}</div>
-					</div>
+				{/* <div onClick={modal.handleOpen} style={{ display: "grid" }}> */}
+					<div style={{justifySelf: "end"}}>
+						<div>{data}</div>
+					{/* </div> */}
 				</div>
 			</TableCell>
 		);
@@ -104,16 +106,17 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 		columnIndex,
 	}: TableHeaderProps & { columnIndex: number }) => {
 		const { columns, classes } = props;
+		const isLastColumn = columnIndex === columns?.length - 1;
+		const justifyContent = isLastColumn ? "right" : "left";
 
 		return (
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.noClick)}
 				variant="head"
-				style={{ height: HEADER_HEIGHT, color: "#000741" }}
-				align={"left"}
+				style={{ height: HEADER_HEIGHT, color: "#000741", display: "flex", justifyContent: justifyContent }}
 			>
-				<span>{label}</span>
+				{label}
 			</TableCell>
 		);
 	};
