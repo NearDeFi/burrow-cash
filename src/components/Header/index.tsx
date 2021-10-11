@@ -3,11 +3,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router";
 import { login, logout } from "../../utils";
-//@ts-ignore
-import Logo from "./logo.svg";
 import { useContext, useEffect, useState } from "react";
 import { Burrow, IBurrow } from "../../index";
 import { ViewMethodsLogic } from "../../config";
+//@ts-ignore
+import Logo from "../../assets/logo.svg";
 
 const TopHeader = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);

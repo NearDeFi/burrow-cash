@@ -3,6 +3,7 @@ import { Header, Table } from "../../components";
 import * as SC from "./style";
 import { useEffect, useState } from "react";
 import { getAssets } from "../../store";
+import Footer from "../../components/Footer"
 
 const Supply = () => {
 	const mock = [
@@ -58,6 +59,7 @@ const Supply = () => {
 					{" 10,000,000$ "}
 				</Button>
 			</div>
+			<Footer />
 		</>
 	);
 };

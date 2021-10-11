@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
 import { getAssets } from "../../store";
+import * as SC from "./style";
+import Footer from "../../components/Footer";
 
 const Borrow = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
@@ -68,6 +70,7 @@ const Borrow = () => {
 			</SC.TitleWrapper>
 			<Table rows={assets} columns={columns} />
 			<TotalSupply />
+			<Footer />
 		</>
 	);
 };
