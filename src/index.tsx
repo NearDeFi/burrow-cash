@@ -1,10 +1,10 @@
+import { Account, Contract, WalletConnection } from "near-api-js";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { initContract } from "./utils";
-import { Account, Contract, WalletConnection } from "near-api-js";
-import "./global.css";
 import { Modal } from "./components";
+import "./global.css";
+import { initContract } from "./utils";
 
 export interface IBurrow {
 	walletConnection: WalletConnection;
@@ -23,10 +23,10 @@ window.nearInitPromise = initContract()
 		ReactDOM.render(
 			<Modal>
 				<Burrow.Provider value={initResults}>
-					<App />,
+					<App />
 				</Burrow.Provider>
 			</Modal>,
-			document.querySelector("#root"),
+			document.querySelector("#root")
 		);
 	})
 	.catch(console.error);
