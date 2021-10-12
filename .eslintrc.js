@@ -15,6 +15,7 @@ module.exports = {
 	plugins: ["react", "@typescript-eslint"],
 	rules: {
 		"object-curly-spacing": "off",
+		"react/react-in-jsx-scope": 0,
 	},
 	settings: {
 		react: {
