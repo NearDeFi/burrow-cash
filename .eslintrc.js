@@ -3,24 +3,22 @@ module.exports = {
 		browser: true,
 		es2021: true,
 	},
-	extends: [
-		'plugin:react/recommended',
-		'xo',
-		"tslint-config-prettier"
-	],
-	parser: '@typescript-eslint/parser',
+	extends: ["plugin:react/recommended", "plugin:react/recommended", "prettier"],
+	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true,
 		},
 		ecmaVersion: 12,
-		sourceType: 'module',
+		sourceType: "module",
 	},
-	plugins: [
-		'react',
-		'@typescript-eslint',
-	],
+	plugins: ["react", "@typescript-eslint"],
 	rules: {
-		'object-curly-spacing': 'off' 
+		"object-curly-spacing": "off",
+	},
+	settings: {
+		react: {
+			version: "detect",
+		},
 	},
 };

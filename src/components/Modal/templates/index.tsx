@@ -7,17 +7,17 @@ const borrowRates = [
 	{ value: "", title: "Risk Factor" },
 	{ value: "", title: "Limit Used" },
 	{ value: "", title: "Pool Liquidit" },
-]
+];
 
 export const BorrowData: TokenActionsInput = {
-	title: 'Borrow',
-	totalAmountTitle: 'Borrow Amount',
+	title: "Borrow",
+	totalAmountTitle: "Borrow Amount",
 	totalAmount: 0,
-	buttonText: 'Borrow',
+	buttonText: "Borrow",
 	rates: borrowRates,
 	ratesTitle: "Borrow Rates",
 	token: { count: 0, name: "T Name", symbol: "TSYL", valueInUSD: 0, apy: 0 },
-}
+};
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
 	const { title, token, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle } = input;
@@ -36,5 +36,5 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 			<ActionButton text={buttonText} />
 		</>
-	)
-}
+	);
+};

@@ -1,5 +1,5 @@
-import { WithStyles } from '@mui/styles';
-import { styles } from './style';
+import { WithStyles } from "@mui/styles";
+import { styles } from "./style";
 
 export interface ColumnData {
 	dataKey: string;

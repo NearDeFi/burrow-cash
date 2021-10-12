@@ -3,7 +3,7 @@ import { Header, Table } from "../../components";
 import * as SC from "./style";
 import { useEffect, useState } from "react";
 import { getAssets } from "../../store";
-import Footer from "../../components/Footer"
+import Footer from "../../components/Footer";
 
 const Supply = () => {
 	const mock = [
