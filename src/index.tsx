@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { Modal } from "./components";
+import { AssetsContextProvider } from "./context/assets";
 import "./global.css";
 import { initContract } from "./utils";
 
@@ -23,7 +24,9 @@ window.nearInitPromise = initContract()
 		ReactDOM.render(
 			<Modal>
 				<Burrow.Provider value={initResults}>
-					<App />
+					<AssetsContextProvider>
+						<App />
+					</AssetsContextProvider>
 				</Burrow.Provider>
 			</Modal>,
 			document.querySelector("#root")
