@@ -3,11 +3,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
+//@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
 //@ts-ignore
 import Logo from "../../assets/logo.svg";
+//@ts-ignore
+import mobileBG from "../../assets/mobile-background.jpg";
 import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
+import { colors } from '../../style';
 import { login, logout } from "../../utils";
 
 const MobileHeader = () => {
@@ -27,7 +31,7 @@ const MobileHeader = () => {
 	}, []);
 
 	return (
-		<>
+		<div style={{ minHeight: '9em', backgroundSize: "cover", backgroundImage: `url(${mobileBG})` }}>
 			<Toolbar>
 				<div
 					style={{
@@ -45,6 +49,7 @@ const MobileHeader = () => {
 						<Button
 							size="small"
 							variant="contained"
+							style={{ backgroundColor: colors.primary }}
 							onClick={() => {
 								burrow?.walletConnection.isSignedIn()
 									? logout(burrow!.walletConnection)
@@ -53,9 +58,6 @@ const MobileHeader = () => {
 						>
 							{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
 						</Button>
-						<div>{owner}</div>
-						<div>{oracle}</div>
-						<div>{burrow?.account.accountId}</div>
 					</div>
 				</div>
 			</Toolbar>
@@ -101,11 +103,16 @@ const MobileSubHeaderButton = ({
 	const style = border
 		? {
 			borderWidth: "0",
-			borderBottomWidth: "1px",
+			borderBottomWidth: "2px",
 			borderRadius: "0",
-			color: "#000741",
+			color: colors.secondary,
+			fontWeight: "700",
+			borderColor: colors.primary,
 		}
-		: { borderWidth: "0", color: "#000741" };
+		: {
+			borderWidth: "0", color: "#000741",
+			fontWeight: "700",
+		};
 
 	return (
 		<Button size="medium" variant="outlined" style={style} onClick={onClick}>
@@ -124,7 +131,6 @@ const MobileSubHeader = () => {
 					display: "grid",
 					gridTemplateColumns: "1fr 1fr 1fr",
 					width: "100%",
-					paddingRight: "1em",
 					justifyContent: "center",
 					gridGap: "1em",
 				}}
