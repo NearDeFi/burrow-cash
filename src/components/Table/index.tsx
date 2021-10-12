@@ -190,7 +190,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			)}
 		</AutoSizer>
 	);
-
 }
 
 const defaultTheme = createTheme();
@@ -198,7 +197,6 @@ const defaultTheme = createTheme();
 const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
 const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => {
-	console.log("🚀 ~ file: index.tsx ~ line 208 ~ ReactVirtualizedTable ~ columns", columns)
 	return (
 		<TableWrapper height={height}>
 			<VirtualizedTable
@@ -208,6 +206,6 @@ const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: Ta
 			/>
 		</TableWrapper>
 	);
-}
+};
 
 export default ReactVirtualizedTable;

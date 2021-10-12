@@ -12,7 +12,7 @@ const TotalSupply = () => {
 				<br />{'10,000,000$'}
 			</Button>
 		</div>
-	)
-}
+	);
+};
 
 export default TotalSupply;

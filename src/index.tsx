@@ -29,7 +29,7 @@ window.nearInitPromise = initContract()
 					</AssetsContextProvider>
 				</Burrow.Provider>
 			</Modal>,
-			document.querySelector("#root")
+			document.querySelector("#root"),
 		);
 	})
 	.catch(console.error);

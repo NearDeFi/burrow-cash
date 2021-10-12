@@ -19,5 +19,9 @@ jobs:
       - name: Install dependencies
         run: |
           yarn
+      - name: Run Lint
+        run: |
+          yarn prettier
+          yarn lint
       - name: Run Build
         run: yarn build
