@@ -1,5 +1,4 @@
 import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
 import { createTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TableCell from '@mui/material/TableCell';
@@ -13,15 +12,17 @@ import {
 	TableCellRenderer,
 	TableHeaderProps
 } from 'react-virtualized';
+import { colors, Heading4, Heading6 } from '../../style';
 import { ModalContext } from '../Modal';
-import { styles } from './style';
-import { MuiVirtualizedTableProps, Row } from './types';
+import { APYCellWrapper, DefaultCellWrapper, styles, TableWrapper, TokenNameCellWrapper, TokenNameTextWrapper } from './style';
+import { MuiVirtualizedTableProps, Row, TableProps } from './types';
 
 const HEADER_HEIGHT = 18;
 const ROW_HEIGHT = 80;
 
-export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
+const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	const modal = React.useContext(ModalContext);
+	const { columns, classes, onRowClick, ...tableProps } = props;
 	const getRowClassName = ({ index }: Row) => {
 		const { classes, onRowClick } = props;
 
@@ -30,33 +31,34 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 		});
 	};
 
-	const SwitchcellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, onRowClick } = props;
+	const CollateralCell: TableCellRenderer = ({ cellData, columnIndex }) => {
+
 		return (
 			<TableCell
 				component="div"
-				className={clsx(classes.tableCell, classes.flexContainer, {
+				className={clsx(classes.flexy, classes.tableCell, classes.flexContainer, {
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: ROW_HEIGHT, color: "white" }}
-				align={"left"}
+				style={{ display: "grid", justifyContent: "end", height: ROW_HEIGHT, color: "white", flex: "0 1 150px !important" }}
 			>
+
 				<Switch
+					classes={{colorPrimary: colors.primary}}
 					edge="end"
-					onChange={() => {}}
+					color={'primary'}
+					onChange={() => { }}
 					checked={cellData}
-					inputProps={{
-						'aria-labelledby': 'switch-list-label-wifi',
-					}}
+					inputProps={{}}
 				/>
 			</TableCell>
 		);
 	};
 
-	const NamecellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, onRowClick } = props;
+
+	const TokenNameCell: TableCellRenderer = ({ cellData, columnIndex }) => {
 		const tokenPrice = "2.00"
+
 		return (
 			<TableCell
 				component="div"
@@ -64,23 +66,40 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ height: ROW_HEIGHT, color: "#000741" }}
-				align={"left"}
+				style={{ width: "200px", height: ROW_HEIGHT, color: "#000741" }}
 			>
-				<div onClick={modal.handleOpen} style={{ display: "grid", gridTemplateColumns: "0.5fr 1fr" }}>
-					<Avatar
-					/>
-				<div style={{display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: "0.3em"}}>
-					<div>{cellData}</div>
-					<div>{`$ ${tokenPrice}`}</div>
-					</div>
-				</div>
+				<TokenNameCellWrapper onClick={modal.handleOpen}>
+					<Avatar />
+					<TokenNameTextWrapper>
+						<Heading4 cellData={cellData} />
+						<Heading6 cellData={`$ ${tokenPrice}`} />
+					</TokenNameTextWrapper>
+				</TokenNameCellWrapper>
 			</TableCell>
 		);
 	};
 
-	const cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const { columns, classes, onRowClick } = props;
+	const APYCell: TableCellRenderer = ({ cellData, dataKey, }) => {
+		const data = String(cellData) + ".00%"
+		const style = { height: ROW_HEIGHT, color: "#000741", display: "grid" };
+
+		return (
+			<TableCell
+				component="div"
+				className={clsx(classes.tableCell, classes.flexContainer, {
+					[classes.noClick]: onRowClick == null,
+				})}
+				variant="body"
+				style={style}
+			>
+				<APYCellWrapper justifySelf={dataKey === "borrowAPY" ? "end" : "center"}>
+					<Heading4 cellData={data} />
+				</APYCellWrapper>
+			</TableCell>
+		);
+	};
+
+	const DefaultCell: TableCellRenderer = ({ cellData, columnIndex }) => {
 		const data = String(cellData) + ".00%"
 		return (
 			<TableCell
@@ -92,98 +111,102 @@ export const MuiVirtualizedTable = (props: MuiVirtualizedTableProps) => {
 				style={{ height: ROW_HEIGHT, color: "#000741", display: "grid" }}
 				align={"left"}
 			>
-				{/* <div onClick={modal.handleOpen} style={{ display: "grid" }}> */}
-					<div style={{justifySelf: "end"}}>
-						<div>{data}</div>
-					{/* </div> */}
-				</div>
+				<DefaultCellWrapper>
+					<Heading4 cellData={data} />
+				</DefaultCellWrapper>
 			</TableCell>
 		);
 	};
 
-	const headerRenderer = ({
+	const HeaderCell = ({
 		label,
 		columnIndex,
 	}: TableHeaderProps & { columnIndex: number }) => {
-		const { columns, classes } = props;
+		const isFirstColumn = columnIndex === 0;
 		const isLastColumn = columnIndex === columns?.length - 1;
-		const justifyContent = isLastColumn ? "right" : "left";
+		const justifyContent = isLastColumn ? "right" : isFirstColumn ? "left" : "center";
+		const style = {
+			fontWeight: 500, fontSize: "12px", lineHeight: "19px",
+			height: HEADER_HEIGHT, color: "#000741", display: "flex",
+			justifyContent: justifyContent,
+			maxWidth: '200px'
+		}
 
 		return (
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.noClick)}
 				variant="head"
-				style={{ height: HEADER_HEIGHT, color: "#000741", display: "flex", justifyContent: justifyContent }}
+				style={style}
 			>
 				{label}
 			</TableCell>
 		);
 	};
 
-		const { classes, columns, ...tableProps } = props;
-		return (
-			<AutoSizer>
-				{({ height, width }) => (
-					<Table
-						height={height}
-						width={width}
-						rowHeight={ROW_HEIGHT}
-						gridStyle={{
-							direction: 'inherit',
-						}}
-						headerHeight={HEADER_HEIGHT}
-						className={classes.table}
-						{...tableProps}
-						rowClassName={getRowClassName}
-					>
-						{columns.map(({ dataKey, ...other }, index) => {
-							return (
-								<Column
-									key={dataKey}
-									headerRenderer={(headerProps) =>
-										headerRenderer({
-											...headerProps,
-											columnIndex: index,
-										})
-									}
-									className={classes.flexContainer}
-									cellRenderer={dataKey === "collateral"
-										? SwitchcellRenderer
-										: dataKey === "name"
-											? NamecellRenderer
-											: cellRenderer}
-									dataKey={dataKey}
-									{...other}
-								/>
-							);
-						})}
-					</Table>
-				)}
-			</AutoSizer>
-		);
+
+	const getCell = (dataKey: string) => {
+		if (dataKey === "collateral") return CollateralCell;
+		if (dataKey === "name") return TokenNameCell;
+		if (dataKey === "borrowAPY" || "supplyAPY") return APYCell;
+
+		return DefaultCell;
+	}
+
+	return (
+		<AutoSizer>
+			{({ height, width }) => (
+				<Table
+					height={height}
+					width={width}
+					rowHeight={ROW_HEIGHT}
+					gridStyle={{
+						direction: 'inherit',
+					}}
+					headerHeight={HEADER_HEIGHT}
+					className={classes.table}
+					rowClassName={getRowClassName}
+					{...tableProps}
+				>
+					{columns.map(({ dataKey, ...other }, index) => {
+						return (
+							<Column
+								key={dataKey}
+								flexShrink={columns?.length > 2 && dataKey === "name" ? 0 : 1}
+								headerRenderer={(headerProps) =>
+									HeaderCell({
+										...headerProps,
+										columnIndex: index,
+									})
+								}
+								className={classes.flexContainer}
+								cellRenderer={getCell(dataKey)}
+								dataKey={dataKey}
+								{...other}
+							/>
+						);
+					})}
+				</Table>
+			)}
+		</AutoSizer>
+	);
 
 }
 
 const defaultTheme = createTheme();
-const VirtualizedTable = withStyles(styles, { defaultTheme })(MuiVirtualizedTable);
 
-interface TableProps {
-	rows: any,
-	columns: any,
-	height?: number,
-}
+const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
-const ReactVirtualizedTable = ({ rows = [], columns = [], height = 400 }: TableProps) => {
+const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => {
+	console.log("🚀 ~ file: index.tsx ~ line 208 ~ ReactVirtualizedTable ~ columns", columns)
 	return (
-		<Paper style={{ paddingTop: "2em", height, width: '100%', backgroundColor: 'transparent', boxShadow: "none" }}>
+		<TableWrapper height={height}>
 			<VirtualizedTable
 				rowCount={rows?.length}
 				rowGetter={({ index }) => rows[index]}
 				columns={columns}
-				
 			/>
-		</Paper>
+		</TableWrapper>
 	);
 }
 
