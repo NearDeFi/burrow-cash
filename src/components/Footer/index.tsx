@@ -1,6 +1,8 @@
 import { Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
+//@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
+//@ts-ignore
 import Logo from "../../assets/logo.svg";
 
 const DesktopFooter = () => {
@@ -27,19 +29,19 @@ const DesktopFooter = () => {
 
 const MobileFooter = () => {
   return (
-    <div style={{ display: "grid", gap: "2em" }}>
-      <div style={{ gridRow: 1, display: 'flex', justifyContent: "space-between" }}>
+    <div style={{ display: "grid", gap: "1em", padding: "0.5em" }}>
+      <div style={{ gridRow: 1, display: 'inline-grid', justifyContent: "space-around" }}>
         <Typography
           variant="h6"
-          style={{ color: "#00BACF", display: "inline" }}>
+          style={{ color: "#00BACF", gridRow: 1 }}>
           <Logo />
         </Typography>
-        <Typography variant="h6" style={{ color: "#000741", display: "inline" }}>
+        <Typography variant="h6" style={{ gridRow: 1, fontSize: "12px", fontWeight: 500, color: "#000741"}}>
           © 2021 All Rights Reserved.
         </Typography>
       </div>
 
-      <div style={{ gridRow: 2, display: 'flex', justifyContent: "center", gap: "1em" }}>
+      <div style={{ fontSize: "12px", fontWeight: 500, gridRow: 2, display: 'flex', justifyContent: "center", gap: "1em" }}>
         <Typography>
           Terms of Service
         </Typography>
