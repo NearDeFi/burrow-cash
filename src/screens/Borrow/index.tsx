@@ -1,20 +1,23 @@
-import { Header, Table } from "../../components";
-import { TotalSupply } from "../../shared";
-import * as SC from "./style";
 import { useContext, useEffect, useState } from "react";
+import { Header, Table } from "../../components";
+import Footer from "../../components/Footer";
 import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
+import { PageTitle, TotalSupply } from "../../shared";
 import { getAssets } from "../../store";
-import * as SC from "./style";
-import Footer from "../../components/Footer";
 
 const Borrow = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
 
 	const mock = [
-		{ name: "ABC", borrowAPY: 10 },
-		{ name: "ABC", borrowAPY: 10 },
-		{ name: "ABC", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
+		{ name: "Token Name", borrowAPY: 10 },
 	];
 
 	const [assets, setAssets] = useState<any[]>(mock);
@@ -65,9 +68,7 @@ const Borrow = () => {
 	return (
 		<>
 			<Header />
-			<SC.TitleWrapper>
-				Available <span style={{ color: "green" }}>Borrow</span> Assets
-			</SC.TitleWrapper>
+			<PageTitle first={"Borrow"} second={"Assets"} />
 			<Table rows={assets} columns={columns} />
 			<TotalSupply />
 			<Footer />

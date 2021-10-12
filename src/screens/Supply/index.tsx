@@ -1,33 +1,9 @@
-import { Button } from "@mui/material";
-import { Header, Table } from "../../components";
-import * as SC from "./style";
-import { useEffect, useState } from "react";
-import { getAssets } from "../../store";
-import Footer from "../../components/Footer"
+import { useContext } from "react";
+import { Footer, Header, Table } from "../../components";
+import { AssetsContext } from "../../context/assets";
+import { PageTitle, TotalSupply } from "../../shared";
 
-const Supply = () => {
-	const mock = [
-		{ name: "ABC", apy: 10, collateral: false },
-		{ name: "ABC", apy: 10, collateral: true },
-		{ name: "ABC", apy: 10, collateral: false },
-	];
-
-	const [assets, setAssets] = useState<any[]>(mock);
-
-	useEffect(() => {
-		(async () => {
-			const a = (await getAssets()).map((asset: any) => {
-				return {
-					...asset,
-					borrowAPY: 10,
-				};
-			});
-
-			setAssets([...mock, ...a]);
-		})();
-	}, []);
-
-	const columns = [
+const SUPPLY_COLUMNS = [
 		{
 			width: 200,
 			label: "Name",
@@ -36,7 +12,7 @@ const Supply = () => {
 		{
 			width: 200,
 			label: "APY",
-			dataKey: "apy",
+			dataKey: "supplyAPY",
 		},
 		{
 			width: 200,
@@ -45,20 +21,15 @@ const Supply = () => {
 		},
 	];
 
+const Supply = () => {
+	const { assets } = useContext<{assets: any[]}>(AssetsContext);
+
 	return (
 		<>
 			<Header />
-			<SC.TitleWrapper>
-				Available <span style={{ color: "green" }}>Supply</span> Assets
-			</SC.TitleWrapper>
-			<Table rows={assets} columns={columns} />
-			<div style={{ paddingTop: "1em", textAlign: "center", height: "8em" }}>
-				<Button variant="contained" size="large" style={{ height: "6em", width: "14em" }}>
-					{" Total Supply "}
-					<br />
-					{" 10,000,000$ "}
-				</Button>
-			</div>
+			<PageTitle first={"Supply"} second={"Assets"} />
+			<Table rows={assets} columns={SUPPLY_COLUMNS} />
+			<TotalSupply />
 			<Footer />
 		</>
 	);
