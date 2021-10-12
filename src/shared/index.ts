@@ -1,3 +1,4 @@
+import PageTitle from "./PageTitle";
 import TotalSupply from "./TotalSupply";
 
-export { TotalSupply };
+export { TotalSupply, PageTitle };

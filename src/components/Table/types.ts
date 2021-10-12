@@ -26,3 +26,9 @@ export interface MuiVirtualizedTableProps extends WithStyles<typeof styles> {
 	rowGetter: (row: Row) => Data;
 	rowHeight?: number;
 }
+
+export interface TableProps {
+	rows: any;
+	columns: any;
+	height?: string;
+}
