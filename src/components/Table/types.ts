@@ -28,7 +28,7 @@ export interface MuiVirtualizedTableProps extends WithStyles<typeof styles> {
 }
 
 export interface TableProps {
-	rows: any,
-	columns: any,
-	height?: string,
+	rows: any;
+	columns: any;
+	height?: string;
 }

@@ -1,21 +1,22 @@
-import Avatar from '@mui/material/Avatar';
-import { createTheme } from '@mui/material/styles';
-import Switch from '@mui/material/Switch';
-import TableCell from '@mui/material/TableCell';
-import { withStyles } from '@mui/styles';
-import clsx from 'clsx';
-import * as React from 'react';
+import Avatar from "@mui/material/Avatar";
+import { createTheme } from "@mui/material/styles";
+import Switch from "@mui/material/Switch";
+import TableCell from "@mui/material/TableCell";
+import { withStyles } from "@mui/styles";
+import clsx from "clsx";
+import * as React from "react";
+import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from "react-virtualized";
+import { colors, Heading4, Heading6 } from "../../style";
+import { ModalContext } from "../Modal";
 import {
-	AutoSizer,
-	Column,
-	Table,
-	TableCellRenderer,
-	TableHeaderProps
-} from 'react-virtualized';
-import { colors, Heading4, Heading6 } from '../../style';
-import { ModalContext } from '../Modal';
-import { APYCellWrapper, DefaultCellWrapper, styles, TableWrapper, TokenNameCellWrapper, TokenNameTextWrapper } from './style';
-import { MuiVirtualizedTableProps, Row, TableProps } from './types';
+	APYCellWrapper,
+	DefaultCellWrapper,
+	styles,
+	TableWrapper,
+	TokenNameCellWrapper,
+	TokenNameTextWrapper,
+} from "./style";
+import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 
 const HEADER_HEIGHT = 18;
 const ROW_HEIGHT = 80;
@@ -32,7 +33,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const CollateralCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-
 		return (
 			<TableCell
 				component="div"
@@ -40,14 +40,19 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
-				style={{ display: "grid", justifyContent: "end", height: ROW_HEIGHT, color: "white", flex: "0 1 150px !important" }}
+				style={{
+					display: "grid",
+					justifyContent: "end",
+					height: ROW_HEIGHT,
+					color: "white",
+					flex: "0 1 150px !important",
+				}}
 			>
-
 				<Switch
-					classes={{colorPrimary: colors.primary}}
+					classes={{ colorPrimary: colors.primary }}
 					edge="end"
-					color={'primary'}
-					onChange={() => { }}
+					color={"primary"}
+					onChange={() => {}}
 					checked={cellData}
 					inputProps={{}}
 				/>
@@ -55,9 +60,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-
 	const TokenNameCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const tokenPrice = "2.00"
+		const tokenPrice = "2.00";
 
 		return (
 			<TableCell
@@ -79,8 +83,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const APYCell: TableCellRenderer = ({ cellData, dataKey, }) => {
-		const data = String(cellData) + ".00%"
+	const APYCell: TableCellRenderer = ({ cellData, dataKey }) => {
+		const data = String(cellData) + ".00%";
 		const style = { height: ROW_HEIGHT, color: "#000741", display: "grid" };
 
 		return (
@@ -100,7 +104,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const DefaultCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const data = String(cellData) + ".00%"
+		const data = String(cellData) + ".00%";
 		return (
 			<TableCell
 				component="div"
@@ -118,19 +122,20 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const HeaderCell = ({
-		label,
-		columnIndex,
-	}: TableHeaderProps & { columnIndex: number }) => {
+	const HeaderCell = ({ label, columnIndex }: TableHeaderProps & { columnIndex: number }) => {
 		const isFirstColumn = columnIndex === 0;
 		const isLastColumn = columnIndex === columns?.length - 1;
 		const justifyContent = isLastColumn ? "right" : isFirstColumn ? "left" : "center";
 		const style = {
-			fontWeight: 500, fontSize: "12px", lineHeight: "19px",
-			height: HEADER_HEIGHT, color: "#000741", display: "flex",
+			fontWeight: 500,
+			fontSize: "12px",
+			lineHeight: "19px",
+			height: HEADER_HEIGHT,
+			color: "#000741",
+			display: "flex",
 			justifyContent: justifyContent,
-			maxWidth: '200px'
-		}
+			maxWidth: "200px",
+		};
 
 		return (
 			<TableCell
@@ -144,14 +149,13 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-
 	const getCell = (dataKey: string) => {
 		if (dataKey === "collateral") return CollateralCell;
 		if (dataKey === "name") return TokenNameCell;
 		if (dataKey === "borrowAPY" || "supplyAPY") return APYCell;
 
 		return DefaultCell;
-	}
+	};
 
 	return (
 		<AutoSizer>
@@ -161,7 +165,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					width={width}
 					rowHeight={ROW_HEIGHT}
 					gridStyle={{
-						direction: 'inherit',
+						direction: "inherit",
 					}}
 					headerHeight={HEADER_HEIGHT}
 					className={classes.table}
@@ -190,7 +194,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			)}
 		</AutoSizer>
 	);
-}
+};
 
 const defaultTheme = createTheme();
 

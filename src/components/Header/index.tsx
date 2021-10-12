@@ -11,7 +11,7 @@ import Logo from "../../assets/logo.svg";
 import mobileBG from "../../assets/mobile-background.jpg";
 import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
-import { colors } from '../../style';
+import { colors } from "../../style";
 import { login, logout } from "../../utils";
 
 const MobileHeader = () => {
@@ -31,7 +31,7 @@ const MobileHeader = () => {
 	}, []);
 
 	return (
-		<div style={{ minHeight: '9em', backgroundSize: "cover", backgroundImage: `url(${mobileBG})` }}>
+		<div style={{ minHeight: "9em", backgroundSize: "cover", backgroundImage: `url(${mobileBG})` }}>
 			<Toolbar>
 				<div
 					style={{
@@ -62,7 +62,7 @@ const MobileHeader = () => {
 				</div>
 			</Toolbar>
 			<MobileSubHeader />
-		</>
+		</div>
 	);
 };
 
@@ -77,11 +77,11 @@ const DesktopSubHeaderButton = ({
 }) => {
 	const style = border
 		? {
-			borderWidth: "0",
-			borderBottomWidth: "1px",
-			borderRadius: "0",
-			color: "#000741",
-		}
+				borderWidth: "0",
+				borderBottomWidth: "1px",
+				borderRadius: "0",
+				color: "#000741",
+		  }
 		: { borderWidth: "0", color: "#000741" };
 
 	return (
@@ -102,17 +102,18 @@ const MobileSubHeaderButton = ({
 }) => {
 	const style = border
 		? {
-			borderWidth: "0",
-			borderBottomWidth: "2px",
-			borderRadius: "0",
-			color: colors.secondary,
-			fontWeight: "700",
-			borderColor: colors.primary,
-		}
+				borderWidth: "0",
+				borderBottomWidth: "2px",
+				borderRadius: "0",
+				color: colors.secondary,
+				fontWeight: "700",
+				borderColor: colors.primary,
+		  }
 		: {
-			borderWidth: "0", color: "#000741",
-			fontWeight: "700",
-		};
+				borderWidth: "0",
+				color: "#000741",
+				fontWeight: "700",
+		  };
 
 	return (
 		<Button size="medium" variant="outlined" style={style} onClick={onClick}>
@@ -229,13 +230,13 @@ const DesktopHeader = () => {
 			</div>
 		</Toolbar>
 	);
-}
+};
 
 const Header = () => {
 	const detectMobile = useMobileDetect();
-	const isMobile = detectMobile.isMobile()
+	const isMobile = detectMobile.isMobile();
 
-	return isMobile ? <MobileHeader /> : <DesktopHeader />
+	return isMobile ? <MobileHeader /> : <DesktopHeader />;
 };
 
 export default Header;

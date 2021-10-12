@@ -4,25 +4,25 @@ import { AssetsContext } from "../../context/assets";
 import { PageTitle, TotalSupply } from "../../shared";
 
 const SUPPLY_COLUMNS = [
-		{
-			width: 200,
-			label: "Name",
-			dataKey: "name",
-		},
-		{
-			width: 200,
-			label: "APY",
-			dataKey: "supplyAPY",
-		},
-		{
-			width: 200,
-			label: "Collateral",
-			dataKey: "collateral",
-		},
-	];
+	{
+		width: 200,
+		label: "Name",
+		dataKey: "name",
+	},
+	{
+		width: 200,
+		label: "APY",
+		dataKey: "supplyAPY",
+	},
+	{
+		width: 200,
+		label: "Collateral",
+		dataKey: "collateral",
+	},
+];
 
 const Supply = () => {
-	const { assets } = useContext<{assets: any[]}>(AssetsContext);
+	const { assets } = useContext<{ assets: any[] }>(AssetsContext);
 
 	return (
 		<>

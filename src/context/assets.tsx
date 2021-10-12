@@ -29,9 +29,5 @@ export const AssetsContextProvider = ({ children }: { children: React.ReactEleme
 
 	const state: { assets: any[] } = { assets };
 
-	return (
-		<AssetsContext.Provider value={state}>
-			{children}
-		</AssetsContext.Provider>
-	)
+	return <AssetsContext.Provider value={state}>{children}</AssetsContext.Provider>;
 };
