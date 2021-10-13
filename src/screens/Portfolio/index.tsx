@@ -56,7 +56,7 @@ const Portfolio = () => {
 			</SC.TitleWrapper>
 			<Table height={"240px"} rows={suppliedData} columns={suppliedColumns} />
 			<SC.SecondTitleWrapper>
-				<span style={{ color: "green" }}>Borrow</span> Assets
+				<span style={{ color: colors.primary }}>Borrow</span> Assets
 			</SC.SecondTitleWrapper>
 			<Table height={"240px"} rows={borrowedData} columns={borrowColumns} />
 			<Footer />
