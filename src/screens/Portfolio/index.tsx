@@ -1,4 +1,5 @@
-import { Header, Table } from "../../components";
+import { Footer, Header, Table } from "../../components";
+import { colors } from "../../style";
 import * as SC from "./style";
 
 const Portfolio = () => {
@@ -11,7 +12,7 @@ const Portfolio = () => {
 		{
 			width: 120,
 			label: "APY",
-			dataKey: "bPY",
+			dataKey: "apy",
 		},
 		{
 			width: 120,
@@ -28,7 +29,7 @@ const Portfolio = () => {
 		{
 			width: 120,
 			label: "APY",
-			dataKey: "supplyAPY",
+			dataKey: "apy",
 		},
 		{
 			width: 120,
@@ -38,26 +39,27 @@ const Portfolio = () => {
 	];
 
 	const borrowedData = [
-		{ name: "ABC", bAPY: 10, borrowAPY: 10 },
-		{ name: "ABC", bAPY: 10, borrowAPY: 10 },
+		{ name: "Token Name", apy: 10, borrowAPY: 10 },
+		{ name: "Token Name", apy: 10, borrowAPY: 10 },
 	];
 
 	const suppliedData = [
-		{ name: "ABC", supplied: 10, supplyAPY: 10 },
-		{ name: "ABC", supplied: 10, supplyAPY: 10 },
+		{ name: "Token Name", apy: 10, supplied: "10.00" },
+		{ name: "Token Name", apy: 10, supplied: "10.00" },
 	];
 
 	return (
 		<>
 			<Header />
 			<SC.TitleWrapper>
-				<span style={{ color: "green" }}>Supplied</span> Assets
+				<span style={{ color: colors.primary }}>Supplied</span> Assets
 			</SC.TitleWrapper>
-			<Table height={300} rows={suppliedData} columns={suppliedColumns} />
-			<SC.TitleWrapper>
+			<Table height={"240px"} rows={suppliedData} columns={suppliedColumns} />
+			<SC.SecondTitleWrapper>
 				<span style={{ color: "green" }}>Borrow</span> Assets
-			</SC.TitleWrapper>
-			<Table height={300} rows={borrowedData} columns={borrowColumns} />
+			</SC.SecondTitleWrapper>
+			<Table height={"240px"} rows={borrowedData} columns={borrowColumns} />
+			<Footer />
 		</>
 	);
 };
