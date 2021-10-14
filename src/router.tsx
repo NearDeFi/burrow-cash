@@ -14,7 +14,6 @@ const AppRouter = () => {
 						}}
 					/>
 					<Route path="/supply" component={Supply} />
-
 					<Route path="/borrow" component={Borrow} />
 					<Route path="/portfolio" component={Portfolio} />
 				</Switch>
