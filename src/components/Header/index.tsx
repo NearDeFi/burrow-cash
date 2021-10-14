@@ -3,8 +3,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import styled from 'styled-components';
 //@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
+//@ts-ignore
+import TopBackground from '../../assets/desktop-top-background.jpg';
 //@ts-ignore
 import Logo from "../../assets/logo.svg";
 //@ts-ignore
@@ -162,7 +165,11 @@ const MobileSubHeader = () => {
 	);
 };
 
-const DesktopHeader = () => {
+const StyledToolbar = styled(Toolbar)`
+	min-height: 5em !important;
+`
+
+const DesktopHeader = ({ children }) => {
 	const burrow = useContext<IBurrow | null>(Burrow);
 	const [oracle, setOracle] = useState<string>("");
 	const [owner, setOwner] = useState<string>("");
@@ -180,7 +187,11 @@ const DesktopHeader = () => {
 	}, []);
 
 	return (
-		<Toolbar>
+		<div style={{
+			backgroundSize: "cover", backgroundImage: `url(${TopBackground})`,
+			height: "23em"
+		}}>
+		<StyledToolbar>
 			<div
 				style={{
 					display: "grid",
@@ -228,15 +239,22 @@ const DesktopHeader = () => {
 					</Button>
 				</div>
 			</div>
-		</Toolbar>
+		</StyledToolbar>
+			{children}
+		</div>
 	);
 };
 
-const Header = () => {
+const Header = ({ children }) => {
 	const detectMobile = useMobileDetect();
 	const isMobile = detectMobile.isMobile();
-
-	return isMobile ? <MobileHeader /> : <DesktopHeader />;
+	if (isMobile) {
+		return (
+			<MobileHeader />
+		) 
+	} else {
+		return <DesktopHeader>{children}</DesktopHeader>
+	}
 };
 
 export default Header;
