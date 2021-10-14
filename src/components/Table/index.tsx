@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Avatar from "@mui/material/Avatar";
 import { createTheme } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
@@ -14,7 +15,7 @@ import {
 	styles,
 	TableWrapper,
 	TokenNameCellWrapper,
-	TokenNameTextWrapper
+	TokenNameTextWrapper,
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 
@@ -36,7 +37,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		return (
 			<TableCell
 				component="div"
-				className={clsx(classes.flexy, classes.tableCell, classes.flexContainer, {
+				className={clsx(classes.tableCell, classes.flexContainer, {
 					[classes.noClick]: onRowClick == null,
 				})}
 				variant="body"
@@ -44,6 +45,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					display: "grid",
 					height: ROW_HEIGHT,
 					color: "white",
+					justifyContent: "end",
 					flex: "0 1 150px !important",
 				}}
 			>
@@ -131,6 +133,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			height: HEADER_HEIGHT,
 			color: "#000741",
 			display: "grid",
+			maxWidth: "800px",
 			justifyContent: justifyContent,
 		};
 
@@ -172,8 +175,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					{columns.map(({ dataKey, ...other }, index) => {
 						return (
 							<Column
+								width={width}
 								key={dataKey}
-								flexShrink={columns?.length > 2 && dataKey === "name" ? 0 : 1} // 0 : 1 for supply table
 								headerRenderer={(headerProps) =>
 									HeaderCell({
 										...headerProps,
@@ -183,7 +186,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 								className={classes.flexContainer}
 								cellRenderer={getCell(dataKey)}
 								dataKey={dataKey}
-								{...other}
+								label={other.label}
+								// {...other}
 							/>
 						);
 					})}
@@ -199,13 +203,15 @@ const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
 const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => {
 	return (
-		<TableWrapper height={height}>
-			<VirtualizedTable
-				rowCount={rows?.length}
-				rowGetter={({ index }) => rows[index]}
-				columns={columns}
-			/>
-		</TableWrapper>
+		<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
+			<TableWrapper height={height}>
+				<VirtualizedTable
+					rowCount={rows?.length}
+					rowGetter={({ index }) => rows[index]}
+					columns={columns}
+				/>
+			</TableWrapper>
+		</div>
 	);
 };
 

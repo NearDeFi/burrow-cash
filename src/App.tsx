@@ -2,11 +2,7 @@ import "regenerator-runtime/runtime";
 import Router from "./router";
 
 const App = () => {
-	return (
-		<div>
-			<Router />
-		</div>
-	);
+	return <Router />;
 };
 
 export default App;

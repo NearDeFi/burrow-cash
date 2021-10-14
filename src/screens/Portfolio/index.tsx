@@ -1,6 +1,25 @@
 import { Footer, Header, Table } from "../../components";
+import { BigButton, TotalSupply } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
+
+const PortfolioTopButtons = () => {
+	return (
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 1fr 1fr",
+				justifyItems: "center",
+				paddingLeft: "20em",
+				paddingRight: "20em",
+			}}
+		>
+			<BigButton />
+			<BigButton />
+			<BigButton />
+		</div>
+	);
+};
 
 const Portfolio = () => {
 	const borrowColumns = [
@@ -50,7 +69,9 @@ const Portfolio = () => {
 
 	return (
 		<>
-			<Header />
+			<Header>
+				<PortfolioTopButtons />
+			</Header>
 			<SC.TitleWrapper>
 				<span style={{ color: colors.primary }}>Supplied</span> Assets
 			</SC.TitleWrapper>
@@ -59,6 +80,7 @@ const Portfolio = () => {
 				<span style={{ color: colors.primary }}>Borrow</span> Assets
 			</SC.SecondTitleWrapper>
 			<Table height={"240px"} rows={borrowedData} columns={borrowColumns} />
+			<TotalSupply displayButton={false} />
 			<Footer />
 		</>
 	);

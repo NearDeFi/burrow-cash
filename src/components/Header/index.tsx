@@ -3,8 +3,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import styled from "styled-components";
 //@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
+//@ts-ignore
+import TopBackground from "../../assets/desktop-top-background.jpg";
 //@ts-ignore
 import Logo from "../../assets/logo.svg";
 //@ts-ignore
@@ -162,7 +165,11 @@ const MobileSubHeader = () => {
 	);
 };
 
-const DesktopHeader = () => {
+const StyledToolbar = styled(Toolbar)`
+	min-height: 5em !important;
+`;
+
+const DesktopHeader = ({ children }) => {
 	const burrow = useContext<IBurrow | null>(Burrow);
 	const [oracle, setOracle] = useState<string>("");
 	const [owner, setOwner] = useState<string>("");
@@ -180,63 +187,75 @@ const DesktopHeader = () => {
 	}, []);
 
 	return (
-		<Toolbar>
-			<div
-				style={{
-					display: "grid",
-					gridTemplateColumns: "0.5fr 1fr",
-					width: "100%",
-				}}
-			>
-				<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
-					<Typography variant="h6" component="div" style={{ color: "#00BACF" }}>
-						<Logo />
-					</Typography>
-					<div style={{}}>
-						<DesktopSubHeaderButton
-							text="Supply"
-							border={history.location.pathname === "/supply"}
-							onClick={() => history.push("/supply")}
-						/>
+		<div
+			style={{
+				backgroundSize: "cover",
+				backgroundImage: `url(${TopBackground})`,
+				height: "23em",
+			}}
+		>
+			<StyledToolbar>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "0.5fr 1fr",
+						width: "100%",
+					}}
+				>
+					<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
+						<Typography variant="h6" component="div" style={{ color: "#00BACF" }}>
+							<Logo />
+						</Typography>
+						<div style={{}}>
+							<DesktopSubHeaderButton
+								text="Supply"
+								border={history.location.pathname === "/supply"}
+								onClick={() => history.push("/supply")}
+							/>
+						</div>
+						<div style={{}}>
+							<DesktopSubHeaderButton
+								text="Borrow"
+								border={history.location.pathname === "/borrow"}
+								onClick={() => history.push("/borrow")}
+							/>
+						</div>
+						<div style={{}}>
+							<DesktopSubHeaderButton
+								text="Portfolio"
+								border={history.location.pathname === "/portfolio"}
+								onClick={() => history.push("/portfolio")}
+							/>
+						</div>
 					</div>
-					<div style={{}}>
-						<DesktopSubHeaderButton
-							text="Borrow"
-							border={history.location.pathname === "/borrow"}
-							onClick={() => history.push("/borrow")}
-						/>
-					</div>
-					<div style={{}}>
-						<DesktopSubHeaderButton
-							text="Portfolio"
-							border={history.location.pathname === "/portfolio"}
-							onClick={() => history.push("/portfolio")}
-						/>
+					<div style={{ justifySelf: "end" }}>
+						<Button
+							size="small"
+							variant="contained"
+							onClick={() => {
+								burrow?.walletConnection.isSignedIn()
+									? logout(burrow!.walletConnection)
+									: login(burrow!.walletConnection);
+							}}
+						>
+							{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
+						</Button>
 					</div>
 				</div>
-				<div style={{ justifySelf: "end" }}>
-					<Button
-						size="small"
-						variant="contained"
-						onClick={() => {
-							burrow?.walletConnection.isSignedIn()
-								? logout(burrow!.walletConnection)
-								: login(burrow!.walletConnection);
-						}}
-					>
-						{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
-					</Button>
-				</div>
-			</div>
-		</Toolbar>
+			</StyledToolbar>
+			{children}
+		</div>
 	);
 };
 
-const Header = () => {
+const Header = ({ children }) => {
 	const detectMobile = useMobileDetect();
 	const isMobile = detectMobile.isMobile();
-
-	return isMobile ? <MobileHeader /> : <DesktopHeader />;
+	if (isMobile) {
+		return <MobileHeader />;
+	} else {
+		return <DesktopHeader>{children}</DesktopHeader>;
+	}
 };
 
 export default Header;
