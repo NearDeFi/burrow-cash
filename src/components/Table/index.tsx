@@ -14,11 +14,11 @@ import {
 	styles,
 	TableWrapper,
 	TokenNameCellWrapper,
-	TokenNameTextWrapper,
+	TokenNameTextWrapper
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 
-const HEADER_HEIGHT = 18;
+const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
 
 const TableTemplate = (props: MuiVirtualizedTableProps) => {
@@ -42,7 +42,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				variant="body"
 				style={{
 					display: "grid",
-					justifyContent: "end",
 					height: ROW_HEIGHT,
 					color: "white",
 					flex: "0 1 150px !important",
@@ -104,7 +103,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const DefaultCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const data = String(cellData) + ".00%";
 		return (
 			<TableCell
 				component="div"
@@ -116,7 +114,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				align={"left"}
 			>
 				<DefaultCellWrapper>
-					<Heading4 cellData={data} />
+					<Heading4 cellData={cellData} />
 				</DefaultCellWrapper>
 			</TableCell>
 		);
@@ -132,9 +130,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			lineHeight: "19px",
 			height: HEADER_HEIGHT,
 			color: "#000741",
-			display: "flex",
+			display: "grid",
 			justifyContent: justifyContent,
-			maxWidth: "200px",
 		};
 
 		return (
@@ -152,7 +149,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	const getCell = (dataKey: string) => {
 		if (dataKey === "collateral") return CollateralCell;
 		if (dataKey === "name") return TokenNameCell;
-		if (dataKey === "borrowAPY" || "supplyAPY") return APYCell;
+		if (dataKey === "apy" || dataKey === "borrowAPY") return APYCell;
 
 		return DefaultCell;
 	};
@@ -176,7 +173,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						return (
 							<Column
 								key={dataKey}
-								flexShrink={columns?.length > 2 && dataKey === "name" ? 0 : 1}
+								flexShrink={columns?.length > 2 && dataKey === "name" ? 0 : 1} // 0 : 1 for supply table
 								headerRenderer={(headerProps) =>
 									HeaderCell({
 										...headerProps,

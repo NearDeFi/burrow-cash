@@ -2,9 +2,9 @@ import { createContext, useEffect, useState } from "react";
 import { getAssets } from "../store";
 
 const mock = [
-	{ name: "Token Name", supplyAPY: 10, collateral: false },
-	{ name: "Token Name", supplyAPY: 10, collateral: true },
-	{ name: "Token Name", supplyAPY: 10, collateral: false },
+	{ name: "Token Name", apy: 10, collateral: false },
+	{ name: "Token Name", apy: 10, collateral: true },
+	{ name: "Token Name", apy: 10, collateral: false },
 ];
 
 const initialAssetsState: { assets: any[] } = { assets: mock };
@@ -19,7 +19,7 @@ export const AssetsContextProvider = ({ children }: { children: React.ReactEleme
 			const a = (await getAssets()).map((asset: any) => {
 				return {
 					...asset,
-					borrowAPY: 10,
+					apy: 10,
 				};
 			});
 

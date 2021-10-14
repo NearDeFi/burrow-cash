@@ -12,7 +12,7 @@ const SUPPLY_COLUMNS = [
 	{
 		width: 200,
 		label: "APY",
-		dataKey: "supplyAPY",
+		dataKey: "apy",
 	},
 	{
 		width: 200,
