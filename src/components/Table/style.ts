@@ -13,9 +13,6 @@ export const styles = (theme: Theme) =>
 			// alignItems: 'center',
 			boxSizing: "border-box",
 		},
-		flexy: {
-			flex: "0 1 100px",
-		},
 		flexContainer: {
 			display: "flex",
 			alignItems: "center",
@@ -35,6 +32,7 @@ export const styles = (theme: Theme) =>
 		},
 		tableRow: {
 			cursor: "pointer",
+			flex: "0 0 100% !important"
 		},
 		tableRowHover: {
 			"&:hover": {
@@ -50,11 +48,9 @@ export const styles = (theme: Theme) =>
 	} as const);
 
 export const TableWrapper = styled(Paper)<{ height: string }>`
-	padding-top: 2em;
-	padding-left: 1em;
-	padding-right: 1em;
-	background-color: transparent;
-	box-shadow: none;
+	grid-column: 2;
+	width: 100%;
+	box-shadow: none !important;
 	height: ${(props: { height: string }) => props?.height || "400px"};
 `;
 
