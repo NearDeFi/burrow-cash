@@ -3,14 +3,21 @@
 import { Button } from "@mui/material";
 //@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
-import DesktopBottomBackground from '../../assets/desktop-bottom-background.jpg';
-import MobileBottomBackground from '../../assets/mobile-bottom.png';
+import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg";
+import MobileBottomBackground from "../../assets/mobile-bottom.png";
 import { colors } from "../../style";
-
 
 const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true }) => {
 	return (
-		<div style={{ display: "grid", justifyContent: "center", height: "24em", backgroundSize: 'cover', backgroundImage: `url(${DesktopBottomBackground})` }}>
+		<div
+			style={{
+				display: "grid",
+				justifyContent: "center",
+				height: "24em",
+				backgroundSize: "cover",
+				backgroundImage: `url(${DesktopBottomBackground})`,
+			}}
+		>
 			<div
 				style={{
 					paddingTop: "3em",
@@ -22,7 +29,12 @@ const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true }) => 
 				<Button
 					variant="contained"
 					size="large"
-					style={{ display: displayButton ? "unset" : "none", height: "100%", width: "100%", backgroundColor: colors.secondary }}
+					style={{
+						display: displayButton ? "unset" : "none",
+						height: "100%",
+						width: "100%",
+						backgroundColor: colors.secondary,
+					}}
 				>
 					{"Total Supply"}
 					<br />
@@ -42,13 +54,19 @@ const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true }) => {
 				display: "grid",
 				justifyContent: "center",
 				height,
-				backgroundSize: 'cover', backgroundImage: `url(${MobileBottomBackground})`
+				backgroundSize: "cover",
+				backgroundImage: `url(${MobileBottomBackground})`,
 			}}
 		>
 			<Button
 				variant="contained"
 				size="large"
-				style={{ display: displayButton ? "unset" : "none", height: "100%", width: "250px", backgroundColor: colors.secondary }}
+				style={{
+					display: displayButton ? "unset" : "none",
+					height: "100%",
+					width: "250px",
+					backgroundColor: colors.secondary,
+				}}
 			>
 				{"Total Supply"}
 				<br />
@@ -63,11 +81,11 @@ const TotalSupply = ({ displayButton = true }) => {
 	const isMobile = detectMobile.isMobile();
 
 	if (isMobile) {
-		return <MobileTotalSupplyFooter displayButton={displayButton} />
+		return <MobileTotalSupplyFooter displayButton={displayButton} />;
 	} else {
-		return <DesktopTotalSupplyFooter displayButton={displayButton} />
+		return <DesktopTotalSupplyFooter displayButton={displayButton} />;
 	}
-}
+};
 export default TotalSupply;
 
 // const TotalSupply = ({ height = "7em" }) => {

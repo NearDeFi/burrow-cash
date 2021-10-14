@@ -2,14 +2,14 @@ import { createContext, useEffect, useState } from "react";
 import { getAssets } from "../store";
 
 const mockDesktop = [
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.00, wallet: 10.00 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
+	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
 ];
 
 const mock = [

@@ -51,7 +51,15 @@ const SUPPLY_COLUMNS = [
 
 const SupplyTopButtons = () => {
 	return (
-		<div style={{ display: "grid", gap: "1em", gridTemplateColumns: "1fr 1fr", paddingLeft: "20em", paddingRight: "20em" }}>
+		<div
+			style={{
+				display: "grid",
+				gap: "1em",
+				gridTemplateColumns: "1fr 1fr",
+				paddingLeft: "20em",
+				paddingRight: "20em",
+			}}
+		>
 			<div style={{ justifySelf: "end" }}>
 				<BigButton />
 			</div>
@@ -59,8 +67,8 @@ const SupplyTopButtons = () => {
 				<BigButton />
 			</div>
 		</div>
-	)
-}
+	);
+};
 
 const Supply = () => {
 	const { assets } = useContext<{ assets: any[] }>(AssetsContext);

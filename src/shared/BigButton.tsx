@@ -28,8 +28,7 @@ const DesktopBigButton = ({ height = "10em" }) => {
 };
 
 const BigButton = () => {
-
-	return <DesktopBigButton />
-}
+	return <DesktopBigButton />;
+};
 
 export default BigButton;

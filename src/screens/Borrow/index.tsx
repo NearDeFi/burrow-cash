@@ -8,15 +8,21 @@ import { BigButton, PageTitle, TotalSupply } from "../../shared";
 
 const BorrowTopButtons = () => {
 	return (
-		<div style={{
-			display: "grid", gridTemplateColumns: "1fr 1fr 1fr", justifyItems: "center", paddingLeft: "20em", paddingRight: "20em"
-		}}>
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 1fr 1fr",
+				justifyItems: "center",
+				paddingLeft: "20em",
+				paddingRight: "20em",
+			}}
+		>
 			<BigButton />
 			<BigButton />
 			<BigButton />
 		</div>
-	)
-}
+	);
+};
 
 const Borrow = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
@@ -78,7 +84,7 @@ const Borrow = () => {
 	];
 	const detectMobile = useMobileDetect();
 
-	const isMobile = detectMobile.isMobile()
+	const isMobile = detectMobile.isMobile();
 	return (
 		<>
 			<Header>

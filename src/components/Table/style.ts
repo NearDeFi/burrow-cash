@@ -32,7 +32,7 @@ export const styles = (theme: Theme) =>
 		},
 		tableRow: {
 			cursor: "pointer",
-			flex: "0 0 100% !important"
+			flex: "0 0 100% !important",
 		},
 		tableRowHover: {
 			"&:hover": {

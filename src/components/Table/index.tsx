@@ -15,7 +15,7 @@ import {
 	styles,
 	TableWrapper,
 	TokenNameCellWrapper,
-	TokenNameTextWrapper
+	TokenNameTextWrapper,
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 
@@ -45,7 +45,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					display: "grid",
 					height: ROW_HEIGHT,
 					color: "white",
-					justifyContent: 'end',
+					justifyContent: "end",
 					flex: "0 1 150px !important",
 				}}
 			>
@@ -133,7 +133,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			height: HEADER_HEIGHT,
 			color: "#000741",
 			display: "grid",
-			maxWidth: '800px',
+			maxWidth: "800px",
 			justifyContent: justifyContent,
 		};
 
@@ -203,7 +203,7 @@ const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
 const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => {
 	return (
-		<div style={{display: "grid", width: '100%', gridTemplateColumns: "0.1fr 1fr 0.1fr"}}>
+		<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
 			<TableWrapper height={height}>
 				<VirtualizedTable
 					rowCount={rows?.length}

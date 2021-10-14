@@ -7,10 +7,13 @@ import Logo from "../../assets/logo.svg";
 
 const DesktopFooter = () => {
 	return (
-		<div style={{
-			display: "grid", gridTemplateColumns: "1fr 1fr",
-			width: "100%",
-		}}>
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 1fr",
+				width: "100%",
+			}}
+		>
 			<div style={{ gridRow: 1, display: "flex", gap: "1em", marginLeft: "2em" }}>
 				<Typography variant="h6" style={{ color: "#00BACF", display: "inline" }}>
 					<Logo />
@@ -31,11 +34,17 @@ const DesktopFooter = () => {
 
 const MobileFooter = () => {
 	return (
-		<div style={{
-			display: "grid", gap: "1em", padding: "0.5em", position: 'fixed',
-			bottom: 0,
-			left: 0,
-			right: 0 }}>
+		<div
+			style={{
+				display: "grid",
+				gap: "1em",
+				padding: "0.5em",
+				position: "fixed",
+				bottom: 0,
+				left: 0,
+				right: 0,
+			}}
+		>
 			<div style={{ gridRow: 1, display: "inline-grid", justifyContent: "space-around" }}>
 				<Typography variant="h6" style={{ color: "#00BACF", gridRow: 1 }}>
 					<Logo />

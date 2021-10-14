@@ -5,13 +5,21 @@ import * as SC from "./style";
 
 const PortfolioTopButtons = () => {
 	return (
-		<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", justifyItems: "center", paddingLeft: "20em", paddingRight: "20em" }}>
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 1fr 1fr",
+				justifyItems: "center",
+				paddingLeft: "20em",
+				paddingRight: "20em",
+			}}
+		>
 			<BigButton />
 			<BigButton />
 			<BigButton />
 		</div>
-	)
-}
+	);
+};
 
 const Portfolio = () => {
 	const borrowColumns = [
@@ -61,7 +69,7 @@ const Portfolio = () => {
 
 	return (
 		<>
-			<Header >
+			<Header>
 				<PortfolioTopButtons />
 			</Header>
 			<SC.TitleWrapper>
