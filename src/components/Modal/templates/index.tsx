@@ -2,11 +2,11 @@ import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from 
 import { TokenActionsInput } from "../types";
 
 const borrowRates = [
-	{ value: "", title: "Borrow APY" },
-	{ value: "", title: "Extra Rewards APY" },
-	{ value: "", title: "Risk Factor" },
-	{ value: "", title: "Limit Used" },
-	{ value: "", title: "Pool Liquidit" },
+	{ value: "1.00%", title: "Borrow APY" },
+	{ value: "2.00%", title: "Extra Rewards APY" },
+	{ value: "3.00%", title: "Risk Factor" },
+	{ value: "4.00%", title: "Limit Used" },
+	{ value: "1,000,000", title: "Pool Liquidit" },
 ];
 
 export const BorrowData: TokenActionsInput = {
@@ -16,7 +16,7 @@ export const BorrowData: TokenActionsInput = {
 	buttonText: "Borrow",
 	rates: borrowRates,
 	ratesTitle: "Borrow Rates",
-	token: { count: 0, name: "T Name", symbol: "TSYL", valueInUSD: 0, apy: 0 },
+	token: { count: 2, name: "Token Name", symbol: "TSYL", valueInUSD: 5, apy: 10 },
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {

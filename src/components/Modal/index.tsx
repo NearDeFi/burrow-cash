@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import * as React from "react";
-//@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
 import { CloseModalIcon } from "./components";
 import { BorrowData, TokenActionsTemplate } from "./templates";
@@ -24,7 +23,7 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 	const style = detectMobile.isMobile() ? mobileStyle : desktopStyle;
 	const [modalType, setModalType] = React.useState<string>("borrow");
 	const [template, setTemplate] = React.useState<Templates>(Templates.TokenActions);
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(true);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const modalData = ModalData[modalType];
@@ -76,6 +75,7 @@ const desktopStyle = {
 	paddingLeft: 0,
 	bgcolor: "background.paper",
 	boxShadow: 24,
+	width: '448px'
 };
 
 export default ModalContainer;
