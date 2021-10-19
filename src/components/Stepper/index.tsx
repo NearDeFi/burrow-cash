@@ -6,6 +6,7 @@ import { StepIconProps } from "@mui/material/StepIcon";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import { styled } from "@mui/material/styles";
+import { colors } from "../../style";
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -15,16 +16,16 @@ const QontoConnector = styled(StepConnector)(({ theme }) => ({
 	},
 	[`&.${stepConnectorClasses.active}`]: {
 		[`& .${stepConnectorClasses.line}`]: {
-			borderColor: "#784af4",
+			borderColor: colors.secondary,
 		},
 	},
 	[`&.${stepConnectorClasses.completed}`]: {
 		[`& .${stepConnectorClasses.line}`]: {
-			borderColor: "#784af4",
+			borderColor: colors.secondary,
 		},
 	},
 	[`& .${stepConnectorClasses.line}`]: {
-		borderColor: theme.palette.mode === "dark" ? theme.palette.grey[800] : "#784af4",
+		borderColor: theme.palette.mode === "dark" ? theme.palette.grey[800] : colors.secondary,
 		borderTopWidth: 3,
 		borderRadius: 1,
 	},
@@ -32,24 +33,24 @@ const QontoConnector = styled(StepConnector)(({ theme }) => ({
 
 const QontoStepIconRoot = styled("div")<{ ownerState: { active?: boolean } }>(
 	({ theme, ownerState }) => ({
-		color: theme.palette.mode === "dark" ? theme.palette.grey[700] : "green",
+		color: theme.palette.mode === "dark" ? theme.palette.grey[700] : colors.primary,
 		display: "flex",
 		height: 24,
 		alignItems: "center",
 		...(ownerState.active && {
-			color: "#784af4",
+			color: colors.secondary,
 		}),
 		"& .QontoStepIcon-completedIcon": {
 			width: 16,
 			height: 16,
 			borderRadius: "50%",
-			backgroundColor: "green",
+			backgroundColor: colors.primary,
 		},
 		"& .QontoStepIcon-circle": {
 			width: 16,
 			height: 16,
 			borderRadius: "50%",
-			backgroundColor: "#784af4",
+			backgroundColor: colors.secondary,
 		},
 	}),
 );
