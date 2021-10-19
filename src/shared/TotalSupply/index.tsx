@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 //@ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
 import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg";
-import MobileBottomBackground from "../../assets/mobile-bottom.png";
+import mobileBottomBg from "../../assets/mobile-bottom-bg.png";
 import { colors } from "../../style";
 
 const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true }) => {
@@ -55,11 +55,11 @@ const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true }) => {
 				justifyContent: "center",
 				height,
 				backgroundSize: "cover",
-				backgroundImage: `url(${MobileBottomBackground})`,
+				backgroundImage: `url(${mobileBottomBg})`,
 			}}
 		>
 			<Button
-				variant="contained"
+				variant-bg="contained"
 				size="large"
 				style={{
 					display: displayButton ? "unset" : "none",
@@ -97,10 +97,10 @@ export default TotalSupply;
 // 				height,
 // 				width: "250px",
 // 				backgroundSize: "cover",
-// 				backgroundImage: `url(${MobileBottomBackground})`,
+// 				backgroundImage: `url(${mobileBottomBg})`,
 // 			}}
 // 		>
-// 			<Button
+//-bg 			<Button
 // 				variant="contained"
 // 				size="large"
 // 				style={{ height: "100%", width: "100%", backgroundColor: colors.secondary }}
