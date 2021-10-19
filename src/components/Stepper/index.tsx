@@ -55,7 +55,7 @@ const QontoStepIconRoot = styled("div")<{ ownerState: { active?: boolean } }>(
 	}),
 );
 
-function QontoStepIcon(props: StepIconProps) {
+const QontoStepIcon = (props: StepIconProps) => {
 	const { active, completed, className } = props;
 
 	return (
@@ -71,7 +71,7 @@ function QontoStepIcon(props: StepIconProps) {
 
 const steps = ["0%", "25%", "50%", "75%", "100%"];
 
-export default function CustomizedSteppers() {
+const CustomizedSteppers = () => {
 	return (
 		<Stack sx={{ width: "100%" }}>
 			<Stepper alternativeLabel activeStep={1} connector={<QontoConnector />}>
@@ -84,3 +84,5 @@ export default function CustomizedSteppers() {
 		</Stack>
 	);
 }
+
+export default CustomizedSteppers

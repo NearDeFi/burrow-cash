@@ -1,35 +1,13 @@
 import { createContext, useEffect, useState } from "react";
+import { mockSupplyDesktopData } from "../mockData";
 import { getAssets } from "../store";
 
-const mockDesktop = [
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-	{ name: "Token Name", apy: 10, collateral: false, totalSupply: 1000.0, wallet: 10.0 },
-];
-
-const mock = [
-	{ name: "Token Name", apy: 10, collateral: false },
-	{ name: "Token Name", apy: 10, collateral: true },
-	{ name: "Token Name", apy: 10, collateral: false },
-	{ name: "Token Name", apy: 10, collateral: false },
-	{ name: "Token Name", apy: 10, collateral: true },
-	{ name: "Token Name", apy: 10, collateral: false },
-	{ name: "Token Name", apy: 10, collateral: false },
-	{ name: "Token Name", apy: 10, collateral: true },
-	{ name: "Token Name", apy: 10, collateral: false },
-];
-
-const initialAssetsState: { assets: any[] } = { assets: mock };
+const initialAssetsState: { assets: any[] } = { assets: mockSupplyDesktopData };
 
 export const AssetsContext = createContext(initialAssetsState);
 
 export const AssetsContextProvider = ({ children }: { children: React.ReactElement }) => {
-	const [assets, setAssets] = useState<any[]>(mockDesktop);
+	const [assets, setAssets] = useState<any[]>(mockSupplyDesktopData);
 
 	useEffect(() => {
 		(async () => {
@@ -40,7 +18,7 @@ export const AssetsContextProvider = ({ children }: { children: React.ReactEleme
 				};
 			});
 
-			setAssets([...mock, ...a]);
+			setAssets([...mockSupplyDesktopData, ...a]);
 		})();
 	}, []);
 

@@ -116,7 +116,7 @@ export const TokenBasicDetails = ({ tokenName, apy }: { tokenName: string; apy: 
 			<div style={{ display: "grid", justifyContent: "center", marginTop: "2em" }}>
 				<Avatar />
 			</div>
-			<Typography style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }} id="modal-modal-description" sx={{ mt: 2 }}>
+			<Typography style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }} sx={{ mt: 2 }}>
 				{tokenName}
 				<br />
 				{`${apy}$ APY`}
