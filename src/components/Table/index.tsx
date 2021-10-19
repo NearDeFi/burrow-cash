@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import Avatar from "@mui/material/Avatar";
 import { createTheme } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
@@ -15,7 +14,7 @@ import {
 	styles,
 	TableWrapper,
 	TokenNameCellWrapper,
-	TokenNameTextWrapper,
+	TokenNameTextWrapper
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 

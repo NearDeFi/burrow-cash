@@ -1,8 +1,9 @@
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import MaxIcon from "./max";
+import MaxIcon from "./max.svg";
 
+/** initial version, should be updated as needed */
 const InputField = () => {
 	return (
 		<OutlinedInput

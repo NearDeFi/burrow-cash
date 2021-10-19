@@ -23,7 +23,7 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 	const style = detectMobile.isMobile() ? mobileStyle : desktopStyle;
 	const [modalType, setModalType] = React.useState<string>("borrow");
 	const [template, setTemplate] = React.useState<Templates>(Templates.TokenActions);
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const modalData = ModalData[modalType];
