@@ -8,7 +8,7 @@
     "prod": "parcel src/index.html",
     "deploy": "npm run build",
     "prettier": "prettier ./src --write",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src/{**/*,*}.{ts,tsx}"
   },
   "devDependencies": {
     "@babel/core": "~7.14.0",

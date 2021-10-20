@@ -40,13 +40,13 @@ const MobileHeader = () => {
 			color: colors.secondary,
 			fontWeight: 700,
 			borderColor: colors.primary,
-		}
+		};
 
 		const withoutBorderStyle = {
 			borderWidth: "0",
 			color: colors.secondary,
 			fontWeight: 700,
-		}
+		};
 		const style = border ? withBorderStyle : withoutBorderStyle;
 
 		return (
@@ -83,7 +83,7 @@ const MobileHeader = () => {
 		burrow?.walletConnection.isSignedIn()
 			? logout(burrow!.walletConnection)
 			: login(burrow!.walletConnection);
-	}
+	};
 
 	return (
 		<SC.MobileHeaderWrapper>
@@ -95,14 +95,14 @@ const MobileHeader = () => {
 					size="small"
 					variant="contained"
 					style={{ backgroundColor: colors.primary }}
-					onClick={onWalletButtonClick}>
-					{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
+					onClick={onWalletButtonClick}
+				>
+					{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect"}
 				</Button>
 			</SC.MobileHeaderToolbar>
 			<MobileSubHeader />
 		</SC.MobileHeaderWrapper>
 	);
 };
-
 
 export default MobileHeader;

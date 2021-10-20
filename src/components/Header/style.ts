@@ -7,7 +7,7 @@ export const DesktopHeaderWrapper = styled.div`
 	background-size: cover;
 	background-image: url(${topDesktopBg});
 	height: 23em;
-`
+`;
 
 export const DesktopHeaderToolbar = styled(Toolbar)`
 	justify-content: space-between;
@@ -30,12 +30,12 @@ export const MobileHeaderWrapper = styled.div`
 	min-height: 9em;
 	background-size: cover;
 	background-image: url(${mobileTopBg});
-`
+`;
 
 export const MobileHeaderToolbar = styled(Toolbar)`
 	justify-content: space-between;
-`
+`;
 
 export const MobileSubHeaderToolbar = styled(Toolbar)`
 	justify-content: space-between;
-`
+`;

@@ -18,6 +18,7 @@ const PageTitle = ({
 	paddingTop?: string;
 }) => {
 	return (
+		// @ts-ignore
 		<TitleWrapper paddingTop={paddingTop}>
 			Available <span style={{ color: colors.primary }}>{first}</span> {second}
 		</TitleWrapper>

@@ -1,3 +1,4 @@
+// @ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
 import DesktopFooter from "./desktop";
 import MobileFooter from "./mobile";

@@ -1,4 +1,3 @@
-
 import Typography from "@mui/material/Typography";
 import Logo from "../../assets/logo.svg";
 import * as SC from "./style";

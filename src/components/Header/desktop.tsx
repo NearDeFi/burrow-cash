@@ -16,17 +16,17 @@ interface DesktpoButtonInput {
 }
 
 const DesktpoButton = (props: DesktpoButtonInput) => {
-	const { onClick, border, text, ...other } = props
+	const { onClick, border, text, ...other } = props;
 	const notSelectedButtonStyle = {
 		borderWidth: 0,
-		color: colors.secondary
-	}
+		color: colors.secondary,
+	};
 	const selectedButtonStyle = {
 		borderWidth: 0,
 		borderBottomWidth: "1px",
 		borderRadius: 0,
-		color: colors.secondary
-	}
+		color: colors.secondary,
+	};
 	const style = border ? selectedButtonStyle : notSelectedButtonStyle;
 
 	return (
@@ -59,24 +59,24 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				<Typography variant="h6" component="div" style={{ color: "#00BACF" }}>
 					<Logo />
 				</Typography>
-					<DesktpoButton
-						text="Supply"
-						border={history.location.pathname === "/supply"}
-						onClick={() => history.push("/supply")}
-					/>
-					<DesktpoButton
-						text="Borrow"
-						border={history.location.pathname === "/borrow"}
-						onClick={() => history.push("/borrow")}
-					/>
-					<DesktpoButton
-						text="Portfolio"
-						border={history.location.pathname === "/portfolio"}
-						onClick={() => history.push("/portfolio")}
-					/>
+				<DesktpoButton
+					text="Supply"
+					border={history.location.pathname === "/supply"}
+					onClick={() => history.push("/supply")}
+				/>
+				<DesktpoButton
+					text="Borrow"
+					border={history.location.pathname === "/borrow"}
+					onClick={() => history.push("/borrow")}
+				/>
+				<DesktpoButton
+					text="Portfolio"
+					border={history.location.pathname === "/portfolio"}
+					onClick={() => history.push("/portfolio")}
+				/>
 			</SC.DesktopHeaderLeftSideWrapper>
-		)
-	}
+		);
+	};
 
 	const WalletButton = () => {
 		return (
@@ -90,10 +90,10 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 						: login(burrow!.walletConnection);
 				}}
 			>
-				{burrow?.walletConnection.isSignedIn() ? "Disconnect" : "Connect"}
+				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect"}
 			</Button>
-		)
-	}
+		);
+	};
 
 	return (
 		<SC.DesktopHeaderWrapper>

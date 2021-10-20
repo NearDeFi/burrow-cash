@@ -1,7 +1,6 @@
 import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
 import getConfig, {
 	LOGIC_CONTRACT_NAME,
-	ORACLE_CONTRACT_NAME,
 	ChangeMethodsLogic,
 	ChangeMethodsOracle,
 	ViewMethodsLogic,
@@ -35,32 +34,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	// Getting the Account ID. If still unauthorized, it's just empty string
 	const account: Account = await near.account(walletConnection.getAccountId());
 
-	const logicContract: Contract = new Contract(walletConnection.account(), LOGIC_CONTRACT_NAME, {
-		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-	});
-
-	const oracleContract: Contract = new Contract(walletConnection.account(), ORACLE_CONTRACT_NAME, {
-		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethodsOracle)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethodsOracle)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-	});
-
 	const view = async (
 		contract: Contract,
 		methodName: string,
@@ -84,17 +57,40 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		});
 	};
 
-	/*
-  await send("new", {
-    config: {
-      oracle_account_id: "vvs111.testnet",
-      owner_id: "vvs111.testnet",
-    },
-  });
-  */
+	const logicContract: Contract = new Contract(walletConnection.account(), LOGIC_CONTRACT_NAME, {
+		// View methods are read only. They don't modify the state, but usually return some value.
+		viewMethods: Object.values(ViewMethodsLogic)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+		// Change methods can modify the state. But you don't receive the returned value when called.
+		changeMethods: Object.values(ChangeMethodsLogic)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+	});
 
-	// console.log(account.accountId, await account.getAccountBalance());
-	// console.log(await account.state());
+	// get oracle address from
+	const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
+		oracle_account_id: string;
+	};
+
+	const oracleContract: Contract = new Contract(
+		walletConnection.account(),
+		config.oracle_account_id,
+		{
+			// View methods are read only. They don't modify the state, but usually return some value.
+			viewMethods: Object.values(ViewMethodsOracle)
+				// @ts-ignore
+				.filter((m) => typeof m === "string")
+				.map((m) => m as string),
+			// Change methods can modify the state. But you don't receive the returned value when called.
+			changeMethods: Object.values(ChangeMethodsOracle)
+				// @ts-ignore
+				.filter((m) => typeof m === "string")
+				.map((m) => m as string),
+		},
+	);
 
 	burrow = {
 		walletConnection,

@@ -14,7 +14,7 @@ import {
 	styles,
 	TableWrapper,
 	TokenNameCellWrapper,
-	TokenNameTextWrapper
+	TokenNameTextWrapper,
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 

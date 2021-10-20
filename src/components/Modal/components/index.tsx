@@ -17,7 +17,11 @@ export const ModalTitle = ({ title }: { title: string }) => {
 		<Typography
 			id="modal-modal-title"
 			style={{
-			 textAlign: "center", color: colors.secondary, fontWeight: 500, fontSize: '24px' }}
+				textAlign: "center",
+				color: colors.secondary,
+				fontWeight: 500,
+				fontSize: "24px",
+			}}
 			variant="h6"
 			component="h2"
 			sx={{ mt: 2 }}
@@ -43,7 +47,16 @@ export const TokenInputs = ({
 	const totalAvialabeTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
 	return (
 		<>
-			<div style={{ display: "grid", padding: "1em", fontSize: "14px", fontWeight: 500, gridTemplateColumns: "1.1fr 0.9fr", color: colors.secondary }}>
+			<div
+				style={{
+					display: "grid",
+					padding: "1em",
+					fontSize: "14px",
+					fontWeight: 500,
+					gridTemplateColumns: "1.1fr 0.9fr",
+					color: colors.secondary,
+				}}
+			>
 				<div>{`Available: ${availableTokens} ${tokenSymbol} ($${totalAvialabeTokensPrice})`}</div>
 				<div style={{ justifySelf: "end" }}>{`1 ${tokenSymbol} = $${tokenPriceInUSD}`}</div>
 			</div>
@@ -53,7 +66,11 @@ export const TokenInputs = ({
 			<div style={{ paddingTop: "1em" }}>
 				<Stepper />
 			</div>
-			<Typography style={{ textAlign: "center", fontSize: '16px', fontWeight: 500 }} id="modal-modal-description" sx={{ mt: 2 }}>
+			<Typography
+				style={{ textAlign: "center", fontSize: "16px", fontWeight: 500 }}
+				id="modal-modal-description"
+				sx={{ mt: 2 }}
+			>
 				{`${totalAmountTitle} = ${totalAmount}`}
 			</Typography>
 		</>
@@ -79,11 +96,19 @@ const createListItem = ({
 				paddingTop: 0,
 			}}
 		>
-			<div style={{ color: colors.secondary, fontSize: '14px', fontWeight: 400 }}>{title}</div>
-			{valueType === Inputs.String && <div style={{
-				color: colors.secondary
-				, justifySelf: "end", fontSize: '14px', fontWeight: 700
-			}}>{value}</div>}
+			<div style={{ color: colors.secondary, fontSize: "14px", fontWeight: 400 }}>{title}</div>
+			{valueType === Inputs.String && (
+				<div
+					style={{
+						color: colors.secondary,
+						justifySelf: "end",
+						fontSize: "14px",
+						fontWeight: 700,
+					}}
+				>
+					{value}
+				</div>
+			)}
 			{valueType === Inputs.Switch && (
 				<div style={{ justifySelf: "end" }}>
 					<Switch />
@@ -96,7 +121,7 @@ const createListItem = ({
 export const Rates = ({ ratesTitle, rates }: { ratesTitle: string; rates: any[] }) => {
 	return (
 		<>
-			<div style={{ padding: "1em", fontSize: '14px', fontWeight: 500 }}>{ratesTitle}</div>
+			<div style={{ padding: "1em", fontSize: "14px", fontWeight: 500 }}>{ratesTitle}</div>
 			{rates?.map((r) => createListItem(r))}
 		</>
 	);
@@ -104,8 +129,14 @@ export const Rates = ({ ratesTitle, rates }: { ratesTitle: string; rates: any[] 
 
 export const ActionButton = ({ text }: { text: string }) => {
 	return (
-		<Typography style={{ textAlign: "center", color: colors.secondary }} id="modal-modal-description" sx={{ mt: 2 }}>
-			<Button style={{ backgroundColor: colors.primary }} variant="contained">{text}</Button>
+		<Typography
+			style={{ textAlign: "center", color: colors.secondary }}
+			id="modal-modal-description"
+			sx={{ mt: 2 }}
+		>
+			<Button style={{ backgroundColor: colors.primary }} variant="contained">
+				{text}
+			</Button>
 		</Typography>
 	);
 };
@@ -116,7 +147,11 @@ export const TokenBasicDetails = ({ tokenName, apy }: { tokenName: string; apy: 
 			<div style={{ display: "grid", justifyContent: "center", marginTop: "2em" }}>
 				<Avatar />
 			</div>
-			<Typography style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }} sx={{ mt: 2 }}>
+			<Typography
+				style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }}
+				id="modal-modal-description"
+				sx={{ mt: 2 }}
+			>
 				{tokenName}
 				<br />
 				{`${apy}$ APY`}

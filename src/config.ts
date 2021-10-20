@@ -1,7 +1,6 @@
 import { ConnectConfig } from "near-api-js";
 
-export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || "v1.burrowland.testnet";
-export const ORACLE_CONTRACT_NAME = process.env.ORACLE_CONTRACT_NAME || "oracle.burrowland.testnet";
+export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || "dev-1634686594172-33981818199919";
 
 export enum ViewMethodsLogic {
 	"get_account",

@@ -67,7 +67,7 @@ const QontoStepIcon = (props: StepIconProps) => {
 			)}
 		</QontoStepIconRoot>
 	);
-}
+};
 
 const steps = ["0%", "25%", "50%", "75%", "100%"];
 
@@ -83,6 +83,6 @@ const CustomizedSteppers = () => {
 			</Stepper>
 		</Stack>
 	);
-}
+};
 
-export default CustomizedSteppers
+export default CustomizedSteppers;

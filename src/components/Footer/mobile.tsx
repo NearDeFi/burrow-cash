@@ -1,4 +1,3 @@
-
 import { Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Logo from "../../assets/logo.svg";
