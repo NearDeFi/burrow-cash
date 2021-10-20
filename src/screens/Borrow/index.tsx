@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
 import { ViewMethodsLogic } from "../../config";
