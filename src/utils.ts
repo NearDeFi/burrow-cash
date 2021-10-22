@@ -1,12 +1,12 @@
 import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
-import getConfig, {
-	LOGIC_CONTRACT_NAME,
+import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
+import { IBurrow } from "./index";
+import {
 	ChangeMethodsLogic,
 	ChangeMethodsOracle,
 	ViewMethodsLogic,
 	ViewMethodsOracle,
-} from "./config";
-import { IBurrow } from "./index";
+} from "./interfaces/contract-methods";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 

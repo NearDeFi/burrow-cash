@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { IAsset } from "../interfaces/asset";
-import { getAssets } from "../store";
+import { getAssets, getAssetsDetailed } from "../store";
 
 const initialAssetsState: { assets: IAsset[] } = { assets: [] };
 
@@ -11,13 +11,11 @@ export const AssetsContextProvider = ({ children }: { children: React.ReactEleme
 
 	useEffect(() => {
 		(async () => {
-			const assets = (await getAssets()).map((asset: any) => ({
-				...asset,
-				apy: 10,
-			}));
-
+			const assets = await getAssets();
 			console.log("assets", assets);
-			setAssets([...assets]);
+			setAssets(assets);
+
+			console.log("asset detailed", await getAssetsDetailed());
 		})();
 	}, []);
 

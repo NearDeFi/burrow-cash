@@ -2,6 +2,7 @@ import { Footer, Header, Table } from "../../components";
 import { BigButton, TotalSupply } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
+import { ColumnData } from "../../components/Table/types";
 
 const PortfolioTopButtons = () => {
 	return (
@@ -22,7 +23,7 @@ const PortfolioTopButtons = () => {
 };
 
 const Portfolio = () => {
-	const borrowColumns = [
+	const borrowColumns: ColumnData[] = [
 		{
 			width: 200,
 			label: "Name",
@@ -39,7 +40,8 @@ const Portfolio = () => {
 			dataKey: "borrowAPY",
 		},
 	];
-	const suppliedColumns = [
+
+	const suppliedColumns: ColumnData[] = [
 		{
 			width: 200,
 			label: "Name",

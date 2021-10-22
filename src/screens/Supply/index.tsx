@@ -38,6 +38,9 @@ const SUPPLY_COLUMNS: ColumnData[] = [
 		width: 240,
 		label: "Name",
 		dataKey: "name",
+		cellDataGetter: ({ rowData }) => {
+			return rowData.asset_id;
+		},
 	},
 	{
 		width: 150,
@@ -48,8 +51,8 @@ const SUPPLY_COLUMNS: ColumnData[] = [
 		width: 150,
 		label: "Collateral",
 		dataKey: "collateral",
-		cellDataGetter: (params) => {
-			return params.rowData.config.can_use_as_collateral;
+		cellDataGetter: ({ rowData }) => {
+			return rowData.config.can_use_as_collateral;
 		},
 	},
 ];

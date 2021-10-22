@@ -1,11 +1,13 @@
 import { useContext, useState, useEffect } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
-import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { getAssets } from "../../store";
 import { IAsset } from "../../interfaces/asset";
+import { ViewMethodsLogic } from "../../interfaces/contract-methods";
+import { IAccount, IAccountDetailed } from "../../interfaces/account";
+import { ColumnData } from "../../components/Table/types";
 
 const BorrowTopButtons = () => {
 	return (
@@ -27,44 +29,23 @@ const BorrowTopButtons = () => {
 
 const Borrow = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
-
 	const [assets, setAssets] = useState<IAsset[]>([]);
 
 	useEffect(() => {
 		(async () => {
-			const accounts = await burrow?.view(
-				burrow?.logicContract,
-				ViewMethodsLogic[ViewMethodsLogic.get_accounts_paged],
-			);
-			console.log("accounts", accounts);
-
-			for (const account of accounts) {
-				const acc = await burrow?.view(
-					burrow?.logicContract,
-					ViewMethodsLogic[ViewMethodsLogic.get_account],
-					{
-						account_id: account.account_id,
-					},
-				);
-				console.log("account", acc);
-			}
-
-			const assets = (await getAssets()).map((asset: any) => {
-				return {
-					...asset,
-					borrowAPY: 10,
-				};
-			});
-
-			setAssets([...assets]);
+			const assets = await getAssets();
+			setAssets(assets);
 		})();
 	}, []);
 
-	const columns = [
+	const columns: ColumnData[] = [
 		{
 			width: 300,
 			label: "Name",
 			dataKey: "name",
+			cellDataGetter: ({ rowData }) => {
+				return rowData.asset_id;
+			},
 		},
 		{
 			width: 300,

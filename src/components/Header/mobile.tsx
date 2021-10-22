@@ -1,9 +1,8 @@
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useHistory } from "react-router";
 import Logo from "../../assets/logo.svg";
-import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
 import { colors } from "../../style";
 import { login, logout } from "../../utils";
@@ -17,19 +16,6 @@ interface MobileSubHeaderButtonInput {
 
 const MobileHeader = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
-	const [oracle, setOracle] = useState<string>("");
-	const [owner, setOwner] = useState<string>("");
-
-	useEffect(() => {
-		(async () => {
-			const config = await burrow?.view(
-				burrow?.logicContract,
-				ViewMethodsLogic[ViewMethodsLogic.get_config],
-			);
-			setOracle(config.oracle_account_id);
-			setOwner(config.owner_id);
-		})();
-	}, []);
 
 	const MobileSubHeaderButton = (props: MobileSubHeaderButtonInput) => {
 		const { border, text, onClick } = props;
