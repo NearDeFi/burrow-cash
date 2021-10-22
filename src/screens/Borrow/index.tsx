@@ -3,9 +3,9 @@ import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
 import { ViewMethodsLogic } from "../../config";
 import { Burrow, IBurrow } from "../../index";
-import { mockBorrowMobileData } from "../../mockData";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { getAssets } from "../../store";
+import { IAsset } from "../../interfaces/asset";
 
 const BorrowTopButtons = () => {
 	return (
@@ -28,7 +28,7 @@ const BorrowTopButtons = () => {
 const Borrow = () => {
 	const burrow = useContext<IBurrow | null>(Burrow);
 
-	const [assets, setAssets] = useState<any[]>(mockBorrowMobileData);
+	const [assets, setAssets] = useState<IAsset[]>([]);
 
 	useEffect(() => {
 		(async () => {
@@ -49,14 +49,14 @@ const Borrow = () => {
 				console.log("account", acc);
 			}
 
-			const a = (await getAssets()).map((asset: any) => {
+			const assets = (await getAssets()).map((asset: any) => {
 				return {
 					...asset,
 					borrowAPY: 10,
 				};
 			});
 
-			setAssets([mockBorrowMobileData, ...a]);
+			setAssets([...assets]);
 		})();
 	}, []);
 

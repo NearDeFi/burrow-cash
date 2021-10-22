@@ -171,7 +171,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					rowClassName={getRowClassName}
 					{...tableProps}
 				>
-					{columns.map(({ dataKey, ...other }, index) => {
+					{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
 						return (
 							<Column
 								width={width}
@@ -184,6 +184,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 								}
 								className={classes.flexContainer}
 								cellRenderer={getCell(dataKey)}
+								cellDataGetter={cellDataGetter}
 								dataKey={dataKey}
 								label={other.label}
 								// {...other}

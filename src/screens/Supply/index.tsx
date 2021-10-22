@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
 import { AssetsContext } from "../../context/assets";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
+import { IAsset } from "../../interfaces/asset";
+import { ColumnData } from "../../components/Table/types";
 
 const SUPPLY_DESKTOP_COLUMNS = [
 	{
@@ -31,7 +33,7 @@ const SUPPLY_DESKTOP_COLUMNS = [
 	},
 ];
 
-const SUPPLY_COLUMNS = [
+const SUPPLY_COLUMNS: ColumnData[] = [
 	{
 		width: 240,
 		label: "Name",
@@ -46,6 +48,9 @@ const SUPPLY_COLUMNS = [
 		width: 150,
 		label: "Collateral",
 		dataKey: "collateral",
+		cellDataGetter: (params) => {
+			return params.rowData.config.can_use_as_collateral;
+		},
 	},
 ];
 
@@ -71,7 +76,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const { assets } = useContext<{ assets: any[] }>(AssetsContext);
+	const { assets } = useContext<{ assets: IAsset[] }>(AssetsContext);
 
 	return (
 		<>
