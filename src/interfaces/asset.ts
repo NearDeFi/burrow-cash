@@ -12,7 +12,7 @@ interface IAssetConfig {
 }
 
 export interface IAsset {
-	asset_id: string;
+	token_id: string;
 	supplied: { shares: string; string: string };
 	borrowed: { shares: string; string: string };
 	reserved: string;

@@ -1,12 +1,9 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
-import { Burrow, IBurrow } from "../../index";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
-import { getAssets } from "../../store";
-import { IAsset } from "../../interfaces/asset";
-import { ViewMethodsLogic } from "../../interfaces/contract-methods";
-import { IAccount, IAccountDetailed } from "../../interfaces/account";
+import { getAssetsDetailed } from "../../store";
+import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 
 const BorrowTopButtons = () => {
@@ -28,13 +25,12 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const burrow = useContext<IBurrow | null>(Burrow);
-	const [assets, setAssets] = useState<IAsset[]>([]);
+	const [assets, setAssets] = useState<IAssetDetailed[]>([]);
 
 	useEffect(() => {
 		(async () => {
-			const assets = await getAssets();
-			setAssets(assets);
+			const assets = await getAssetsDetailed();
+			setAssets(assets.filter((asset) => asset.config.can_borrow));
 		})();
 	}, []);
 
@@ -51,6 +47,10 @@ const Borrow = () => {
 			width: 300,
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
+			numeric: true,
+			cellDataGetter: ({ rowData }) => {
+				return Number(rowData.current_apr);
+			},
 		},
 	];
 

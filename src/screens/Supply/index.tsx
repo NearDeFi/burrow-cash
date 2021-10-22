@@ -2,10 +2,10 @@ import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
 import { AssetsContext } from "../../context/assets";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
-import { IAsset } from "../../interfaces/asset";
+import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 
-const SUPPLY_DESKTOP_COLUMNS = [
+const SUPPLY_DESKTOP_COLUMNS: ColumnData[] = [
 	{
 		width: 200,
 		label: "Name",
@@ -46,6 +46,10 @@ const SUPPLY_COLUMNS: ColumnData[] = [
 		width: 150,
 		label: "APY",
 		dataKey: "apy",
+		numeric: true,
+		cellDataGetter: ({ rowData }) => {
+			return Number(rowData.current_apr);
+		},
 	},
 	{
 		width: 150,
@@ -79,7 +83,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const { assets } = useContext<{ assets: IAsset[] }>(AssetsContext);
+	const { assets } = useContext<{ assets: IAssetDetailed[] }>(AssetsContext);
 
 	return (
 		<>
@@ -87,7 +91,7 @@ const Supply = () => {
 				<SupplyTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Supply"} second={"Assets"} />
-			<Table rows={assets} columns={SUPPLY_COLUMNS} />
+			<Table rows={assets.filter((asset) => asset.config.can_deposit)} columns={SUPPLY_COLUMNS} />
 			<TotalSupply />
 			<Footer />
 		</>

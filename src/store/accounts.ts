@@ -16,26 +16,29 @@ export const getAccounts = async (): Promise<IAccount[]> => {
 	return accounts;
 };
 
-export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
+export const getAccountDetailed = async (account_id: string): Promise<IAccountDetailed> => {
 	const burrow = await getBurrow();
 
+	const accountDetailed: IAccountDetailed = await burrow?.view(
+		burrow?.logicContract,
+		ViewMethodsLogic[ViewMethodsLogic.get_account],
+		{
+			account_id,
+		},
+	);
+
+	// detailed accounts
+	console.log("account detailed", accountDetailed);
+
+	return accountDetailed;
+};
+
+export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	const accounts: IAccount[] = await getAccounts();
 
-	const result: IAccountDetailed[] = [];
-	for (const account of accounts) {
-		const accountDetailed: IAccountDetailed = await burrow?.view(
-			burrow?.logicContract,
-			ViewMethodsLogic[ViewMethodsLogic.get_account],
-			{
-				account_id: account.account_id,
-			},
-		);
-
-		// detailed accounts
-		console.log("account detailed", accountDetailed);
-
-		result.push(accountDetailed);
-	}
+	const result: IAccountDetailed[] = await Promise.all(
+		accounts.map((account) => getAccountDetailed(account.account_id)),
+	);
 
 	return result;
 };

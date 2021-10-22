@@ -33,11 +33,19 @@ const Portfolio = () => {
 			width: 120,
 			label: "APY",
 			dataKey: "apy",
+			numeric: true,
+			cellDataGetter: ({ rowData }) => {
+				return Number(rowData.current_apr);
+			},
 		},
 		{
 			width: 120,
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
+			numeric: true,
+			cellDataGetter: ({ rowData }) => {
+				return Number(rowData.current_apr);
+			},
 		},
 	];
 
@@ -51,6 +59,10 @@ const Portfolio = () => {
 			width: 120,
 			label: "APY",
 			dataKey: "apy",
+			numeric: true,
+			cellDataGetter: ({ rowData }) => {
+				return Number(rowData.current_apr);
+			},
 		},
 		{
 			width: 120,
