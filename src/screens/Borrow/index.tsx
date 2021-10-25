@@ -5,6 +5,7 @@ import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { getAssetsDetailed } from "../../store";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
+import { PERCENT_DIGITS } from "../../store/constants";
 
 const BorrowTopButtons = () => {
 	return (
@@ -39,8 +40,8 @@ const Borrow = () => {
 			width: 300,
 			label: "Name",
 			dataKey: "name",
-			cellDataGetter: ({ rowData }) => {
-				return rowData.asset_id;
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return rowData.token_id;
 			},
 		},
 		{
@@ -48,8 +49,8 @@ const Borrow = () => {
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
 			numeric: true,
-			cellDataGetter: ({ rowData }) => {
-				return Number(rowData.current_apr);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 	];

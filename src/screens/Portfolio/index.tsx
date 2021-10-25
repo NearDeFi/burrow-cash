@@ -3,6 +3,8 @@ import { BigButton, TotalSupply } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
 import { ColumnData } from "../../components/Table/types";
+import { IAssetDetailed } from "../../interfaces/asset";
+import { PERCENT_DIGITS } from "../../store/constants";
 
 const PortfolioTopButtons = () => {
 	return (
@@ -34,8 +36,8 @@ const Portfolio = () => {
 			label: "APY",
 			dataKey: "apy",
 			numeric: true,
-			cellDataGetter: ({ rowData }) => {
-				return Number(rowData.current_apr);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 		{
@@ -43,8 +45,8 @@ const Portfolio = () => {
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
 			numeric: true,
-			cellDataGetter: ({ rowData }) => {
-				return Number(rowData.current_apr);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 	];
@@ -60,8 +62,8 @@ const Portfolio = () => {
 			label: "APY",
 			dataKey: "apy",
 			numeric: true,
-			cellDataGetter: ({ rowData }) => {
-				return Number(rowData.current_apr);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 		{

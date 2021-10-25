@@ -38,8 +38,10 @@ export interface IAssetDetailed {
 	last_update_timestamp: string;
 	/// The asset config.
 	config: IAssetConfig;
-	/// Current APR excluding farms
-	current_apr: string;
+	/// Current supply APR
+	supply_apr: string;
+	/// Current borrow APR
+	borrow_apr: string;
 	/// Asset farms
 	farms: IAssetFarmView[];
 }

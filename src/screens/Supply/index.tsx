@@ -4,6 +4,7 @@ import { AssetsContext } from "../../context/assets";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
+import { PERCENT_DIGITS } from "../../store/constants";
 
 const SUPPLY_DESKTOP_COLUMNS: ColumnData[] = [
 	{
@@ -38,8 +39,8 @@ const SUPPLY_COLUMNS: ColumnData[] = [
 		width: 240,
 		label: "Name",
 		dataKey: "name",
-		cellDataGetter: ({ rowData }) => {
-			return rowData.asset_id;
+		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+			return rowData.token_id;
 		},
 	},
 	{
@@ -47,15 +48,15 @@ const SUPPLY_COLUMNS: ColumnData[] = [
 		label: "APY",
 		dataKey: "apy",
 		numeric: true,
-		cellDataGetter: ({ rowData }) => {
-			return Number(rowData.current_apr);
+		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+			return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
 		},
 	},
 	{
 		width: 150,
 		label: "Collateral",
 		dataKey: "collateral",
-		cellDataGetter: ({ rowData }) => {
+		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
 			return rowData.config.can_use_as_collateral;
 		},
 	},

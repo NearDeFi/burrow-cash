@@ -33,8 +33,8 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 		assetDetails.config.target_utilization_rate,
 		exp.pow(new Decimal(assetDetails.config.target_utilization_rate)).toString(),
 		"c_apr",
-		assetDetails.current_apr,
-		new Decimal(assetDetails.current_apr).mul(NANOS_PER_YEAR).toString(),
+		assetDetails.borrow_apr,
+		new Decimal(assetDetails.borrow_apr).mul(NANOS_PER_YEAR).toString(),
 	);
 
 	return assetDetails;

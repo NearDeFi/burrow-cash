@@ -84,7 +84,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const APYCell: TableCellRenderer = ({ cellData, dataKey }) => {
-		const data = String(cellData) + ".00%";
+		const data = String(cellData) + "%";
 		const style = { height: ROW_HEIGHT, color: "#000741", display: "grid" };
 
 		return (
