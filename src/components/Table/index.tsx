@@ -1,4 +1,3 @@
-import Avatar from "@mui/material/Avatar";
 import { createTheme } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
 import TableCell from "@mui/material/TableCell";
@@ -7,7 +6,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from "react-virtualized";
 import { colors, Heading4, Heading6 } from "../../style";
-import { ModalContext } from "../Modal";
+import { ModalContext, ModalState } from "../Modal";
 import {
 	APYCellWrapper,
 	DefaultCellWrapper,
@@ -17,12 +16,16 @@ import {
 	TokenNameTextWrapper,
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
+import { IAssetDetailed } from "../../interfaces/asset";
+import { useLocation } from "react-router";
+import TokenIcon from "../TokenIcon";
 
 const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
 
 const TableTemplate = (props: MuiVirtualizedTableProps) => {
-	const modal = React.useContext(ModalContext);
+	const modal: ModalState = React.useContext(ModalContext);
+	const location = (useLocation().pathname as string).replace("/", "");
 	const { columns, classes, onRowClick, ...tableProps } = props;
 	const getRowClassName = ({ index }: Row) => {
 		const { classes, onRowClick } = props;
@@ -60,9 +63,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const TokenNameCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-		const tokenPrice = "2.00";
-
+	const TokenNameCell: TableCellRenderer = ({ rowData }: { rowData: IAssetDetailed }) => {
 		return (
 			<TableCell
 				component="div"
@@ -72,11 +73,39 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				variant="body"
 				style={{ width: "200px", height: ROW_HEIGHT, color: "#000741" }}
 			>
-				<TokenNameCellWrapper onClick={modal.handleOpen}>
-					<Avatar />
+				<TokenNameCellWrapper
+					onClick={() => {
+						modal.setModalData({
+							type: location === "supply" ? "Supply" : "Borrow",
+							title: location === "supply" ? "Supply" : "Borrow",
+							totalAmountTitle: "Total",
+							totalAmount: 333.0,
+							token: {
+								amount: 1,
+								name: rowData.metadata?.name || "Unknown",
+								symbol: rowData.metadata?.symbol || "???",
+								icon: rowData.metadata?.icon,
+								valueInUSD: 121.0,
+								apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
+							},
+							buttonText: location === "supply" ? "Supply" : "Borrow",
+							rates: [],
+							ratesTitle: "rates",
+						});
+						modal.handleOpen();
+					}}
+				>
+					<TokenIcon icon={rowData.metadata?.icon} />
+
 					<TokenNameTextWrapper>
-						<Heading4 cellData={cellData} />
-						<Heading6 cellData={`$ ${tokenPrice}`} />
+						<Heading4 cellData={rowData.metadata?.symbol || rowData.token_id} />
+						<Heading6
+							cellData={
+								rowData.price
+									? `$${(Number(rowData.price.multiplier) / 10000).toFixed(2)}`
+									: "Unknown"
+							}
+						/>
 					</TokenNameTextWrapper>
 				</TokenNameCellWrapper>
 			</TableCell>

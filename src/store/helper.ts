@@ -1,5 +1,8 @@
 import Decimal from "decimal.js";
 import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
+import { getBurrow } from "../utils";
+import { ViewMethodsOracle } from "../interfaces/contract-methods";
+import { IPrices } from "../interfaces/oracle";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -18,3 +21,23 @@ export const aprToRate = (apr: string): string => {
 
 aprToRate("1000000000003593629036885046");
 aprToRate("25");
+
+export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined> => {
+	const burrow = await getBurrow();
+
+	try {
+		const prices: IPrices = await burrow?.view(
+			burrow?.oracleContract,
+			ViewMethodsOracle[ViewMethodsOracle.get_price_data],
+			{
+				asset_ids: tokenIds,
+			},
+		);
+
+		console.log("prices", prices);
+
+		return prices;
+	} catch (err: any) {
+		console.log("Getting prices failed: ", err.message);
+	}
+};

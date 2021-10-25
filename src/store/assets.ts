@@ -3,6 +3,9 @@ import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import Decimal from "decimal.js";
 import { NANOS_PER_YEAR } from "./constants";
+import { getBalance, getMetadata } from "./tokens";
+import { getPrices } from "./helper";
+import { IPrices } from "../interfaces/oracle";
 
 export const getAssets = async (): Promise<IAsset[]> => {
 	const burrow = await getBurrow();
@@ -17,6 +20,7 @@ export const getAssets = async (): Promise<IAsset[]> => {
 
 export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed> => {
 	const burrow = await getBurrow();
+
 	const assetDetails: IAssetDetailed = await burrow?.view(
 		burrow?.logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_asset],
@@ -25,7 +29,11 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 		},
 	);
 
+	assetDetails.metadata = await getMetadata(token_id);
+
 	const exp = new Decimal(1).dividedBy(new Decimal(NANOS_PER_YEAR));
+
+	await getBalance(assetDetails.token_id, burrow.account.accountId);
 
 	console.log(
 		"apy",
@@ -42,7 +50,15 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 
 export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
 	const assets: IAsset[] = await getAssets();
-	const detailedAssets = await Promise.all(assets.map((asset) => getAssetDetailed(asset.token_id)));
+
+	const priceReponse = await getPrices(assets.map((asset) => asset.token_id));
+	let detailedAssets = await Promise.all(assets.map((asset) => getAssetDetailed(asset.token_id)));
+
+	detailedAssets = detailedAssets?.map((d) => ({
+		...d,
+		price: priceReponse?.prices.find((p) => p.asset_id === d.token_id)?.price,
+	}));
+
 	console.log("detailed assets", detailedAssets);
 	return detailedAssets;
 };

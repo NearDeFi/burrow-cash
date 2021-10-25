@@ -1,12 +1,12 @@
 import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
-import { IBurrow } from "./index";
 import {
 	ChangeMethodsLogic,
 	ChangeMethodsOracle,
 	ViewMethodsLogic,
 	ViewMethodsOracle,
 } from "./interfaces/contract-methods";
+import { IBurrow } from "./interfaces/burrow";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -49,7 +49,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		});
 	};
 
-	const send = async (contract: Contract, methodName: string, args: Object = {}) => {
+	const call = async (contract: Contract, methodName: string, args: Object = {}) => {
 		return await account.functionCall({
 			contractId: contract.contractId,
 			methodName,
@@ -75,6 +75,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		oracle_account_id: string;
 	};
 
+	console.log("oracle address", config.oracle_account_id);
 	const oracleContract: Contract = new Contract(
 		walletConnection.account(),
 		config.oracle_account_id,
@@ -98,7 +99,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		logicContract,
 		oracleContract,
 		view,
-		send,
+		call,
 	} as IBurrow;
 
 	return burrow;

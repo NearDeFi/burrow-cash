@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
-import { getAssetsDetailed } from "../../store";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS } from "../../store/constants";
+import { AssetsContext } from "../../context/assets";
 
 const BorrowTopButtons = () => {
 	return (
@@ -26,23 +26,13 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const [assets, setAssets] = useState<IAssetDetailed[]>([]);
-
-	useEffect(() => {
-		(async () => {
-			const assets = await getAssetsDetailed();
-			setAssets(assets.filter((asset) => asset.config.can_borrow));
-		})();
-	}, []);
+	const { assets } = useContext<{ assets: IAssetDetailed[] }>(AssetsContext);
 
 	const columns: ColumnData[] = [
 		{
 			width: 300,
 			label: "Name",
 			dataKey: "name",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return rowData.token_id;
-			},
 		},
 		{
 			width: 300,
@@ -61,7 +51,7 @@ const Borrow = () => {
 				<BorrowTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Borrow"} second={"Assets"} />
-			<Table rows={assets} columns={columns} />
+			<Table rows={assets.filter((asset) => asset.config.can_borrow)} columns={columns} />
 			<TotalSupply />
 			<Footer />
 		</>

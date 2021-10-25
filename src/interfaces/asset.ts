@@ -1,3 +1,5 @@
+import { IAssetPrice, IPrice } from "./oracle";
+
 interface IAssetConfig {
 	reserve_ratio: number;
 	target_utilization: number;
@@ -25,6 +27,12 @@ interface IPool {
 	balance: string;
 }
 
+interface IMetadata {
+	icon: string;
+	name: string;
+	symbol: string;
+}
+
 export interface IAssetDetailed {
 	token_id: string;
 	/// Total supplied including collateral, but excluding reserved.
@@ -44,6 +52,10 @@ export interface IAssetDetailed {
 	borrow_apr: string;
 	/// Asset farms
 	farms: IAssetFarmView[];
+	// meta data mixin
+	metadata?: IMetadata;
+	// price mixin
+	price?: IPrice;
 }
 
 interface IAssetFarmView {

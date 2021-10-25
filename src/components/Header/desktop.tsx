@@ -3,18 +3,19 @@ import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { useHistory } from "react-router";
 import Logo from "../../assets/logo.svg";
-import { Burrow, IBurrow } from "../../index";
+import { Burrow } from "../../index";
 import { colors } from "../../style";
 import { login, logout } from "../../utils";
 import * as SC from "./style";
+import { IBurrow } from "../../interfaces/burrow";
 
-interface DesktpoButtonInput {
+interface DesktopButtonInput {
 	onClick: any;
 	border: boolean;
 	text: string;
 }
 
-const DesktpoButton = (props: DesktpoButtonInput) => {
+const DesktopButton = (props: DesktopButtonInput) => {
 	const { onClick, border, text, ...other } = props;
 	const notSelectedButtonStyle = {
 		borderWidth: 0,
@@ -45,17 +46,17 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				<Typography variant="h6" component="div" style={{ color: "#00BACF" }}>
 					<Logo />
 				</Typography>
-				<DesktpoButton
+				<DesktopButton
 					text="Supply"
 					border={history.location.pathname === "/supply"}
 					onClick={() => history.push("/supply")}
 				/>
-				<DesktpoButton
+				<DesktopButton
 					text="Borrow"
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				<DesktpoButton
+				<DesktopButton
 					text="Portfolio"
 					border={history.location.pathname === "/portfolio"}
 					onClick={() => history.push("/portfolio")}

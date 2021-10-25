@@ -5,43 +5,14 @@ import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS } from "../../store/constants";
-
-const SUPPLY_DESKTOP_COLUMNS: ColumnData[] = [
-	{
-		width: 200,
-		label: "Name",
-		dataKey: "name",
-	},
-	{
-		width: 120,
-		label: "APY",
-		dataKey: "apy",
-	},
-	{
-		width: 120,
-		label: "Collateral",
-		dataKey: "collateral",
-	},
-	{
-		width: 120,
-		label: "Total Supply",
-		dataKey: "totalSupply",
-	},
-	{
-		width: 120,
-		label: "Wallet",
-		dataKey: "wallet",
-	},
-];
+import * as React from "react";
+import { ModalContext } from "../../components/Modal";
 
 const SUPPLY_COLUMNS: ColumnData[] = [
 	{
 		width: 240,
 		label: "Name",
 		dataKey: "name",
-		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-			return rowData.token_id;
-		},
 	},
 	{
 		width: 150,

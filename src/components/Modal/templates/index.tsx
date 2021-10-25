@@ -10,13 +10,20 @@ const borrowRates = [
 ];
 
 export const BorrowData: TokenActionsInput = {
+	type: "Borrow",
 	title: "Borrow",
 	totalAmountTitle: "Borrow Amount",
 	totalAmount: 0,
 	buttonText: "Borrow",
 	rates: borrowRates,
-	ratesTitle: "Borrow Rates",
-	token: { count: 2, name: "Token Name", symbol: "TSYL", valueInUSD: 5, apy: 10 },
+	ratesTitle: "Rates",
+	token: {
+		amount: 2,
+		name: "Token Name",
+		symbol: "TSYL",
+		valueInUSD: 5,
+		apy: 10,
+	},
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
@@ -25,9 +32,9 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 	return (
 		<>
 			<ModalTitle title={title} />
-			<TokenBasicDetails tokenName={token.name} apy={token.apy} />
+			<TokenBasicDetails tokenName={token.name} icon={token.icon} apy={token.apy} />
 			<TokenInputs
-				availableTokens={token.count}
+				availableTokens={token.amount}
 				tokenSymbol={token.symbol}
 				tokenPriceInUSD={token.valueInUSD}
 				totalAmount={totalAmount}

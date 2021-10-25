@@ -3,10 +3,11 @@ import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { useHistory } from "react-router";
 import Logo from "../../assets/logo.svg";
-import { Burrow, IBurrow } from "../../index";
+import { Burrow } from "../../index";
 import { colors } from "../../style";
 import { login, logout } from "../../utils";
 import * as SC from "./style";
+import { IBurrow } from "../../interfaces/burrow";
 
 interface MobileSubHeaderButtonInput {
 	onClick: any;

@@ -31,7 +31,9 @@ export enum ChangeMethodsLogic {
 	add_asset_farm_reward,
 }
 
-export enum ViewMethodsOracle {}
+export enum ViewMethodsOracle {
+	get_price_data,
+}
 
 // Change methods can modify the state. But you don't receive the returned value when called.
 export enum ChangeMethodsOracle {}

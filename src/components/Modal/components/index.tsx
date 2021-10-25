@@ -1,8 +1,9 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Avatar, Button, Switch, Typography } from "@mui/material";
+import { Button, Switch, Typography } from "@mui/material";
 import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
+import TokenIcon from "../../TokenIcon";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
@@ -141,11 +142,19 @@ export const ActionButton = ({ text }: { text: string }) => {
 	);
 };
 
-export const TokenBasicDetails = ({ tokenName, apy }: { tokenName: string; apy: number }) => {
+export const TokenBasicDetails = ({
+	tokenName,
+	icon,
+	apy,
+}: {
+	tokenName: string;
+	icon?: string;
+	apy: number;
+}) => {
 	return (
 		<>
 			<div style={{ display: "grid", justifyContent: "center", marginTop: "2em" }}>
-				<Avatar />
+				<TokenIcon icon={icon} />
 			</div>
 			<Typography
 				style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }}
