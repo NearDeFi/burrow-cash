@@ -39,10 +39,10 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 						<TokenActionsTemplate
 							title={modalData.title}
 							type={modalData.type}
-							token={modalData.token}
+							asset={modalData.asset}
 							totalAmount={modalData.totalAmount}
-							totalAmountTitle={`Total ${modalData.token.symbol}`}
-							buttonText={`${modalData.type} ${modalData.token.symbol}`}
+							totalAmountTitle={`Total ${modalData.asset.symbol}`}
+							buttonText={`${modalData.type} ${modalData.asset.symbol}`}
 							rates={modalData.rates}
 							ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}
 						/>

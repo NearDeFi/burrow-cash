@@ -64,3 +64,9 @@ export interface IAccountDetailed {
 	/// Account farms
 	farms: IFarm[];
 }
+
+export interface IBalance {
+	token_id: string;
+	account_id: string;
+	balance: number;
+}

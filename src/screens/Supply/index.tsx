@@ -1,12 +1,11 @@
 import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
-import { AssetsContext } from "../../context/assets";
+import { ContractContext } from "../../context/contracts";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS } from "../../store/constants";
 import * as React from "react";
-import { ModalContext } from "../../components/Modal";
 
 const SUPPLY_COLUMNS: ColumnData[] = [
 	{
@@ -55,7 +54,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const { assets } = useContext<{ assets: IAssetDetailed[] }>(AssetsContext);
+	const { assets } = useContext(ContractContext);
 
 	return (
 		<>

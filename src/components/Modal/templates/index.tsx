@@ -1,5 +1,7 @@
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
+import { useState } from "react";
+import { borrow, supply } from "../../../store/tokens";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -17,7 +19,8 @@ export const BorrowData: TokenActionsInput = {
 	buttonText: "Borrow",
 	rates: borrowRates,
 	ratesTitle: "Rates",
-	token: {
+	asset: {
+		token_id: "wrap.testnet",
 		amount: 2,
 		name: "Token Name",
 		symbol: "TSYL",
@@ -27,21 +30,32 @@ export const BorrowData: TokenActionsInput = {
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-	const { title, token, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle } = input;
+	const { title, asset, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle, type } =
+		input;
 
+	const [amount, setAmount] = useState(0);
 	return (
 		<>
 			<ModalTitle title={title} />
-			<TokenBasicDetails tokenName={token.name} icon={token.icon} apy={token.apy} />
+			<TokenBasicDetails tokenName={asset.name} icon={asset.icon} apy={asset.apy} />
 			<TokenInputs
-				availableTokens={token.amount}
-				tokenSymbol={token.symbol}
-				tokenPriceInUSD={token.valueInUSD}
+				availableTokens={asset.amount}
+				tokenSymbol={asset.symbol}
+				tokenPriceInUSD={asset.valueInUSD}
 				totalAmount={totalAmount}
 				totalAmountTitle={totalAmountTitle}
+				onChange={(amount) => setAmount(amount)}
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
-			<ActionButton text={buttonText} />
+			<ActionButton
+				text={buttonText}
+				onClick={() => {
+					console.log(amount, asset, type);
+
+					if (type === "Borrow") void borrow(asset.token_id, amount);
+					else void supply(asset.token_id, amount);
+				}}
+			/>
 		</>
 	);
 };

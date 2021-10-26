@@ -1,11 +1,12 @@
 export interface IPrice {
 	decimals: number;
 	multiplier: string;
+	usd: number;
 }
 
 export interface IAssetPrice {
 	asset_id: string;
-	price: IPrice;
+	price: IPrice | null;
 }
 
 export interface IPrices {

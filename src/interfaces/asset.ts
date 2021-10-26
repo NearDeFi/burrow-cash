@@ -1,4 +1,4 @@
-import { IAssetPrice, IPrice } from "./oracle";
+import { IPrice } from "./oracle";
 
 interface IAssetConfig {
 	reserve_ratio: number;
@@ -27,10 +27,11 @@ interface IPool {
 	balance: string;
 }
 
-interface IMetadata {
+export interface IMetadata {
 	icon: string;
 	name: string;
 	symbol: string;
+	decimals: number;
 }
 
 export interface IAssetDetailed {

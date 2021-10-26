@@ -1,18 +1,24 @@
 import { IAsset, IAssetDetailed } from "../interfaces/asset";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
-import Decimal from "decimal.js";
-import { NANOS_PER_YEAR } from "./constants";
+import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBalance, getMetadata } from "./tokens";
-import { getPrices } from "./helper";
-import { IPrices } from "../interfaces/oracle";
+import { aprToRate, getPrices, rateToApr } from "./helper";
+import Decimal from "decimal.js";
+
+Decimal.set({ precision: DEFAULT_PRECISION });
 
 export const getAssets = async (): Promise<IAsset[]> => {
 	const burrow = await getBurrow();
 
+	type AssetEntry = [string, IAsset];
+
 	return (
-		await burrow?.view(burrow?.logicContract, ViewMethodsLogic[ViewMethodsLogic.get_assets_paged])
-	).map(([token_id, asset]: [string, IAsset]) => ({
+		(await burrow?.view(
+			burrow?.logicContract,
+			ViewMethodsLogic[ViewMethodsLogic.get_assets_paged],
+		)) as AssetEntry[]
+	).map(([token_id, asset]: AssetEntry) => ({
 		...asset,
 		token_id,
 	}));
@@ -21,29 +27,24 @@ export const getAssets = async (): Promise<IAsset[]> => {
 export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed> => {
 	const burrow = await getBurrow();
 
-	const assetDetails: IAssetDetailed = await burrow?.view(
+	const assetDetails: IAssetDetailed = (await burrow?.view(
 		burrow?.logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_asset],
 		{
 			token_id,
 		},
-	);
+	)) as IAssetDetailed;
 
 	assetDetails.metadata = await getMetadata(token_id);
 
-	const exp = new Decimal(1).dividedBy(new Decimal(NANOS_PER_YEAR));
-
-	await getBalance(assetDetails.token_id, burrow.account.accountId);
-
 	console.log(
-		"apy",
-		exp.toString(),
-		assetDetails.config.target_utilization_rate,
-		exp.pow(new Decimal(assetDetails.config.target_utilization_rate)).toString(),
-		"c_apr",
-		assetDetails.borrow_apr,
-		new Decimal(assetDetails.borrow_apr).mul(NANOS_PER_YEAR).toString(),
+		"xxx",
+		"target_utilization_rate",
+		rateToApr(assetDetails.config.target_utilization_rate),
 	);
+	console.log("xxx", "max_utilization_rate", rateToApr(assetDetails.config.max_utilization_rate));
+
+	await getBalance(assetDetails, burrow.account.accountId);
 
 	return assetDetails;
 };
@@ -51,12 +52,13 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
 	const assets: IAsset[] = await getAssets();
 
-	const priceReponse = await getPrices(assets.map((asset) => asset.token_id));
+	const priceResponse = await getPrices(assets.map((asset) => asset.token_id));
 	let detailedAssets = await Promise.all(assets.map((asset) => getAssetDetailed(asset.token_id)));
 
-	detailedAssets = detailedAssets?.map((d) => ({
-		...d,
-		price: priceReponse?.prices.find((p) => p.asset_id === d.token_id)?.price,
+	detailedAssets = detailedAssets?.map((detailedAsset) => ({
+		...detailedAsset,
+		price:
+			priceResponse?.prices.find((p) => p.asset_id === detailedAsset.token_id)?.price || undefined,
 	}));
 
 	console.log("detailed assets", detailedAssets);

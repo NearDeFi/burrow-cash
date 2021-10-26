@@ -5,6 +5,6 @@ export interface IBurrow {
 	account: Account;
 	logicContract: Contract;
 	oracleContract: Contract;
-	view: Function;
-	call: Function;
+	view: (contract: Contract, methodName: string, args?: Object) => Object | string;
+	call: (contract: Contract, methodName: string, args?: Object) => Object | string;
 }

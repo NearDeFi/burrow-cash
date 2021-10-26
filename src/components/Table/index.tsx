@@ -19,12 +19,17 @@ import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { useLocation } from "react-router";
 import TokenIcon from "../TokenIcon";
+import { useContext } from "react";
+import { ContractContext } from "../../context/contracts";
+import { USD } from "../../store/constants";
 
 const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
 
 const TableTemplate = (props: MuiVirtualizedTableProps) => {
-	const modal: ModalState = React.useContext(ModalContext);
+	const modal: ModalState = useContext(ModalContext);
+	const { balances } = useContext(ContractContext);
+
 	const location = (useLocation().pathname as string).replace("/", "");
 	const { columns, classes, onRowClick, ...tableProps } = props;
 	const getRowClassName = ({ index }: Row) => {
@@ -80,12 +85,13 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 							title: location === "supply" ? "Supply" : "Borrow",
 							totalAmountTitle: "Total",
 							totalAmount: 333.0,
-							token: {
-								amount: 1,
+							asset: {
+								token_id: rowData.token_id,
+								amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
 								name: rowData.metadata?.name || "Unknown",
 								symbol: rowData.metadata?.symbol || "???",
 								icon: rowData.metadata?.icon,
-								valueInUSD: 121.0,
+								valueInUSD: rowData.price?.usd || 0,
 								apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
 							},
 							buttonText: location === "supply" ? "Supply" : "Borrow",
@@ -101,9 +107,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						<Heading4 cellData={rowData.metadata?.symbol || rowData.token_id} />
 						<Heading6
 							cellData={
-								rowData.price
-									? `$${(Number(rowData.price.multiplier) / 10000).toFixed(2)}`
-									: "Unknown"
+								rowData.price ? `${rowData.price.usd.toLocaleString(undefined, USD)}` : "Unknown"
 							}
 						/>
 					</TokenNameTextWrapper>

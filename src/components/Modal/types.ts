@@ -5,7 +5,8 @@ export interface TokenActionsInput {
 	title: string;
 	totalAmountTitle: string;
 	totalAmount: number;
-	token: {
+	asset: {
+		token_id: string;
 		amount: number;
 		name: string;
 		symbol: string;

@@ -1,6 +1,10 @@
 import { Contract } from "near-api-js";
 import { getBurrow } from "../utils";
-import { deposit } from "./wnear-token";
+import { IAssetDetailed, IMetadata } from "../interfaces/asset";
+import Decimal from "decimal.js";
+import { DEFAULT_PRECISION } from "./constants";
+
+Decimal.set({ precision: DEFAULT_PRECISION });
 
 enum ViewMethodsToken {
 	ft_metadata,
@@ -31,44 +35,72 @@ export const getTokenContract = async (tokenContractAddress: string): Promise<Co
 };
 
 export const getBalance = async (
-	tokenContractAddress: string,
+	asset: IAssetDetailed,
 	accountId: string,
-): Promise<string | undefined> => {
+): Promise<number | undefined> => {
 	const burrow = await getBurrow();
 
 	try {
-		const tokenContract: Contract = await getTokenContract(tokenContractAddress);
+		const tokenContract: Contract = await getTokenContract(asset.token_id);
 
-		const balance: string = await burrow.view(
+		const balanceInYocto: string = (await burrow.view(
 			tokenContract,
 			ViewMethodsToken[ViewMethodsToken.ft_balance_of],
 			{
 				account_id: accountId,
 			},
-		);
+		)) as string;
 
-		console.log("balance", tokenContractAddress, balance, accountId);
-		return balance;
+		const balance = new Decimal(balanceInYocto).div(new Decimal(10).pow(asset.metadata?.decimals!));
+
+		// console.log("balance", accountId, asset.token_id, balance.toNumber());
+
+		return balance.toNumber();
 	} catch (err: any) {
-		console.error(
-			`Failed to get balance for ${accountId} on ${tokenContractAddress} ${err.message}`,
-		);
+		console.error(`Failed to get balance for ${accountId} on ${asset.token_id} ${err.message}`);
 	}
 };
 
-export const getMetadata = async (address: string): Promise<any> => {
+export const getMetadata = async (address: string): Promise<IMetadata | undefined> => {
 	const burrow = await getBurrow();
 
 	try {
 		const tokenContract: Contract = await getTokenContract(address);
 
-		const metadata = await burrow.view(
+		const metadata: IMetadata = (await burrow.view(
 			tokenContract,
 			ViewMethodsToken[ViewMethodsToken.ft_metadata],
-		);
+		)) as IMetadata;
 
+		console.log("metadata", metadata);
 		return metadata;
 	} catch (err: any) {
 		console.error(`Failed to get metadata for ${address} ${err.message}`);
 	}
+};
+
+export const supply = async (name: string, amount: number) => {
+	console.log(`Supplying ${amount} to ${name}`);
+
+	const burrow = await getBurrow();
+
+	const tokenContract = await getTokenContract(name);
+	const metadata = await getMetadata(name);
+	const fixedAmount = new Decimal(amount).mul(new Decimal(10).pow(metadata?.decimals!)).toFixed();
+
+	console.log("transaction fixed amount", fixedAmount);
+
+	const fa = await burrow.call(
+		tokenContract,
+		ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
+		{
+			receiver_id: burrow.logicContract.contractId,
+			amount: fixedAmount,
+			msg: "",
+		},
+	);
+};
+
+export const borrow = async (name: string, amount: number) => {
+	console.log(`Borrowing ${amount} of ${name}`);
 };

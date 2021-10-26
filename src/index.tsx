@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { Modal } from "./components";
-import { AssetsContextProvider } from "./context/assets";
+import { ContractContextProvider } from "./context/contracts";
 import "./global.css";
 import { initContract } from "./utils";
 import { IBurrow } from "./interfaces/burrow";
@@ -14,11 +14,11 @@ window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(
 			<Burrow.Provider value={initResults}>
-				<Modal>
-					<AssetsContextProvider>
+				<ContractContextProvider>
+					<Modal>
 						<App />
-					</AssetsContextProvider>
-				</Modal>
+					</Modal>
+				</ContractContextProvider>
 			</Burrow.Provider>,
 			document.querySelector("#root"),
 		);

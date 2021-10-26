@@ -5,7 +5,7 @@ import { BigButton, PageTitle, TotalSupply } from "../../shared";
 import { IAssetDetailed } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS } from "../../store/constants";
-import { AssetsContext } from "../../context/assets";
+import { ContractContext } from "../../context/contracts";
 
 const BorrowTopButtons = () => {
 	return (
@@ -26,7 +26,7 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const { assets } = useContext<{ assets: IAssetDetailed[] }>(AssetsContext);
+	const { assets } = useContext(ContractContext);
 
 	const columns: ColumnData[] = [
 		{

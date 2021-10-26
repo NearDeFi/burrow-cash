@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle } from "../interfaces/contract-methods";
-import { IPrices } from "../interfaces/oracle";
+import { IAssetPrice, IPrices } from "../interfaces/oracle";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -19,24 +19,45 @@ export const aprToRate = (apr: string): string => {
 	return roundRes.toPrecision(12);
 };
 
-aprToRate("1000000000003593629036885046");
-aprToRate("25");
+export const rateToApr = (rate: string): string => {
+	console.log("Input rate", rate);
+
+	const apr = new Decimal(100)
+		.mul(new Decimal(rate).div(new Decimal(10).pow(new Decimal(27))).pow(NANOS_PER_YEAR))
+		.sub(100);
+
+	return apr.toFixed(2);
+};
 
 export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined> => {
 	const burrow = await getBurrow();
 
 	try {
-		const prices: IPrices = await burrow?.view(
+		const priceResponse: IPrices = (await burrow?.view(
 			burrow?.oracleContract,
 			ViewMethodsOracle[ViewMethodsOracle.get_price_data],
 			{
 				asset_ids: tokenIds,
 			},
-		);
+		)) as IPrices;
 
-		console.log("prices", prices);
+		console.log("prices", priceResponse);
 
-		return prices;
+		if (priceResponse) {
+			priceResponse.prices = priceResponse?.prices.map((assetPrice: IAssetPrice) => ({
+				...assetPrice,
+				price: assetPrice.price
+					? {
+							...assetPrice.price,
+							usd: new Decimal(assetPrice.price?.multiplier || 0).div(10000).toNumber(),
+					  }
+					: null,
+			}))!;
+		}
+
+		console.log("prices", priceResponse);
+
+		return priceResponse;
 	} catch (err: any) {
 		console.log("Getting prices failed: ", err.message);
 	}

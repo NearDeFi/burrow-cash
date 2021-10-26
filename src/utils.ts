@@ -1,4 +1,10 @@
-import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
+import {
+	connect,
+	Contract,
+	keyStores,
+	WalletConnection,
+	ConnectedWalletAccount,
+} from "near-api-js";
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
 	ChangeMethodsLogic,
@@ -7,6 +13,7 @@ import {
 	ViewMethodsOracle,
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
+import BN from "bn.js";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -32,7 +39,15 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	const walletConnection = new WalletConnection(near, null);
 
 	// Getting the Account ID. If still unauthorized, it's just empty string
-	const account: Account = await near.account(walletConnection.getAccountId());
+	const account: ConnectedWalletAccount = new ConnectedWalletAccount(
+		walletConnection,
+		near.connection,
+		walletConnection.account().accountId,
+	);
+
+	if (walletConnection.isSignedIn()) {
+		console.log("access keys", await account.getAccessKeys());
+	}
 
 	const view = async (
 		contract: Contract,
@@ -50,10 +65,24 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	};
 
 	const call = async (contract: Contract, methodName: string, args: Object = {}) => {
+		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
+		const attachedDeposit = new BN(1);
+
+		console.log(
+			"transaction",
+			contract.contractId,
+			methodName,
+			args,
+			attachedDeposit.toString(),
+			gas.toString(),
+		);
+
 		return await account.functionCall({
 			contractId: contract.contractId,
 			methodName,
 			args,
+			attachedDeposit,
+			gas,
 		});
 	};
 
@@ -121,5 +150,7 @@ export async function login(walletConnection: WalletConnection) {
 	// user's behalf.
 	// This works by creating a new access key for the user's account and storing
 	// the private key in localStorage.
-	await walletConnection.requestSignIn(LOGIC_CONTRACT_NAME);
+	await walletConnection.requestSignIn({
+		contractId: LOGIC_CONTRACT_NAME,
+	});
 }

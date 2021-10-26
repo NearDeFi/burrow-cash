@@ -5,10 +5,10 @@ import { ViewMethodsLogic } from "../interfaces/contract-methods";
 export const getAccounts = async (): Promise<IAccount[]> => {
 	const burrow = await getBurrow();
 
-	const accounts: IAccount[] = await burrow?.view(
+	const accounts: IAccount[] = (await burrow?.view(
 		burrow?.logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_accounts_paged],
-	);
+	)) as IAccount[];
 
 	// base accounts
 	console.log("accounts", accounts);
@@ -19,13 +19,13 @@ export const getAccounts = async (): Promise<IAccount[]> => {
 export const getAccountDetailed = async (account_id: string): Promise<IAccountDetailed> => {
 	const burrow = await getBurrow();
 
-	const accountDetailed: IAccountDetailed = await burrow?.view(
+	const accountDetailed: IAccountDetailed = (await burrow?.view(
 		burrow?.logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_account],
 		{
 			account_id,
 		},
-	);
+	)) as IAccountDetailed;
 
 	// detailed accounts
 	console.log("account detailed", accountDetailed);
