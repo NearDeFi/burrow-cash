@@ -3,6 +3,7 @@ import { getBurrow } from "../utils";
 import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 import Decimal from "decimal.js";
 import { DEFAULT_PRECISION } from "./constants";
+import { expandToken, shrinkToken } from "./helper";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -51,11 +52,11 @@ export const getBalance = async (
 			},
 		)) as string;
 
-		const balance = new Decimal(balanceInYocto).div(new Decimal(10).pow(asset.metadata?.decimals!));
+		const balance = shrinkToken(balanceInYocto, asset.metadata?.decimals!);
 
 		// console.log("balance", accountId, asset.token_id, balance.toNumber());
 
-		return balance.toNumber();
+		return Number(balance);
 	} catch (err: any) {
 		console.error(`Failed to get balance for ${accountId} on ${asset.token_id} ${err.message}`);
 	}
@@ -79,26 +80,22 @@ export const getMetadata = async (address: string): Promise<IMetadata | undefine
 	}
 };
 
-export const supply = async (name: string, amount: number) => {
+export const supply = async (name: string, amount: number): Promise<void> => {
 	console.log(`Supplying ${amount} to ${name}`);
 
 	const burrow = await getBurrow();
 
 	const tokenContract = await getTokenContract(name);
 	const metadata = await getMetadata(name);
-	const fixedAmount = new Decimal(amount).mul(new Decimal(10).pow(metadata?.decimals!)).toFixed();
+	const fixedAmount = expandToken(amount, metadata?.decimals!);
 
 	console.log("transaction fixed amount", fixedAmount);
 
-	const fa = await burrow.call(
-		tokenContract,
-		ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-		{
-			receiver_id: burrow.logicContract.contractId,
-			amount: fixedAmount,
-			msg: "",
-		},
-	);
+	await burrow.call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], {
+		receiver_id: burrow.logicContract.contractId,
+		amount: fixedAmount,
+		msg: "",
+	});
 };
 
 export const borrow = async (name: string, amount: number) => {

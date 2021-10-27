@@ -62,3 +62,15 @@ export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined
 		console.log("Getting prices failed: ", err.message);
 	}
 };
+
+export const expandToken = (value: string | number, decimals: string | number): string => {
+	return new Decimal(value).mul(new Decimal(10).pow(decimals)).toFixed();
+};
+
+export const shrinkToken = (value: string | number, decimals: string | number): string => {
+	return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed();
+};
+
+console.log("wwww", expandToken("1.8", 18));
+console.log("wwww", shrinkToken("1812345000000000000", 18));
+console.log("wwww", expandToken(0.1, 24));

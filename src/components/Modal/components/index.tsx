@@ -4,7 +4,7 @@ import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
 import TokenIcon from "../../TokenIcon";
-import { USD } from "../../../store/constants";
+import { PERCENT_DIGITS, USD } from "../../../store/constants";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
@@ -181,7 +181,7 @@ export const TokenBasicDetails = ({
 			>
 				{tokenName}
 				<br />
-				{`${apy}$ APY`}
+				{`${apy.toFixed(PERCENT_DIGITS)}% APY`}
 			</Typography>
 		</>
 	);

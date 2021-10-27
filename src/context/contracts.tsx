@@ -1,9 +1,10 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { IAssetDetailed } from "../interfaces/asset";
 import { getAssetsDetailed } from "../store";
 import { IBalance } from "../interfaces/account";
 import { getBalance } from "../store/tokens";
-import { getBurrow } from "../utils";
+import { IBurrow } from "../interfaces/burrow";
+import { Burrow } from "../index";
 
 const initialContractsState: {
 	assets: IAssetDetailed[];
@@ -18,10 +19,10 @@ export const ContractContext = createContext(initialContractsState);
 export const ContractContextProvider = ({ children }: { children: React.ReactElement }) => {
 	const [assets, setAssets] = useState<IAssetDetailed[]>([]);
 	const [balances, setBalances] = useState<IBalance[]>([]);
+	const burrow = useContext<IBurrow | null>(Burrow);
 
 	useEffect(() => {
 		(async () => {
-			const burrpw = await getBurrow();
 			const assets = await getAssetsDetailed();
 			setAssets(assets);
 
@@ -30,8 +31,11 @@ export const ContractContextProvider = ({ children }: { children: React.ReactEle
 					async (asset) =>
 						({
 							token_id: asset.token_id,
-							account_id: burrpw.account.accountId,
-							balance: (await getBalance(asset, burrpw.account.accountId)) || 0,
+							account_id: burrow?.account.accountId,
+							balance:
+								(burrow?.walletConnection.isSignedIn() &&
+									(await getBalance(asset, burrow.account.accountId))) ||
+								0,
 						} as IBalance),
 				),
 			);

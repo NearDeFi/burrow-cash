@@ -1,9 +1,9 @@
 import { IAsset, IAssetDetailed } from "../interfaces/asset";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
-import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
-import { getBalance, getMetadata } from "./tokens";
-import { aprToRate, getPrices, rateToApr } from "./helper";
+import { DEFAULT_PRECISION } from "./constants";
+import { getMetadata } from "./tokens";
+import { getPrices, rateToApr } from "./helper";
 import Decimal from "decimal.js";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
@@ -43,8 +43,6 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 		rateToApr(assetDetails.config.target_utilization_rate),
 	);
 	console.log("xxx", "max_utilization_rate", rateToApr(assetDetails.config.max_utilization_rate));
-
-	await getBalance(assetDetails, burrow.account.accountId);
 
 	return assetDetails;
 };

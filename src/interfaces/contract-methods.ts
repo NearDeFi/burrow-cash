@@ -19,6 +19,8 @@ export enum ChangeMethodsLogic {
 	// init
 	new,
 	execute,
+	// register
+	storage_deposit,
 	// config
 	update_config,
 	// assets

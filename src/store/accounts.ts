@@ -1,6 +1,8 @@
 import { IAccount, IAccountDetailed } from "../interfaces/account";
 import { getBurrow } from "../utils";
-import { ViewMethodsLogic } from "../interfaces/contract-methods";
+import { ChangeMethodsLogic, ViewMethodsLogic } from "../interfaces/contract-methods";
+import { expandToken } from "./helper";
+import { NEAR_DECIMALS } from "./constants";
 
 export const getAccounts = async (): Promise<IAccount[]> => {
 	const burrow = await getBurrow();
@@ -33,6 +35,10 @@ export const getAccountDetailed = async (account_id: string): Promise<IAccountDe
 	return accountDetailed;
 };
 
+export const isRegistered = async (account_id: string): Promise<boolean> => {
+	return !!(await getAccountDetailed(account_id));
+};
+
 export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	const accounts: IAccount[] = await getAccounts();
 
@@ -41,4 +47,18 @@ export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	);
 
 	return result;
+};
+
+export const register = async (): Promise<void> => {
+	const burrow = await getBurrow();
+
+	console.log(`Registering ${burrow.account.accountId}`);
+
+	await burrow.call(
+		burrow.logicContract,
+		ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+		{},
+		// send 0.1 near as deposit to register
+		expandToken(0.1, NEAR_DECIMALS),
+	);
 };

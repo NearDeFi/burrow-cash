@@ -6,5 +6,10 @@ export interface IBurrow {
 	logicContract: Contract;
 	oracleContract: Contract;
 	view: (contract: Contract, methodName: string, args?: Object) => Object | string;
-	call: (contract: Contract, methodName: string, args?: Object) => Object | string;
+	call: (
+		contract: Contract,
+		methodName: string,
+		args?: Object,
+		deposit?: string,
+	) => Object | string;
 }

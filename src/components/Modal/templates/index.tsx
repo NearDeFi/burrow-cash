@@ -1,7 +1,12 @@
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { borrow, supply } from "../../../store/tokens";
+import { isRegistered, register } from "../../../store";
+import { getBurrow } from "../../../utils";
+import { useEffect } from "react";
+import { IBurrow } from "../../../interfaces/burrow";
+import { Burrow } from "../../../index";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -34,6 +39,17 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 		input;
 
 	const [amount, setAmount] = useState(0);
+	const [registered, setRegistered] = useState(false);
+	const burrow = useContext<IBurrow | null>(Burrow);
+
+	useEffect(() => {
+		(async () => {
+			if (burrow?.walletConnection.isSignedIn()) {
+				setRegistered(await isRegistered(burrow.account.accountId));
+			}
+		})();
+	}, []);
+
 	return (
 		<>
 			<ModalTitle title={title} />
@@ -47,15 +63,25 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 				onChange={(amount) => setAmount(amount)}
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
-			<ActionButton
-				text={buttonText}
-				onClick={() => {
-					console.log(amount, asset, type);
 
-					if (type === "Borrow") void borrow(asset.token_id, amount);
-					else void supply(asset.token_id, amount);
-				}}
-			/>
+			{registered ? (
+				<ActionButton
+					text={buttonText}
+					onClick={() => {
+						console.log(amount, asset, type);
+
+						if (type === "Borrow") void borrow(asset.token_id, amount);
+						else void supply(asset.token_id, amount);
+					}}
+				/>
+			) : (
+				<ActionButton
+					text={"Register"}
+					onClick={() => {
+						return register();
+					}}
+				/>
+			)}
 		</>
 	);
 };

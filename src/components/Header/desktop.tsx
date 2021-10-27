@@ -56,11 +56,13 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				<DesktopButton
-					text="Portfolio"
-					border={history.location.pathname === "/portfolio"}
-					onClick={() => history.push("/portfolio")}
-				/>
+				{burrow?.walletConnection.isSignedIn() && (
+					<DesktopButton
+						text="Portfolio"
+						border={history.location.pathname === "/portfolio"}
+						onClick={() => history.push("/portfolio")}
+					/>
+				)}
 			</SC.DesktopHeaderLeftSideWrapper>
 		);
 	};

@@ -64,9 +64,14 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		});
 	};
 
-	const call = async (contract: Contract, methodName: string, args: Object = {}) => {
+	const call = async (
+		contract: Contract,
+		methodName: string,
+		args: Object = {},
+		deposit: string = "1",
+	) => {
 		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
-		const attachedDeposit = new BN(1);
+		const attachedDeposit = new BN(deposit);
 
 		console.log(
 			"transaction",
