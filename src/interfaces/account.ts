@@ -1,9 +1,3 @@
-interface IAsset {
-	token_id: string;
-	balance: string;
-	shares: string;
-}
-
 interface IFarmId {
 	Supplied?: string;
 	Borrowed?: string;
@@ -42,6 +36,13 @@ interface ICollateralAsset {
 interface IBorrowedAsset {
 	token_id: string;
 	shares: string;
+}
+
+export interface IAsset {
+	token_id: string;
+	balance: string;
+	shares: string;
+	apr: string;
 }
 
 export interface IAccount {

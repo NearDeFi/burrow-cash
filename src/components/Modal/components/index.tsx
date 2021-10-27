@@ -4,7 +4,7 @@ import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
 import TokenIcon from "../../TokenIcon";
-import { PERCENT_DIGITS, USD } from "../../../store/constants";
+import { PERCENT_DIGITS, TOKEN, USD } from "../../../store/constants";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
@@ -62,8 +62,9 @@ export const TokenInputs = ({
 					color: colors.secondary,
 				}}
 			>
-				<div>{`Available: ${availableTokens.toFixed(
-					2,
+				<div>{`Available: ${availableTokens.toLocaleString(
+					undefined,
+					TOKEN,
 				)} ${tokenSymbol} (${totalAvailableTokensPrice.toLocaleString(undefined, USD)})`}</div>
 				<div style={{ justifySelf: "end" }}>{`1 ${tokenSymbol} = ${tokenPriceInUSD.toLocaleString(
 					undefined,

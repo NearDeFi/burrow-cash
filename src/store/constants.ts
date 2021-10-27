@@ -9,3 +9,9 @@ export const USD = {
 	currencyDisplay: "narrowSymbol",
 	minimumFractionDigits: 2,
 };
+
+export const TOKEN = {
+	style: "decimal",
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2,
+};

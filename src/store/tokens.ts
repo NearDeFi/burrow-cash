@@ -2,8 +2,9 @@ import { Contract } from "near-api-js";
 import { getBurrow } from "../utils";
 import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 import Decimal from "decimal.js";
-import { DEFAULT_PRECISION } from "./constants";
+import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
 import { expandToken, shrinkToken } from "./helper";
+import { ChangeMethodsLogic, ChangeMethodsOracle } from "../interfaces/contract-methods";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -87,17 +88,65 @@ export const supply = async (name: string, amount: number): Promise<void> => {
 
 	const tokenContract = await getTokenContract(name);
 	const metadata = await getMetadata(name);
-	const fixedAmount = expandToken(amount, metadata?.decimals!);
+	const expandedAmount = expandToken(amount, metadata?.decimals! || NEAR_DECIMALS);
 
-	console.log("transaction fixed amount", fixedAmount);
+	console.log("transaction fixed amount", expandedAmount);
 
 	await burrow.call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], {
 		receiver_id: burrow.logicContract.contractId,
-		amount: fixedAmount,
+		amount: expandedAmount,
 		msg: "",
 	});
 };
 
 export const borrow = async (name: string, amount: number) => {
 	console.log(`Borrowing ${amount} of ${name}`);
+	const burrow = await getBurrow();
+
+	const metadata = await getMetadata(name);
+	const expandedAmount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
+
+	const borrowTemplate = {
+		Execute: {
+			actions: [
+				{
+					Borrow: {
+						token_id: name,
+						amount: expandedAmount,
+					},
+				},
+			],
+		},
+	};
+
+	await burrow.call(burrow.oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
+		receiver_id: burrow.logicContract.contractId,
+		asset_ids: ["usdt.fakes.testnet", name],
+		msg: JSON.stringify(borrowTemplate),
+	});
+};
+
+export const addCollateral = async (name: string, amount?: number) => {
+	console.log(`Adding collateral ${amount} of ${name}`);
+	const burrow = await getBurrow();
+
+	const metadata = await getMetadata(name);
+
+	const args = {
+		actions: [
+			{
+				IncreaseCollateral: {
+					token_id: name,
+				},
+			},
+		],
+	};
+
+	if (amount) {
+		args.actions[0].IncreaseCollateral["amount"] = expandToken(
+			amount,
+			metadata?.decimals || NEAR_DECIMALS,
+		);
+	}
+	await burrow.call(burrow.logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
 };

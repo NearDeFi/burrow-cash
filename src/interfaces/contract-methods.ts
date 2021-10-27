@@ -38,4 +38,6 @@ export enum ViewMethodsOracle {
 }
 
 // Change methods can modify the state. But you don't receive the returned value when called.
-export enum ChangeMethodsOracle {}
+export enum ChangeMethodsOracle {
+	oracle_call,
+}
