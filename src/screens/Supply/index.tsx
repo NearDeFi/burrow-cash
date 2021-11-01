@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
 import { ContractContext } from "../../context/contracts";
-import { BigButton, PageTitle, TotalSupply } from "../../shared";
+import { BigButton, PageTitle, Total } from "../../shared";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import {
@@ -17,6 +17,8 @@ import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
 
 const SupplyTopButtons = () => {
+	const { assets, metadata, portfolio } = useContext(ContractContext);
+
 	return (
 		<div
 			style={{
@@ -28,10 +30,26 @@ const SupplyTopButtons = () => {
 			}}
 		>
 			<div style={{ justifySelf: "end" }}>
-				<BigButton />
+				<BigButton
+					text={"Your supply balance"}
+					value={portfolio?.supplied
+						.map(
+							(supplied) =>
+								Number(
+									shrinkToken(
+										supplied.balance,
+										DECIMAL_OVERRIDES[
+											metadata.find((m) => m.token_id === supplied.token_id)?.symbol || ""
+										] || TOKEN_DECIMALS,
+									),
+								) * (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
+						)
+						.reduce((sum, a) => (sum += a), 0)
+						.toLocaleString(undefined, USD_FORMAT)}
+				/>
 			</div>
 			<div style={{ justifySelf: "start" }}>
-				<BigButton />
+				<BigButton text={"Net APY"} value={0} />
 			</div>
 		</div>
 	);
@@ -86,7 +104,7 @@ const Supply = () => {
 								),
 							) * rowData.price.usd
 					  ).toLocaleString(undefined, USD_FORMAT)
-					: "";
+					: "$-.-";
 			},
 		},
 	];
@@ -120,7 +138,8 @@ const Supply = () => {
 				columns={columns}
 			/>
 			{assets.length > 0 && (
-				<TotalSupply
+				<Total
+					type={"Supply"}
 					value={assets
 						.map((asset) =>
 							asset.price
@@ -134,7 +153,7 @@ const Supply = () => {
 								  ) * asset.price.usd
 								: 0,
 						)
-						.reduce((sum, a) => (sum += a))
+						.reduce((sum, a) => (sum += a), 0)
 						.toLocaleString(undefined, USD_FORMAT)}
 				/>
 			)}

@@ -115,7 +115,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 							cellData={
 								rowData.price
 									? `${rowData.price.usd.toLocaleString(undefined, USD_FORMAT)}`
-									: "Unknown"
+									: "$-.-"
 							}
 						/>
 					</TokenNameTextWrapper>

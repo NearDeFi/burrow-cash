@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import { colors } from "../style";
 
-const DesktopBigButton = ({ height = "10em" }) => {
+const DesktopBigButton = ({ height = "10em", text = "Total Supply", value = "10,000,000$" }) => {
 	return (
 		<div style={{ display: "grid", justifyContent: "center", height: "24em" }}>
 			<div
@@ -18,17 +18,17 @@ const DesktopBigButton = ({ height = "10em" }) => {
 					size="large"
 					style={{ height: "100%", width: "100%", backgroundColor: colors.secondary }}
 				>
-					{"Total Supply"}
+					{text}
 					<br />
-					{"10,000,000$"}
+					{value}
 				</Button>
 			</div>
 		</div>
 	);
 };
 
-const BigButton = () => {
-	return <DesktopBigButton />;
+const BigButton = ({ text, value }) => {
+	return <DesktopBigButton text={text} value={value} />;
 };
 
 export default BigButton;

@@ -1,12 +1,11 @@
 import { Footer, Header, Table } from "../../components";
-import { BigButton, TotalSupply } from "../../shared";
+import { BigButton, Total } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
 import { ColumnData } from "../../components/Table/types";
-import { PERCENT_DIGITS, TOKEN_FORMAT } from "../../store/constants";
-import { useContext, useEffect, useState } from "react";
-import { getPortfolio } from "../../store";
-import { IAccountDetailed, IAsset } from "../../interfaces/account";
+import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
+import { useContext } from "react";
+import { IAsset } from "../../interfaces/account";
 import { ContractContext } from "../../context/contracts";
 
 const PortfolioTopButtons = () => {
@@ -20,23 +19,15 @@ const PortfolioTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<BigButton />
-			<BigButton />
-			<BigButton />
+			<BigButton text={"Total Supplied"} value={(0).toLocaleString(undefined, USD_FORMAT)} />
+			<BigButton text={"Net APR"} value={0} />
+			<BigButton text={"Total Borrowed"} value={(0).toLocaleString(undefined, USD_FORMAT)} />
 		</div>
 	);
 };
 
 const Portfolio = () => {
-	const { assets, metadata } = useContext(ContractContext);
-
-	const [accountDetails, setAccountDetails] = useState<IAccountDetailed>();
-
-	useEffect(() => {
-		(async () => {
-			setAccountDetails(await getPortfolio(metadata));
-		})();
-	}, [assets, metadata]);
+	const { assets, metadata, portfolio } = useContext(ContractContext);
 
 	const suppliedColumns: ColumnData[] = [
 		{
@@ -130,14 +121,14 @@ const Portfolio = () => {
 				<span style={{ color: colors.primary }}>Supplied</span> Assets
 			</SC.TitleWrapper>
 
-			{accountDetails?.supplied.length ? (
+			{portfolio?.supplied.length ? (
 				<Table
 					height={"240px"}
-					rows={accountDetails?.supplied.map((supplied) => ({
+					rows={portfolio?.supplied.map((supplied) => ({
 						...supplied,
 						...assets.find((m) => m.token_id === supplied.token_id),
 						...metadata.find((m) => m.token_id === supplied.token_id),
-						collateral: accountDetails?.collateral.find(
+						collateral: portfolio?.collateral.find(
 							(collateral) => collateral.token_id === supplied.token_id,
 						),
 					}))}
@@ -151,10 +142,10 @@ const Portfolio = () => {
 				<span style={{ color: colors.primary }}>Borrowed</span> Assets
 			</SC.SecondTitleWrapper>
 
-			{accountDetails?.borrowed.length ? (
+			{portfolio?.borrowed.length ? (
 				<Table
 					height={"240px"}
-					rows={accountDetails?.borrowed.map((borrowed) => ({
+					rows={portfolio?.borrowed.map((borrowed) => ({
 						...borrowed,
 						...assets.find((m) => m.token_id === borrowed.token_id),
 						...metadata.find((a) => a.token_id === borrowed.token_id),
@@ -165,7 +156,7 @@ const Portfolio = () => {
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}
 
-			<TotalSupply displayButton={false} value={1} />
+			<Total displayButton={false} type={"Lorem ipsum"} value={1} />
 			<Footer />
 		</>
 	);

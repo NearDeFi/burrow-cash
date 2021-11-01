@@ -65,7 +65,7 @@ export const register = async (): Promise<void> => {
 	);
 };
 
-export const getPortfolio = async (metadata: IMetadata[]) => {
+export const getPortfolio = async (metadata: IMetadata[]): Promise<IAccountDetailed> => {
 	const burrow = await getBurrow();
 
 	const account: IAccountDetailed = await getAccountDetailed(burrow?.account.accountId!);

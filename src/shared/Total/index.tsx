@@ -7,7 +7,7 @@ import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg"
 import mobileBottomBg from "../../assets/mobile-bottom-bg.png";
 import { colors } from "../../style";
 
-const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true, value }) => {
+const DesktopTotalFooter = ({ height = "10em", displayButton = true, value, type }) => {
 	return (
 		<div
 			style={{
@@ -36,7 +36,7 @@ const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true, value
 						backgroundColor: colors.secondary,
 					}}
 				>
-					{"Total Supply"}
+					{`Total ${type}`}
 					<br />
 					{value}
 				</Button>
@@ -45,7 +45,7 @@ const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true, value
 	);
 };
 
-const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true, value }) => {
+const MobileTotalFooter = ({ height = "7em", displayButton = true, value, type = "Supply" }) => {
 	return (
 		<div
 			style={{
@@ -68,7 +68,7 @@ const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true, value }
 					backgroundColor: colors.secondary,
 				}}
 			>
-				{"Total Supply"}
+				{`Total ${type}`}
 				<br />
 				{value}
 			</Button>
@@ -76,17 +76,18 @@ const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true, value }
 	);
 };
 
-const TotalSupply = ({ displayButton = true, value }) => {
+const Total = ({ displayButton = true, value, type }) => {
 	const detectMobile = useMobileDetect();
 	const isMobile = detectMobile.isMobile();
 
 	if (isMobile) {
-		return <MobileTotalSupplyFooter displayButton={displayButton} value={value} />;
+		return <MobileTotalFooter displayButton={displayButton} value={value} type={type} />;
 	} else {
-		return <DesktopTotalSupplyFooter displayButton={displayButton} value={value} />;
+		return <DesktopTotalFooter displayButton={displayButton} value={value} type={type} />;
 	}
 };
-export default TotalSupply;
+
+export default Total;
 
 // const TotalSupply = ({ height = "7em" }) => {
 // 	return (

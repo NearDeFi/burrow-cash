@@ -1,5 +1,5 @@
 import BigButton from "./BigButton";
 import PageTitle from "./PageTitle";
-import TotalSupply from "./TotalSupply";
+import Total from "./Total";
 
-export { TotalSupply, PageTitle, BigButton };
+export { Total, PageTitle, BigButton };

@@ -1,13 +1,23 @@
 import { useContext } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
-import { BigButton, PageTitle, TotalSupply } from "../../shared";
-import { IAssetDetailed } from "../../interfaces/asset";
+import { BigButton, PageTitle, Total } from "../../shared";
+import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
-import { PERCENT_DIGITS } from "../../store/constants";
+import {
+	DECIMAL_OVERRIDES,
+	PERCENT_DIGITS,
+	TOKEN_DECIMALS,
+	TOKEN_FORMAT,
+	USD_FORMAT,
+} from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
+import { shrinkToken } from "../../store/helper";
+import { Burrow } from "../../index";
 
 const BorrowTopButtons = () => {
+	const { assets, metadata, portfolio } = useContext(ContractContext);
+
 	return (
 		<div
 			style={{
@@ -18,15 +28,32 @@ const BorrowTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<BigButton />
-			<BigButton />
-			<BigButton />
+			<BigButton
+				text={"Your Borrow Balance"}
+				value={portfolio?.borrowed
+					.map(
+						(borrowed) =>
+							Number(
+								shrinkToken(
+									borrowed.balance,
+									DECIMAL_OVERRIDES[
+										metadata.find((m) => m.token_id === borrowed.token_id)?.symbol || ""
+									] || TOKEN_DECIMALS,
+								),
+							) * (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+					)
+					.reduce((sum, a) => (sum += a), 0)
+					.toLocaleString(undefined, USD_FORMAT)}
+			/>
+			<BigButton text={"Borrow Limit"} value={0} />
+			<BigButton text={"Risk Factor"} value={0} />
 		</div>
 	);
 };
 
 const Borrow = () => {
-	const { assets, metadata } = useContext(ContractContext);
+	const burrow = useContext(Burrow);
+	const { assets, metadata, portfolio } = useContext(ContractContext);
 
 	const columns: ColumnData[] = [
 		{
@@ -43,7 +70,45 @@ const Borrow = () => {
 				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
+		{
+			width: 120,
+			label: "Liquidity",
+			dataKey: "liquidity",
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
+				return rowData.price?.usd
+					? (
+							Number(
+								shrinkToken(
+									rowData.borrowed.balance,
+									DECIMAL_OVERRIDES[rowData.symbol] || TOKEN_DECIMALS,
+								),
+							) * rowData.price.usd
+					  ).toLocaleString(undefined, USD_FORMAT)
+					: "$-.-";
+			},
+		},
+		{
+			width: 120,
+			label: "Collateral Factor",
+			dataKey: "collateralFactor",
+			cellDataGetter: () => {
+				return `${(0).toFixed(PERCENT_DIGITS)}%`;
+			},
+		},
 	];
+
+	if (burrow?.walletConnection.isSignedIn()) {
+		columns.push({
+			width: 100,
+			label: "Amount Borrowed",
+			dataKey: "borrowed",
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
+				return Number(
+					portfolio?.borrowed.find((b) => b.token_id === rowData.token_id)?.balance || 0,
+				).toLocaleString(undefined, TOKEN_FORMAT);
+			},
+		});
+	}
 
 	return (
 		<>
@@ -60,7 +125,25 @@ const Borrow = () => {
 					}))}
 				columns={columns}
 			/>
-			<TotalSupply value={1} />
+			<Total
+				type={"Borrow"}
+				value={assets
+					.map((asset) =>
+						asset.price
+							? Number(
+									shrinkToken(
+										asset.borrowed.balance,
+										DECIMAL_OVERRIDES[
+											metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
+										] || TOKEN_DECIMALS,
+									),
+							  ) * asset.price.usd
+							: 0,
+					)
+					.reduce((sum, a) => (sum += a), 0)
+					.toLocaleString(undefined, USD_FORMAT)}
+			/>
+
 			<Footer />
 		</>
 	);
