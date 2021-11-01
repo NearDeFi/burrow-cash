@@ -28,6 +28,7 @@ interface IPool {
 }
 
 export interface IMetadata {
+	token_id: string;
 	icon: string;
 	name: string;
 	symbol: string;
@@ -53,8 +54,6 @@ export interface IAssetDetailed {
 	borrow_apr: string;
 	/// Asset farms
 	farms: IAssetFarmView[];
-	// meta data mixin
-	metadata?: IMetadata;
 	// price mixin
 	price?: IPrice;
 }

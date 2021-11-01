@@ -86,7 +86,7 @@ const MobileHeader = () => {
 					style={{ backgroundColor: colors.primary }}
 					onClick={onWalletButtonClick}
 				>
-					{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect"}
+					{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
 				</Button>
 			</SC.MobileHeaderToolbar>
 			<MobileSubHeader />

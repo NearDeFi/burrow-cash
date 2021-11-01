@@ -16,12 +16,15 @@ import {
 	TokenNameTextWrapper,
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
-import { IAssetDetailed } from "../../interfaces/asset";
+import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { useLocation } from "react-router";
 import TokenIcon from "../TokenIcon";
 import { useContext } from "react";
 import { ContractContext } from "../../context/contracts";
 import { USD } from "../../store/constants";
+import { Button } from "@mui/material";
+import { repay, withdraw } from "../../store/tokens";
+import { IAsset } from "../../interfaces/account";
 
 const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
@@ -68,7 +71,11 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const TokenNameCell: TableCellRenderer = ({ rowData }: { rowData: IAssetDetailed }) => {
+	const TokenNameCell: TableCellRenderer = ({
+		rowData,
+	}: {
+		rowData: IAssetDetailed & IMetadata;
+	}) => {
 		return (
 			<TableCell
 				component="div"
@@ -88,9 +95,9 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 							asset: {
 								token_id: rowData.token_id,
 								amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
-								name: rowData.metadata?.name || "Unknown",
-								symbol: rowData.metadata?.symbol || "???",
-								icon: rowData.metadata?.icon,
+								name: rowData?.name || "Unknown",
+								symbol: rowData?.symbol || "???",
+								icon: rowData?.icon,
 								valueInUSD: rowData.price?.usd || 0,
 								apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
 							},
@@ -101,10 +108,10 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						modal.handleOpen();
 					}}
 				>
-					<TokenIcon icon={rowData.metadata?.icon} />
+					<TokenIcon icon={rowData?.icon} />
 
 					<TokenNameTextWrapper>
-						<Heading4 cellData={rowData.metadata?.symbol || rowData.token_id} />
+						<Heading4 cellData={rowData?.symbol || rowData.token_id} />
 						<Heading6
 							cellData={
 								rowData.price ? `${rowData.price.usd.toLocaleString(undefined, USD)}` : "Unknown"
@@ -112,6 +119,52 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						/>
 					</TokenNameTextWrapper>
 				</TokenNameCellWrapper>
+			</TableCell>
+		);
+	};
+
+	const WithdrawCell: TableCellRenderer = ({ cellData, dataKey }) => {
+		return (
+			<TableCell
+				component="div"
+				className={clsx(classes.tableCell, classes.flexContainer, {
+					[classes.noClick]: onRowClick == null,
+				})}
+				variant="body"
+			>
+				<DefaultCellWrapper>
+					<Button
+						size="small"
+						style={{ justifySelf: "end" }}
+						variant="contained"
+						onClick={() => withdraw(cellData)}
+					>
+						Withdraw
+					</Button>
+				</DefaultCellWrapper>
+			</TableCell>
+		);
+	};
+
+	const RepayCell: TableCellRenderer = ({ rowData }: { rowData: IAsset }) => {
+		return (
+			<TableCell
+				component="div"
+				className={clsx(classes.tableCell, classes.flexContainer, {
+					[classes.noClick]: onRowClick == null,
+				})}
+				variant="body"
+			>
+				<DefaultCellWrapper>
+					<Button
+						size="small"
+						style={{ justifySelf: "end" }}
+						variant="contained"
+						onClick={() => void repay(rowData.token_id, 1)}
+					>
+						Repay
+					</Button>
+				</DefaultCellWrapper>
 			</TableCell>
 		);
 	};
@@ -185,6 +238,8 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		if (dataKey === "collateral") return CollateralCell;
 		if (dataKey === "name") return TokenNameCell;
 		if (dataKey === "apy" || dataKey === "borrowAPY") return APYCell;
+		if (dataKey === "withdraw") return WithdrawCell;
+		if (dataKey === "repay") return RepayCell;
 
 		return DefaultCell;
 	};

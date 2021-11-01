@@ -3,7 +3,7 @@ import { getBurrow } from "../utils";
 import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 import Decimal from "decimal.js";
 import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
-import { expandToken, shrinkToken } from "./helper";
+import { expandToken, getContract, shrinkToken } from "./helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle } from "../interfaces/contract-methods";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
@@ -18,34 +18,20 @@ enum ChangeMethodsToken {
 }
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
-	const burrow = await getBurrow();
-
-	const tokenContract: Contract = new Contract(burrow.account, tokenContractAddress, {
-		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethodsToken)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethodsToken)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-	});
-
-	return tokenContract;
+	const { account } = await getBurrow();
+	return await getContract(account, tokenContractAddress, ViewMethodsToken, ChangeMethodsToken);
 };
 
 export const getBalance = async (
 	asset: IAssetDetailed,
 	accountId: string,
 ): Promise<number | undefined> => {
-	const burrow = await getBurrow();
+	const { view } = await getBurrow();
 
 	try {
 		const tokenContract: Contract = await getTokenContract(asset.token_id);
 
-		const balanceInYocto: string = (await burrow.view(
+		const balanceInYocto: string = (await view(
 			tokenContract,
 			ViewMethodsToken[ViewMethodsToken.ft_balance_of],
 			{
@@ -53,9 +39,8 @@ export const getBalance = async (
 			},
 		)) as string;
 
-		const balance = shrinkToken(balanceInYocto, asset.metadata?.decimals!);
-
-		// console.log("balance", accountId, asset.token_id, balance.toNumber());
+		const metadata = await getMetadata(asset.token_id);
+		const balance = shrinkToken(balanceInYocto, metadata?.decimals!);
 
 		return Number(balance);
 	} catch (err: any) {
@@ -63,47 +48,48 @@ export const getBalance = async (
 	}
 };
 
-export const getMetadata = async (address: string): Promise<IMetadata | undefined> => {
-	const burrow = await getBurrow();
-
+export const getMetadata = async (token_id: string): Promise<IMetadata | undefined> => {
 	try {
-		const tokenContract: Contract = await getTokenContract(address);
+		const { view } = await getBurrow();
+		const tokenContract: Contract = await getTokenContract(token_id);
 
-		const metadata: IMetadata = (await burrow.view(
+		const metadata: IMetadata = (await view(
 			tokenContract,
 			ViewMethodsToken[ViewMethodsToken.ft_metadata],
 		)) as IMetadata;
 
+		metadata.token_id = token_id;
+
 		console.log("metadata", metadata);
 		return metadata;
 	} catch (err: any) {
-		console.error(`Failed to get metadata for ${address} ${err.message}`);
+		console.error(`Failed to get metadata for ${token_id} ${err.message}`);
 	}
 };
 
-export const supply = async (name: string, amount: number): Promise<void> => {
-	console.log(`Supplying ${amount} to ${name}`);
+export const supply = async (token_id: string, amount: number): Promise<void> => {
+	console.log(`Supplying ${amount} to ${token_id}`);
 
-	const burrow = await getBurrow();
+	const { call, logicContract } = await getBurrow();
 
-	const tokenContract = await getTokenContract(name);
-	const metadata = await getMetadata(name);
+	const tokenContract = await getTokenContract(token_id);
+	const metadata = await getMetadata(token_id);
 	const expandedAmount = expandToken(amount, metadata?.decimals! || NEAR_DECIMALS);
 
 	console.log("transaction fixed amount", expandedAmount);
 
-	await burrow.call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], {
-		receiver_id: burrow.logicContract.contractId,
+	await call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], {
+		receiver_id: logicContract.contractId,
 		amount: expandedAmount,
 		msg: "",
 	});
 };
 
-export const borrow = async (name: string, amount: number) => {
-	console.log(`Borrowing ${amount} of ${name}`);
-	const burrow = await getBurrow();
+export const borrow = async (token_id: string, amount: number) => {
+	console.log(`Borrowing ${amount} of ${token_id}`);
 
-	const metadata = await getMetadata(name);
+	const { call, oracleContract, logicContract } = await getBurrow();
+	const metadata = await getMetadata(token_id);
 	const expandedAmount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
 
 	const borrowTemplate = {
@@ -111,7 +97,7 @@ export const borrow = async (name: string, amount: number) => {
 			actions: [
 				{
 					Borrow: {
-						token_id: name,
+						token_id,
 						amount: expandedAmount,
 					},
 				},
@@ -119,24 +105,24 @@ export const borrow = async (name: string, amount: number) => {
 		},
 	};
 
-	await burrow.call(burrow.oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
-		receiver_id: burrow.logicContract.contractId,
-		asset_ids: ["usdt.fakes.testnet", name],
+	await call(oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
+		receiver_id: logicContract.contractId,
+		asset_ids: ["usdt.fakes.testnet", token_id],
 		msg: JSON.stringify(borrowTemplate),
 	});
 };
 
-export const addCollateral = async (name: string, amount?: number) => {
-	console.log(`Adding collateral ${amount} of ${name}`);
-	const burrow = await getBurrow();
+export const addCollateral = async (token_id: string, amount?: number) => {
+	console.log(`Adding collateral ${amount} of ${token_id}`);
 
-	const metadata = await getMetadata(name);
+	const { logicContract, call } = await getBurrow();
+	const metadata = await getMetadata(token_id);
 
 	const args = {
 		actions: [
 			{
 				IncreaseCollateral: {
-					token_id: name,
+					token_id,
 				},
 			},
 		],
@@ -148,5 +134,57 @@ export const addCollateral = async (name: string, amount?: number) => {
 			metadata?.decimals || NEAR_DECIMALS,
 		);
 	}
-	await burrow.call(burrow.logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
+
+	await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
+};
+
+export const withdraw = async (token_id: string, amount?: number) => {
+	console.log(`Withdrawing ${amount} of ${token_id}`);
+
+	const { call, logicContract } = await getBurrow();
+	const metadata = await getMetadata(token_id);
+
+	const args = {
+		actions: [
+			{
+				Withdraw: {
+					token_id,
+				},
+			},
+		],
+	};
+
+	if (amount) {
+		args.actions[0].Withdraw["amount"] = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
+	}
+
+	await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
+};
+
+export const repay = async (token_id: string, amount: number) => {
+	console.log(`Repaying ${amount} of ${token_id}`);
+
+	const { logicContract, call } = await getBurrow();
+	const tokenContract = await getTokenContract(token_id);
+	const metadata = await getMetadata(token_id);
+
+	const msg = {
+		Execute: {
+			actions: [
+				{
+					Repay: {
+						token_id,
+					},
+				},
+			],
+		},
+	};
+
+	const args = {
+		receiver_id: logicContract.contractId,
+		amount: expandToken(amount, metadata?.decimals || NEAR_DECIMALS),
+		msg: JSON.stringify(msg),
+	};
+
+	await call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], args);
 };

@@ -54,7 +54,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const { assets } = useContext(ContractContext);
+	const { assets, metadata } = useContext(ContractContext);
 
 	return (
 		<>
@@ -62,7 +62,15 @@ const Supply = () => {
 				<SupplyTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Supply"} second={"Assets"} />
-			<Table rows={assets.filter((asset) => asset.config.can_deposit)} columns={SUPPLY_COLUMNS} />
+			<Table
+				rows={assets
+					.filter((asset) => asset.config.can_deposit)
+					.map((a) => ({
+						...a,
+						...metadata.find((m) => m.token_id === a.token_id),
+					}))}
+				columns={SUPPLY_COLUMNS}
+			/>
 			<TotalSupply />
 			<Footer />
 		</>

@@ -1,30 +1,40 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { IAssetDetailed } from "../interfaces/asset";
+import { createContext, ReactElement, useContext, useEffect, useState } from "react";
+import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 import { getAssetsDetailed } from "../store";
 import { IBalance } from "../interfaces/account";
-import { getBalance } from "../store/tokens";
+import { getBalance, getMetadata } from "../store/tokens";
 import { IBurrow } from "../interfaces/burrow";
 import { Burrow } from "../index";
 
 const initialContractsState: {
 	assets: IAssetDetailed[];
 	balances: IBalance[];
+	metadata: IMetadata[];
 } = {
 	assets: [],
 	balances: [],
+	metadata: [],
 };
 
 export const ContractContext = createContext(initialContractsState);
 
-export const ContractContextProvider = ({ children }: { children: React.ReactElement }) => {
+export const ContractContextProvider = ({ children }: { children: ReactElement }) => {
+	const burrow = useContext<IBurrow | null>(Burrow);
+
 	const [assets, setAssets] = useState<IAssetDetailed[]>([]);
 	const [balances, setBalances] = useState<IBalance[]>([]);
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const [metadata, setMetadata] = useState<IMetadata[]>([]);
 
 	useEffect(() => {
 		(async () => {
 			const assets = await getAssetsDetailed();
 			setAssets(assets);
+
+			const metadata: IMetadata[] = (
+				await Promise.all(assets.map((a) => getMetadata(a.token_id)))
+			).filter((m): m is IMetadata => !!m);
+
+			setMetadata(metadata);
 
 			const balances: IBalance[] = await Promise.all(
 				assets.map(
@@ -48,9 +58,11 @@ export const ContractContextProvider = ({ children }: { children: React.ReactEle
 	const state: {
 		assets: IAssetDetailed[];
 		balances: IBalance[];
+		metadata: IMetadata[];
 	} = {
 		assets,
 		balances,
+		metadata,
 	};
 
 	return <ContractContext.Provider value={state}>{children}</ContractContext.Provider>;

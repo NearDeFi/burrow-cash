@@ -14,6 +14,7 @@ import {
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
 import BN from "bn.js";
+import { getContract } from "./store/helper";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -91,18 +92,12 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		});
 	};
 
-	const logicContract: Contract = new Contract(walletConnection.account(), LOGIC_CONTRACT_NAME, {
-		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-	});
+	const logicContract: Contract = await getContract(
+		walletConnection.account(),
+		LOGIC_CONTRACT_NAME,
+		ViewMethodsLogic,
+		ChangeMethodsLogic,
+	);
 
 	// get oracle address from
 	const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
@@ -110,21 +105,12 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	};
 
 	console.log("oracle address", config.oracle_account_id);
-	const oracleContract: Contract = new Contract(
+
+	const oracleContract: Contract = await getContract(
 		walletConnection.account(),
 		config.oracle_account_id,
-		{
-			// View methods are read only. They don't modify the state, but usually return some value.
-			viewMethods: Object.values(ViewMethodsOracle)
-				// @ts-ignore
-				.filter((m) => typeof m === "string")
-				.map((m) => m as string),
-			// Change methods can modify the state. But you don't receive the returned value when called.
-			changeMethods: Object.values(ChangeMethodsOracle)
-				// @ts-ignore
-				.filter((m) => typeof m === "string")
-				.map((m) => m as string),
-		},
+		ViewMethodsOracle,
+		ChangeMethodsOracle,
 	);
 
 	burrow = {

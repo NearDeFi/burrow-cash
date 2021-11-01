@@ -35,8 +35,6 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 		},
 	)) as IAssetDetailed;
 
-	assetDetails.metadata = await getMetadata(token_id);
-
 	console.log(
 		"xxx",
 		"target_utilization_rate",

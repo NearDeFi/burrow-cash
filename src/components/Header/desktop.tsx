@@ -79,7 +79,7 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 						: login(burrow!.walletConnection);
 				}}
 			>
-				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect"}
+				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
 			</Button>
 		);
 	};

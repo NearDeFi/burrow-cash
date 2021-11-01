@@ -3,6 +3,7 @@ import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle } from "../interfaces/contract-methods";
 import { IAssetPrice, IPrices } from "../interfaces/oracle";
+import { Account, Contract } from "near-api-js";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -71,6 +72,24 @@ export const shrinkToken = (value: string | number, decimals: string | number): 
 	return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed();
 };
 
-console.log("wwww", expandToken("1.8", 18));
-console.log("wwww", shrinkToken("1812345000000000000", 18));
-console.log("wwww", expandToken(0.1, 24));
+export const getContract = async (
+	account: Account,
+	contractAddress: string,
+	viewMethods: any,
+	changeMethods: any,
+): Promise<Contract> => {
+	const contract: Contract = new Contract(account, contractAddress, {
+		// View methods are read only. They don't modify the state, but usually return some value.
+		viewMethods: Object.values(viewMethods)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+		// Change methods can modify the state. But you don't receive the returned value when called.
+		changeMethods: Object.values(changeMethods)
+			// @ts-ignore
+			.filter((m) => typeof m === "string")
+			.map((m) => m as string),
+	});
+
+	return contract;
+};
