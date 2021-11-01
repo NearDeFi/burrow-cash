@@ -4,7 +4,6 @@ export interface TokenActionsInput {
 	type: ModalType;
 	title: string;
 	totalAmountTitle: string;
-	totalAmount: number;
 	asset: {
 		token_id: string;
 		amount: number;

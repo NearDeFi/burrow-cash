@@ -4,7 +4,8 @@ import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
 import TokenIcon from "../../TokenIcon";
-import { PERCENT_DIGITS, TOKEN, USD } from "../../../store/constants";
+import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../../store/constants";
+import { useState } from "react";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
@@ -37,7 +38,6 @@ export const TokenInputs = ({
 	availableTokens,
 	tokenSymbol,
 	tokenPriceInUSD,
-	totalAmount,
 	totalAmountTitle,
 	onChange,
 }: {
@@ -45,11 +45,10 @@ export const TokenInputs = ({
 	tokenSymbol: string;
 	tokenPriceInUSD: number;
 	totalAmountTitle: string;
-	totalAmount: number;
 	onChange: (amount: number) => void;
 }) => {
 	const totalAvailableTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
-
+	const [totalAmount, setTotalAmount] = useState(0);
 	return (
 		<>
 			<div
@@ -64,11 +63,14 @@ export const TokenInputs = ({
 			>
 				<div>{`Available: ${availableTokens.toLocaleString(
 					undefined,
-					TOKEN,
-				)} ${tokenSymbol} (${totalAvailableTokensPrice.toLocaleString(undefined, USD)})`}</div>
+					TOKEN_FORMAT,
+				)} ${tokenSymbol} (${totalAvailableTokensPrice.toLocaleString(
+					undefined,
+					USD_FORMAT,
+				)})`}</div>
 				<div style={{ justifySelf: "end" }}>{`1 ${tokenSymbol} = ${tokenPriceInUSD.toLocaleString(
 					undefined,
-					USD,
+					USD_FORMAT,
 				)}`}</div>
 			</div>
 			<div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
@@ -78,6 +80,7 @@ export const TokenInputs = ({
 					onChange={(e) => {
 						const amount = Number(e.target.value);
 						if (!isNaN(amount)) {
+							setTotalAmount(amount * tokenPriceInUSD);
 							if (onChange) onChange(amount);
 						}
 					}}
@@ -91,7 +94,7 @@ export const TokenInputs = ({
 				id="modal-modal-description"
 				sx={{ mt: 2 }}
 			>
-				{`${totalAmountTitle} = ${totalAmount}`}
+				{`${totalAmountTitle} = ${totalAmount.toLocaleString(undefined, USD_FORMAT)}`}
 			</Typography>
 		</>
 	);

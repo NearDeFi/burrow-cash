@@ -3,14 +3,11 @@ import { BigButton, TotalSupply } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
 import { ColumnData } from "../../components/Table/types";
-import { NEAR_DECIMALS, PERCENT_DIGITS, TOKEN } from "../../store/constants";
+import { PERCENT_DIGITS, TOKEN_FORMAT } from "../../store/constants";
 import { useContext, useEffect, useState } from "react";
-import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces/burrow";
-import { getAccountDetailed } from "../../store";
+import { getPortfolio } from "../../store";
 import { IAccountDetailed, IAsset } from "../../interfaces/account";
 import { ContractContext } from "../../context/contracts";
-import { shrinkToken } from "../../store/helper";
 
 const PortfolioTopButtons = () => {
 	return (
@@ -31,25 +28,13 @@ const PortfolioTopButtons = () => {
 };
 
 const Portfolio = () => {
-	const burrow = useContext<IBurrow | null>(Burrow);
 	const { assets, metadata } = useContext(ContractContext);
 
 	const [accountDetails, setAccountDetails] = useState<IAccountDetailed>();
 
 	useEffect(() => {
 		(async () => {
-			const account: IAccountDetailed = await getAccountDetailed(burrow?.account.accountId!);
-			console.log("account portfolio", account);
-
-			for (const asset of [...account.borrowed, ...account.supplied, ...account.collateral]) {
-				const decimals =
-					metadata.find((m) => m.token_id === asset.token_id)!.decimals || NEAR_DECIMALS;
-				console.log("wwww", asset.token_id, decimals);
-				asset.shares = shrinkToken(asset.shares, decimals);
-				asset.balance = shrinkToken(asset.balance, decimals);
-			}
-
-			setAccountDetails(account);
+			setAccountDetails(await getPortfolio(metadata));
 		})();
 	}, [assets, metadata]);
 
@@ -74,8 +59,10 @@ const Portfolio = () => {
 			dataKey: "collateralSum",
 			numeric: true,
 			cellDataGetter: ({ rowData }: { rowData: any }) => {
-				console.log("aaa", rowData);
-				return rowData.collateral?.balance;
+				return (
+					rowData.collateral &&
+					Number(rowData.collateral.balance).toLocaleString(undefined, TOKEN_FORMAT)
+				);
 			},
 		},
 		{
@@ -83,7 +70,7 @@ const Portfolio = () => {
 			label: "Supplied",
 			dataKey: "balance",
 			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.balance).toLocaleString(undefined, TOKEN);
+				return Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT);
 			},
 		},
 		{
@@ -124,7 +111,7 @@ const Portfolio = () => {
 			label: "Borrowed",
 			dataKey: "shares",
 			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.shares).toLocaleString(undefined, TOKEN);
+				return Number(rowData.shares).toLocaleString(undefined, TOKEN_FORMAT);
 			},
 		},
 		{
@@ -148,6 +135,7 @@ const Portfolio = () => {
 					height={"240px"}
 					rows={accountDetails?.supplied.map((supplied) => ({
 						...supplied,
+						...assets.find((m) => m.token_id === supplied.token_id),
 						...metadata.find((m) => m.token_id === supplied.token_id),
 						collateral: accountDetails?.collateral.find(
 							(collateral) => collateral.token_id === supplied.token_id,
@@ -168,7 +156,8 @@ const Portfolio = () => {
 					height={"240px"}
 					rows={accountDetails?.borrowed.map((borrowed) => ({
 						...borrowed,
-						...assets.find((a) => a.token_id === borrowed.token_id),
+						...assets.find((m) => m.token_id === borrowed.token_id),
+						...metadata.find((a) => a.token_id === borrowed.token_id),
 					}))}
 					columns={borrowColumns}
 				/>

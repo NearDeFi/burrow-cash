@@ -3,15 +3,20 @@ export const DEFAULT_PRECISION = 60;
 export const TOKEN_DECIMALS = 18;
 export const NEAR_DECIMALS = 24;
 export const PERCENT_DIGITS = 8;
-export const USD = {
+
+export const USD_FORMAT = {
 	style: "currency",
 	currency: "USD",
 	currencyDisplay: "narrowSymbol",
 	minimumFractionDigits: 2,
 };
 
-export const TOKEN = {
+export const TOKEN_FORMAT = {
 	style: "decimal",
 	minimumFractionDigits: 2,
 	maximumFractionDigits: 2,
+};
+
+export const DECIMAL_OVERRIDES = {
+	wNEAR: NEAR_DECIMALS,
 };

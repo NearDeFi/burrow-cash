@@ -40,8 +40,7 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 							title={modalData.title}
 							type={modalData.type}
 							asset={modalData.asset}
-							totalAmount={modalData.totalAmount}
-							totalAmountTitle={`Total ${modalData.asset.symbol}`}
+							totalAmountTitle={modalData.totalAmountTitle}
 							buttonText={`${modalData.type} ${modalData.asset.symbol}`}
 							rates={modalData.rates}
 							ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}

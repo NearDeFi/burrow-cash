@@ -23,13 +23,13 @@ export const getTokenContract = async (tokenContractAddress: string): Promise<Co
 };
 
 export const getBalance = async (
-	asset: IAssetDetailed,
+	token_id: string,
 	accountId: string,
 ): Promise<number | undefined> => {
 	const { view } = await getBurrow();
 
 	try {
-		const tokenContract: Contract = await getTokenContract(asset.token_id);
+		const tokenContract: Contract = await getTokenContract(token_id);
 
 		const balanceInYocto: string = (await view(
 			tokenContract,
@@ -39,12 +39,12 @@ export const getBalance = async (
 			},
 		)) as string;
 
-		const metadata = await getMetadata(asset.token_id);
+		const metadata = await getMetadata(token_id);
 		const balance = shrinkToken(balanceInYocto, metadata?.decimals!);
 
 		return Number(balance);
 	} catch (err: any) {
-		console.error(`Failed to get balance for ${accountId} on ${asset.token_id} ${err.message}`);
+		console.error(`Failed to get balance for ${accountId} on ${token_id} ${err.message}`);
 	}
 };
 
@@ -65,6 +65,14 @@ export const getMetadata = async (token_id: string): Promise<IMetadata | undefin
 	} catch (err: any) {
 		console.error(`Failed to get metadata for ${token_id} ${err.message}`);
 	}
+};
+
+export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> => {
+	const metadata: IMetadata[] = (
+		await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
+	).filter((m): m is IMetadata => !!m);
+
+	return metadata;
 };
 
 export const supply = async (token_id: string, amount: number): Promise<void> => {

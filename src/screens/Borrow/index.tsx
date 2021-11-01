@@ -26,7 +26,7 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const { assets } = useContext(ContractContext);
+	const { assets, metadata } = useContext(ContractContext);
 
 	const columns: ColumnData[] = [
 		{
@@ -51,7 +51,15 @@ const Borrow = () => {
 				<BorrowTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Borrow"} second={"Assets"} />
-			<Table rows={assets.filter((asset) => asset.config.can_borrow)} columns={columns} />
+			<Table
+				rows={assets
+					.filter((asset) => asset.config.can_borrow)
+					.map((asset) => ({
+						...asset,
+						...metadata.find((m) => m.token_id === asset.token_id),
+					}))}
+				columns={columns}
+			/>
 			<TotalSupply />
 			<Footer />
 		</>

@@ -21,7 +21,7 @@ import { useLocation } from "react-router";
 import TokenIcon from "../TokenIcon";
 import { useContext } from "react";
 import { ContractContext } from "../../context/contracts";
-import { USD } from "../../store/constants";
+import { USD_FORMAT } from "../../store/constants";
 import { Button } from "@mui/material";
 import { repay, withdraw } from "../../store/tokens";
 import { IAsset } from "../../interfaces/account";
@@ -90,8 +90,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						modal.setModalData({
 							type: location === "supply" ? "Supply" : "Borrow",
 							title: location === "supply" ? "Supply" : "Borrow",
-							totalAmountTitle: "Total",
-							totalAmount: 333.0,
+							totalAmountTitle: `Total ${location === "supply" ? "Supply" : "Borrow"}`,
 							asset: {
 								token_id: rowData.token_id,
 								amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
@@ -114,7 +113,9 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						<Heading4 cellData={rowData?.symbol || rowData.token_id} />
 						<Heading6
 							cellData={
-								rowData.price ? `${rowData.price.usd.toLocaleString(undefined, USD)}` : "Unknown"
+								rowData.price
+									? `${rowData.price.usd.toLocaleString(undefined, USD_FORMAT)}`
+									: "Unknown"
 							}
 						/>
 					</TokenNameTextWrapper>

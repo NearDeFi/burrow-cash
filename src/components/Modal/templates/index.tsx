@@ -19,7 +19,6 @@ export const BorrowData: TokenActionsInput = {
 	type: "Borrow",
 	title: "Borrow",
 	totalAmountTitle: "Borrow Amount",
-	totalAmount: 0,
 	buttonText: "Borrow",
 	rates: borrowRates,
 	ratesTitle: "Rates",
@@ -34,8 +33,7 @@ export const BorrowData: TokenActionsInput = {
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-	const { title, asset, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle, type } =
-		input;
+	const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
 
 	const [amount, setAmount] = useState(0);
 	const [registered, setRegistered] = useState(false);
@@ -57,7 +55,6 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 				availableTokens={asset.amount}
 				tokenSymbol={asset.symbol}
 				tokenPriceInUSD={asset.valueInUSD}
-				totalAmount={totalAmount}
 				totalAmountTitle={totalAmountTitle}
 				onChange={(amount) => setAmount(amount)}
 			/>
@@ -68,8 +65,6 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 					<ActionButton
 						text={buttonText}
 						onClick={() => {
-							console.log(amount, asset, type);
-
 							if (type === "Borrow") void borrow(asset.token_id, amount);
 							else void supply(asset.token_id, amount);
 						}}
