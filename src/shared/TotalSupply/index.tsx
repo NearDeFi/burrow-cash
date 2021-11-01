@@ -7,7 +7,7 @@ import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg"
 import mobileBottomBg from "../../assets/mobile-bottom-bg.png";
 import { colors } from "../../style";
 
-const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true }) => {
+const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true, value }) => {
 	return (
 		<div
 			style={{
@@ -38,14 +38,14 @@ const DesktopTotalSupplyFooter = ({ height = "10em", displayButton = true }) => 
 				>
 					{"Total Supply"}
 					<br />
-					{"10,000,000$"}
+					{value}
 				</Button>
 			</div>
 		</div>
 	);
 };
 
-const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true }) => {
+const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true, value }) => {
 	return (
 		<div
 			style={{
@@ -70,20 +70,20 @@ const MobileTotalSupplyFooter = ({ height = "7em", displayButton = true }) => {
 			>
 				{"Total Supply"}
 				<br />
-				{"10,000,000$"}
+				{value}
 			</Button>
 		</div>
 	);
 };
 
-const TotalSupply = ({ displayButton = true }) => {
+const TotalSupply = ({ displayButton = true, value }) => {
 	const detectMobile = useMobileDetect();
 	const isMobile = detectMobile.isMobile();
 
 	if (isMobile) {
-		return <MobileTotalSupplyFooter displayButton={displayButton} />;
+		return <MobileTotalSupplyFooter displayButton={displayButton} value={value} />;
 	} else {
-		return <DesktopTotalSupplyFooter displayButton={displayButton} />;
+		return <DesktopTotalSupplyFooter displayButton={displayButton} value={value} />;
 	}
 };
 export default TotalSupply;

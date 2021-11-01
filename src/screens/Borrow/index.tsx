@@ -60,7 +60,7 @@ const Borrow = () => {
 					}))}
 				columns={columns}
 			/>
-			<TotalSupply />
+			<TotalSupply value={1} />
 			<Footer />
 		</>
 	);

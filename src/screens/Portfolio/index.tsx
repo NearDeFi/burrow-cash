@@ -165,7 +165,7 @@ const Portfolio = () => {
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}
 
-			<TotalSupply displayButton={false} />
+			<TotalSupply displayButton={false} value={1} />
 			<Footer />
 		</>
 	);
