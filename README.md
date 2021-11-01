@@ -1,4 +1,4 @@
-near-dapp
+Burrow.cash
 ==================
 
 This [React] app was initialized with [create-near-app]
@@ -23,8 +23,8 @@ Exploring The Code
 ==================
 
 1. The "backend" code lives in [NearDeFi/burrowland/contract](https://github.com/NearDeFi/burrowland/tree/main/contract). See that repo's README and it's [API.md](https://github.com/NearDeFi/burrowland/blob/main/contract/API.md) for more info.
-2. The frontend code lives in the `/src` folder. `/src/index.html` is a great place to start exploring. Note that it loads in `/src/index.js`, where you can learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart contract. See [NearDeFi/burrowland](https://github.com/NearDeFi/burrowland/)'s `README` for info about how it's tested. The frontend code gets tested with [jest]. You can run both of these at once with `yarn run test`.
+2. The frontend code lives in the [/src/](./src/) folder. [/src/index.html](./src/index.html) is a great place to start exploring. Note that it loads in [/src/index.tsx](./src/index.tsx), where you can learn how the frontend connects to the NEAR blockchain.
+3. Tests: there are different kinds of tests for the frontend and the smart contract. See [NearDeFi/burrowland](https://github.com/NearDeFi/burrowland/)'s `README` for info about how it's tested. The frontend code gets tested with [jest]. You can the later with `yarn run test`.
 
 
 Deploy
