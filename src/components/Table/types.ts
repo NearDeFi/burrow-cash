@@ -1,11 +1,9 @@
 import { WithStyles } from "@mui/styles";
 import { styles } from "./style";
+import { ColumnProps } from "react-virtualized/dist/es/Table";
 
-export interface ColumnData {
-	dataKey: string;
-	label: string;
+export interface ColumnData extends ColumnProps {
 	numeric?: boolean;
-	width: number;
 }
 
 export interface Row {

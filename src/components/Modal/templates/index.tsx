@@ -1,5 +1,11 @@
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
+import { useContext, useState } from "react";
+import { addCollateral, borrow, supply } from "../../../store/tokens";
+import { isRegistered, register } from "../../../store";
+import { useEffect } from "react";
+import { IBurrow } from "../../../interfaces/burrow";
+import { Burrow } from "../../../index";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -10,31 +16,82 @@ const borrowRates = [
 ];
 
 export const BorrowData: TokenActionsInput = {
+	type: "Borrow",
 	title: "Borrow",
 	totalAmountTitle: "Borrow Amount",
 	totalAmount: 0,
 	buttonText: "Borrow",
 	rates: borrowRates,
-	ratesTitle: "Borrow Rates",
-	token: { count: 2, name: "Token Name", symbol: "TSYL", valueInUSD: 5, apy: 10 },
+	ratesTitle: "Rates",
+	asset: {
+		token_id: "wrap.testnet",
+		amount: 2,
+		name: "Token Name",
+		symbol: "TSYL",
+		valueInUSD: 5,
+		apy: 10,
+	},
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-	const { title, token, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle } = input;
+	const { title, asset, totalAmount, totalAmountTitle, buttonText, rates, ratesTitle, type } =
+		input;
+
+	const [amount, setAmount] = useState(0);
+	const [registered, setRegistered] = useState(false);
+	const burrow = useContext<IBurrow | null>(Burrow);
+
+	useEffect(() => {
+		(async () => {
+			if (burrow?.walletConnection.isSignedIn()) {
+				setRegistered(await isRegistered(burrow.account.accountId));
+			}
+		})();
+	}, []);
 
 	return (
 		<>
 			<ModalTitle title={title} />
-			<TokenBasicDetails tokenName={token.name} apy={token.apy} />
+			<TokenBasicDetails tokenName={asset.name} icon={asset.icon} apy={asset.apy} />
 			<TokenInputs
-				availableTokens={token.count}
-				tokenSymbol={token.symbol}
-				tokenPriceInUSD={token.valueInUSD}
+				availableTokens={asset.amount}
+				tokenSymbol={asset.symbol}
+				tokenPriceInUSD={asset.valueInUSD}
 				totalAmount={totalAmount}
 				totalAmountTitle={totalAmountTitle}
+				onChange={(amount) => setAmount(amount)}
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
-			<ActionButton text={buttonText} />
+
+			{registered ? (
+				<>
+					<ActionButton
+						text={buttonText}
+						onClick={() => {
+							console.log(amount, asset, type);
+
+							if (type === "Borrow") void borrow(asset.token_id, amount);
+							else void supply(asset.token_id, amount);
+						}}
+					/>
+
+					{type === "Borrow" && (
+						<ActionButton
+							text={"Add collateral"}
+							onClick={() => {
+								void addCollateral(asset.token_id);
+							}}
+						/>
+					)}
+				</>
+			) : (
+				<ActionButton
+					text={"Register"}
+					onClick={() => {
+						return register();
+					}}
+				/>
+			)}
 		</>
 	);
 };

@@ -1,37 +1,13 @@
 import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
-import { AssetsContext } from "../../context/assets";
+import { ContractContext } from "../../context/contracts";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
+import { IAssetDetailed } from "../../interfaces/asset";
+import { ColumnData } from "../../components/Table/types";
+import { PERCENT_DIGITS } from "../../store/constants";
+import * as React from "react";
 
-const SUPPLY_DESKTOP_COLUMNS = [
-	{
-		width: 200,
-		label: "Name",
-		dataKey: "name",
-	},
-	{
-		width: 120,
-		label: "APY",
-		dataKey: "apy",
-	},
-	{
-		width: 120,
-		label: "Collateral",
-		dataKey: "collateral",
-	},
-	{
-		width: 120,
-		label: "Total Supply",
-		dataKey: "totalSupply",
-	},
-	{
-		width: 120,
-		label: "Wallet",
-		dataKey: "wallet",
-	},
-];
-
-const SUPPLY_COLUMNS = [
+const SUPPLY_COLUMNS: ColumnData[] = [
 	{
 		width: 240,
 		label: "Name",
@@ -41,11 +17,18 @@ const SUPPLY_COLUMNS = [
 		width: 150,
 		label: "APY",
 		dataKey: "apy",
+		numeric: true,
+		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+			return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
+		},
 	},
 	{
 		width: 150,
 		label: "Collateral",
 		dataKey: "collateral",
+		cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+			return rowData.config.can_use_as_collateral;
+		},
 	},
 ];
 
@@ -71,7 +54,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const { assets } = useContext<{ assets: any[] }>(AssetsContext);
+	const { assets, metadata } = useContext(ContractContext);
 
 	return (
 		<>
@@ -79,7 +62,15 @@ const Supply = () => {
 				<SupplyTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Supply"} second={"Assets"} />
-			<Table rows={assets} columns={SUPPLY_COLUMNS} />
+			<Table
+				rows={assets
+					.filter((asset) => asset.config.can_deposit)
+					.map((a) => ({
+						...a,
+						...metadata.find((m) => m.token_id === a.token_id),
+					}))}
+				columns={SUPPLY_COLUMNS}
+			/>
 			<TotalSupply />
 			<Footer />
 		</>

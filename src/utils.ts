@@ -1,12 +1,20 @@
-import { connect, Contract, keyStores, WalletConnection, Account } from "near-api-js";
-import getConfig, {
-	LOGIC_CONTRACT_NAME,
+import {
+	connect,
+	Contract,
+	keyStores,
+	WalletConnection,
+	ConnectedWalletAccount,
+} from "near-api-js";
+import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
+import {
 	ChangeMethodsLogic,
 	ChangeMethodsOracle,
 	ViewMethodsLogic,
 	ViewMethodsOracle,
-} from "./config";
-import { IBurrow } from "./index";
+} from "./interfaces/contract-methods";
+import { IBurrow } from "./interfaces/burrow";
+import BN from "bn.js";
+import { getContract } from "./store/helper";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -32,7 +40,15 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	const walletConnection = new WalletConnection(near, null);
 
 	// Getting the Account ID. If still unauthorized, it's just empty string
-	const account: Account = await near.account(walletConnection.getAccountId());
+	const account: ConnectedWalletAccount = new ConnectedWalletAccount(
+		walletConnection,
+		near.connection,
+		walletConnection.account().accountId,
+	);
+
+	if (walletConnection.isSignedIn()) {
+		console.log("access keys", await account.getAccessKeys());
+	}
 
 	const view = async (
 		contract: Contract,
@@ -49,47 +65,52 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		});
 	};
 
-	const send = async (contract: Contract, methodName: string, args: Object = {}) => {
+	const call = async (
+		contract: Contract,
+		methodName: string,
+		args: Object = {},
+		deposit: string = "1",
+	) => {
+		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
+		const attachedDeposit = new BN(deposit);
+
+		console.log(
+			"transaction",
+			contract.contractId,
+			methodName,
+			args,
+			attachedDeposit.toString(),
+			gas.toString(),
+		);
+
 		return await account.functionCall({
 			contractId: contract.contractId,
 			methodName,
 			args,
+			attachedDeposit,
+			gas,
 		});
 	};
 
-	const logicContract: Contract = new Contract(walletConnection.account(), LOGIC_CONTRACT_NAME, {
-		// View methods are read only. They don't modify the state, but usually return some value.
-		viewMethods: Object.values(ViewMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-		// Change methods can modify the state. But you don't receive the returned value when called.
-		changeMethods: Object.values(ChangeMethodsLogic)
-			// @ts-ignore
-			.filter((m) => typeof m === "string")
-			.map((m) => m as string),
-	});
+	const logicContract: Contract = await getContract(
+		walletConnection.account(),
+		LOGIC_CONTRACT_NAME,
+		ViewMethodsLogic,
+		ChangeMethodsLogic,
+	);
 
 	// get oracle address from
 	const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
 		oracle_account_id: string;
 	};
 
-	const oracleContract: Contract = new Contract(
+	console.log("oracle address", config.oracle_account_id);
+
+	const oracleContract: Contract = await getContract(
 		walletConnection.account(),
 		config.oracle_account_id,
-		{
-			// View methods are read only. They don't modify the state, but usually return some value.
-			viewMethods: Object.values(ViewMethodsOracle)
-				// @ts-ignore
-				.filter((m) => typeof m === "string")
-				.map((m) => m as string),
-			// Change methods can modify the state. But you don't receive the returned value when called.
-			changeMethods: Object.values(ChangeMethodsOracle)
-				// @ts-ignore
-				.filter((m) => typeof m === "string")
-				.map((m) => m as string),
-		},
+		ViewMethodsOracle,
+		ChangeMethodsOracle,
 	);
 
 	burrow = {
@@ -98,7 +119,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		logicContract,
 		oracleContract,
 		view,
-		send,
+		call,
 	} as IBurrow;
 
 	return burrow;
@@ -120,5 +141,7 @@ export async function login(walletConnection: WalletConnection) {
 	// user's behalf.
 	// This works by creating a new access key for the user's account and storing
 	// the private key in localStorage.
-	await walletConnection.requestSignIn(LOGIC_CONTRACT_NAME);
+	await walletConnection.requestSignIn({
+		contractId: LOGIC_CONTRACT_NAME,
+	});
 }

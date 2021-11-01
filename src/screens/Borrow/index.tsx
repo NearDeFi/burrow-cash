@@ -1,11 +1,11 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { Header, Table } from "../../components";
 import Footer from "../../components/Footer";
-import { ViewMethodsLogic } from "../../config";
-import { Burrow, IBurrow } from "../../index";
-import { mockBorrowMobileData } from "../../mockData";
 import { BigButton, PageTitle, TotalSupply } from "../../shared";
-import { getAssets } from "../../store";
+import { IAssetDetailed } from "../../interfaces/asset";
+import { ColumnData } from "../../components/Table/types";
+import { PERCENT_DIGITS } from "../../store/constants";
+import { ContractContext } from "../../context/contracts";
 
 const BorrowTopButtons = () => {
 	return (
@@ -26,41 +26,9 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const { assets } = useContext(ContractContext);
 
-	const [assets, setAssets] = useState<any[]>(mockBorrowMobileData);
-
-	useEffect(() => {
-		(async () => {
-			const accounts = await burrow?.view(
-				burrow?.logicContract,
-				ViewMethodsLogic[ViewMethodsLogic.get_accounts_paged],
-			);
-			console.log("accounts", accounts);
-
-			for (const account of accounts) {
-				const acc = await burrow?.view(
-					burrow?.logicContract,
-					ViewMethodsLogic[ViewMethodsLogic.get_account],
-					{
-						account_id: account.account_id,
-					},
-				);
-				console.log("account", acc);
-			}
-
-			const a = (await getAssets()).map((asset: any) => {
-				return {
-					...asset,
-					borrowAPY: 10,
-				};
-			});
-
-			setAssets([mockBorrowMobileData, ...a]);
-		})();
-	}, []);
-
-	const columns = [
+	const columns: ColumnData[] = [
 		{
 			width: 300,
 			label: "Name",
@@ -70,6 +38,10 @@ const Borrow = () => {
 			width: 300,
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
+			numeric: true,
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
+			},
 		},
 	];
 
@@ -79,7 +51,7 @@ const Borrow = () => {
 				<BorrowTopButtons />
 			</Header>
 			<PageTitle paddingTop={"0"} first={"Borrow"} second={"Assets"} />
-			<Table rows={assets} columns={columns} />
+			<Table rows={assets.filter((asset) => asset.config.can_borrow)} columns={columns} />
 			<TotalSupply />
 			<Footer />
 		</>

@@ -5,34 +5,29 @@ import * as React from "react";
 import useMobileDetect from "use-mobile-detect-hook";
 import { CloseModalIcon } from "./components";
 import { BorrowData, TokenActionsTemplate } from "./templates";
-import { Templates } from "./types";
+import { Templates, TokenActionsInput } from "./types";
 
-interface ModalState {
-	setModalType: (i: string) => void;
+export interface ModalState {
 	handleOpen: () => void;
 	setTemplate: (i: Templates) => void;
+	setModalData: (i: TokenActionsInput) => void;
 }
 
 export const ModalContext = React.createContext<ModalState>({} as ModalState);
 
-const ModalData: any = {
-	borrow: BorrowData,
-};
-
 const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 	const detectMobile = useMobileDetect();
 	const style = detectMobile.isMobile() ? mobileStyle : desktopStyle;
-	const [modalType, setModalType] = React.useState<string>("borrow");
 	const [template, setTemplate] = React.useState<Templates>(Templates.TokenActions);
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-	const modalData = ModalData[modalType];
+	const [modalData, setModalData] = React.useState<TokenActionsInput>(BorrowData);
 
 	const state: ModalState = {
-		setModalType,
 		handleOpen,
 		setTemplate,
+		setModalData,
 	};
 
 	return (
@@ -43,12 +38,13 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
 					{template === Templates.TokenActions && (
 						<TokenActionsTemplate
 							title={modalData.title}
-							token={modalData.token}
+							type={modalData.type}
+							asset={modalData.asset}
 							totalAmount={modalData.totalAmount}
-							totalAmountTitle={modalData.totalAmountTitle}
-							buttonText={modalData.buttonText}
+							totalAmountTitle={`Total ${modalData.asset.symbol}`}
+							buttonText={`${modalData.type} ${modalData.asset.symbol}`}
 							rates={modalData.rates}
-							ratesTitle={modalData.ratesTitle}
+							ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}
 						/>
 					)}
 				</Box>

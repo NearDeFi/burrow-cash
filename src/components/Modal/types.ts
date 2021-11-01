@@ -1,8 +1,19 @@
+export type ModalType = "Borrow" | "Supply";
+
 export interface TokenActionsInput {
+	type: ModalType;
 	title: string;
 	totalAmountTitle: string;
 	totalAmount: number;
-	token: { count: number; name: string; symbol: string; valueInUSD: number; apy: number };
+	asset: {
+		token_id: string;
+		amount: number;
+		name: string;
+		symbol: string;
+		valueInUSD: number;
+		icon?: string;
+		apy: number;
+	};
 	buttonText: string;
 	rates: any[];
 	ratesTitle: string;

@@ -2,31 +2,6 @@ import { ConnectConfig } from "near-api-js";
 
 export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || "dev-1634686594172-33981818199919";
 
-export enum ViewMethodsLogic {
-	"get_account",
-	"get_accounts_paged",
-	"get_asset",
-	"get_assets",
-	"get_assets_paged",
-	"get_config",
-}
-
-// Change methods can modify the state. But you don't receive the returned value when called.
-export enum ChangeMethodsLogic {
-	"new",
-	"execute",
-	"update_config",
-	"add_asset",
-	"update_asset",
-	"ft_on_transfer",
-	"oracle_on_call",
-}
-
-export enum ViewMethodsOracle {}
-
-// Change methods can modify the state. But you don't receive the returned value when called.
-export enum ChangeMethodsOracle {}
-
 const getConfig = (env: string) => {
 	switch (env) {
 		case "production":

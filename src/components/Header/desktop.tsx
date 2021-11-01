@@ -1,21 +1,21 @@
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useHistory } from "react-router";
 import Logo from "../../assets/logo.svg";
-import { ViewMethodsLogic } from "../../config";
-import { Burrow, IBurrow } from "../../index";
+import { Burrow } from "../../index";
 import { colors } from "../../style";
 import { login, logout } from "../../utils";
 import * as SC from "./style";
+import { IBurrow } from "../../interfaces/burrow";
 
-interface DesktpoButtonInput {
+interface DesktopButtonInput {
 	onClick: any;
 	border: boolean;
 	text: string;
 }
 
-const DesktpoButton = (props: DesktpoButtonInput) => {
+const DesktopButton = (props: DesktopButtonInput) => {
 	const { onClick, border, text, ...other } = props;
 	const notSelectedButtonStyle = {
 		borderWidth: 0,
@@ -38,20 +38,7 @@ const DesktpoButton = (props: DesktpoButtonInput) => {
 
 const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 	const burrow = useContext<IBurrow | null>(Burrow);
-	const [oracle, setOracle] = useState<string>("");
-	const [owner, setOwner] = useState<string>("");
 	const history = useHistory();
-
-	useEffect(() => {
-		(async () => {
-			const config = await burrow?.view(
-				burrow?.logicContract,
-				ViewMethodsLogic[ViewMethodsLogic.get_config],
-			);
-			setOracle(config.oracle_account_id);
-			setOwner(config.owner_id);
-		})();
-	}, []);
 
 	const LeftSide = () => {
 		return (
@@ -59,21 +46,23 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				<Typography variant="h6" component="div" style={{ color: "#00BACF" }}>
 					<Logo />
 				</Typography>
-				<DesktpoButton
+				<DesktopButton
 					text="Supply"
 					border={history.location.pathname === "/supply"}
 					onClick={() => history.push("/supply")}
 				/>
-				<DesktpoButton
+				<DesktopButton
 					text="Borrow"
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				<DesktpoButton
-					text="Portfolio"
-					border={history.location.pathname === "/portfolio"}
-					onClick={() => history.push("/portfolio")}
-				/>
+				{burrow?.walletConnection.isSignedIn() && (
+					<DesktopButton
+						text="Portfolio"
+						border={history.location.pathname === "/portfolio"}
+						onClick={() => history.push("/portfolio")}
+					/>
+				)}
 			</SC.DesktopHeaderLeftSideWrapper>
 		);
 	};
@@ -90,7 +79,7 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 						: login(burrow!.walletConnection);
 				}}
 			>
-				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect"}
+				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
 			</Button>
 		);
 	};

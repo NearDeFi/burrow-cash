@@ -1,8 +1,10 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Avatar, Button, Switch, Typography } from "@mui/material";
+import { Button, Switch, Typography } from "@mui/material";
 import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
+import TokenIcon from "../../TokenIcon";
+import { PERCENT_DIGITS, TOKEN, USD } from "../../../store/constants";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
@@ -37,14 +39,17 @@ export const TokenInputs = ({
 	tokenPriceInUSD,
 	totalAmount,
 	totalAmountTitle,
+	onChange,
 }: {
 	availableTokens: number;
 	tokenSymbol: string;
 	tokenPriceInUSD: number;
 	totalAmountTitle: string;
 	totalAmount: number;
+	onChange: (amount: number) => void;
 }) => {
-	const totalAvialabeTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
+	const totalAvailableTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
+
 	return (
 		<>
 			<div
@@ -57,11 +62,26 @@ export const TokenInputs = ({
 					color: colors.secondary,
 				}}
 			>
-				<div>{`Available: ${availableTokens} ${tokenSymbol} ($${totalAvialabeTokensPrice})`}</div>
-				<div style={{ justifySelf: "end" }}>{`1 ${tokenSymbol} = $${tokenPriceInUSD}`}</div>
+				<div>{`Available: ${availableTokens.toLocaleString(
+					undefined,
+					TOKEN,
+				)} ${tokenSymbol} (${totalAvailableTokensPrice.toLocaleString(undefined, USD)})`}</div>
+				<div style={{ justifySelf: "end" }}>{`1 ${tokenSymbol} = ${tokenPriceInUSD.toLocaleString(
+					undefined,
+					USD,
+				)}`}</div>
 			</div>
 			<div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
-				<Input />
+				<Input
+					value={0}
+					type={"number"}
+					onChange={(e) => {
+						const amount = Number(e.target.value);
+						if (!isNaN(amount)) {
+							if (onChange) onChange(amount);
+						}
+					}}
+				/>
 			</div>
 			<div style={{ paddingTop: "1em" }}>
 				<Stepper />
@@ -127,25 +147,33 @@ export const Rates = ({ ratesTitle, rates }: { ratesTitle: string; rates: any[] 
 	);
 };
 
-export const ActionButton = ({ text }: { text: string }) => {
+export const ActionButton = ({ text, onClick }: { text: string; onClick?: () => void }) => {
 	return (
 		<Typography
 			style={{ textAlign: "center", color: colors.secondary }}
 			id="modal-modal-description"
 			sx={{ mt: 2 }}
 		>
-			<Button style={{ backgroundColor: colors.primary }} variant="contained">
+			<Button style={{ backgroundColor: colors.primary }} variant="contained" onClick={onClick}>
 				{text}
 			</Button>
 		</Typography>
 	);
 };
 
-export const TokenBasicDetails = ({ tokenName, apy }: { tokenName: string; apy: number }) => {
+export const TokenBasicDetails = ({
+	tokenName,
+	icon,
+	apy,
+}: {
+	tokenName: string;
+	icon?: string;
+	apy: number;
+}) => {
 	return (
 		<>
 			<div style={{ display: "grid", justifyContent: "center", marginTop: "2em" }}>
-				<Avatar />
+				<TokenIcon icon={icon} />
 			</div>
 			<Typography
 				style={{ textAlign: "center", color: colors.secondary, fontSize: "14px", fontWeight: 500 }}
@@ -154,7 +182,7 @@ export const TokenBasicDetails = ({ tokenName, apy }: { tokenName: string; apy: 
 			>
 				{tokenName}
 				<br />
-				{`${apy}$ APY`}
+				{`${apy.toFixed(PERCENT_DIGITS)}% APY`}
 			</Typography>
 		</>
 	);
