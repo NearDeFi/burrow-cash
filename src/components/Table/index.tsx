@@ -43,34 +43,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		});
 	};
 
-	const CollateralCell: TableCellRenderer = ({ cellData, columnIndex }) => {
-		return (
-			<TableCell
-				component="div"
-				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
-				})}
-				variant="body"
-				style={{
-					display: "grid",
-					height: ROW_HEIGHT,
-					color: "white",
-					justifyContent: "end",
-					flex: "0 1 150px !important",
-				}}
-			>
-				<Switch
-					classes={{ colorPrimary: colors.primary }}
-					edge="end"
-					color={"primary"}
-					onChange={() => {}}
-					checked={cellData}
-					inputProps={{}}
-				/>
-			</TableCell>
-		);
-	};
-
 	const TokenNameCell: TableCellRenderer = ({
 		rowData,
 	}: {
@@ -236,7 +208,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const getCell = (dataKey: string) => {
-		if (dataKey === "collateral") return CollateralCell;
 		if (dataKey === "name") return TokenNameCell;
 		if (dataKey === "apy" || dataKey === "borrowAPY") return APYCell;
 		if (dataKey === "withdraw") return WithdrawCell;
