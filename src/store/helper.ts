@@ -31,11 +31,11 @@ export const rateToApr = (rate: string): string => {
 };
 
 export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined> => {
-	const burrow = await getBurrow();
+	const { view, oracleContract } = await getBurrow();
 
 	try {
-		const priceResponse: IPrices = (await burrow?.view(
-			burrow?.oracleContract,
+		const priceResponse: IPrices = (await view(
+			oracleContract,
 			ViewMethodsOracle[ViewMethodsOracle.get_price_data],
 			{
 				asset_ids: tokenIds,

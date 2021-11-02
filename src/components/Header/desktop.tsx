@@ -37,7 +37,7 @@ const DesktopButton = (props: DesktopButtonInput) => {
 };
 
 const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const { walletConnection, account } = useContext<IBurrow>(Burrow);
 	const history = useHistory();
 
 	const LeftSide = () => {
@@ -56,7 +56,7 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				{burrow?.walletConnection.isSignedIn() && (
+				{walletConnection.isSignedIn() && (
 					<DesktopButton
 						text="Portfolio"
 						border={history.location.pathname === "/portfolio"}
@@ -74,12 +74,10 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				style={{ justifySelf: "end", backgroundColor: colors.primary }}
 				variant="contained"
 				onClick={() => {
-					burrow?.walletConnection.isSignedIn()
-						? logout(burrow!.walletConnection)
-						: login(burrow!.walletConnection);
+					walletConnection.isSignedIn() ? logout(walletConnection) : login(walletConnection);
 				}}
 			>
-				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
+				{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
 			</Button>
 		);
 	};

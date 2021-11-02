@@ -1,16 +1,16 @@
 import { IAccount, IAccountDetailed, IBalance } from "../interfaces/account";
 import { getBurrow } from "../utils";
-import { ChangeMethodsLogic, ViewMethodsLogic } from "../interfaces/contract-methods";
-import { expandToken, shrinkToken } from "./helper";
-import { DECIMAL_OVERRIDES, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
+import { ViewMethodsLogic } from "../interfaces/contract-methods";
+import { shrinkToken } from "./helper";
+import { DECIMAL_OVERRIDES, TOKEN_DECIMALS } from "./constants";
 import { getBalance } from "./tokens";
 import { IMetadata } from "../interfaces/asset";
 
 export const getAccounts = async (): Promise<IAccount[]> => {
-	const burrow = await getBurrow();
+	const { view, logicContract } = await getBurrow();
 
-	const accounts: IAccount[] = (await burrow?.view(
-		burrow?.logicContract,
+	const accounts: IAccount[] = (await view(
+		logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_accounts_paged],
 	)) as IAccount[];
 
@@ -21,10 +21,10 @@ export const getAccounts = async (): Promise<IAccount[]> => {
 };
 
 export const getAccountDetailed = async (account_id: string): Promise<IAccountDetailed> => {
-	const burrow = await getBurrow();
+	const { view, logicContract } = await getBurrow();
 
-	const accountDetailed: IAccountDetailed = (await burrow?.view(
-		burrow?.logicContract,
+	const accountDetailed: IAccountDetailed = (await view(
+		logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_account],
 		{
 			account_id,
@@ -37,10 +37,6 @@ export const getAccountDetailed = async (account_id: string): Promise<IAccountDe
 	return accountDetailed;
 };
 
-export const isRegistered = async (account_id: string): Promise<boolean> => {
-	return !!(await getAccountDetailed(account_id));
-};
-
 export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	const accounts: IAccount[] = await getAccounts();
 
@@ -51,26 +47,16 @@ export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	return result;
 };
 
-export const register = async (): Promise<void> => {
-	const burrow = await getBurrow();
-
-	console.log(`Registering ${burrow.account.accountId}`);
-
-	await burrow.call(
-		burrow.logicContract,
-		ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-		{},
-		// send 0.1 near as deposit to register
-		expandToken(0.1, NEAR_DECIMALS),
-	);
-};
-
 export const getPortfolio = async (metadata: IMetadata[]): Promise<IAccountDetailed> => {
-	const burrow = await getBurrow();
+	const { account } = await getBurrow();
 
-	const account: IAccountDetailed = await getAccountDetailed(burrow?.account.accountId!);
+	const accountDetailed: IAccountDetailed = await getAccountDetailed(account.accountId!);
 
-	for (const asset of [...account.borrowed, ...account.supplied, ...account.collateral]) {
+	for (const asset of [
+		...accountDetailed.borrowed,
+		...accountDetailed.supplied,
+		...accountDetailed.collateral,
+	]) {
 		const { symbol } = await metadata.find((m) => m.token_id === asset.token_id)!;
 
 		const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
@@ -78,22 +64,20 @@ export const getPortfolio = async (metadata: IMetadata[]): Promise<IAccountDetai
 		asset.balance = shrinkToken(asset.balance, decimals);
 	}
 
-	return account;
+	return accountDetailed;
 };
 
 export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
-	const burrow = await getBurrow();
+	const { account, walletConnection } = await getBurrow();
 
 	const balances: IBalance[] = await Promise.all(
 		token_ids.map(
 			async (token_id) =>
 				({
 					token_id: token_id,
-					account_id: burrow?.account.accountId,
+					account_id: account.accountId,
 					balance:
-						(burrow?.walletConnection.isSignedIn() &&
-							(await getBalance(token_id, burrow.account.accountId))) ||
-						0,
+						(walletConnection.isSignedIn() && (await getBalance(token_id, account.accountId))) || 0,
 				} as IBalance),
 		),
 	);

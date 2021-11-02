@@ -14,6 +14,7 @@ import {
 import { ContractContext } from "../../context/contracts";
 import { shrinkToken } from "../../store/helper";
 import { Burrow } from "../../index";
+import { IBurrow } from "../../interfaces/burrow";
 
 const BorrowTopButtons = () => {
 	const { assets, metadata, portfolio } = useContext(ContractContext);
@@ -52,7 +53,7 @@ const BorrowTopButtons = () => {
 };
 
 const Borrow = () => {
-	const burrow = useContext(Burrow);
+	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const { assets, metadata, portfolio } = useContext(ContractContext);
 
 	const columns: ColumnData[] = [
@@ -97,7 +98,7 @@ const Borrow = () => {
 		},
 	];
 
-	if (burrow?.walletConnection.isSignedIn()) {
+	if (walletConnection.isSignedIn()) {
 		columns.push({
 			width: 100,
 			label: "Amount Borrowed",

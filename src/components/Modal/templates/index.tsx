@@ -1,11 +1,7 @@
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { addCollateral, borrow, supply } from "../../../store/tokens";
-import { isRegistered, register } from "../../../store";
-import { useEffect } from "react";
-import { IBurrow } from "../../../interfaces/burrow";
-import { Burrow } from "../../../index";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -34,18 +30,7 @@ export const BorrowData: TokenActionsInput = {
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
 	const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
-
 	const [amount, setAmount] = useState(0);
-	const [registered, setRegistered] = useState(false);
-	const burrow = useContext<IBurrow | null>(Burrow);
-
-	useEffect(() => {
-		(async () => {
-			if (burrow?.walletConnection.isSignedIn()) {
-				setRegistered(await isRegistered(burrow.account.accountId));
-			}
-		})();
-	}, []);
 
 	return (
 		<>
@@ -60,30 +45,19 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
-			{registered ? (
-				<>
-					<ActionButton
-						text={buttonText}
-						onClick={() => {
-							if (type === "Borrow") void borrow(asset.token_id, amount);
-							else void supply(asset.token_id, amount);
-						}}
-					/>
+			<ActionButton
+				text={buttonText}
+				onClick={() => {
+					if (type === "Borrow") void borrow(asset.token_id, amount);
+					else void supply(asset.token_id, amount);
+				}}
+			/>
 
-					{type === "Borrow" && (
-						<ActionButton
-							text={"Add collateral"}
-							onClick={() => {
-								void addCollateral(asset.token_id);
-							}}
-						/>
-					)}
-				</>
-			) : (
+			{type === "Borrow" && (
 				<ActionButton
-					text={"Register"}
+					text={"Add collateral"}
 					onClick={() => {
-						return register();
+						void addCollateral(asset.token_id);
 					}}
 				/>
 			)}

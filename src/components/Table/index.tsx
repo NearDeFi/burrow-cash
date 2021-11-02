@@ -215,7 +215,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			ratesTitle: "rates",
 		});
 		modal.handleOpen();
-	}
+	};
 
 	return (
 		<AutoSizer>

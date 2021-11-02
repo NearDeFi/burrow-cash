@@ -4,6 +4,7 @@ import {
 	keyStores,
 	WalletConnection,
 	ConnectedWalletAccount,
+	transactions,
 } from "near-api-js";
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
@@ -14,7 +15,9 @@ import {
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
 import BN from "bn.js";
-import { getContract } from "./store/helper";
+import { expandToken, getContract } from "./store/helper";
+import { NEAR_DECIMALS } from "./store/constants";
+import BatchWallet, { BatchWalletAccount, isRegistered } from "./store/wallet";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -37,10 +40,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
 
 	// Initializing Wallet based Account. It can work with NEAR testnet wallet that
 	// is hosted at https://wallet.testnet.near.org
-	const walletConnection = new WalletConnection(near, null);
+	const walletConnection = new BatchWallet(near, null);
 
 	// Getting the Account ID. If still unauthorized, it's just empty string
-	const account: ConnectedWalletAccount = new ConnectedWalletAccount(
+	const account: BatchWalletAccount = new BatchWalletAccount(
 		walletConnection,
 		near.connection,
 		walletConnection.account().accountId,
@@ -71,7 +74,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		args: Object = {},
 		deposit: string = "1",
 	) => {
-		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
+		const gas = new BN(150000000000000); //new BN(7 * 10 ** 12);
 		const attachedDeposit = new BN(deposit);
 
 		console.log(
@@ -83,12 +86,33 @@ export const getBurrow = async (): Promise<IBurrow> => {
 			gas.toString(),
 		);
 
-		return await account.functionCall({
-			contractId: contract.contractId,
-			methodName,
-			args,
-			attachedDeposit,
-			gas,
+		const actions = [
+			transactions.functionCall(
+				methodName,
+				Buffer.from(JSON.stringify(args)),
+				gas,
+				attachedDeposit,
+			),
+		];
+
+		if (!(await isRegistered(account.accountId, contract))) {
+			actions.splice(
+				0,
+				0,
+				transactions.functionCall(
+					ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+					{},
+					gas,
+					// send 0.1 near as deposit to register
+					new BN(expandToken(0.1, NEAR_DECIMALS)),
+				),
+			);
+		}
+
+		// @ts-ignore
+		return await account.signAndSendTransaction({
+			receiverId: contract.contractId,
+			actions,
 		});
 	};
 
