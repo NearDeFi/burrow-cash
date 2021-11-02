@@ -27,6 +27,7 @@ module.exports = {
 		"object-curly-spacing": "off",
 		"react/react-in-jsx-scope": 0,
 		"react/prop-types": 0,
+		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": "error",
 		"react/jsx-filename-extension": [1, { extensions: [".ts", ".tsx"] }],
 		"import/extensions": 0,

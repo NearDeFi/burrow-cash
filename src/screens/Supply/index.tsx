@@ -83,14 +83,6 @@ const Supply = () => {
 			},
 		},
 		{
-			width: 150,
-			label: "Collateral",
-			dataKey: "collateral",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return rowData.config.can_use_as_collateral;
-			},
-		},
-		{
 			width: 100,
 			label: "Total Supply",
 			dataKey: "supply",

@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import Switch from "@mui/material/Switch";
 import TableCell from "@mui/material/TableCell";
 import { withStyles } from "@mui/styles";
 import clsx from "clsx";
@@ -8,7 +7,7 @@ import { useLocation } from "react-router";
 import { useContext } from "react";
 import { Button } from "@mui/material";
 
-import { colors, Heading4, Heading6 } from "../../style";
+import { Heading4, Heading6 } from "../../style";
 import { ModalContext, ModalState } from "../Modal";
 import {
 	APYCellWrapper,
@@ -40,33 +39,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		return clsx(classes.tableRow, classes.flexContainer, {
 			[classes.tableRowHover]: index !== -1 && onRowClick !== null,
 		});
-	};
-
-	const CollateralCell: TableCellRenderer = ({ cellData }) => {
-		return (
-			<TableCell
-				component="div"
-				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick === null,
-				})}
-				variant="body"
-				style={{
-					display: "grid",
-					height: ROW_HEIGHT,
-					color: "white",
-					justifyContent: "end",
-					flex: "0 1 150px !important",
-				}}
-			>
-				<Switch
-					classes={{ colorPrimary: colors.primary }}
-					edge="end"
-					color="primary"
-					checked={cellData}
-					inputProps={{}}
-				/>
-			</TableCell>
-		);
 	};
 
 	const TokenNameCell: TableCellRenderer = ({
@@ -213,7 +185,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const getCell = (dataKey: string) => {
-		if (dataKey === "collateral") return CollateralCell;
 		if (dataKey === "name") return TokenNameCell;
 		if (dataKey === "apy" || dataKey === "borrowAPY") return APYCell;
 		if (dataKey === "withdraw") return WithdrawCell;

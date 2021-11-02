@@ -21,7 +21,7 @@ jobs:
           yarn
       - name: Run Lint
         run: |
-          yarn prettier
           yarn lint
+          yarn type-check
       - name: Run Build
         run: yarn build
