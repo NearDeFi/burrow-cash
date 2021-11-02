@@ -1,9 +1,9 @@
+import { useContext, useState, useEffect } from "react";
+
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { useContext, useState } from "react";
 import { addCollateral, borrow, supply } from "../../../store/tokens";
 import { isRegistered, register } from "../../../store";
-import { useEffect } from "react";
 import { IBurrow } from "../../../interfaces/burrow";
 import { Burrow } from "../../../index";
 
@@ -56,7 +56,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 				tokenSymbol={asset.symbol}
 				tokenPriceInUSD={asset.valueInUSD}
 				totalAmountTitle={totalAmountTitle}
-				onChange={(amount) => setAmount(amount)}
+				onChange={(a) => setAmount(a)}
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
@@ -65,23 +65,23 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 					<ActionButton
 						text={buttonText}
 						onClick={() => {
-							if (type === "Borrow") void borrow(asset.token_id, amount);
-							else void supply(asset.token_id, amount);
+							if (type === "Borrow") borrow(asset.token_id, amount);
+							else supply(asset.token_id, amount);
 						}}
 					/>
 
 					{type === "Borrow" && (
 						<ActionButton
-							text={"Add collateral"}
+							text="Add collateral"
 							onClick={() => {
-								void addCollateral(asset.token_id);
+								addCollateral(asset.token_id);
 							}}
 						/>
 					)}
 				</>
 			) : (
 				<ActionButton
-					text={"Register"}
+					text="Register"
 					onClick={() => {
 						return register();
 					}}

@@ -7,7 +7,7 @@ enum ChangeMethodsNearToken {
 	near_withdraw,
 }
 
-export const deposit = async (address: string, amount: string = "0", msg: string = "") => {
+export const deposit = async (address: string, amount = "0", msg = "") => {
 	const burrow = await getBurrow();
 
 	try {

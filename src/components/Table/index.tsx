@@ -3,8 +3,11 @@ import Switch from "@mui/material/Switch";
 import TableCell from "@mui/material/TableCell";
 import { withStyles } from "@mui/styles";
 import clsx from "clsx";
-import * as React from "react";
 import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from "react-virtualized";
+import { useLocation } from "react-router";
+import { useContext } from "react";
+import { Button } from "@mui/material";
+
 import { colors, Heading4, Heading6 } from "../../style";
 import { ModalContext, ModalState } from "../Modal";
 import {
@@ -17,12 +20,9 @@ import {
 } from "./style";
 import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-import { useLocation } from "react-router";
 import TokenIcon from "../TokenIcon";
-import { useContext } from "react";
 import { ContractContext } from "../../context/contracts";
 import { USD_FORMAT } from "../../store/constants";
-import { Button } from "@mui/material";
 import { repay, withdraw } from "../../store/tokens";
 import { IAsset } from "../../interfaces/account";
 
@@ -37,14 +37,12 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	const { columns, classes, onRowClick, ...tableProps } = props;
 
 	const getRowClassName = ({ index }: Row) => {
-		const { classes, onRowClick } = props;
-
 		return clsx(classes.tableRow, classes.flexContainer, {
 			[classes.tableRowHover]: index !== -1 && onRowClick !== null,
 		});
 	};
 
-	const CollateralCell: TableCellRenderer = ({ cellData, columnIndex }) => {
+	const CollateralCell: TableCellRenderer = ({ cellData }) => {
 		return (
 			<TableCell
 				component="div"
@@ -63,8 +61,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				<Switch
 					classes={{ colorPrimary: colors.primary }}
 					edge="end"
-					color={"primary"}
-					onChange={() => {}}
+					color="primary"
 					checked={cellData}
 					inputProps={{}}
 				/>
@@ -104,7 +101,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const WithdrawCell: TableCellRenderer = ({ cellData, dataKey }) => {
+	const WithdrawCell: TableCellRenderer = ({ cellData }) => {
 		return (
 			<TableCell
 				component="div"
@@ -141,7 +138,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						size="small"
 						style={{ justifySelf: "end" }}
 						variant="contained"
-						onClick={() => void repay(rowData.token_id, 1)}
+						onClick={() => repay(rowData.token_id, 1)}
 					>
 						Repay
 					</Button>
@@ -151,7 +148,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	const APYCell: TableCellRenderer = ({ cellData, dataKey }) => {
-		const data = String(cellData) + "%";
+		const data = `${cellData}%`;
 		const style = { height: ROW_HEIGHT, color: "#000741", display: "grid" };
 
 		return (
@@ -170,7 +167,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const DefaultCell: TableCellRenderer = ({ cellData, columnIndex }) => {
+	const DefaultCell: TableCellRenderer = ({ cellData }) => {
 		return (
 			<TableCell
 				component="div"
@@ -179,7 +176,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				})}
 				variant="body"
 				style={{ height: ROW_HEIGHT, color: "#000741", display: "grid" }}
-				align={"left"}
+				align="left"
 			>
 				<DefaultCellWrapper>
 					<Heading4 cellData={cellData} />
@@ -200,7 +197,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			color: "#000741",
 			display: "grid",
 			maxWidth: "800px",
-			justifyContent: justifyContent,
+			justifyContent,
 		};
 
 		return (
@@ -244,7 +241,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			ratesTitle: "rates",
 		});
 		modal.handleOpen();
-	}
+	};
 
 	return (
 		<AutoSizer>

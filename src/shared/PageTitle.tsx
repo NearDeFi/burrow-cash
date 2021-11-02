@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { colors } from "../style";
 
-const TitleWrapper = styled.div<{ paddingTop: string }>`
+const TitleWrapper = styled.div<{ paddingTop?: string }>`
 	text-align: center;
 	padding-top: ${(props) => props.paddingTop || "1em"};
 	font-size: 24px;
@@ -15,10 +15,9 @@ const PageTitle = ({
 }: {
 	first: string;
 	second: string;
-	paddingTop?: string;
+	paddingTop: string;
 }) => {
 	return (
-		// @ts-ignore
 		<TitleWrapper paddingTop={paddingTop}>
 			Available <span style={{ color: colors.primary }}>{first}</span> {second}
 		</TitleWrapper>

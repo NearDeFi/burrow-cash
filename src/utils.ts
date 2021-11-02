@@ -5,6 +5,8 @@ import {
 	WalletConnection,
 	ConnectedWalletAccount,
 } from "near-api-js";
+import BN from "bn.js";
+
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
 	ChangeMethodsLogic,
@@ -13,8 +15,7 @@ import {
 	ViewMethodsOracle,
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
-import BN from "bn.js";
-import { getContract } from "./store/helper";
+import { getContract } from "./store";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -26,14 +27,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	if (burrow) return burrow;
 
 	// Initialize connection to the NEAR testnet
-	const near = await connect(
-		Object.assign(
-			{
-				deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
-			},
-			nearConfig,
-		),
-	);
+	const near = await connect({
+		deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
+		...nearConfig,
+	});
 
 	// Initializing Wallet based Account. It can work with NEAR testnet wallet that
 	// is hosted at https://wallet.testnet.near.org
@@ -53,10 +50,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	const view = async (
 		contract: Contract,
 		methodName: string,
-		args: Object = {},
-		json: boolean = true,
-	): Promise<Object | string> => {
-		return await account.viewFunction(contract.contractId, methodName, args, {
+		args: Record<string, unknown> = {},
+		json = true,
+	): Promise<Record<string, unknown> | string> => {
+		return account.viewFunction(contract.contractId, methodName, args, {
 			// always parse to string, JSON parser will fail if its not a json
 			parse: (data: Uint8Array) => {
 				const result = Buffer.from(data).toString();
@@ -68,10 +65,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
 	const call = async (
 		contract: Contract,
 		methodName: string,
-		args: Object = {},
-		deposit: string = "1",
+		args: Record<string, unknown> = {},
+		deposit = "1",
 	) => {
-		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
+		const gas = new BN(300000000000000); // new BN(7 * 10 ** 12);
 		const attachedDeposit = new BN(deposit);
 
 		console.log(
@@ -83,7 +80,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 			gas.toString(),
 		);
 
-		return await account.functionCall({
+		return account.functionCall({
 			contractId: contract.contractId,
 			methodName,
 			args,
@@ -126,8 +123,8 @@ export const getBurrow = async (): Promise<IBurrow> => {
 };
 
 // Initialize contract & set global variables
-export async function initContract() {
-	return await getBurrow();
+export async function initContract(): Promise<IBurrow> {
+	return getBurrow();
 }
 
 export function logout(walletConnection: WalletConnection) {

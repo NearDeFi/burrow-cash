@@ -9,7 +9,7 @@ import { IBurrow } from "./interfaces/burrow";
 
 export const Burrow = React.createContext<IBurrow | null>(null);
 
-//@ts-ignore
+// @ts-ignore sdfsdf
 window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(

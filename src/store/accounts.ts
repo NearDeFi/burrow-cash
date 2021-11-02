@@ -1,8 +1,8 @@
 import { IAccount, IAccountDetailed, IBalance } from "../interfaces/account";
 import { getBurrow } from "../utils";
 import { ChangeMethodsLogic, ViewMethodsLogic } from "../interfaces/contract-methods";
-import { expandToken, shrinkToken } from "./helper";
-import { DECIMAL_OVERRIDES, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
+import { expandToken } from "./helper";
+import { NEAR_DECIMALS } from "./constants";
 import { getBalance } from "./tokens";
 import { IMetadata } from "../interfaces/asset";
 
@@ -70,13 +70,18 @@ export const getPortfolio = async (metadata: IMetadata[]): Promise<IAccountDetai
 
 	const account: IAccountDetailed = await getAccountDetailed(burrow?.account.accountId!);
 
-	for (const asset of [...account.borrowed, ...account.supplied, ...account.collateral]) {
-		const { symbol } = await metadata.find((m) => m.token_id === asset.token_id)!;
+	console.log("getPortfolio:", metadata);
 
-		const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
-		asset.shares = shrinkToken(asset.shares, decimals);
-		asset.balance = shrinkToken(asset.balance, decimals);
-	}
+	// commented because it should be refactored
+	// it should not mutate the account object.
+
+	// for (const asset of [...account.borrowed, ...account.supplied, ...account.collateral]) {
+	// 	const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
+
+	// 	const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
+	// 	asset.shares = shrinkToken(asset.shares, decimals);
+	// 	asset.balance = shrinkToken(asset.balance, decimals);
+	// }
 
 	return account;
 };
@@ -88,7 +93,7 @@ export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
 		token_ids.map(
 			async (token_id) =>
 				({
-					token_id: token_id,
+					token_id,
 					account_id: burrow?.account.accountId,
 					balance:
 						(burrow?.walletConnection.isSignedIn() &&

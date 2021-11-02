@@ -22,6 +22,8 @@ export interface IAsset {
 	config: IAssetConfig;
 }
 
+export type AssetEntry = [string, IAsset];
+
 interface IPool {
 	shares: string;
 	balance: string;
@@ -35,6 +37,24 @@ export interface IMetadata {
 	decimals: number;
 }
 
+interface IAssetFarmReward {
+	/// The reward token ID.
+	token_id: string;
+	/// The amount of reward distributed per day.
+	reward_per_day: string;
+	/// The log base for the booster. Used to compute boosted shares per account.
+	/// Including decimals of the booster.
+	booster_log_base: string;
+	/// The amount of rewards remaining to distribute.
+	remaining_rewards: string;
+	/// The total number of boosted shares.
+	boosted_shares: string;
+}
+
+interface IAssetFarmView {
+	farm_id: string;
+	rewards: IAssetFarmReward[];
+}
 export interface IAssetDetailed {
 	token_id: string;
 	/// Total supplied including collateral, but excluding reserved.
@@ -58,27 +78,8 @@ export interface IAssetDetailed {
 	price?: IPrice;
 }
 
-interface IAssetFarmView {
-	farm_id: string;
-	rewards: IAssetFarmReward[];
-}
-
-interface AssetFarm {
+export interface AssetFarm {
 	block_timestamp: string;
 	/// Rewards for the given farm
 	rewards: IAssetFarmReward;
-}
-
-interface IAssetFarmReward {
-	/// The reward token ID.
-	token_id: string;
-	/// The amount of reward distributed per day.
-	reward_per_day: string;
-	/// The log base for the booster. Used to compute boosted shares per account.
-	/// Including decimals of the booster.
-	booster_log_base: string;
-	/// The amount of rewards remaining to distribute.
-	remaining_rewards: string;
-	/// The total number of boosted shares.
-	boosted_shares: string;
 }

@@ -25,19 +25,19 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
 
 	useEffect(() => {
 		(async () => {
-			const assets = await getAssetsDetailed();
-			setAssets(assets);
+			const a = await getAssetsDetailed();
+			setAssets(a);
 
-			const [metadata, balances] = await Promise.all([
-				getAllMetadata(assets.map((asset) => asset.token_id)),
-				getBalances(assets.map((asset) => asset.token_id)),
+			const [m, b] = await Promise.all([
+				getAllMetadata(a.map((asset) => asset.token_id)),
+				getBalances(a.map((asset) => asset.token_id)),
 			]);
 
-			setMetadata(metadata);
-			setBalances(balances);
+			setMetadata(m);
+			setBalances(b);
 
-			const portfolio: IAccountDetailed = await getPortfolio(metadata);
-			setPortfolio(portfolio);
+			const p: IAccountDetailed = await getPortfolio(m);
+			setPortfolio(p);
 		})();
 	}, []);
 

@@ -1,7 +1,7 @@
 import { Contract } from "near-api-js";
-import { getBurrow } from "../utils";
-import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 import Decimal from "decimal.js";
+import { getBurrow } from "../utils";
+import { IMetadata } from "../interfaces/asset";
 import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle } from "../interfaces/contract-methods";
@@ -19,7 +19,27 @@ enum ChangeMethodsToken {
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
 	const { account } = await getBurrow();
-	return await getContract(account, tokenContractAddress, ViewMethodsToken, ChangeMethodsToken);
+	return getContract(account, tokenContractAddress, ViewMethodsToken, ChangeMethodsToken);
+};
+
+export const getMetadata = async (token_id: string): Promise<IMetadata | undefined> => {
+	try {
+		const { view } = await getBurrow();
+		const tokenContract: Contract = await getTokenContract(token_id);
+
+		const metadata: IMetadata = (await view(
+			tokenContract,
+			ViewMethodsToken[ViewMethodsToken.ft_metadata],
+		)) as IMetadata;
+
+		metadata.token_id = token_id;
+
+		console.log("metadata", metadata);
+		return metadata;
+	} catch (err: any) {
+		console.error(`Failed to get metadata for ${token_id} ${err.message}`);
+		return undefined;
+	}
 };
 
 export const getBalance = async (
@@ -45,25 +65,7 @@ export const getBalance = async (
 		return Number(balance);
 	} catch (err: any) {
 		console.error(`Failed to get balance for ${accountId} on ${token_id} ${err.message}`);
-	}
-};
-
-export const getMetadata = async (token_id: string): Promise<IMetadata | undefined> => {
-	try {
-		const { view } = await getBurrow();
-		const tokenContract: Contract = await getTokenContract(token_id);
-
-		const metadata: IMetadata = (await view(
-			tokenContract,
-			ViewMethodsToken[ViewMethodsToken.ft_metadata],
-		)) as IMetadata;
-
-		metadata.token_id = token_id;
-
-		console.log("metadata", metadata);
-		return metadata;
-	} catch (err: any) {
-		console.error(`Failed to get metadata for ${token_id} ${err.message}`);
+		return 0;
 	}
 };
 
@@ -131,13 +133,14 @@ export const addCollateral = async (token_id: string, amount?: number) => {
 			{
 				IncreaseCollateral: {
 					token_id,
+					amount: "",
 				},
 			},
 		],
 	};
 
 	if (amount) {
-		args.actions[0].IncreaseCollateral["amount"] = expandToken(
+		args.actions[0].IncreaseCollateral.amount = expandToken(
 			amount,
 			metadata?.decimals || NEAR_DECIMALS,
 		);
@@ -157,13 +160,14 @@ export const withdraw = async (token_id: string, amount?: number) => {
 			{
 				Withdraw: {
 					token_id,
+					amount: "",
 				},
 			},
 		],
 	};
 
 	if (amount) {
-		args.actions[0].Withdraw["amount"] = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
+		args.actions[0].Withdraw.amount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
 	}
 
 	await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
