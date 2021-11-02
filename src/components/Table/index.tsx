@@ -35,11 +35,12 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 
 	const location = (useLocation().pathname as string).replace("/", "");
 	const { columns, classes, onRowClick, ...tableProps } = props;
+
 	const getRowClassName = ({ index }: Row) => {
 		const { classes, onRowClick } = props;
 
 		return clsx(classes.tableRow, classes.flexContainer, {
-			[classes.tableRowHover]: index !== -1 && onRowClick != null,
+			[classes.tableRowHover]: index !== -1 && onRowClick !== null,
 		});
 	};
 
@@ -48,7 +49,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 				style={{
@@ -80,33 +81,12 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 				style={{ width: "200px", height: ROW_HEIGHT, color: "#000741" }}
 			>
-				<TokenNameCellWrapper
-					onClick={() => {
-						modal.setModalData({
-							type: location === "supply" ? "Supply" : "Borrow",
-							title: location === "supply" ? "Supply" : "Borrow",
-							totalAmountTitle: `Total ${location === "supply" ? "Supply" : "Borrow"}`,
-							asset: {
-								token_id: rowData.token_id,
-								amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
-								name: rowData?.name || "Unknown",
-								symbol: rowData?.symbol || "???",
-								icon: rowData?.icon,
-								valueInUSD: rowData.price?.usd || 0,
-								apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
-							},
-							buttonText: location === "supply" ? "Supply" : "Borrow",
-							rates: [],
-							ratesTitle: "rates",
-						});
-						modal.handleOpen();
-					}}
-				>
+				<TokenNameCellWrapper>
 					<TokenIcon icon={rowData?.icon} />
 
 					<TokenNameTextWrapper>
@@ -129,7 +109,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 			>
@@ -152,7 +132,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 			>
@@ -178,7 +158,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 				style={style}
@@ -195,7 +175,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<TableCell
 				component="div"
 				className={clsx(classes.tableCell, classes.flexContainer, {
-					[classes.noClick]: onRowClick == null,
+					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
 				style={{ height: ROW_HEIGHT, color: "#000741", display: "grid" }}
@@ -245,6 +225,27 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		return DefaultCell;
 	};
 
+	const handleModalOpen = ({ rowData }) => {
+		modal.setModalData({
+			type: location === "supply" ? "Supply" : "Borrow",
+			title: location === "supply" ? "Supply" : "Borrow",
+			totalAmountTitle: `Total ${location === "supply" ? "Supply" : "Borrow"}`,
+			asset: {
+				token_id: rowData.token_id,
+				amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
+				name: rowData?.name || "Unknown",
+				symbol: rowData?.symbol || "???",
+				icon: rowData?.icon,
+				valueInUSD: rowData.price?.usd || 0,
+				apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
+			},
+			buttonText: location === "supply" ? "Supply" : "Borrow",
+			rates: [],
+			ratesTitle: "rates",
+		});
+		modal.handleOpen();
+	}
+
 	return (
 		<AutoSizer>
 			{({ height, width }) => (
@@ -258,6 +259,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					headerHeight={HEADER_HEIGHT}
 					className={classes.table}
 					rowClassName={getRowClassName}
+					onRowClick={handleModalOpen}
 					{...tableProps}
 				>
 					{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
