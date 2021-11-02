@@ -71,7 +71,7 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 		return (
 			<Button
 				size="small"
-				style={{ justifySelf: "end" }}
+				style={{ justifySelf: "end", backgroundColor: colors.primary }}
 				variant="contained"
 				onClick={() => {
 					burrow?.walletConnection.isSignedIn()
