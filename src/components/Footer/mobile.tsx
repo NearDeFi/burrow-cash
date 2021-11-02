@@ -19,7 +19,7 @@ const MobileFooter = () => {
 			</SC.MobileFooterLeftSideWrapper>
 			<SC.MobileFooterRightSideWrapper>
 				<Typography>Terms of Service</Typography>
-				<Divider orientation={"vertical"} flexItem />
+				<Divider orientation="vertical" flexItem />
 				<Typography>Privacy Policy</Typography>
 			</SC.MobileFooterRightSideWrapper>
 		</SC.MobileFooterWrapper>

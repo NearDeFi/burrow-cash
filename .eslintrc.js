@@ -43,8 +43,9 @@ module.exports = {
 		"no-nested-ternary": 0,
 		"react/jsx-props-no-spreading": 0,
 		"@typescript-eslint/ban-ts-comment": 0,
+		"react/require-default-props": 0,
 		"no-use-before-define": "off",
-		"@typescript-eslint/no-use-before-define": ["error"],
+		"@typescript-eslint/no-use-before-define": ["error", { variables: false }],
 	},
 	settings: {
 		react: {

@@ -1,6 +1,6 @@
 import { WithStyles } from "@mui/styles";
-import { styles } from "./style";
 import { ColumnProps } from "react-virtualized/dist/es/Table";
+import { styles } from "./style";
 
 export interface ColumnData extends ColumnProps {
 	numeric?: boolean;

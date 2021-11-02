@@ -9,9 +9,8 @@ const Header = ({ children }: { children: React.ReactChild }) => {
 	const isMobile = detectMobile.isMobile();
 	if (isMobile) {
 		return <MobileHeader />;
-	} else {
-		return <DesktopHeader>{children}</DesktopHeader>;
 	}
+	return <DesktopHeader>{children}</DesktopHeader>;
 };
 
 export default Header;

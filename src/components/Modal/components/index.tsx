@@ -1,15 +1,19 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Button, Switch, Typography } from "@mui/material";
+import { useState } from "react";
 import { Input, Stepper } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
 import TokenIcon from "../../TokenIcon";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../../store/constants";
-import { useState } from "react";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
 	return (
-		<div onClick={closeModal} style={{ position: "absolute", cursor: "pointer", right: "8px" }}>
+		<div
+			onClick={closeModal}
+			aria-hidden="true"
+			style={{ position: "absolute", cursor: "pointer", right: "8px" }}
+		>
 			<CloseIcon />
 		</div>
 	);
@@ -76,10 +80,10 @@ export const TokenInputs = ({
 			<div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
 				<Input
 					value={0}
-					type={"number"}
+					type="number"
 					onChange={(e) => {
 						const amount = Number(e.target.value);
-						if (!isNaN(amount)) {
+						if (!Number.isNaN(amount)) {
 							setTotalAmount(amount * tokenPriceInUSD);
 							if (onChange) onChange(amount);
 						}

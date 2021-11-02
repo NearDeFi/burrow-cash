@@ -74,9 +74,11 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				style={{ justifySelf: "end", backgroundColor: colors.primary }}
 				variant="contained"
 				onClick={() => {
-					burrow?.walletConnection.isSignedIn()
-						? logout(burrow!.walletConnection)
-						: login(burrow!.walletConnection);
+					if (burrow?.walletConnection.isSignedIn()) {
+						logout(burrow!.walletConnection);
+					} else {
+						login(burrow!.walletConnection);
+					}
 				}}
 			>
 				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}

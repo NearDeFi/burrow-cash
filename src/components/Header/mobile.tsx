@@ -69,9 +69,11 @@ const MobileHeader = () => {
 	};
 
 	const onWalletButtonClick = () => {
-		burrow?.walletConnection.isSignedIn()
-			? logout(burrow!.walletConnection)
-			: login(burrow!.walletConnection);
+		if (burrow?.walletConnection.isSignedIn()) {
+			logout(burrow!.walletConnection);
+		} else {
+			login(burrow!.walletConnection);
+		}
 	};
 
 	return (
