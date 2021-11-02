@@ -2,7 +2,7 @@ import { Paper } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import styled from "styled-components";
 
-import { colors } from '../../style';
+import { colors } from "../../style";
 
 export const styles = (theme: Theme) =>
 	({
