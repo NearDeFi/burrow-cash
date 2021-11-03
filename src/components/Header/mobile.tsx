@@ -2,12 +2,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { useHistory } from "react-router";
+
 import Logo from "../../assets/logo.svg";
 import { Burrow } from "../../index";
 import { colors } from "../../style";
-import { login, logout } from "../../utils";
 import * as SC from "./style";
 import { IBurrow } from "../../interfaces/burrow";
+import WalletButton from "./WalletButton";
 
 interface MobileSubHeaderButtonInput {
 	onClick: any;
@@ -16,7 +17,7 @@ interface MobileSubHeaderButtonInput {
 }
 
 const MobileHeader = () => {
-	const { walletConnection, account } = useContext<IBurrow>(Burrow);
+	const { walletConnection } = useContext<IBurrow>(Burrow);
 
 	const MobileSubHeaderButton = (props: MobileSubHeaderButtonInput) => {
 		const { border, text, onClick } = props;
@@ -68,24 +69,13 @@ const MobileHeader = () => {
 		);
 	};
 
-	const onWalletButtonClick = () => {
-		walletConnection.isSignedIn() ? logout(walletConnection) : login(walletConnection);
-	};
-
 	return (
 		<SC.MobileHeaderWrapper>
 			<SC.MobileHeaderToolbar>
 				<Typography variant="h6" component="div" style={{ color: colors.primary }}>
 					<Logo />
 				</Typography>
-				<Button
-					size="small"
-					variant="contained"
-					style={{ backgroundColor: colors.primary }}
-					onClick={onWalletButtonClick}
-				>
-					{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
-				</Button>
+				<WalletButton />
 			</SC.MobileHeaderToolbar>
 			<MobileSubHeader />
 		</SC.MobileHeaderWrapper>

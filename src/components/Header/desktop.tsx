@@ -6,9 +6,9 @@ import { useHistory } from "react-router";
 import Logo from "../../assets/logo.svg";
 import { Burrow } from "../../index";
 import { colors } from "../../style";
-import { login, logout } from "../../utils";
 import * as SC from "./style";
 import { IBurrow } from "../../interfaces/burrow";
+import WalletButton from "./WalletButton";
 
 interface DesktopButtonInput {
 	onClick: any;
@@ -38,7 +38,7 @@ const DesktopButton = (props: DesktopButtonInput) => {
 };
 
 const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
-	const { walletConnection, account } = useContext<IBurrow>(Burrow);
+	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const history = useHistory();
 
 	const LeftSide = () => {
@@ -65,21 +65,6 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 					/>
 				)}
 			</SC.DesktopHeaderLeftSideWrapper>
-		);
-	};
-
-	const WalletButton = () => {
-		return (
-			<Button
-				size="small"
-				style={{ justifySelf: "end", backgroundColor: colors.primary }}
-				variant="contained"
-				onClick={() => {
-					walletConnection.isSignedIn() ? logout(walletConnection) : login(walletConnection);
-				}}
-			>
-				{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
-			</Button>
 		);
 	};
 
