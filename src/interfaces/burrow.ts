@@ -1,5 +1,5 @@
 import { Account, Contract } from "near-api-js";
-import { BatchWallet } from "../store/wallet";
+import { BatchWallet } from "../store";
 
 import { IPrices } from "./oracle";
 import { IMetadata, AssetEntry, IAssetDetailed } from "./asset";

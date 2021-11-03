@@ -17,7 +17,8 @@ import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
 
 const SupplyTopButtons = () => {
-	const { assets, metadata, portfolio } = useContext(ContractContext);
+	const { assets, portfolio } = useContext(ContractContext);
+	const { walletConnection } = useContext(Burrow);
 
 	return (
 		<div
@@ -29,25 +30,21 @@ const SupplyTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<div style={{ justifySelf: "end" }}>
-				<BigButton
-					text="Your supply balance"
-					value={portfolio?.supplied
-						.map(
-							(supplied) =>
-								Number(
-									shrinkToken(
-										supplied.balance,
-										DECIMAL_OVERRIDES[
-											metadata.find((m) => m.token_id === supplied.token_id)?.symbol || ""
-										] || TOKEN_DECIMALS,
-									),
-								) * (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
-						)
-						.reduce((sum, a) => sum + a, 0)
-						.toLocaleString(undefined, USD_FORMAT)}
-				/>
-			</div>
+			{walletConnection.isSignedIn() && (
+				<div style={{ justifySelf: "end" }}>
+					<BigButton
+						text="Your supply balance"
+						value={portfolio?.supplied
+							.map(
+								(supplied) =>
+									Number(supplied.balance) *
+									(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
+							)
+							.reduce((sum, a) => sum + a, 0)
+							.toLocaleString(undefined, USD_FORMAT)}
+					/>
+				</div>
+			)}
 			<div style={{ justifySelf: "start" }}>
 				<BigButton text="Net APY" value={0} />
 			</div>

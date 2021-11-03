@@ -12,12 +12,13 @@ import {
 	USD_FORMAT,
 } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { shrinkToken } from "../../store/helper";
+import { shrinkToken } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
 
 const BorrowTopButtons = () => {
-	const { assets, metadata, portfolio } = useContext(ContractContext);
+	const { assets, portfolio } = useContext(ContractContext);
+	const { walletConnection } = useContext(Burrow);
 
 	return (
 		<div
@@ -29,23 +30,19 @@ const BorrowTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<BigButton
-				text="Your Borrow Balance"
-				value={portfolio?.borrowed
-					.map(
-						(borrowed) =>
-							Number(
-								shrinkToken(
-									borrowed.balance,
-									DECIMAL_OVERRIDES[
-										metadata.find((m) => m.token_id === borrowed.token_id)?.symbol || ""
-									] || TOKEN_DECIMALS,
-								),
-							) * (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-					)
-					.reduce((sum, a) => sum + a, 0)
-					.toLocaleString(undefined, USD_FORMAT)}
-			/>
+			{walletConnection.isSignedIn() && (
+				<BigButton
+					text="Your Borrow Balance"
+					value={portfolio?.borrowed
+						.map(
+							(borrowed) =>
+								Number(borrowed.balance) *
+								(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+						)
+						.reduce((sum, a) => sum + a, 0)
+						.toLocaleString(undefined, USD_FORMAT)}
+				/>
+			)}
 			<BigButton text="Borrow Limit" value={0} />
 			<BigButton text="Risk Factor" value={0} />
 		</div>
