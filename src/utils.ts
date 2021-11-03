@@ -15,9 +15,8 @@ import {
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
 import BN from "bn.js";
-import { expandToken, getContract } from "./store/helper";
-import { NEAR_DECIMALS } from "./store/constants";
-import BatchWallet, { BatchWalletAccount, isRegistered } from "./store/wallet";
+import { getContract } from "./store/helper";
+import BatchWallet, { BatchWalletAccount } from "./store/wallet";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -59,13 +58,20 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		args: Object = {},
 		json: boolean = true,
 	): Promise<Object | string> => {
-		return await account.viewFunction(contract.contractId, methodName, args, {
-			// always parse to string, JSON parser will fail if its not a json
-			parse: (data: Uint8Array) => {
-				const result = Buffer.from(data).toString();
-				return json ? JSON.parse(result) : result;
-			},
-		});
+		try {
+			return await account.viewFunction(contract.contractId, methodName, args, {
+				// always parse to string, JSON parser will fail if its not a json
+				parse: (data: Uint8Array) => {
+					const result = Buffer.from(data).toString();
+					return json ? JSON.parse(result) : result;
+				},
+			});
+		} catch (err: any) {
+			console.error(
+				`view failed on ${contract.contractId} method: ${methodName}, ${JSON.stringify(args)}`,
+			);
+			throw err;
+		}
 	};
 
 	const call = async (
@@ -94,20 +100,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
 				attachedDeposit,
 			),
 		];
-
-		if (!(await isRegistered(account.accountId, contract))) {
-			actions.splice(
-				0,
-				0,
-				transactions.functionCall(
-					ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-					{},
-					gas,
-					// send 0.1 near as deposit to register
-					new BN(expandToken(0.1, NEAR_DECIMALS)),
-				),
-			);
-		}
 
 		// @ts-ignore
 		return await account.signAndSendTransaction({

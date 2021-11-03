@@ -52,15 +52,6 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 					else void supply(asset.token_id, amount);
 				}}
 			/>
-
-			{type === "Borrow" && (
-				<ActionButton
-					text={"Add collateral"}
-					onClick={() => {
-						void addCollateral(asset.token_id);
-					}}
-				/>
-			)}
 		</>
 	);
 };

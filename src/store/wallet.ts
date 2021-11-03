@@ -43,7 +43,7 @@ export default class BatchWallet extends WalletConnection {
 		actions: Action[];
 		nonceOffset?: number;
 	}) {
-		return this._connectedAccount?.createTransaction({
+		return this._connectedAccount.createTransaction({
 			receiverId,
 			actions,
 			nonceOffset,
@@ -84,14 +84,14 @@ export class BatchWalletAccount extends ConnectedWalletAccount {
 	}
 }
 
-const gas = new BN(150000000000000); //new BN(7 * 10 ** 12);
-const attachedDeposit = new BN(1);
-
 export const executeMultipleTransactions = async (
 	transactions: Transaction[],
 	callbackUrl?: string,
 ) => {
 	const { walletConnection } = await getBurrow();
+
+	const gas = new BN(150000000000000); //new BN(7 * 10 ** 12);
+	const attachedDeposit = new BN(1);
 
 	const nearTransactions = await Promise.all(
 		transactions.map((t, i) => {
@@ -116,14 +116,10 @@ export const executeMultipleTransactions = async (
 	})!;
 };
 
-export const isRegistered = async (account_id: string, contract?: Contract): Promise<boolean> => {
-	const { view, logicContract } = await getBurrow();
+export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
+	const { view } = await getBurrow();
 
-	return !!(await view(
-		contract || logicContract,
-		ViewMethodsLogic[ViewMethodsLogic.storage_balance_of],
-		{
-			account_id,
-		},
-	));
+	return !!(await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+		account_id,
+	}));
 };

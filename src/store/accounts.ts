@@ -47,24 +47,28 @@ export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	return result;
 };
 
-export const getPortfolio = async (metadata: IMetadata[]): Promise<IAccountDetailed> => {
+export const getPortfolio = async (
+	metadata: IMetadata[],
+): Promise<IAccountDetailed | undefined> => {
 	const { account } = await getBurrow();
 
 	const accountDetailed: IAccountDetailed = await getAccountDetailed(account.accountId!);
 
-	for (const asset of [
-		...accountDetailed.borrowed,
-		...accountDetailed.supplied,
-		...accountDetailed.collateral,
-	]) {
-		const { symbol } = await metadata.find((m) => m.token_id === asset.token_id)!;
+	if (accountDetailed) {
+		for (const asset of [
+			...accountDetailed.borrowed,
+			...accountDetailed.supplied,
+			...accountDetailed.collateral,
+		]) {
+			const { symbol } = await metadata.find((m) => m.token_id === asset.token_id)!;
 
-		const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
-		asset.shares = shrinkToken(asset.shares, decimals);
-		asset.balance = shrinkToken(asset.balance, decimals);
+			const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
+			asset.shares = shrinkToken(asset.shares, decimals);
+			asset.balance = shrinkToken(asset.balance, decimals);
+		}
+
+		return accountDetailed;
 	}
-
-	return accountDetailed;
 };
 
 export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {

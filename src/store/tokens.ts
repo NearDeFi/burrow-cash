@@ -12,6 +12,7 @@ import {
 	Transaction,
 } from "./wallet";
 import BN from "bn.js";
+import { getAccountDetailed } from "./accounts";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -122,6 +123,8 @@ const prepareAndSendTokenTransactions = async (
 		functionCalls,
 	});
 
+	console.log("transactions being dispatched", JSON.stringify(transactions, null, 2));
+
 	await executeMultipleTransactions(transactions);
 };
 
@@ -149,9 +152,11 @@ export const supply = async (token_id: string, amount: number): Promise<void> =>
 export const borrow = async (token_id: string, amount: number) => {
 	console.log(`Borrowing ${amount} of ${token_id}`);
 
-	const { call, oracleContract, logicContract } = await getBurrow();
+	const { call, oracleContract, logicContract, account } = await getBurrow();
+
 	const metadata = await getMetadata(token_id);
 	const expandedAmount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
+	const accountDetailed = await getAccountDetailed(account.accountId);
 
 	const borrowTemplate = {
 		Execute: {
@@ -168,7 +173,7 @@ export const borrow = async (token_id: string, amount: number) => {
 
 	await call(oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
 		receiver_id: logicContract.contractId,
-		asset_ids: ["usdt.fakes.testnet", token_id],
+		asset_ids: [accountDetailed.collateral.map((c) => c.token_id), token_id],
 		msg: JSON.stringify(borrowTemplate),
 	});
 };
