@@ -9,13 +9,10 @@ import { getPrices, rateToApr } from "./helper";
 Decimal.set({ precision: DEFAULT_PRECISION });
 
 export const getAssets = async (): Promise<IAsset[]> => {
-	const burrow = await getBurrow();
+	const { view, logicContract } = await getBurrow();
 
 	return (
-		(await burrow?.view(
-			burrow?.logicContract,
-			ViewMethodsLogic[ViewMethodsLogic.get_assets_paged],
-		)) as AssetEntry[]
+		(await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_assets_paged])) as AssetEntry[]
 	).map(([token_id, asset]: AssetEntry) => ({
 		...asset,
 		token_id,
@@ -23,10 +20,10 @@ export const getAssets = async (): Promise<IAsset[]> => {
 };
 
 export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed> => {
-	const burrow = await getBurrow();
+	const { view, logicContract } = await getBurrow();
 
-	const assetDetails: IAssetDetailed = (await burrow?.view(
-		burrow?.logicContract,
+	const assetDetails: IAssetDetailed = (await view(
+		logicContract,
 		ViewMethodsLogic[ViewMethodsLogic.get_asset],
 		{
 			token_id,

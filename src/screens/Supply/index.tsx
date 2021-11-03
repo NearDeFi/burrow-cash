@@ -56,7 +56,7 @@ const SupplyTopButtons = () => {
 };
 
 const Supply = () => {
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const { assets, metadata, balances } = useContext(ContractContext);
 
 	const columns: ColumnData[] = [
@@ -101,7 +101,7 @@ const Supply = () => {
 		},
 	];
 
-	if (burrow?.walletConnection.isSignedIn()) {
+	if (walletConnection.isSignedIn()) {
 		columns.push({
 			width: 100,
 			label: "Wallet",

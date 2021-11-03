@@ -12,6 +12,7 @@ export enum ViewMethodsLogic {
 	get_asset_farm,
 	get_asset_farms,
 	get_asset_farms_paged,
+	storage_balance_of,
 }
 
 // Change methods can modify the state. But you don't receive the returned value when called.

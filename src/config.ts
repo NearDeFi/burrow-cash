@@ -1,6 +1,6 @@
 import { ConnectConfig } from "near-api-js";
 
-export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || "dev-1634686594172-33981818199919";
+export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || "dev-1635889446130-85659081932001";
 
 const getConfig = (env: string) => {
 	switch (env) {

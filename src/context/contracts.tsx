@@ -36,8 +36,10 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
 			setMetadata(m);
 			setBalances(b);
 
-			const p: IAccountDetailed = await getPortfolio(m);
-			setPortfolio(p);
+			const p = await getPortfolio(m);
+			if (p) {
+				setPortfolio(p);
+			}
 		})();
 	}, []);
 

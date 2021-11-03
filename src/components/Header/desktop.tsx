@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { useHistory } from "react-router";
+
 import Logo from "../../assets/logo.svg";
 import { Burrow } from "../../index";
 import { colors } from "../../style";
@@ -37,7 +38,7 @@ const DesktopButton = (props: DesktopButtonInput) => {
 };
 
 const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const { walletConnection, account } = useContext<IBurrow>(Burrow);
 	const history = useHistory();
 
 	const LeftSide = () => {
@@ -56,7 +57,7 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				{burrow?.walletConnection.isSignedIn() && (
+				{walletConnection.isSignedIn() && (
 					<DesktopButton
 						text="Portfolio"
 						border={history.location.pathname === "/portfolio"}
@@ -74,14 +75,10 @@ const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
 				style={{ justifySelf: "end", backgroundColor: colors.primary }}
 				variant="contained"
 				onClick={() => {
-					if (burrow?.walletConnection.isSignedIn()) {
-						logout(burrow!.walletConnection);
-					} else {
-						login(burrow!.walletConnection);
-					}
+					walletConnection.isSignedIn() ? logout(walletConnection) : login(walletConnection);
 				}}
 			>
-				{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
+				{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
 			</Button>
 		);
 	};

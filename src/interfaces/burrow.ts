@@ -1,11 +1,12 @@
-import { Account, Contract, WalletConnection } from "near-api-js";
+import { Account, Contract } from "near-api-js";
+import BatchWallet from "../store/wallet";
 
 import { IPrices } from "./oracle";
 import { IMetadata, AssetEntry, IAssetDetailed } from "./asset";
 import { IAccount, IAccountDetailed } from "./account";
 
 export interface IBurrow {
-	walletConnection: WalletConnection;
+	walletConnection: BatchWallet;
 	account: Account;
 	logicContract: Contract;
 	oracleContract: Contract;

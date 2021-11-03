@@ -193,7 +193,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		return DefaultCell;
 	};
 
-	const handleModalOpen = ({ rowData }) => {
+	const handleModalOpen = ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
 		modal.setModalData({
 			type: location === "supply" ? "Supply" : "Borrow",
 			title: location === "supply" ? "Supply" : "Borrow",
@@ -206,6 +206,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				icon: rowData?.icon,
 				valueInUSD: rowData.price?.usd || 0,
 				apy: Number(location === "supply" ? rowData.supply_apr : rowData.borrow_apr),
+				canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
 			},
 			buttonText: location === "supply" ? "Supply" : "Borrow",
 			rates: [],

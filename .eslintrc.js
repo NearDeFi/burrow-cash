@@ -35,7 +35,7 @@ module.exports = {
 		"no-plusplus": 0,
 		"no-param-reassign": 0,
 		camelcase: 0,
-		"import/no-cycle": [2, { maxDepth: 1 }],
+		"import/no-cycle": [1, { maxDepth: 1 }],
 		"@typescript-eslint/no-non-null-assertion": 0,
 		"@typescript-eslint/no-non-null-asserted-optional-chain": 0,
 		"no-shadow": "off",
@@ -46,6 +46,12 @@ module.exports = {
 		"react/require-default-props": 0,
 		"no-use-before-define": "off",
 		"@typescript-eslint/no-use-before-define": ["error", { variables: false }],
+		"max-classes-per-file": ["error", 2],
+		"no-underscore-dangle": ["error", { allowAfterSuper: true, allowAfterThis: true }],
+		"dot-notation": 0,
+		"no-restricted-syntax": 1,
+		"no-unused-expressions": [1, { allowShortCircuit: false, allowTernary: false }],
+		"no-void": [1, { allowAsStatement: true }],
 	},
 	settings: {
 		react: {
