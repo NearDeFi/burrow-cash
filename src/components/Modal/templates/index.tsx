@@ -26,6 +26,7 @@ export const BorrowData: TokenActionsInput = {
 		symbol: "TSYL",
 		valueInUSD: 5,
 		apy: 10,
+		canBeUsedAsCollateral: true,
 	},
 };
 
@@ -47,7 +48,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
-			{type === "Supply" && (
+			{type === "Supply" && asset.canBeUsedAsCollateral && (
 				<>
 					Use as collateral
 					<Switch onChange={(event) => setUseAsCollateral(event.target.checked)} />

@@ -12,6 +12,7 @@ export interface TokenActionsInput {
 		valueInUSD: number;
 		icon?: string;
 		apy: number;
+		canBeUsedAsCollateral: boolean;
 	};
 	buttonText: string;
 	rates: any[];
