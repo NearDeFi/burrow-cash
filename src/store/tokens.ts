@@ -211,7 +211,10 @@ export const borrow = async (token_id: string, amount: number) => {
 
 	await call(oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
 		receiver_id: logicContract.contractId,
-		asset_ids: [accountDetailed.collateral.map((c) => c.token_id), token_id],
+		asset_ids: [
+			...accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id),
+			token_id,
+		],
 		msg: JSON.stringify(borrowTemplate),
 	});
 };

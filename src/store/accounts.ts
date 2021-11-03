@@ -55,18 +55,23 @@ export const getPortfolio = async (
 	const accountDetailed: IAccountDetailed = await getAccountDetailed(account.accountId!);
 
 	if (accountDetailed) {
-		for (const asset of [
-			...accountDetailed.borrowed,
-			...accountDetailed.supplied,
-			...accountDetailed.collateral,
-		]) {
+		for (const asset of [...accountDetailed.supplied]) {
 			const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
-
 			const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
+			console.log("portfolio", asset.token_id, decimals);
 			asset.shares = shrinkToken(asset.shares, decimals);
 			asset.balance = shrinkToken(asset.balance, decimals);
 		}
 
+		for (const asset of [...accountDetailed.borrowed, ...accountDetailed.collateral]) {
+			const m = metadata.find((m) => m.token_id === asset.token_id);
+			const decimals = DECIMAL_OVERRIDES[m ? m.symbol : ""] || m?.decimals || TOKEN_DECIMALS;
+			console.log("portfolio", asset.token_id, decimals);
+			asset.shares = shrinkToken(asset.shares, decimals);
+			asset.balance = shrinkToken(asset.balance, decimals);
+		}
+
+		console.log("portfolio", accountDetailed);
 		return accountDetailed;
 	}
 };

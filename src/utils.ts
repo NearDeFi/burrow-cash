@@ -80,7 +80,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		args: Object = {},
 		deposit: string = "1",
 	) => {
-		const gas = new BN(150000000000000); //new BN(7 * 10 ** 12);
+		const gas = new BN(150000000000000);
 		const attachedDeposit = new BN(deposit);
 
 		console.log(
