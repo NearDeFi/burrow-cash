@@ -88,6 +88,7 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
 const prepareAndSendTokenTransactions = async (
 	tokenContract: Contract,
 	functionCall: FunctionCallOptions,
+	additionalOperations: Transaction[] = [],
 ) => {
 	const { account, logicContract } = await getBurrow();
 	const transactions: Transaction[] = [];
@@ -123,12 +124,18 @@ const prepareAndSendTokenTransactions = async (
 		functionCalls,
 	});
 
+	transactions.push(...additionalOperations);
+
 	console.log("transactions being dispatched", JSON.stringify(transactions, null, 2));
 
 	await executeMultipleTransactions(transactions);
 };
 
-export const supply = async (token_id: string, amount: number): Promise<void> => {
+export const supply = async (
+	token_id: string,
+	amount: number,
+	useAsCollateral: boolean,
+): Promise<void> => {
 	console.log(`Supplying ${amount} to ${token_id}`);
 
 	const { logicContract } = await getBurrow();
@@ -139,14 +146,45 @@ export const supply = async (token_id: string, amount: number): Promise<void> =>
 
 	console.log("transaction fixed amount", expandedAmount);
 
-	await prepareAndSendTokenTransactions(tokenContract, {
-		methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-		args: {
-			receiver_id: logicContract.contractId,
-			amount: expandedAmount,
-			msg: "",
+	const args = {
+		actions: [
+			{
+				IncreaseCollateral: {
+					token_id,
+				},
+			},
+		],
+	};
+
+	if (amount) {
+		args.actions[0].IncreaseCollateral["amount"] = expandToken(
+			amount,
+			metadata?.decimals || NEAR_DECIMALS,
+		);
+	}
+
+	const addCollateralTx = {
+		receiverId: logicContract.contractId,
+		functionCalls: [
+			{
+				methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
+				args,
+			},
+		],
+	};
+
+	await prepareAndSendTokenTransactions(
+		tokenContract,
+		{
+			methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
+			args: {
+				receiver_id: logicContract.contractId,
+				amount: expandedAmount,
+				msg: "",
+			},
 		},
-	});
+		useAsCollateral ? [addCollateralTx] : [],
+	);
 };
 
 export const borrow = async (token_id: string, amount: number) => {
