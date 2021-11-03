@@ -8,16 +8,16 @@ enum ChangeMethodsNearToken {
 }
 
 export const deposit = async (address: string, amount: string = "0", msg: string = "") => {
-	const burrow = await getBurrow();
+	const { call, account } = await getBurrow();
 
 	try {
 		const tokenContract: Contract = await getTokenContract("wrap.testnet");
 
-		const fa = await burrow.call(
+		const fa = await call(
 			tokenContract,
 			ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
 			{
-				receiver_id: burrow.account.accountId,
+				receiver_id: account.accountId,
 				amount,
 				msg,
 			},
@@ -25,26 +25,20 @@ export const deposit = async (address: string, amount: string = "0", msg: string
 
 		console.log("deposit", fa);
 	} catch (err: any) {
-		console.error(`Failed to deposit for ${burrow.account.accountId} on ${address} ${err.message}`);
+		console.error(`Failed to deposit for ${account.accountId} on ${address} ${err.message}`);
 	}
 };
 
 export const withdraw = async (address: string) => {
-	const burrow = await getBurrow();
+	const { call, account } = await getBurrow();
 
 	try {
 		const tokenContract: Contract = await getTokenContract("wrap.testnet");
 
-		const fa = await burrow.call(
-			tokenContract,
-			ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-			{
-				receiver_id: burrow.account.accountId,
-			},
-		);
-
-		console.log("withdraw", fa);
+		return await call(tokenContract, ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw], {
+			receiver_id: account.accountId,
+		});
 	} catch (err: any) {
-		console.error(`Failed to mint for ${burrow.account.accountId} on ${address} ${err.message}`);
+		console.error(`Failed to mint for ${account.accountId} on ${address} ${err.message}`);
 	}
 };

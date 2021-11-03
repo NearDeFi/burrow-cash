@@ -1,11 +1,8 @@
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { addCollateral, borrow, supply } from "../../../store/tokens";
-import { isRegistered, register } from "../../../store";
-import { useEffect } from "react";
-import { IBurrow } from "../../../interfaces/burrow";
-import { Burrow } from "../../../index";
+import { Switch } from "@mui/material";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -29,23 +26,14 @@ export const BorrowData: TokenActionsInput = {
 		symbol: "TSYL",
 		valueInUSD: 5,
 		apy: 10,
+		canBeUsedAsCollateral: true,
 	},
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
 	const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
-
 	const [amount, setAmount] = useState(0);
-	const [registered, setRegistered] = useState(false);
-	const burrow = useContext<IBurrow | null>(Burrow);
-
-	useEffect(() => {
-		(async () => {
-			if (burrow?.walletConnection.isSignedIn()) {
-				setRegistered(await isRegistered(burrow.account.accountId));
-			}
-		})();
-	}, []);
+	const [useAsCollateral, setUseAsCollateral] = useState(false);
 
 	return (
 		<>
@@ -60,33 +48,20 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
-			{registered ? (
+			{type === "Supply" && asset.canBeUsedAsCollateral && (
 				<>
-					<ActionButton
-						text={buttonText}
-						onClick={() => {
-							if (type === "Borrow") void borrow(asset.token_id, amount);
-							else void supply(asset.token_id, amount);
-						}}
-					/>
-
-					{type === "Borrow" && (
-						<ActionButton
-							text={"Add collateral"}
-							onClick={() => {
-								void addCollateral(asset.token_id);
-							}}
-						/>
-					)}
+					Use as collateral
+					<Switch onChange={(event) => setUseAsCollateral(event.target.checked)} />
 				</>
-			) : (
-				<ActionButton
-					text={"Register"}
-					onClick={() => {
-						return register();
-					}}
-				/>
 			)}
+
+			<ActionButton
+				text={buttonText}
+				onClick={() => {
+					if (type === "Borrow") void borrow(asset.token_id, amount);
+					else void supply(asset.token_id, amount, useAsCollateral);
+				}}
+			/>
 		</>
 	);
 };

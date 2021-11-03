@@ -4,6 +4,7 @@ import {
 	keyStores,
 	WalletConnection,
 	ConnectedWalletAccount,
+	transactions,
 } from "near-api-js";
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
@@ -15,6 +16,7 @@ import {
 import { IBurrow } from "./interfaces/burrow";
 import BN from "bn.js";
 import { getContract } from "./store/helper";
+import BatchWallet, { BatchWalletAccount } from "./store/wallet";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
@@ -37,10 +39,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
 
 	// Initializing Wallet based Account. It can work with NEAR testnet wallet that
 	// is hosted at https://wallet.testnet.near.org
-	const walletConnection = new WalletConnection(near, null);
+	const walletConnection = new BatchWallet(near, null);
 
 	// Getting the Account ID. If still unauthorized, it's just empty string
-	const account: ConnectedWalletAccount = new ConnectedWalletAccount(
+	const account: BatchWalletAccount = new BatchWalletAccount(
 		walletConnection,
 		near.connection,
 		walletConnection.account().accountId,
@@ -56,13 +58,20 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		args: Object = {},
 		json: boolean = true,
 	): Promise<Object | string> => {
-		return await account.viewFunction(contract.contractId, methodName, args, {
-			// always parse to string, JSON parser will fail if its not a json
-			parse: (data: Uint8Array) => {
-				const result = Buffer.from(data).toString();
-				return json ? JSON.parse(result) : result;
-			},
-		});
+		try {
+			return await account.viewFunction(contract.contractId, methodName, args, {
+				// always parse to string, JSON parser will fail if its not a json
+				parse: (data: Uint8Array) => {
+					const result = Buffer.from(data).toString();
+					return json ? JSON.parse(result) : result;
+				},
+			});
+		} catch (err: any) {
+			console.error(
+				`view failed on ${contract.contractId} method: ${methodName}, ${JSON.stringify(args)}`,
+			);
+			throw err;
+		}
 	};
 
 	const call = async (
@@ -71,7 +80,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		args: Object = {},
 		deposit: string = "1",
 	) => {
-		const gas = new BN(300000000000000); //new BN(7 * 10 ** 12);
+		const gas = new BN(150000000000000);
 		const attachedDeposit = new BN(deposit);
 
 		console.log(
@@ -83,12 +92,19 @@ export const getBurrow = async (): Promise<IBurrow> => {
 			gas.toString(),
 		);
 
-		return await account.functionCall({
-			contractId: contract.contractId,
-			methodName,
-			args,
-			attachedDeposit,
-			gas,
+		const actions = [
+			transactions.functionCall(
+				methodName,
+				Buffer.from(JSON.stringify(args)),
+				gas,
+				attachedDeposit,
+			),
+		];
+
+		// @ts-ignore
+		return await account.signAndSendTransaction({
+			receiverId: contract.contractId,
+			actions,
 		});
 	};
 

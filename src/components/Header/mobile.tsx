@@ -16,7 +16,7 @@ interface MobileSubHeaderButtonInput {
 }
 
 const MobileHeader = () => {
-	const burrow = useContext<IBurrow | null>(Burrow);
+	const { walletConnection, account } = useContext<IBurrow>(Burrow);
 
 	const MobileSubHeaderButton = (props: MobileSubHeaderButtonInput) => {
 		const { border, text, onClick } = props;
@@ -57,7 +57,7 @@ const MobileHeader = () => {
 					border={history.location.pathname === "/borrow"}
 					onClick={() => history.push("/borrow")}
 				/>
-				{burrow?.walletConnection.isSignedIn() && (
+				{walletConnection.isSignedIn() && (
 					<MobileSubHeaderButton
 						text="Portfolio"
 						border={history.location.pathname === "/portfolio"}
@@ -69,9 +69,7 @@ const MobileHeader = () => {
 	};
 
 	const onWalletButtonClick = () => {
-		burrow?.walletConnection.isSignedIn()
-			? logout(burrow!.walletConnection)
-			: login(burrow!.walletConnection);
+		walletConnection.isSignedIn() ? logout(walletConnection) : login(walletConnection);
 	};
 
 	return (
@@ -86,7 +84,7 @@ const MobileHeader = () => {
 					style={{ backgroundColor: colors.primary }}
 					onClick={onWalletButtonClick}
 				>
-					{burrow?.walletConnection.isSignedIn() ? burrow?.account.accountId : "Connect Wallet"}
+					{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
 				</Button>
 			</SC.MobileHeaderToolbar>
 			<MobileSubHeader />

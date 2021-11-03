@@ -102,7 +102,7 @@ const Portfolio = () => {
 			label: "Borrowed",
 			dataKey: "shares",
 			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.shares).toLocaleString(undefined, TOKEN_FORMAT);
+				return Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT);
 			},
 		},
 		{
