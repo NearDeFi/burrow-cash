@@ -42,3 +42,19 @@ export enum ViewMethodsOracle {
 export enum ChangeMethodsOracle {
 	oracle_call,
 }
+
+export enum ChangeMethodsNearToken {
+	near_deposit,
+	near_withdraw,
+}
+
+export enum ViewMethodsToken {
+	ft_metadata,
+	ft_balance_of,
+	storage_balance_of,
+}
+
+export enum ChangeMethodsToken {
+	ft_transfer_call,
+	storage_deposit,
+}

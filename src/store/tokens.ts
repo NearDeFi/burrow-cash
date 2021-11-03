@@ -6,7 +6,12 @@ import { getBurrow } from "../utils";
 import { IMetadata } from "../interfaces/asset";
 import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
-import { ChangeMethodsLogic, ChangeMethodsOracle } from "../interfaces/contract-methods";
+import {
+	ChangeMethodsLogic,
+	ChangeMethodsOracle,
+	ChangeMethodsToken,
+	ViewMethodsToken,
+} from "../interfaces/contract-methods";
 import {
 	executeMultipleTransactions,
 	FunctionCallOptions,
@@ -16,17 +21,6 @@ import {
 import { getAccountDetailed } from "./accounts";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
-
-enum ViewMethodsToken {
-	ft_metadata,
-	ft_balance_of,
-	storage_balance_of,
-}
-
-enum ChangeMethodsToken {
-	ft_transfer_call,
-	storage_deposit,
-}
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
 	const { account } = await getBurrow();

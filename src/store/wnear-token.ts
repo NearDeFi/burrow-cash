@@ -1,12 +1,7 @@
 import { Contract } from "near-api-js";
-
 import { getBurrow } from "../utils";
 import { getTokenContract } from "./tokens";
-
-enum ChangeMethodsNearToken {
-	near_deposit,
-	near_withdraw,
-}
+import { ChangeMethodsNearToken } from "../interfaces/contract-methods";
 
 export const deposit = async (address: string, amount = "0", msg = "") => {
 	const { call, account } = await getBurrow();
