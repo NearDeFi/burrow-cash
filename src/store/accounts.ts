@@ -60,7 +60,7 @@ export const getPortfolio = async (
 			...accountDetailed.supplied,
 			...accountDetailed.collateral,
 		]) {
-			const { symbol } = await metadata.find((m) => m.token_id === asset.token_id)!;
+			const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
 
 			const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
 			asset.shares = shrinkToken(asset.shares, decimals);
