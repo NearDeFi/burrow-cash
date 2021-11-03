@@ -1,8 +1,9 @@
+import { useState } from "react";
+import { Switch } from "@mui/material";
+
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { useState } from "react";
-import { addCollateral, borrow, supply } from "../../../store/tokens";
-import { Switch } from "@mui/material";
+import { borrow, supply } from "../../../store/tokens";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -44,7 +45,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 				tokenSymbol={asset.symbol}
 				tokenPriceInUSD={asset.valueInUSD}
 				totalAmountTitle={totalAmountTitle}
-				onChange={(amount) => setAmount(amount)}
+				onChange={(a) => setAmount(a)}
 			/>
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
@@ -58,8 +59,11 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			<ActionButton
 				text={buttonText}
 				onClick={() => {
-					if (type === "Borrow") void borrow(asset.token_id, amount);
-					else void supply(asset.token_id, amount, useAsCollateral);
+					if (type === "Borrow") {
+						void borrow(asset.token_id, amount);
+					} else {
+						void supply(asset.token_id, amount, useAsCollateral);
+					}
 				}}
 			/>
 		</>

@@ -1,4 +1,5 @@
 import { useContext } from "react";
+
 import { Footer, Header, Table } from "../../components";
 import { ContractContext } from "../../context/contracts";
 import { BigButton, PageTitle, Total } from "../../shared";
@@ -11,7 +12,6 @@ import {
 	TOKEN_FORMAT,
 	USD_FORMAT,
 } from "../../store/constants";
-import * as React from "react";
 import { shrinkToken } from "../../store/helper";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
@@ -31,7 +31,7 @@ const SupplyTopButtons = () => {
 		>
 			<div style={{ justifySelf: "end" }}>
 				<BigButton
-					text={"Your supply balance"}
+					text="Your supply balance"
 					value={portfolio?.supplied
 						.map(
 							(supplied) =>
@@ -44,12 +44,12 @@ const SupplyTopButtons = () => {
 									),
 								) * (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
 						)
-						.reduce((sum, a) => (sum += a), 0)
+						.reduce((sum, a) => sum + a, 0)
 						.toLocaleString(undefined, USD_FORMAT)}
 				/>
 			</div>
 			<div style={{ justifySelf: "start" }}>
-				<BigButton text={"Net APY"} value={0} />
+				<BigButton text="Net APY" value={0} />
 			</div>
 		</div>
 	);
@@ -119,7 +119,7 @@ const Supply = () => {
 			<Header>
 				<SupplyTopButtons />
 			</Header>
-			<PageTitle paddingTop={"0"} first={"Supply"} second={"Assets"} />
+			<PageTitle paddingTop="0" first="Supply" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_deposit)
@@ -131,7 +131,7 @@ const Supply = () => {
 			/>
 			{assets.length > 0 && (
 				<Total
-					type={"Supply"}
+					type="Supply"
 					value={assets
 						.map((asset) =>
 							asset.price
@@ -145,7 +145,7 @@ const Supply = () => {
 								  ) * asset.price.usd
 								: 0,
 						)
-						.reduce((sum, a) => (sum += a), 0)
+						.reduce((sum, a) => sum + a, 0)
 						.toLocaleString(undefined, USD_FORMAT)}
 				/>
 			)}

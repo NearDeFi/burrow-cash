@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import App from "./App";
 import { Modal } from "./components";
 import { ContractContextProvider } from "./context/contracts";
@@ -9,7 +10,7 @@ import { IBurrow } from "./interfaces/burrow";
 
 export const Burrow = React.createContext<IBurrow>({} as IBurrow);
 
-//@ts-ignore
+// @ts-ignore
 window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(

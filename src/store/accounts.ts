@@ -64,8 +64,9 @@ export const getPortfolio = async (
 		}
 
 		for (const asset of [...accountDetailed.borrowed, ...accountDetailed.collateral]) {
-			const m = metadata.find((m) => m.token_id === asset.token_id);
-			const decimals = DECIMAL_OVERRIDES[m ? m.symbol : ""] || m?.decimals || TOKEN_DECIMALS;
+			const meta = metadata.find((m) => m.token_id === asset.token_id);
+			const decimals =
+				DECIMAL_OVERRIDES[meta ? meta.symbol : ""] || meta?.decimals || TOKEN_DECIMALS;
 			console.log("portfolio", asset.token_id, decimals);
 			asset.shares = shrinkToken(asset.shares, decimals);
 			asset.balance = shrinkToken(asset.balance, decimals);
@@ -74,6 +75,7 @@ export const getPortfolio = async (
 		console.log("portfolio", accountDetailed);
 		return accountDetailed;
 	}
+	return undefined;
 };
 
 export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
@@ -83,7 +85,7 @@ export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
 		token_ids.map(
 			async (token_id) =>
 				({
-					token_id: token_id,
+					token_id,
 					account_id: account.accountId,
 					balance:
 						(walletConnection.isSignedIn() && (await getBalance(token_id, account.accountId))) || 0,

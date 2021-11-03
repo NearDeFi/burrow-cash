@@ -1,4 +1,5 @@
 import { Contract } from "near-api-js";
+
 import { getBurrow } from "../utils";
 import { getTokenContract } from "./tokens";
 
@@ -7,7 +8,7 @@ enum ChangeMethodsNearToken {
 	near_withdraw,
 }
 
-export const deposit = async (address: string, amount: string = "0", msg: string = "") => {
+export const deposit = async (address: string, amount = "0", msg = "") => {
 	const { call, account } = await getBurrow();
 
 	try {
@@ -40,5 +41,6 @@ export const withdraw = async (address: string) => {
 		});
 	} catch (err: any) {
 		console.error(`Failed to mint for ${account.accountId} on ${address} ${err.message}`);
+		return undefined;
 	}
 };

@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { useHistory } from "react-router";
+
 import Logo from "../../assets/logo.svg";
 import { Burrow } from "../../index";
 import { colors } from "../../style";

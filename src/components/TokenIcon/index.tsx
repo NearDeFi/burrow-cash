@@ -6,8 +6,9 @@ interface TokenIconProps {
 }
 
 const TokenIcon = (props: TokenIconProps) => {
-	return props.icon ? (
-		<Avatar src={props.icon} />
+	const { icon } = props;
+	return icon ? (
+		<Avatar src={icon} />
 	) : (
 		<Avatar sx={{ bgcolor: "#000" }}>
 			<NearLogo style={{ padding: "6px", filter: "invert(100%)" }} />

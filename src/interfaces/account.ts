@@ -3,11 +3,6 @@ interface IFarmId {
 	Borrowed?: string;
 }
 
-interface IFarm {
-	farm_id: IFarmId;
-	rewards: AccountFarmRewardView[];
-}
-
 interface IAssetFarmReward {
 	/// The reward token ID.
 	token_id: string;
@@ -28,6 +23,10 @@ interface AccountFarmRewardView {
 	unclaimed_amount: "string";
 }
 
+interface IFarm {
+	farm_id: IFarmId;
+	rewards: AccountFarmRewardView[];
+}
 interface ICollateralAsset {
 	token_id: string;
 	shares: string;

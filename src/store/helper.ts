@@ -1,9 +1,10 @@
 import Decimal from "decimal.js";
+import { Account, Contract } from "near-api-js";
+
 import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle } from "../interfaces/contract-methods";
 import { IAssetPrice, IPrices } from "../interfaces/oracle";
-import { Account, Contract } from "near-api-js";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -61,6 +62,7 @@ export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined
 		return priceResponse;
 	} catch (err: any) {
 		console.log("Getting prices failed: ", err.message);
+		return undefined;
 	}
 };
 
@@ -81,12 +83,10 @@ export const getContract = async (
 	const contract: Contract = new Contract(account, contractAddress, {
 		// View methods are read only. They don't modify the state, but usually return some value.
 		viewMethods: Object.values(viewMethods)
-			// @ts-ignore
 			.filter((m) => typeof m === "string")
 			.map((m) => m as string),
 		// Change methods can modify the state. But you don't receive the returned value when called.
 		changeMethods: Object.values(changeMethods)
-			// @ts-ignore
 			.filter((m) => typeof m === "string")
 			.map((m) => m as string),
 	});

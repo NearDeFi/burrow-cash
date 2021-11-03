@@ -30,7 +30,7 @@ const BorrowTopButtons = () => {
 			}}
 		>
 			<BigButton
-				text={"Your Borrow Balance"}
+				text="Your Borrow Balance"
 				value={portfolio?.borrowed
 					.map(
 						(borrowed) =>
@@ -43,11 +43,11 @@ const BorrowTopButtons = () => {
 								),
 							) * (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
 					)
-					.reduce((sum, a) => (sum += a), 0)
+					.reduce((sum, a) => sum + a, 0)
 					.toLocaleString(undefined, USD_FORMAT)}
 			/>
-			<BigButton text={"Borrow Limit"} value={0} />
-			<BigButton text={"Risk Factor"} value={0} />
+			<BigButton text="Borrow Limit" value={0} />
+			<BigButton text="Risk Factor" value={0} />
 		</div>
 	);
 };
@@ -116,7 +116,7 @@ const Borrow = () => {
 			<Header>
 				<BorrowTopButtons />
 			</Header>
-			<PageTitle paddingTop={"0"} first={"Borrow"} second={"Assets"} />
+			<PageTitle paddingTop="0" first="Borrow" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_borrow)
@@ -127,7 +127,7 @@ const Borrow = () => {
 				columns={columns}
 			/>
 			<Total
-				type={"Borrow"}
+				type="Borrow"
 				value={assets
 					.map((asset) =>
 						asset.price
@@ -141,7 +141,7 @@ const Borrow = () => {
 							  ) * asset.price.usd
 							: 0,
 					)
-					.reduce((sum, a) => (sum += a), 0)
+					.reduce((sum, a) => sum + a, 0)
 					.toLocaleString(undefined, USD_FORMAT)}
 			/>
 

@@ -1,10 +1,10 @@
+import { useContext } from "react";
 import { Footer, Header, Table } from "../../components";
 import { BigButton, Total } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
-import { useContext } from "react";
 import { IAsset } from "../../interfaces/account";
 import { ContractContext } from "../../context/contracts";
 
@@ -19,9 +19,9 @@ const PortfolioTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<BigButton text={"Total Supplied"} value={(0).toLocaleString(undefined, USD_FORMAT)} />
-			<BigButton text={"Net APR"} value={0} />
-			<BigButton text={"Total Borrowed"} value={(0).toLocaleString(undefined, USD_FORMAT)} />
+			<BigButton text="Total Supplied" value={(0).toLocaleString(undefined, USD_FORMAT)} />
+			<BigButton text="Net APR" value={0} />
+			<BigButton text="Total Borrowed" value={(0).toLocaleString(undefined, USD_FORMAT)} />
 		</div>
 	);
 };
@@ -123,7 +123,7 @@ const Portfolio = () => {
 
 			{portfolio?.supplied.length ? (
 				<Table
-					height={"240px"}
+					height="240px"
 					rows={portfolio?.supplied.map((supplied) => ({
 						...supplied,
 						...assets.find((m) => m.token_id === supplied.token_id),
@@ -144,7 +144,7 @@ const Portfolio = () => {
 
 			{portfolio?.borrowed.length ? (
 				<Table
-					height={"240px"}
+					height="240px"
 					rows={portfolio?.borrowed.map((borrowed) => ({
 						...borrowed,
 						...assets.find((m) => m.token_id === borrowed.token_id),
@@ -156,7 +156,7 @@ const Portfolio = () => {
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}
 
-			<Total displayButton={false} type={"Lorem ipsum"} value={1} />
+			<Total displayButton={false} type="Lorem ipsum" value={1} />
 			<Footer />
 		</>
 	);

@@ -1,16 +1,15 @@
-import { IAsset, IAssetDetailed } from "../interfaces/asset";
+import Decimal from "decimal.js";
+
+import { IAsset, IAssetDetailed, AssetEntry } from "../interfaces/asset";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { DEFAULT_PRECISION } from "./constants";
 import { getPrices, rateToApr } from "./helper";
-import Decimal from "decimal.js";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
 export const getAssets = async (): Promise<IAsset[]> => {
 	const { view, logicContract } = await getBurrow();
-
-	type AssetEntry = [string, IAsset];
 
 	return (
 		(await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_assets_paged])) as AssetEntry[]

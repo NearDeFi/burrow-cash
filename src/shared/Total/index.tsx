@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-//@ts-ignore
+// @ts-ignore
 import { Button } from "@mui/material";
-//@ts-ignore
+// @ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
 import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg";
 import mobileBottomBg from "../../assets/mobile-bottom-bg.png";
@@ -82,9 +82,8 @@ const Total = ({ displayButton = true, value, type }) => {
 
 	if (isMobile) {
 		return <MobileTotalFooter displayButton={displayButton} value={value} type={type} />;
-	} else {
-		return <DesktopTotalFooter displayButton={displayButton} value={value} type={type} />;
 	}
+	return <DesktopTotalFooter displayButton={displayButton} value={value} type={type} />;
 };
 
 export default Total;
@@ -101,7 +100,7 @@ export default Total;
 // 				backgroundImage: `url(${mobileBottomBg})`,
 // 			}}
 // 		>
-//-bg 			<Button
+// -bg 			<Button
 // 				variant="contained"
 // 				size="large"
 // 				style={{ height: "100%", width: "100%", backgroundColor: colors.secondary }}
