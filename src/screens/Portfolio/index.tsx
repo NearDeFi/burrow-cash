@@ -10,6 +10,8 @@ import { ContractContext } from "../../context/contracts";
 import { IAssetDetailed } from "../../interfaces/asset";
 
 const PortfolioTopButtons = () => {
+	const { assets, portfolio } = useContext(ContractContext);
+
 	return (
 		<div
 			style={{
@@ -20,9 +22,29 @@ const PortfolioTopButtons = () => {
 				paddingRight: "20em",
 			}}
 		>
-			<BigButton text="Total Supplied" value={(0).toLocaleString(undefined, USD_FORMAT)} />
+			<BigButton
+				text="Total Supplied"
+				value={portfolio?.supplied
+					.map(
+						(supplied) =>
+							Number(supplied.balance) *
+							(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
+					)
+					.reduce((sum, a) => sum + a, 0)
+					.toLocaleString(undefined, USD_FORMAT)}
+			/>
 			<BigButton text="Net APR" value={0} />
-			<BigButton text="Total Borrowed" value={(0).toLocaleString(undefined, USD_FORMAT)} />
+			<BigButton
+				text="Total Borrowed"
+				value={portfolio?.borrowed
+					.map(
+						(borrowed) =>
+							Number(borrowed.balance) *
+							(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+					)
+					.reduce((sum, a) => sum + a, 0)
+					.toLocaleString(undefined, USD_FORMAT)}
+			/>
 		</div>
 	);
 };
