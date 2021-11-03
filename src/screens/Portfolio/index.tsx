@@ -7,6 +7,7 @@ import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
 import { IAsset } from "../../interfaces/account";
 import { ContractContext } from "../../context/contracts";
+import { IAssetDetailed } from "../../interfaces/asset";
 
 const PortfolioTopButtons = () => {
 	return (
@@ -84,8 +85,8 @@ const Portfolio = () => {
 			label: "APY",
 			dataKey: "apy",
 			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.apr).toFixed(PERCENT_DIGITS);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 		{
@@ -93,8 +94,8 @@ const Portfolio = () => {
 			label: "Borrow APY",
 			dataKey: "borrowAPY",
 			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.apr).toFixed(PERCENT_DIGITS);
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
+				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
 			},
 		},
 		{
