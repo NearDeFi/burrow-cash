@@ -18,8 +18,6 @@ const PortfolioTopButtons = () => {
 				display: "grid",
 				gridTemplateColumns: "1fr 1fr 1fr",
 				justifyItems: "center",
-				paddingLeft: "20em",
-				paddingRight: "20em",
 			}}
 		>
 			<BigButton

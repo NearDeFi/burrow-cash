@@ -5,6 +5,9 @@ export const Wrapper = styled("div")(({ theme }) => ({
 	display: "grid",
 	alignItems: "center",
 	color: theme.palette.secondary.main,
+	zIndex: 1000,
+	backgroundColor: "white",
+	paddingTop: "1rem",
 	[theme.breakpoints.down("sm")]: {
 		gridTemplateColumns: "1fr",
 		gap: "1rem",

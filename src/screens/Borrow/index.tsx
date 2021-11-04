@@ -24,9 +24,9 @@ const BorrowTopButtons = () => {
 			style={{
 				display: "grid",
 				gridTemplateColumns: "1fr 1fr 1fr",
+				gap: "1.5rem",
 				justifyItems: "center",
-				paddingLeft: "20em",
-				paddingRight: "20em",
+				justifyContent: "space-around",
 			}}
 		>
 			{walletConnection.isSignedIn() && (

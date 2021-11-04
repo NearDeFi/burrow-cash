@@ -26,8 +26,6 @@ const SupplyTopButtons = () => {
 				display: "grid",
 				gap: "1em",
 				gridTemplateColumns: "1fr 1fr",
-				paddingLeft: "20em",
-				paddingRight: "20em",
 			}}
 		>
 			{walletConnection.isSignedIn() && (

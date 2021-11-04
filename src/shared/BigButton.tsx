@@ -7,7 +7,7 @@ const DesktopBigButton = ({ height = "10em", text = "Total Supply", value = "10,
 		<div style={{ display: "grid", justifyContent: "center", height: "24em" }}>
 			<div
 				style={{
-					paddingTop: "3em",
+					paddingTop: "3rem",
 					textAlign: "center",
 					height,
 					width: "250px",
