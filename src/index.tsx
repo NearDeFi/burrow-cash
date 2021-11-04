@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { ThemeProvider } from "@mui/material/styles";
 
 import App from "./App";
 import { Modal } from "./components";
@@ -7,6 +8,7 @@ import { ContractContextProvider } from "./context/contracts";
 import "./global.css";
 import { initContract } from "./utils";
 import { IBurrow } from "./interfaces/burrow";
+import theme from "./theme";
 
 export const Burrow = React.createContext<IBurrow>({} as IBurrow);
 
@@ -16,9 +18,11 @@ window.nearInitPromise = initContract()
 		ReactDOM.render(
 			<Burrow.Provider value={initResults}>
 				<ContractContextProvider>
-					<Modal>
-						<App />
-					</Modal>
+					<ThemeProvider theme={theme}>
+						<Modal>
+							<App />
+						</Modal>
+					</ThemeProvider>
 				</ContractContextProvider>
 			</Burrow.Provider>,
 			document.querySelector("#root"),

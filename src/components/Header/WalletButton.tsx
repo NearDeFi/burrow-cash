@@ -44,7 +44,9 @@ const WalletButton = () => {
 					"aria-labelledby": "logout-button",
 				}}
 			>
-				<MenuItem onClick={() => logout(walletConnection)}>Log Out</MenuItem>
+				<MenuItem sx={{ backgroundColor: "white" }} onClick={() => logout(walletConnection)}>
+					Log Out
+				</MenuItem>
 			</Menu>
 		</div>
 	);
