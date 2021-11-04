@@ -3,8 +3,6 @@
 import { Button } from "@mui/material";
 // @ts-ignore
 import useMobileDetect from "use-mobile-detect-hook";
-import DesktopBottomBackground from "../../assets/desktop-bottom-background.jpg";
-import mobileBottomBg from "../../assets/mobile-bottom-bg.png";
 import { colors } from "../../style";
 
 const DesktopTotalFooter = ({ height = "10em", displayButton = true, value, type }) => {
@@ -15,7 +13,6 @@ const DesktopTotalFooter = ({ height = "10em", displayButton = true, value, type
 				justifyContent: "center",
 				height: "24em",
 				backgroundSize: "cover",
-				backgroundImage: `url(${DesktopBottomBackground})`,
 			}}
 		>
 			<div
@@ -55,7 +52,6 @@ const MobileTotalFooter = ({ height = "7em", displayButton = true, value, type =
 				justifyContent: "center",
 				height,
 				backgroundSize: "cover",
-				backgroundImage: `url(${mobileBottomBg})`,
 			}}
 		>
 			<Button
