@@ -20,7 +20,9 @@ export const getAccounts = async (): Promise<IAccount[]> => {
 	return accounts;
 };
 
-export const getAccountDetailed = async (account_id: string): Promise<IAccountDetailed> => {
+export const getAccountDetailed = async (account_id: string): Promise<IAccountDetailed | null> => {
+	if (!account_id) return null;
+
 	const { view, logicContract } = await getBurrow();
 
 	const accountDetailed: IAccountDetailed = (await view(
@@ -40,9 +42,9 @@ export const getAccountDetailed = async (account_id: string): Promise<IAccountDe
 export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 	const accounts: IAccount[] = await getAccounts();
 
-	const result: IAccountDetailed[] = await Promise.all(
-		accounts.map((account) => getAccountDetailed(account.account_id)),
-	);
+	const result: IAccountDetailed[] = (
+		await Promise.all(accounts.map((account) => getAccountDetailed(account.account_id)))
+	).filter((account): account is IAccountDetailed => !!account);
 
 	return result;
 };
@@ -52,7 +54,7 @@ export const getPortfolio = async (
 ): Promise<IAccountDetailed | undefined> => {
 	const { account } = await getBurrow();
 
-	const accountDetailed: IAccountDetailed = await getAccountDetailed(account.accountId!);
+	const accountDetailed: IAccountDetailed | null = await getAccountDetailed(account.accountId!);
 
 	if (accountDetailed) {
 		for (const asset of [...accountDetailed.supplied]) {

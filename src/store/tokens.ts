@@ -6,7 +6,12 @@ import { getBurrow } from "../utils";
 import { IMetadata } from "../interfaces/asset";
 import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
-import { ChangeMethodsLogic, ChangeMethodsOracle } from "../interfaces/contract-methods";
+import {
+	ChangeMethodsLogic,
+	ChangeMethodsOracle,
+	ChangeMethodsToken,
+	ViewMethodsToken,
+} from "../interfaces/contract-methods";
 import {
 	executeMultipleTransactions,
 	FunctionCallOptions,
@@ -16,17 +21,6 @@ import {
 import { getAccountDetailed } from "./accounts";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
-
-enum ViewMethodsToken {
-	ft_metadata,
-	ft_balance_of,
-	storage_balance_of,
-}
-
-enum ChangeMethodsToken {
-	ft_transfer_call,
-	storage_deposit,
-}
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
 	const { account } = await getBurrow();
@@ -88,26 +82,13 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
 	return metadata;
 };
 
-const prepareAndSendTokenTransactions = async (
+const prepareAndExecuteTokenTransactions = async (
 	tokenContract: Contract,
 	functionCall: FunctionCallOptions,
 	additionalOperations: Transaction[] = [],
 ) => {
-	const { account, logicContract } = await getBurrow();
+	const { account } = await getBurrow();
 	const transactions: Transaction[] = [];
-
-	// check if account is registered in burrow cash
-	if (!(await isRegistered(account.accountId, logicContract))) {
-		transactions.push({
-			receiverId: logicContract.contractId,
-			functionCalls: [
-				{
-					methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-					attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
-				},
-			],
-		});
-	}
 
 	const functionCalls: FunctionCallOptions[] = [];
 
@@ -128,6 +109,28 @@ const prepareAndSendTokenTransactions = async (
 	});
 
 	transactions.push(...additionalOperations);
+
+	await prepareAndExecuteTransactions(transactions);
+};
+
+const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
+	const { account, logicContract } = await getBurrow();
+	const transactions: Transaction[] = [];
+
+	// check if account is registered in burrow cash
+	if (!(await isRegistered(account.accountId, logicContract))) {
+		transactions.push({
+			receiverId: logicContract.contractId,
+			functionCalls: [
+				{
+					methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+					attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+				},
+			],
+		});
+	}
+
+	transactions.push(...operations);
 
 	console.log("transactions being dispatched", JSON.stringify(transactions, null, 2));
 
@@ -176,7 +179,7 @@ export const supply = async (
 		],
 	};
 
-	await prepareAndSendTokenTransactions(
+	await prepareAndExecuteTokenTransactions(
 		tokenContract,
 		{
 			methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
@@ -186,14 +189,14 @@ export const supply = async (
 				msg: "",
 			},
 		},
-		useAsCollateral ? [addCollateralTx] : [],
+		useAsCollateral ? [addCollateralTx] : undefined,
 	);
 };
 
 export const borrow = async (token_id: string, amount: number) => {
 	console.log(`Borrowing ${amount} of ${token_id}`);
 
-	const { call, oracleContract, logicContract, account } = await getBurrow();
+	const { oracleContract, logicContract, account } = await getBurrow();
 
 	const metadata = await getMetadata(token_id);
 	const expandedAmount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
@@ -212,14 +215,25 @@ export const borrow = async (token_id: string, amount: number) => {
 		},
 	};
 
-	await call(oracleContract, ChangeMethodsOracle[ChangeMethodsOracle.oracle_call], {
-		receiver_id: logicContract.contractId,
-		asset_ids: [
-			...accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id),
-			token_id,
-		],
-		msg: JSON.stringify(borrowTemplate),
-	});
+	const collateral = accountDetailed
+		? accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id)
+		: [];
+
+	await prepareAndExecuteTransactions([
+		{
+			receiverId: oracleContract.contractId,
+			functionCalls: [
+				{
+					methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
+					args: {
+						receiver_id: logicContract.contractId,
+						asset_ids: [...collateral, token_id],
+						msg: JSON.stringify(borrowTemplate),
+					},
+				},
+			],
+		} as Transaction,
+	]);
 };
 
 export const addCollateral = async (token_id: string, amount?: number) => {
