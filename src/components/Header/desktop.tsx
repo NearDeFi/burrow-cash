@@ -37,7 +37,7 @@ const DesktopButton = (props: DesktopButtonInput) => {
 	);
 };
 
-const DesktopHeader = ({ children }: { children: React.ReactChild }) => {
+const DesktopHeader = ({ children }: { children?: React.ReactChild }) => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const history = useHistory();
 
