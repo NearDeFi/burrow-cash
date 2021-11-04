@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import { Header, Table } from "../../components";
-import Footer from "../../components/Footer";
+import { Table } from "../../components";
 import { BigButton, PageTitle, Total } from "../../shared";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
@@ -110,9 +109,7 @@ const Borrow = () => {
 
 	return (
 		<>
-			<Header>
-				<BorrowTopButtons />
-			</Header>
+			<BorrowTopButtons />
 			<PageTitle first="Borrow" second="Assets" />
 			<Table
 				rows={assets
@@ -141,8 +138,6 @@ const Borrow = () => {
 					.reduce((sum, a) => sum + a, 0)
 					.toLocaleString(undefined, USD_FORMAT)}
 			/>
-
-			<Footer />
 		</>
 	);
 };

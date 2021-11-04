@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Footer, Header, Table } from "../../components";
+import { Table } from "../../components";
 import { BigButton, Total } from "../../shared";
 import { colors } from "../../style";
 import * as SC from "./style";
@@ -136,10 +136,7 @@ const Portfolio = () => {
 
 	return (
 		<>
-			<Header>
-				<PortfolioTopButtons />
-			</Header>
-
+			<PortfolioTopButtons />
 			<SC.TitleWrapper>
 				<span style={{ color: colors.primary }}>Supplied</span> Assets
 			</SC.TitleWrapper>
@@ -180,7 +177,6 @@ const Portfolio = () => {
 			)}
 
 			<Total displayButton={false} type="Lorem ipsum" value={1} />
-			<Footer />
 		</>
 	);
 };

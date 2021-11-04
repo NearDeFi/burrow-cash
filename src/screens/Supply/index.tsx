@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Footer, Header, Table } from "../../components";
+import { Table } from "../../components";
 import { ContractContext } from "../../context/contracts";
 import { BigButton, PageTitle, Total } from "../../shared";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
@@ -113,9 +113,7 @@ const Supply = () => {
 
 	return (
 		<>
-			<Header>
-				<SupplyTopButtons />
-			</Header>
+			<SupplyTopButtons />
 			<PageTitle first="Supply" second="Assets" />
 			<Table
 				rows={assets
@@ -146,7 +144,6 @@ const Supply = () => {
 						.toLocaleString(undefined, USD_FORMAT)}
 				/>
 			)}
-			<Footer />
 		</>
 	);
 };
