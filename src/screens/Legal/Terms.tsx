@@ -1,9 +1,9 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export const Terms = () => {
 	return (
-		<>
-			<Box>Terms of Service</Box>
-		</>
+		<Box sx={{ minHeight: 600, padding: "2rem" }}>
+			<Typography>Terms of Service</Typography>
+		</Box>
 	);
 };
