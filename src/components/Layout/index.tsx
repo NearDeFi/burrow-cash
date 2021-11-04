@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 
 import { Footer, Header } from "../index";
 
-const Layout = ({ children }) => {
+export const Layout = ({ children }) => {
 	return (
 		<Box>
 			<Header />
@@ -11,5 +11,3 @@ const Layout = ({ children }) => {
 		</Box>
 	);
 };
-
-export default Layout;

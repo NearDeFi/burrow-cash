@@ -13,7 +13,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
 		left: 0,
 		right: 0,
 	},
-	[theme.breakpoints.up("md")]: {
+	[theme.breakpoints.up("sm")]: {
 		gridTemplateColumns: "1fr 1fr",
 		width: "100%",
 	},
@@ -25,7 +25,7 @@ export const CopyWrapper = styled("div")(({ theme }) => ({
 	[theme.breakpoints.down("sm")]: {
 		justifyContent: "space-around",
 	},
-	[theme.breakpoints.up("md")]: {
+	[theme.breakpoints.up("sm")]: {
 		margin: theme.spacing(2),
 		gap: "1rem",
 		paddingLeft: "1rem",
@@ -42,7 +42,7 @@ export const Copyright = styled(Typography)(({ theme }) => ({
 		gridRow: 1,
 		fontWeight: 500,
 	},
-	[theme.breakpoints.up("md")]: {
+	[theme.breakpoints.up("sm")]: {
 		display: "inline",
 	},
 }));
@@ -57,7 +57,7 @@ export const LinksWrapper = styled("div")(({ theme }) => ({
 		justifyContent: "center",
 		marginBottom: theme.spacing(2),
 	},
-	[theme.breakpoints.up("md")]: {
+	[theme.breakpoints.up("sm")]: {
 		justifySelf: "end",
 		paddingRight: "1rem",
 	},
