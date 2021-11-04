@@ -116,7 +116,7 @@ const Supply = () => {
 			<Header>
 				<SupplyTopButtons />
 			</Header>
-			<PageTitle paddingTop="0" first="Supply" second="Assets" />
+			<PageTitle first="Supply" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_deposit)

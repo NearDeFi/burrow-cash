@@ -1,24 +1,17 @@
 import styled from "styled-components";
 import { colors } from "../style";
 
-const TitleWrapper = styled.div<{ paddingTop?: string }>`
+const TitleWrapper = styled.div`
 	text-align: center;
-	padding-top: ${(props) => props.paddingTop || "1em"};
+	margin-top: 1rem;
+	margin-bottom: 3rem;
 	font-size: 24px;
 	font-weight: 500;
 `;
 
-const PageTitle = ({
-	first,
-	second,
-	paddingTop,
-}: {
-	first: string;
-	second: string;
-	paddingTop: string;
-}) => {
+const PageTitle = ({ first, second }: { first: string; second: string }) => {
 	return (
-		<TitleWrapper paddingTop={paddingTop}>
+		<TitleWrapper>
 			Available <span style={{ color: colors.primary }}>{first}</span> {second}
 		</TitleWrapper>
 	);

@@ -113,7 +113,7 @@ const Borrow = () => {
 			<Header>
 				<BorrowTopButtons />
 			</Header>
-			<PageTitle paddingTop="0" first="Borrow" second="Assets" />
+			<PageTitle first="Borrow" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_borrow)
