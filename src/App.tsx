@@ -2,7 +2,7 @@ import "regenerator-runtime/runtime";
 import { Redirect } from "react-router";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Borrow, Portfolio, Supply, Terms, Privacy } from "./screens";
-import { Layout } from "./components/Layout";
+import { Layout } from "./components";
 
 const App = () => {
 	return (
