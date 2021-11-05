@@ -1,54 +1,35 @@
 import { useContext } from "react";
-import { Table } from "../../components";
-import { BigButton, Total } from "../../shared";
-import { colors } from "../../style";
-import * as SC from "./style";
+import { Box, Typography, useTheme } from "@mui/material";
+
 import { ColumnData } from "../../components/Table/types";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
 import { IAsset } from "../../interfaces/account";
 import { ContractContext } from "../../context/contracts";
 import { IAssetDetailed } from "../../interfaces/asset";
-
-const PortfolioTopButtons = () => {
-	const { assets, portfolio } = useContext(ContractContext);
-
-	return (
-		<div
-			style={{
-				display: "grid",
-				gridTemplateColumns: "1fr 1fr 1fr",
-				justifyItems: "center",
-			}}
-		>
-			<BigButton
-				text="Total Supplied"
-				value={portfolio?.supplied
-					.map(
-						(supplied) =>
-							Number(supplied.balance) *
-							(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
-					)
-					.reduce((sum, a) => sum + a, 0)
-					.toLocaleString(undefined, USD_FORMAT)}
-			/>
-			<BigButton text="Net APR" value={0} />
-			<BigButton
-				text="Total Borrowed"
-				value={portfolio?.borrowed
-					.map(
-						(borrowed) =>
-							Number(borrowed.balance) *
-							(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-					)
-					.reduce((sum, a) => sum + a, 0)
-					.toLocaleString(undefined, USD_FORMAT)}
-			/>
-		</div>
-	);
-};
+import { InfoWrapper } from "../../components/InfoBox/style";
+import { InfoBox, Table } from "../../components";
 
 const Portfolio = () => {
 	const { assets, metadata, portfolio } = useContext(ContractContext);
+	const theme = useTheme();
+
+	const totalSupplied = portfolio?.supplied
+		.map(
+			(supplied) =>
+				Number(supplied.balance) *
+				(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
+
+	const totalBorrowed = portfolio?.borrowed
+		.map(
+			(borrowed) =>
+				Number(borrowed.balance) *
+				(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
 
 	const suppliedColumns: ColumnData[] = [
 		{
@@ -133,11 +114,16 @@ const Portfolio = () => {
 	];
 
 	return (
-		<>
-			<PortfolioTopButtons />
-			<SC.TitleWrapper>
-				<span style={{ color: colors.primary }}>Supplied</span> Assets
-			</SC.TitleWrapper>
+		<Box sx={{ paddingBottom: 10 }}>
+			<InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
+				<InfoBox title="Total Supplied" value={totalSupplied} />
+				<InfoBox title="Net APR" value="0.00" />
+				<InfoBox title="Total Bottowed" value={totalBorrowed} />
+			</InfoWrapper>
+
+			<Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
+				<span style={{ color: theme.palette.primary.main }}>Supplied</span> Assets
+			</Typography>
 
 			{portfolio?.supplied.length ? (
 				<Table
@@ -156,9 +142,9 @@ const Portfolio = () => {
 				<div style={{ textAlign: "center" }}>No supplied assets yet</div>
 			)}
 
-			<SC.SecondTitleWrapper>
-				<span style={{ color: colors.primary }}>Borrowed</span> Assets
-			</SC.SecondTitleWrapper>
+			<Typography sx={{ fontSize: 24, padding: "1rem", marginTop: "2rem", textAlign: "center" }}>
+				<span style={{ color: theme.palette.primary.main }}>Borrowed</span> Assets
+			</Typography>
 
 			{portfolio?.borrowed.length ? (
 				<Table
@@ -173,9 +159,7 @@ const Portfolio = () => {
 			) : (
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}
-
-			<Total displayButton={false} type="Lorem ipsum" value={1} />
-		</>
+		</Box>
 	);
 };
 
