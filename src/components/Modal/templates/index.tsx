@@ -36,6 +36,8 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 	const [amount, setAmount] = useState(0);
 	const [useAsCollateral, setUseAsCollateral] = useState(false);
 
+	const isDisabled = amount <= 0 || amount > asset.amount;
+
 	return (
 		<>
 			<ModalTitle title={title} />
@@ -58,6 +60,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 
 			<ActionButton
 				text={buttonText}
+				isDisabled={isDisabled}
 				onClick={() => {
 					if (type === "Borrow") {
 						void borrow(asset.token_id, amount);
