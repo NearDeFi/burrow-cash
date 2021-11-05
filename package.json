@@ -18,6 +18,9 @@
     "@babel/core": "~7.16.0",
     "@babel/preset-env": "~7.16.0",
     "@babel/preset-react": "~7.16.0",
+    "@parcel/config-default": "^2.0.0",
+    "@parcel/transformer-svg-react": "^2.0.0",
+    "@parcel/transformer-typescript-tsc": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
     "babel-jest": "~27.3.1",
@@ -31,11 +34,11 @@
     "jest": "~26.6.2",
     "jest-environment-node": "~26.6.2",
     "near-cli": "~1.6.0",
-    "parcel-bundler": "~1.12.4",
     "prettier": "^2.4.1",
     "react-test-renderer": "~17.0.1"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.16.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.1",
@@ -57,6 +60,7 @@
     "decimal.js": "^10.3.1",
     "eslint-plugin-prettier": "^4.0.0",
     "near-api-js": "~0.43.1",
+    "parcel": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",
@@ -95,5 +99,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": "16"
   }
 }
