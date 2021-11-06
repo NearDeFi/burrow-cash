@@ -69,6 +69,7 @@ export const TokenInputs = ({
 		const value = (Number(availableTokens) * percent) / 100;
 		setTotalAmount(value * tokenPriceInUSD);
 		setInputValue(value);
+		if (onChange) onChange(value);
 	};
 
 	return (
