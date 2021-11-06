@@ -2,6 +2,8 @@
   "name": "burrow-cash",
   "version": "0.1.0",
   "license": "UNLICENSED",
+  "source": "src/index.html",
+  "default": "dist/index.html",
   "scripts": {
     "build": "parcel build src/index.html --public-url ./",
     "start": "parcel src/index.html --open",
@@ -35,7 +37,8 @@
     "jest-environment-node": "~26.6.2",
     "near-cli": "~1.6.0",
     "prettier": "^2.4.1",
-    "react-test-renderer": "~17.0.1"
+    "react-test-renderer": "~17.0.1",
+    "parcel": "2.0.0"
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.0",
@@ -60,7 +63,6 @@
     "decimal.js": "^10.3.1",
     "eslint-plugin-prettier": "^4.0.0",
     "near-api-js": "~0.43.1",
-    "parcel": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",
@@ -88,19 +90,13 @@
       "<rootDir>/node_modules/"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "targets": {
+    "main": false,
+    "default": {
+      "publicUrl": "./"
+    }
   },
   "engines": {
-    "node": "16"
+    "node": ">=16"
   }
 }
