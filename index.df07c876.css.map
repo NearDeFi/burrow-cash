@@ -1,1 +1,0 @@
-{"mappings":"AAAA,KACA,6BAAA,CACA,QAAA,CACA,SAEA,CAEA,UAHA,WAKA","sources":["src/global.css"],"sourcesContent":["body {\n\tfont-family: \"Roboto\", sans-serif;\n\tmargin: 0;\n\tpadding: 0;\n\theight: 100%;\n}\n\nhtml {\n\theight: 100%;\n}\n"],"names":[],"version":3,"file":"index.df07c876.css.map"}
