@@ -53,6 +53,24 @@ export const TokenInputs = ({
 }) => {
 	const totalAvailableTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
 	const [totalAmount, setTotalAmount] = useState(0);
+	const [sliderValue, setSliderValue] = useState(0);
+	const [inputValue, setInputValue] = useState(0);
+
+	const handleInputChange = (value) => {
+		const nvalue = Number(value);
+		if (!Number.isNaN(nvalue)) {
+			setTotalAmount(nvalue * tokenPriceInUSD);
+			setSliderValue((nvalue * 100) / Number(availableTokens));
+			if (onChange) onChange(nvalue);
+		}
+	};
+
+	const handleSliderChange = (percent) => {
+		const value = (Number(availableTokens) * percent) / 100;
+		setTotalAmount(value * tokenPriceInUSD);
+		setInputValue(value);
+	};
+
 	return (
 		<>
 			<div
@@ -77,29 +95,24 @@ export const TokenInputs = ({
 					USD_FORMAT,
 				)}`}</div>
 			</div>
-			<div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
+			<div style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
 				<Input
-					value={0}
+					value={inputValue}
 					type="number"
 					max={availableTokens}
-					onChange={(value) => {
-						const amount = Number(value);
-						if (!Number.isNaN(amount)) {
-							setTotalAmount(amount * tokenPriceInUSD);
-							if (onChange) onChange(amount);
-						}
-					}}
+					onChange={handleInputChange}
 				/>
 			</div>
-			<div style={{ paddingTop: "1em" }}>
-				<Slider />
+			<div style={{ paddingTop: "1rem" }}>
+				<Slider value={sliderValue} onChange={handleSliderChange} />
 			</div>
 			<Typography
-				style={{ textAlign: "center", fontSize: "16px", fontWeight: 500 }}
+				style={{ textAlign: "center", fontSize: "1rem", fontWeight: 500 }}
 				id="modal-modal-description"
 				sx={{ mt: 2 }}
 			>
-				{`${totalAmountTitle} = ${totalAmount.toLocaleString(undefined, USD_FORMAT)}`}
+				<span>{totalAmountTitle} = </span>
+				<span>{totalAmount.toLocaleString(undefined, USD_FORMAT)}</span>
 			</Typography>
 		</>
 	);

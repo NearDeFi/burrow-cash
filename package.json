@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "parcel build src/index.html --public-url ./",
+    "build": "rm -rf dist && parcel build src/index.html --no-cache",
     "start": "parcel src/index.html --open",
     "prod": "parcel src/index.html",
     "deploy:pages": "gh-pages -d dist/",
     "deploy": "npm run build && npm run deploy:pages",
     "prettier": "prettier ./src --write",
-    "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\"",
+    "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\" && yarn type-check",
     "type-check": "tsc --pretty --noEmit",
     "postinstall": "husky install",
     "prepare": "husky install"
@@ -35,7 +35,8 @@
     "jest-environment-node": "~26.6.2",
     "near-cli": "~1.6.0",
     "prettier": "^2.4.1",
-    "react-test-renderer": "~17.0.1"
+    "react-test-renderer": "~17.0.1",
+    "parcel": "2.0.0"
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.0",
@@ -60,7 +61,6 @@
     "decimal.js": "^10.3.1",
     "eslint-plugin-prettier": "^4.0.0",
     "near-api-js": "~0.43.1",
-    "parcel": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",
@@ -88,19 +88,17 @@
       "<rootDir>/node_modules/"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "browserModern": "dist/index.html",
+  "targets": {
+    "browserModern": {
+      "engines": {
+        "browsers": [
+          "last 1 Chrome version"
+        ]
+      }
+    }
   },
   "engines": {
-    "node": "16"
+    "node": ">=14"
   }
 }
