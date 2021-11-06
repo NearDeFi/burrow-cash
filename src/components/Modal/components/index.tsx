@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Button, Switch, Typography } from "@mui/material";
 import { useState } from "react";
-import { Input, Stepper } from "../..";
+import { Input, Slider } from "../..";
 import { colors } from "../../../style";
 import { Inputs } from "../types";
 import TokenIcon from "../../TokenIcon";
@@ -92,7 +92,7 @@ export const TokenInputs = ({
 				/>
 			</div>
 			<div style={{ paddingTop: "1em" }}>
-				<Stepper />
+				<Slider />
 			</div>
 			<Typography
 				style={{ textAlign: "center", fontSize: "16px", fontWeight: 500 }}

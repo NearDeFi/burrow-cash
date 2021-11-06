@@ -1,9 +1,9 @@
 import Input from "./Input";
 import Modal from "./Modal";
-import Stepper from "./Stepper";
+import Slider from "./Slider";
 import Table from "./Table";
 import Layout from "./Layout";
 import InfoBox from "./InfoBox";
 import PageTitle from "./PageTitle";
 
-export { Table, Modal, Input, Stepper, Layout, InfoBox, PageTitle };
+export { Table, Modal, Input, Slider, Layout, InfoBox, PageTitle };
