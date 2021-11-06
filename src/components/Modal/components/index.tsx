@@ -81,8 +81,9 @@ export const TokenInputs = ({
 				<Input
 					value={0}
 					type="number"
-					onChange={(e) => {
-						const amount = Number(e.target.value);
+					max={availableTokens}
+					onChange={(value) => {
+						const amount = Number(value);
 						if (!Number.isNaN(amount)) {
 							setTotalAmount(amount * tokenPriceInUSD);
 							if (onChange) onChange(amount);
