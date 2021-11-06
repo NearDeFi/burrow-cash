@@ -1,6 +1,7 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git python make g++
+RUN rm -rf /var/cache/apk/*
 
 COPY . ./app
 
