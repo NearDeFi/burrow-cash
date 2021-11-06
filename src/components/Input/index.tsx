@@ -22,6 +22,7 @@ const InputField = (props: inputFieldProps) => {
 			type={type || "string"}
 			value={controlledValue}
 			style={{ width: "100%" }}
+			inputProps={{ min: 0 }}
 			onChange={(e) => {
 				setControlledValue(e.target.value);
 				if (onChange) onChange(e);

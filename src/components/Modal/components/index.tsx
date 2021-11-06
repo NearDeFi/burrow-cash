@@ -154,14 +154,27 @@ export const Rates = ({ ratesTitle, rates }: { ratesTitle: string; rates: any[] 
 	);
 };
 
-export const ActionButton = ({ text, onClick }: { text: string; onClick?: () => void }) => {
+export const ActionButton = ({
+	isDisabled = false,
+	text,
+	onClick,
+}: {
+	isDisabled: boolean;
+	text: string;
+	onClick?: () => void;
+}) => {
 	return (
 		<Typography
 			style={{ textAlign: "center", color: colors.secondary }}
 			id="modal-modal-description"
 			sx={{ mt: 2 }}
 		>
-			<Button style={{ backgroundColor: colors.primary }} variant="contained" onClick={onClick}>
+			<Button
+				disabled={isDisabled}
+				style={{ backgroundColor: colors.primary }}
+				variant="contained"
+				onClick={onClick}
+			>
 				{text}
 			</Button>
 		</Typography>
