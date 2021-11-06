@@ -6,7 +6,7 @@ import Background from "./bg.svg";
 
 const Layout = ({ children }) => {
 	return (
-		<Box sx={{ position: "relative", backgroundColor: "yellow" }}>
+		<Box sx={{ position: "relative" }}>
 			<Box sx={{ position: "fixed", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }}>
 				<Background width="100%" />
 			</Box>

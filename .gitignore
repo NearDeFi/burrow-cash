@@ -24,6 +24,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+/.parcel-cache
 /.cache
 
 npm-debug.log*
