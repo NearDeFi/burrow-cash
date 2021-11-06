@@ -1,42 +1,68 @@
-import styled from "styled-components";
+import { styled } from "@mui/material/styles";
+import { Typography } from "@mui/material";
 
-export const DesktopFooterWrapper = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	width: 100%;
-`;
+export const Wrapper = styled("div")(({ theme }) => ({
+	display: "grid",
+	alignItems: "center",
+	color: theme.palette.secondary.main,
+	zIndex: 1000,
+	backgroundColor: "white",
+	paddingTop: "1rem",
+	marginTop: "auto",
+	[theme.breakpoints.down("sm")]: {
+		gridTemplateColumns: "1fr",
+		gap: "1rem",
+		position: "fixed",
+		bottom: 0,
+		left: 0,
+		right: 0,
+	},
+	[theme.breakpoints.up("sm")]: {
+		gridTemplateColumns: "1fr 1fr",
+		width: "100%",
+	},
+}));
 
-export const DesktopFooterRightSideWrapper = styled.div`
-	justify-self: end;
-	padding-right: 1em;
-`;
+export const CopyWrapper = styled("div")(({ theme }) => ({
+	display: "flex",
+	alignItems: "center",
+	[theme.breakpoints.down("sm")]: {
+		justifyContent: "space-around",
+	},
+	[theme.breakpoints.up("sm")]: {
+		margin: theme.spacing(2),
+		gap: "1rem",
+		paddingLeft: "1rem",
+	},
+}));
 
-export const DesktopFooterLeftSideWrapper = styled.div`
-	display: flex;
-	gap: 1em;
-	padding-left: 1em;
-`;
-export const MobileFooterWrapper = styled.div`
-	display: grid;
-	gap: 1em;
-	padding: 0.5em;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-`;
+export const LogoWrapper = styled("div")(() => ({
+	display: "flex",
+}));
 
-export const MobileFooterRightSideWrapper = styled.div`
-	font-size: 12px;
-	font-weight: 500;
-	grid-row: 2;
-	display: flex;
-	justify-content: center;
-	gap: 1em;
-`;
+export const Copyright = styled(Typography)(({ theme }) => ({
+	fontSize: "12px",
+	[theme.breakpoints.down("sm")]: {
+		gridRow: 1,
+		fontWeight: 500,
+	},
+	[theme.breakpoints.up("sm")]: {
+		display: "inline",
+	},
+}));
 
-export const MobileFooterLeftSideWrapper = styled.div`
-	grid-row: 1;
-	display: inline-grid;
-	justify-content: space-around;
-`;
+export const LinksWrapper = styled("div")(({ theme }) => ({
+	fontSize: "12px",
+	display: "flex",
+	gap: "1rem",
+	[theme.breakpoints.down("sm")]: {
+		gridRow: 2,
+		fontWeight: 500,
+		justifyContent: "center",
+		marginBottom: theme.spacing(2),
+	},
+	[theme.breakpoints.up("sm")]: {
+		justifySelf: "end",
+		paddingRight: "1rem",
+	},
+}));

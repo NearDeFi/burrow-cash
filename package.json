@@ -41,6 +41,8 @@
     "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.0-rc.0",
     "@mui/styles": "^5.0.1",
+    "@mui/system": "^5.0.6",
+    "@mui/utils": "^5.0.1",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.10.2",

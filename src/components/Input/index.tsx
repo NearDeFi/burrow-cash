@@ -1,7 +1,8 @@
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
+
 import MaxIcon from "./max.svg";
 
 interface inputFieldProps {

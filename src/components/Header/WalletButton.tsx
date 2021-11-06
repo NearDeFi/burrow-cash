@@ -1,7 +1,5 @@
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { useContext, useState } from "react";
+import { Button, Menu, MenuItem, Box } from "@mui/material";
 
 import { colors } from "../../style";
 import { IBurrow } from "../../interfaces/burrow";
@@ -26,10 +24,10 @@ const WalletButton = () => {
 	};
 
 	return (
-		<div>
+		<Box sx={{ gridArea: "wallet", marginLeft: "auto" }}>
 			<Button
 				size="small"
-				style={{ justifySelf: "end", backgroundColor: colors.primary }}
+				sx={{ justifySelf: "end", alignItems: "center", backgroundColor: colors.primary }}
 				variant="contained"
 				onClick={onWalletButtonClick}
 			>
@@ -44,9 +42,11 @@ const WalletButton = () => {
 					"aria-labelledby": "logout-button",
 				}}
 			>
-				<MenuItem onClick={() => logout(walletConnection)}>Log Out</MenuItem>
+				<MenuItem sx={{ backgroundColor: "white" }} onClick={() => logout(walletConnection)}>
+					Log Out
+				</MenuItem>
 			</Menu>
-		</div>
+		</Box>
 	);
 };
 

@@ -1,41 +1,50 @@
-import Toolbar from "@mui/material/Toolbar";
-import styled from "styled-components";
-import topDesktopBg from "../../assets/desktop-top-background.jpg";
-import mobileTopBg from "../../assets/mobile-top-bg.jpg";
+import { styled } from "@mui/material/styles";
+import { Toolbar, Button } from "@mui/material";
 
-export const DesktopHeaderWrapper = styled.div`
-	background-size: cover;
-	background-image: url(${topDesktopBg});
-	height: 23em;
-`;
+export const Wrapper = styled(Toolbar)(({ theme }) => ({
+	display: "grid",
+	[theme.breakpoints.down("sm")]: {
+		marginTop: "1rem",
+		gridTemplateAreas: `
+    "logo wallet"
+    "menu menu"`,
+	},
+	[theme.breakpoints.up("sm")]: {
+		gridTemplateAreas: `"logo menu wallet"`,
+		gridTemplateColumns: "auto auto 1fr",
+		gap: "3rem",
+	},
+}));
 
-export const DesktopHeaderToolbar = styled(Toolbar)`
-	justify-content: space-between;
-	min-height: 5em !important;
-`;
+export const Logo = styled("div")(() => ({
+	display: "flex",
+	alignItems: "center",
+	gridArea: "logo",
+	justifySelf: "start",
+}));
 
-export const DesktopHeaderLeftSideWrapper = styled(Toolbar)`
-	display: grid;
-	width: 30%;
-	grid-gap: 5em;
-	grid-template-columns: 0.5fr 1fr 1fr 1fr;
-`;
+export const Menu = styled("div")(({ theme }) => ({
+	display: "grid",
+	gridArea: "menu",
+	gap: "0.5rem",
+	gridTemplateColumns: "1fr 1fr 1fr",
+	marginRight: "auto",
+	[theme.breakpoints.down("sm")]: {
+		margin: "0 auto",
+		marginTop: "1rem",
+	},
+}));
 
-export const DesktopHeaderRightSideWrapper = styled(Toolbar)`
-	justify-content: space-between;
-	min-height: 5em !important;
-`;
-
-export const MobileHeaderWrapper = styled.div`
-	min-height: 9em;
-	background-size: cover;
-	background-image: url(${mobileTopBg});
-`;
-
-export const MobileHeaderToolbar = styled(Toolbar)`
-	justify-content: space-between;
-`;
-
-export const MobileSubHeaderToolbar = styled(Toolbar)`
-	justify-content: space-between;
-`;
+export const ButtonStyled = styled(Button)(({ theme }) => ({
+	borderWidth: 2,
+	borderColor: "transparent",
+	borderRadius: 0,
+	color: theme.palette.secondary.main,
+	textTransform: "capitalize",
+	paddingLeft: 0,
+	paddingRight: 0,
+	":hover": {
+		borderWidth: 0,
+		borderColor: "transparent",
+	},
+}));

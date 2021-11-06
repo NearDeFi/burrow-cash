@@ -1,7 +1,6 @@
 import { useContext } from "react";
-import { Header, Table } from "../../components";
-import Footer from "../../components/Footer";
-import { BigButton, PageTitle, Total } from "../../shared";
+import { Box } from "@mui/material";
+
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import {
@@ -15,43 +14,37 @@ import { ContractContext } from "../../context/contracts";
 import { shrinkToken } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
-
-const BorrowTopButtons = () => {
-	const { assets, portfolio } = useContext(ContractContext);
-	const { walletConnection } = useContext(Burrow);
-
-	return (
-		<div
-			style={{
-				display: "grid",
-				gridTemplateColumns: "1fr 1fr 1fr",
-				justifyItems: "center",
-				paddingLeft: "20em",
-				paddingRight: "20em",
-			}}
-		>
-			{walletConnection.isSignedIn() && (
-				<BigButton
-					text="Your Borrow Balance"
-					value={portfolio?.borrowed
-						.map(
-							(borrowed) =>
-								Number(borrowed.balance) *
-								(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-						)
-						.reduce((sum, a) => sum + a, 0)
-						.toLocaleString(undefined, USD_FORMAT)}
-				/>
-			)}
-			<BigButton text="Borrow Limit" value={0} />
-			<BigButton text="Risk Factor" value={0} />
-		</div>
-	);
-};
+import { InfoWrapper } from "../../components/InfoBox/style";
+import { InfoBox, Table, PageTitle } from "../../components";
 
 const Borrow = () => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const { assets, metadata, portfolio } = useContext(ContractContext);
+
+	const yourBorrowBalance = portfolio?.borrowed
+		.map(
+			(borrowed) =>
+				Number(borrowed.balance) *
+				(assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
+
+	const totalBorrow = assets
+		.map((asset) =>
+			asset.price
+				? Number(
+						shrinkToken(
+							asset.borrowed.balance,
+							DECIMAL_OVERRIDES[
+								metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
+							] || TOKEN_DECIMALS,
+						),
+				  ) * asset.price.usd
+				: 0,
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
 
 	const columns: ColumnData[] = [
 		{
@@ -109,11 +102,15 @@ const Borrow = () => {
 	}
 
 	return (
-		<>
-			<Header>
-				<BorrowTopButtons />
-			</Header>
-			<PageTitle paddingTop="0" first="Borrow" second="Assets" />
+		<Box sx={{ paddingBottom: 10 }}>
+			<InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
+				{walletConnection.isSignedIn() && (
+					<InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
+				)}
+				<InfoBox title="Borrow Limit" value="0%" />
+				<InfoBox title="Risk Factor" value="0" />
+			</InfoWrapper>
+			<PageTitle first="Borrow" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_borrow)
@@ -123,27 +120,10 @@ const Borrow = () => {
 					}))}
 				columns={columns}
 			/>
-			<Total
-				type="Borrow"
-				value={assets
-					.map((asset) =>
-						asset.price
-							? Number(
-									shrinkToken(
-										asset.borrowed.balance,
-										DECIMAL_OVERRIDES[
-											metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
-										] || TOKEN_DECIMALS,
-									),
-							  ) * asset.price.usd
-							: 0,
-					)
-					.reduce((sum, a) => sum + a, 0)
-					.toLocaleString(undefined, USD_FORMAT)}
-			/>
-
-			<Footer />
-		</>
+			<InfoWrapper>
+				<InfoBox title="Total Borrow" value={totalBorrow} />
+			</InfoWrapper>
+		</Box>
 	);
 };
 

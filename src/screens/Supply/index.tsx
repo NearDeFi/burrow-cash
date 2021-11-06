@@ -1,8 +1,7 @@
 import { useContext } from "react";
+import { Box } from "@mui/material";
 
-import { Footer, Header, Table } from "../../components";
 import { ContractContext } from "../../context/contracts";
-import { BigButton, PageTitle, Total } from "../../shared";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
 import {
@@ -15,46 +14,37 @@ import {
 import { shrinkToken } from "../../store/helper";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
-
-const SupplyTopButtons = () => {
-	const { assets, portfolio } = useContext(ContractContext);
-	const { walletConnection } = useContext(Burrow);
-
-	return (
-		<div
-			style={{
-				display: "grid",
-				gap: "1em",
-				gridTemplateColumns: "1fr 1fr",
-				paddingLeft: "20em",
-				paddingRight: "20em",
-			}}
-		>
-			{walletConnection.isSignedIn() && (
-				<div style={{ justifySelf: "end" }}>
-					<BigButton
-						text="Your supply balance"
-						value={portfolio?.supplied
-							.map(
-								(supplied) =>
-									Number(supplied.balance) *
-									(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
-							)
-							.reduce((sum, a) => sum + a, 0)
-							.toLocaleString(undefined, USD_FORMAT)}
-					/>
-				</div>
-			)}
-			<div style={{ justifySelf: "start" }}>
-				<BigButton text="Net APY" value={0} />
-			</div>
-		</div>
-	);
-};
+import { InfoWrapper } from "../../components/InfoBox/style";
+import { InfoBox, Table, PageTitle } from "../../components";
 
 const Supply = () => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
-	const { assets, metadata, balances } = useContext(ContractContext);
+	const { assets, metadata, balances, portfolio } = useContext(ContractContext);
+
+	const yourSupplyBalance = portfolio?.supplied
+		.map(
+			(supplied) =>
+				Number(supplied.balance) *
+				(assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
+
+	const totalSupply = assets
+		.map((asset) =>
+			asset.price
+				? Number(
+						shrinkToken(
+							asset.supplied.balance,
+							DECIMAL_OVERRIDES[
+								metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
+							] || TOKEN_DECIMALS,
+						),
+				  ) * asset.price.usd
+				: 0,
+		)
+		.reduce((sum, a) => sum + a, 0)
+		.toLocaleString(undefined, USD_FORMAT);
 
 	const columns: ColumnData[] = [
 		{
@@ -112,11 +102,14 @@ const Supply = () => {
 	}
 
 	return (
-		<>
-			<Header>
-				<SupplyTopButtons />
-			</Header>
-			<PageTitle paddingTop="0" first="Supply" second="Assets" />
+		<Box sx={{ paddingBottom: 10 }}>
+			<InfoWrapper>
+				{walletConnection.isSignedIn() && (
+					<InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
+				)}
+				<InfoBox title="Net APY" value="0%" />
+			</InfoWrapper>
+			<PageTitle first="Supply" second="Assets" />
 			<Table
 				rows={assets
 					.filter((asset) => asset.config.can_deposit)
@@ -127,27 +120,11 @@ const Supply = () => {
 				columns={columns}
 			/>
 			{assets.length > 0 && (
-				<Total
-					type="Supply"
-					value={assets
-						.map((asset) =>
-							asset.price
-								? Number(
-										shrinkToken(
-											asset.supplied.balance,
-											DECIMAL_OVERRIDES[
-												metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
-											] || TOKEN_DECIMALS,
-										),
-								  ) * asset.price.usd
-								: 0,
-						)
-						.reduce((sum, a) => sum + a, 0)
-						.toLocaleString(undefined, USD_FORMAT)}
-				/>
+				<InfoWrapper>
+					<InfoBox title="Supply" value={totalSupply} />
+				</InfoWrapper>
 			)}
-			<Footer />
-		</>
+		</Box>
 	);
 };
 
