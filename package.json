@@ -9,7 +9,7 @@
     "deploy:pages": "gh-pages -d dist/",
     "deploy": "npm run build && npm run deploy:pages",
     "prettier": "prettier ./src --write",
-    "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\"",
+    "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\" && yarn type-check",
     "type-check": "tsc --pretty --noEmit",
     "postinstall": "husky install",
     "prepare": "husky install"

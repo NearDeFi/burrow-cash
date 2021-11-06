@@ -1,7 +1,7 @@
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import MaxIcon from "./max.svg";
 
@@ -17,9 +17,16 @@ const InputField = (props: inputFieldProps) => {
 	const { value, type, onChange, max, ...rest } = props;
 	const [controlledValue, setControlledValue] = useState<any>(value);
 
+	useEffect(() => setControlledValue(value), [value]);
+
 	const handleMax = () => {
 		setControlledValue(max);
 		if (onChange) onChange(max);
+	};
+
+	const handleChange = (e) => {
+		setControlledValue(e.target.value);
+		if (onChange) onChange(Number(e.target.value));
 	};
 
 	return (
@@ -30,10 +37,7 @@ const InputField = (props: inputFieldProps) => {
 			value={controlledValue}
 			style={{ width: "100%" }}
 			inputProps={{ min: 0 }}
-			onChange={(e) => {
-				setControlledValue(e.target.value);
-				if (onChange) onChange(Number(e.target.value));
-			}}
+			onChange={handleChange}
 			{...rest}
 			endAdornment={
 				<InputAdornment position="end">
