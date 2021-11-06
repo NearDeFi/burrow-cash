@@ -1,1 +1,0 @@
-{"version":3,"sources":["global.css"],"names":[],"mappings":"AAAA,KACC,6BAAiC,CACjC,QAAS,CACT,SAED,CAEA,UAHC,WAKD","file":"src.911829e0.css","sourceRoot":"../src","sourcesContent":["body {\n\tfont-family: \"Roboto\", sans-serif;\n\tmargin: 0;\n\tpadding: 0;\n\theight: 100%;\n}\n\nhtml {\n\theight: 100%;\n}\n"]}
