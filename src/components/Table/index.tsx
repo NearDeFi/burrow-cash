@@ -216,44 +216,46 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	return (
-		<AutoSizer>
-			{({ height, width }) => (
-				<Table
-					height={height}
-					width={width}
-					rowHeight={ROW_HEIGHT}
-					gridStyle={{
-						direction: "inherit",
-					}}
-					headerHeight={HEADER_HEIGHT}
-					className={classes.table}
-					rowClassName={getRowClassName}
-					onRowClick={handleModalOpen}
-					{...tableProps}
-				>
-					{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
-						return (
-							<Column
-								width={width}
-								key={dataKey}
-								headerRenderer={(headerProps) =>
-									HeaderCell({
-										...headerProps,
-										columnIndex: index,
-									})
-								}
-								className={classes.flexContainer}
-								cellRenderer={getCell(dataKey)}
-								cellDataGetter={cellDataGetter}
-								dataKey={dataKey}
-								label={other.label}
-								// {...other}
-							/>
-						);
-					})}
-				</Table>
-			)}
-		</AutoSizer>
+		<div style={{ height: "100vh" }}>
+			<AutoSizer>
+				{({ height, width }) => (
+					<Table
+						height={height}
+						width={width}
+						rowHeight={ROW_HEIGHT}
+						gridStyle={{
+							direction: "inherit",
+						}}
+						headerHeight={HEADER_HEIGHT}
+						className={classes.table}
+						rowClassName={getRowClassName}
+						onRowClick={handleModalOpen}
+						{...tableProps}
+					>
+						{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
+							return (
+								<Column
+									width={width}
+									key={dataKey}
+									headerRenderer={(headerProps) =>
+										HeaderCell({
+											...headerProps,
+											columnIndex: index,
+										})
+									}
+									className={classes.flexContainer}
+									cellRenderer={getCell(dataKey)}
+									cellDataGetter={cellDataGetter}
+									dataKey={dataKey}
+									label={other.label}
+									// {...other}
+								/>
+							);
+						})}
+					</Table>
+				)}
+			</AutoSizer>
+		</div>
 	);
 };
 
