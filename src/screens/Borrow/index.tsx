@@ -88,7 +88,7 @@ const Borrow = () => {
 		},
 	];
 
-	if (walletConnection.isSignedIn()) {
+	if (walletConnection?.isSignedIn()) {
 		columns.push({
 			width: 100,
 			label: "Amount Borrowed",
@@ -104,7 +104,7 @@ const Borrow = () => {
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
 			<InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-				{walletConnection.isSignedIn() && (
+				{walletConnection?.isSignedIn() && (
 					<InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
 				)}
 				<InfoBox title="Borrow Limit" value="0%" />

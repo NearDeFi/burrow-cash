@@ -90,7 +90,8 @@ export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
 					token_id,
 					account_id: account.accountId,
 					balance:
-						(walletConnection.isSignedIn() && (await getBalance(token_id, account.accountId))) || 0,
+						(walletConnection?.isSignedIn() && (await getBalance(token_id, account.accountId))) ||
+						0,
 				} as IBalance),
 		),
 	);

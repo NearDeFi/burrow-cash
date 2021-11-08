@@ -1,5 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, Switch, Typography } from "@mui/material";
+import { Button, Switch, Typography, Box } from "@mui/material";
 import { useState } from "react";
 import { Input, Slider } from "../..";
 import { colors } from "../../../style";
@@ -56,19 +56,33 @@ export const TokenInputs = ({
 	const [sliderValue, setSliderValue] = useState(0);
 	const [inputValue, setInputValue] = useState(0);
 
-	const handleInputChange = (value) => {
-		const nvalue = Number(value);
-		if (!Number.isNaN(nvalue)) {
-			setTotalAmount(nvalue * tokenPriceInUSD);
-			setSliderValue((nvalue * 100) / Number(availableTokens));
-			if (onChange) onChange(nvalue);
+	const handleMaxClick = () => {
+		if (!availableTokens) return;
+		const e = { target: { value: availableTokens } };
+		handleInputChange(e);
+	};
+
+	const handleInputChange = (e) => {
+		if (!availableTokens) return;
+		const { value } = e.target;
+
+		if (!Number.isNaN(value)) {
+			setTotalAmount(value * tokenPriceInUSD);
+			setInputValue(value);
+			setSliderValue((value * 100) / Number(availableTokens));
+			if (onChange) onChange(value);
 		}
 	};
 
-	const handleSliderChange = (percent) => {
+	const handleSliderChange = (e) => {
+		if (!availableTokens) return;
+		const { value: percent } = e.target;
 		const value = (Number(availableTokens) * percent) / 100;
+
 		setTotalAmount(value * tokenPriceInUSD);
 		setInputValue(value);
+		setSliderValue((value * 100) / Number(availableTokens));
+		if (onChange) onChange(value);
 	};
 
 	return (
@@ -99,13 +113,13 @@ export const TokenInputs = ({
 				<Input
 					value={inputValue}
 					type="number"
-					max={availableTokens}
+					onClickMax={handleMaxClick}
 					onChange={handleInputChange}
 				/>
 			</div>
-			<div style={{ paddingTop: "1rem" }}>
+			<Box px="1.5rem" mt="1rem">
 				<Slider value={sliderValue} onChange={handleSliderChange} />
-			</div>
+			</Box>
 			<Typography
 				style={{ textAlign: "center", fontSize: "1rem", fontWeight: 500 }}
 				id="modal-modal-description"

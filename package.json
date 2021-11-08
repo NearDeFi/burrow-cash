@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "rm -rf dist && parcel build src/index.html --no-cache",
+    "build": "rm -rf public && rm -rf dist && parcel build src/index.html --public-url ./ --no-cache",
     "start": "parcel src/index.html --open",
     "prod": "parcel src/index.html",
     "deploy:pages": "gh-pages -d dist/",
@@ -88,7 +88,7 @@
       "<rootDir>/node_modules/"
     ]
   },
-  "browserModern": "dist/index.html",
+  "browserModern": "public/index.html",
   "targets": {
     "browserModern": {
       "engines": {

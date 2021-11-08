@@ -17,13 +17,13 @@ window.nearInitPromise = initContract()
 	.then((initResults) => {
 		ReactDOM.render(
 			<Burrow.Provider value={initResults}>
-				<Modal>
-					<ContractContextProvider>
-						<ThemeProvider theme={theme}>
+				<ThemeProvider theme={theme}>
+					<Modal>
+						<ContractContextProvider>
 							<App />
-						</ThemeProvider>
-					</ContractContextProvider>
-				</Modal>
+						</ContractContextProvider>
+					</Modal>
+				</ThemeProvider>
 			</Burrow.Provider>,
 			document.querySelector("#root"),
 		);
