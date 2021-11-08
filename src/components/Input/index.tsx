@@ -14,8 +14,6 @@ const InputField = (props: inputFieldProps) => {
 	const { value, type, onChange, onClickMax, ...rest } = props;
 	return (
 		<Input
-			id="input-box"
-			className="input-box"
 			type={type || "string"}
 			value={value}
 			inputProps={{ min: 0 }}
