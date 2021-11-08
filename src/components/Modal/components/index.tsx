@@ -1,5 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, Switch, Typography } from "@mui/material";
+import { Button, Switch, Typography, Box } from "@mui/material";
 import { useState } from "react";
 import { Input, Slider } from "../..";
 import { colors } from "../../../style";
@@ -117,9 +117,9 @@ export const TokenInputs = ({
 					onChange={handleInputChange}
 				/>
 			</div>
-			<div style={{ paddingTop: "1rem" }}>
+			<Box px="1.5rem" mt="1rem">
 				<Slider value={sliderValue} onChange={handleSliderChange} />
-			</div>
+			</Box>
 			<Typography
 				style={{ textAlign: "center", fontSize: "1rem", fontWeight: 500 }}
 				id="modal-modal-description"

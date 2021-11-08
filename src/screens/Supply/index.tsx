@@ -88,7 +88,7 @@ const Supply = () => {
 		},
 	];
 
-	if (walletConnection.isSignedIn()) {
+	if (walletConnection?.isSignedIn()) {
 		columns.push({
 			width: 100,
 			label: "Wallet",
@@ -104,7 +104,7 @@ const Supply = () => {
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
 			<InfoWrapper>
-				{walletConnection.isSignedIn() && (
+				{walletConnection?.isSignedIn() && (
 					<InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
 				)}
 				<InfoBox title="Net APY" value="0%" />

@@ -1,6 +1,7 @@
-import { IconButton, InputAdornment, OutlinedInput } from "@mui/material";
+import { IconButton, InputAdornment } from "@mui/material";
 
 import MaxIcon from "./max.svg";
+import { Input } from "./style";
 
 interface inputFieldProps {
 	type?: string;
@@ -12,12 +13,11 @@ interface inputFieldProps {
 const InputField = (props: inputFieldProps) => {
 	const { value, type, onChange, onClickMax, ...rest } = props;
 	return (
-		<OutlinedInput
+		<Input
 			id="input-box"
 			className="input-box"
 			type={type || "string"}
 			value={value}
-			style={{ width: "100%" }}
 			inputProps={{ min: 0 }}
 			onChange={onChange}
 			{...rest}

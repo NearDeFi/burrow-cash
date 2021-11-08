@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Switch } from "@mui/material";
+import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
@@ -52,10 +52,10 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 			<Rates rates={rates} ratesTitle={ratesTitle} />
 
 			{type === "Supply" && asset.canBeUsedAsCollateral && (
-				<>
+				<Box px="1rem">
 					Use as collateral
 					<Switch onChange={(event) => setUseAsCollateral(event.target.checked)} />
-				</>
+				</Box>
 			)}
 
 			<ActionButton

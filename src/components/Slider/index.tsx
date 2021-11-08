@@ -1,4 +1,4 @@
-import { Slider as MUISlider, Box } from "@mui/material";
+import { SliderStyled } from "./style";
 
 const marks = [
 	{
@@ -34,18 +34,16 @@ interface Props {
 
 const Slider = ({ value, onChange }: Props) => {
 	return (
-		<Box sx={{ padding: "0 1.5rem", margin: "0 auto" }}>
-			<MUISlider
-				aria-label="Custom marks"
-				value={value}
-				getAriaValueText={valuetext}
-				valueLabelDisplay="auto"
-				step={1}
-				valueLabelFormat={(v) => `${Math.round(v)}%`}
-				marks={marks}
-				onChange={onChange}
-			/>
-		</Box>
+		<SliderStyled
+			aria-label="Custom value"
+			value={value}
+			getAriaValueText={valuetext}
+			valueLabelDisplay="auto"
+			step={1}
+			valueLabelFormat={(v) => `${Math.round(v)}%`}
+			marks={marks}
+			onChange={onChange}
+		/>
 	);
 };
 

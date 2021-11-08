@@ -12,7 +12,7 @@ const WalletButton = () => {
 	const open = Boolean(anchorEl);
 
 	const onWalletButtonClick = (event) => {
-		if (!walletConnection.isSignedIn()) {
+		if (!walletConnection?.isSignedIn()) {
 			login(walletConnection);
 		} else {
 			setAnchorEl(event.currentTarget);
@@ -31,7 +31,7 @@ const WalletButton = () => {
 				variant="contained"
 				onClick={onWalletButtonClick}
 			>
-				{walletConnection.isSignedIn() ? account.accountId : "Connect Wallet"}
+				{walletConnection?.isSignedIn() ? account.accountId : "Connect Wallet"}
 			</Button>
 			<Menu
 				id="profile-menu"

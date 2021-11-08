@@ -44,7 +44,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
 		walletConnection.account().accountId,
 	);
 
-	if (walletConnection.isSignedIn()) {
+	if (walletConnection?.isSignedIn()) {
 		console.log("access keys", await account.getAccessKeys());
 	}
 
