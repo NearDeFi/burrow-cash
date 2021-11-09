@@ -21,9 +21,10 @@ import { MuiVirtualizedTableProps, Row, TableProps } from "./types";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import TokenIcon from "../TokenIcon";
 import { ContractContext } from "../../context/contracts";
-import { USD_FORMAT } from "../../store/constants";
-import { repay, withdraw } from "../../store/tokens";
+import { DECIMAL_OVERRIDES, USD_FORMAT } from "../../store/constants";
+import { repay, withdraw } from "../../store";
 import { IAsset } from "../../interfaces/account";
+import { shrinkToken } from "../../store";
 
 const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
@@ -200,7 +201,15 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			totalAmountTitle: `Total ${location === "supply" ? "Supply" : "Borrow"}`,
 			asset: {
 				token_id: rowData.token_id,
-				amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
+				amount:
+					location === "supply"
+						? balances.find((b) => b.token_id === rowData.token_id)?.balance || 0
+						: Number(
+								shrinkToken(
+									rowData.supplied.balance,
+									DECIMAL_OVERRIDES[rowData.symbol] || rowData.decimals,
+								),
+						  ),
 				name: rowData?.name || "Unknown",
 				symbol: rowData?.symbol || "???",
 				icon: rowData?.icon,
