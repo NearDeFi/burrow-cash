@@ -82,7 +82,7 @@ const Supply = () => {
 	}
 
 	return (
-		<Box sx={{ paddingBottom: 10 }}>
+		<Box>
 			<InfoWrapper>
 				{walletConnection?.isSignedIn() && (
 					<InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
