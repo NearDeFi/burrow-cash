@@ -300,7 +300,7 @@ export const withdraw = async (token_id: string, amount?: number) => {
 			{
 				Withdraw: {
 					token_id,
-					amount: "",
+					amount: undefined as unknown as string,
 				},
 			},
 		],

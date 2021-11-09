@@ -32,18 +32,18 @@ const Portfolio = () => {
 		.toLocaleString(undefined, USD_FORMAT);
 
 	const suppliedRows = portfolio?.supplied.map((supplied) => ({
-		...supplied,
 		...assets.find((m) => m.token_id === supplied.token_id),
 		...metadata.find((m) => m.token_id === supplied.token_id),
+		...supplied,
 		collateral: portfolio?.collateral.find(
 			(collateral) => collateral.token_id === supplied.token_id,
 		),
 	}));
 
 	const borrowRows = portfolio?.borrowed.map((borrowed) => ({
-		...borrowed,
 		...assets.find((m) => m.token_id === borrowed.token_id),
 		...metadata.find((a) => a.token_id === borrowed.token_id),
+		...borrowed,
 	}));
 
 	return (

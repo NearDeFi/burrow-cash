@@ -82,6 +82,18 @@ export const toUsd = (value: string, asset: IAssetDetailed & IMetadata): number 
 		: 0;
 };
 
+export const getAvailableAmount = (asset: IAssetDetailed): string => {
+	let amount = new Decimal(asset.supplied.balance)
+		.plus(new Decimal(asset.reserved))
+		.minus(new Decimal(asset.borrowed.balance));
+
+	amount = amount.minus(amount.mul(0.001));
+	const result = amount.toFixed(0);
+
+	console.log("availableAmount", result);
+	return result;
+};
+
 export const getContract = async (
 	account: Account,
 	contractAddress: string,
