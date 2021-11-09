@@ -220,6 +220,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 			<AutoSizer>
 				{({ height, width }) => (
 					<Table
+						autoHeight
 						height={height}
 						width={width}
 						rowHeight={ROW_HEIGHT}
