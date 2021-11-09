@@ -1,40 +1,31 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 import Footer from "../Footer";
 import Header from "../Header";
-import BackgroundDesktop from "./bg-desktop.svg";
-import BackgroundMobile from "./bg-mobile.svg";
-import BackgroundFooter from "./bg-footer.svg";
+// import BackgroundDesktop from "./bg-desktop.svg";
+// import BackgroundMobile from "./bg-mobile.svg";
+// import BackgroundFooter from "./bg-footer.svg";
 
-const Layout = ({ children }) => {
-	const matches = useMediaQuery("(min-width:1200px)");
-	const Background = !matches ? (
-		<BackgroundMobile width="100%" />
-	) : (
-		<BackgroundDesktop width="100%" />
-	);
-	return (
-		<Box sx={{ position: "relative" }}>
-			<Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }}>
-				{Background}
-			</Box>
-			<Box
-				sx={{
-					zIndex: 20,
-					position: "relative",
-					// height: "100vh",
-					display: "flex",
-					flexDirection: "column",
-				}}
-			>
-				<Header />
-				<main>{children}</main>
-				<Footer />
-			</Box>
-			<Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 0 }}>
-				<BackgroundFooter />
-			</Box>
-		</Box>
-	);
-};
+const Layout = ({ children }) => (
+	<Box
+		sx={{
+			display: "grid",
+			gridTemplateRows: "64px 1fr 64px",
+			gridTemplateColumns: "100%",
+			minHeight: "100%",
+		}}
+	>
+		{/* <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }}>
+			{Background}
+		</Box> */}
+
+		<Header />
+		<main style={{ zIndex: 100 }}>{children}</main>
+		<Footer />
+
+		{/* <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+			<BackgroundFooter />
+		</Box> */}
+	</Box>
+);
 
 export default Layout;

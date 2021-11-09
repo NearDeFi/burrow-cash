@@ -102,7 +102,7 @@ const Borrow = () => {
 	}
 
 	return (
-		<Box sx={{ paddingBottom: 10 }}>
+		<Box>
 			<InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
 				{walletConnection?.isSignedIn() && (
 					<InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />

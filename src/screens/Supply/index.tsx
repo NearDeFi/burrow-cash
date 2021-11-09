@@ -56,25 +56,22 @@ const Supply = () => {
 			width: 100,
 			label: "BRRR Boost",
 			dataKey: "boost",
-			cellDataGetter: () => {
-				return "xxx";
-			},
+			cellDataGetter: () => "xxx",
 		},
 		{
 			width: 150,
 			label: "APY",
 			dataKey: "apy",
 			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
-			},
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) =>
+				Number(rowData.supply_apr).toFixed(PERCENT_DIGITS),
 		},
 		{
 			width: 100,
 			label: "Total Supply",
 			dataKey: "supply",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return rowData.price?.usd
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) =>
+				rowData.price?.usd
 					? (
 							Number(
 								shrinkToken(
@@ -83,8 +80,7 @@ const Supply = () => {
 								),
 							) * rowData.price.usd
 					  ).toLocaleString(undefined, USD_FORMAT)
-					: "$-.-";
-			},
+					: "$-.-",
 		},
 	];
 
@@ -93,11 +89,10 @@ const Supply = () => {
 			width: 100,
 			label: "Wallet",
 			dataKey: "balance",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return balances
+			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) =>
+				balances
 					.find((b) => b.token_id === rowData.token_id)
-					?.balance.toLocaleString(undefined, TOKEN_FORMAT);
-			},
+					?.balance.toLocaleString(undefined, TOKEN_FORMAT),
 		});
 	}
 
@@ -120,7 +115,7 @@ const Supply = () => {
 				columns={columns}
 			/>
 			{assets.length > 0 && (
-				<InfoWrapper>
+				<InfoWrapper style={{ gridGap: 0 }}>
 					<InfoBox title="Supply" value={totalSupply} />
 				</InfoWrapper>
 			)}
