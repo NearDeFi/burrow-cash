@@ -22,9 +22,8 @@ import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import TokenIcon from "../TokenIcon";
 import { ContractContext } from "../../context/contracts";
 import { DECIMAL_OVERRIDES, USD_FORMAT } from "../../store/constants";
-import { repay, withdraw } from "../../store";
+import { getAvailableAmount, repay, withdraw, shrinkToken } from "../../store";
 import { IAsset } from "../../interfaces/account";
-import { shrinkToken } from "../../store";
 
 const HEADER_HEIGHT = 32;
 const ROW_HEIGHT = 80;
@@ -38,7 +37,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 
 	const getRowClassName = ({ index }: Row) => {
 		return clsx(classes.tableRow, classes.flexContainer, {
-			[classes.tableRowHover]: index !== -1 && onRowClick !== null,
+			[classes.tableRowHover]: index !== -1 && onRowClick !== null && location !== "portfolio",
 		});
 	};
 
@@ -74,7 +73,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const WithdrawCell: TableCellRenderer = ({ cellData }) => {
+	const WithdrawCell: TableCellRenderer = ({ rowData }: { rowData: IAsset & IMetadata }) => {
 		return (
 			<TableCell
 				component="div"
@@ -82,13 +81,17 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
+				style={{ height: ROW_HEIGHT }}
 			>
 				<DefaultCellWrapper>
 					<Button
 						size="small"
 						style={{ justifySelf: "end" }}
 						variant="contained"
-						onClick={() => withdraw(cellData)}
+						onClick={(event) => {
+							event.stopPropagation();
+							void withdraw(rowData.token_id);
+						}}
 					>
 						Withdraw
 					</Button>
@@ -97,7 +100,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		);
 	};
 
-	const RepayCell: TableCellRenderer = ({ rowData }: { rowData: IAsset }) => {
+	const RepayCell: TableCellRenderer = ({ rowData }: { rowData: IAsset & IMetadata }) => {
 		return (
 			<TableCell
 				component="div"
@@ -105,15 +108,46 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
+				style={{ height: ROW_HEIGHT }}
 			>
 				<DefaultCellWrapper>
 					<Button
 						size="small"
 						style={{ justifySelf: "end" }}
 						variant="contained"
-						onClick={() => repay(rowData.token_id, 1)}
+						onClick={(event) => {
+							event.stopPropagation();
+							void repay(rowData.token_id, Number(shrinkToken(rowData.balance, rowData.decimals)));
+						}}
 					>
 						Repay
+					</Button>
+				</DefaultCellWrapper>
+			</TableCell>
+		);
+	};
+
+	const AdjustCell: TableCellRenderer = ({ rowData }: { rowData: IAsset }) => {
+		return (
+			<TableCell
+				component="div"
+				className={clsx(classes.tableCell, classes.flexContainer, {
+					[classes.noClick]: onRowClick === null,
+				})}
+				variant="body"
+				style={{ height: ROW_HEIGHT }}
+			>
+				<DefaultCellWrapper>
+					<Button
+						size="small"
+						style={{ justifySelf: "end" }}
+						variant="contained"
+						onClick={(event) => {
+							event.stopPropagation();
+							void repay(rowData.token_id, 1);
+						}}
+					>
+						Adjust
 					</Button>
 				</DefaultCellWrapper>
 			</TableCell>
@@ -190,6 +224,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 		if (dataKey === "apy" || dataKey === "borrowAPY") return APYCell;
 		if (dataKey === "withdraw") return WithdrawCell;
 		if (dataKey === "repay") return RepayCell;
+		if (dataKey === "adjust") return AdjustCell;
 
 		return DefaultCell;
 	};
@@ -206,7 +241,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						? balances.find((b) => b.token_id === rowData.token_id)?.balance || 0
 						: Number(
 								shrinkToken(
-									rowData.supplied.balance,
+									getAvailableAmount(rowData),
 									DECIMAL_OVERRIDES[rowData.symbol] || rowData.decimals,
 								),
 						  ),
@@ -239,7 +274,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 						headerHeight={HEADER_HEIGHT}
 						className={classes.table}
 						rowClassName={getRowClassName}
-						onRowClick={handleModalOpen}
+						onRowClick={location !== "portfolio" ? handleModalOpen : undefined}
 						{...tableProps}
 					>
 						{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {

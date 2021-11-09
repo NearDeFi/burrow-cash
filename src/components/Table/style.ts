@@ -33,10 +33,10 @@ export const styles = (theme: Theme) =>
 			},
 		},
 		tableRow: {
-			cursor: "pointer",
 			flex: "0 0 100% !important",
 		},
 		tableRowHover: {
+			cursor: "pointer",
 			"&:hover": {
 				backgroundColor: colors.background,
 			},
