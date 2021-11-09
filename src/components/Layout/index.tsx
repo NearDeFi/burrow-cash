@@ -1,9 +1,6 @@
 import { Box } from "@mui/material";
 import Footer from "../Footer";
 import Header from "../Header";
-// import BackgroundDesktop from "./bg-desktop.svg";
-// import BackgroundMobile from "./bg-mobile.svg";
-// import BackgroundFooter from "./bg-footer.svg";
 
 const Layout = ({ children }) => (
 	<Box
@@ -14,17 +11,9 @@ const Layout = ({ children }) => (
 			minHeight: "100%",
 		}}
 	>
-		{/* <Box sx={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }}>
-			{Background}
-		</Box> */}
-
 		<Header />
 		<main style={{ zIndex: 100 }}>{children}</main>
 		<Footer />
-
-		{/* <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 0 }}>
-			<BackgroundFooter />
-		</Box> */}
 	</Box>
 );
 
