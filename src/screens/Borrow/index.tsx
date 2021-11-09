@@ -1,17 +1,10 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
-
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { ColumnData } from "../../components/Table/types";
-import {
-	DECIMAL_OVERRIDES,
-	PERCENT_DIGITS,
-	TOKEN_DECIMALS,
-	TOKEN_FORMAT,
-	USD_FORMAT,
-} from "../../store/constants";
+import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { shrinkToken } from "../../store";
+import { toUsd } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
 import { InfoWrapper } from "../../components/InfoBox/style";
@@ -31,18 +24,12 @@ const Borrow = () => {
 		.toLocaleString(undefined, USD_FORMAT);
 
 	const totalBorrow = assets
-		.map((asset) =>
-			asset.price
-				? Number(
-						shrinkToken(
-							asset.borrowed.balance,
-							DECIMAL_OVERRIDES[
-								metadata.find((m) => m.token_id === asset.token_id)?.symbol || ""
-							] || TOKEN_DECIMALS,
-						),
-				  ) * asset.price.usd
-				: 0,
-		)
+		.map((asset) => {
+			return toUsd(asset.borrowed.balance, {
+				...asset,
+				...metadata.find((m) => m.token_id === asset.token_id)!,
+			});
+		})
 		.reduce((sum, a) => sum + a, 0)
 		.toLocaleString(undefined, USD_FORMAT);
 
@@ -67,14 +54,7 @@ const Borrow = () => {
 			dataKey: "liquidity",
 			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
 				return rowData.price?.usd
-					? (
-							Number(
-								shrinkToken(
-									rowData.borrowed.balance,
-									DECIMAL_OVERRIDES[rowData.symbol] || TOKEN_DECIMALS,
-								),
-							) * rowData.price.usd
-					  ).toLocaleString(undefined, USD_FORMAT)
+					? toUsd(rowData.borrowed.balance, rowData).toLocaleString(undefined, USD_FORMAT)
 					: "$-.-";
 			},
 		},
