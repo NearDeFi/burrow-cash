@@ -216,7 +216,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	};
 
 	return (
-		<div style={{ height: "100vh" }}>
+		<div style={{ height: "100%" }}>
 			<AutoSizer>
 				{({ height, width }) => (
 					<Table
@@ -248,7 +248,6 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 									cellDataGetter={cellDataGetter}
 									dataKey={dataKey}
 									label={other.label}
-									// {...other}
 								/>
 							);
 						})}
@@ -263,18 +262,16 @@ const defaultTheme = createTheme();
 
 const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
-const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => {
-	return (
-		<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
-			<TableWrapper height={height}>
-				<VirtualizedTable
-					rowCount={rows?.length}
-					rowGetter={({ index }) => rows[index]}
-					columns={columns}
-				/>
-			</TableWrapper>
-		</div>
-	);
-};
+const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => (
+	<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
+		<TableWrapper height={height}>
+			<VirtualizedTable
+				rowCount={rows?.length}
+				rowGetter={({ index }) => rows[index]}
+				columns={columns}
+			/>
+		</TableWrapper>
+	</div>
+);
 
 export default ReactVirtualizedTable;
