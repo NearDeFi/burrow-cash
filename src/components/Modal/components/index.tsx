@@ -174,12 +174,12 @@ const createListItem = ({
 };
 
 export const Rates = ({ ratesTitle, rates }: { ratesTitle: string; rates: any[] }) => {
-	return (
+	return rates.length > 0 ? (
 		<>
 			<div style={{ padding: "1em", fontSize: "14px", fontWeight: 500 }}>{ratesTitle}</div>
 			{rates?.map((r) => createListItem(r))}
 		</>
-	);
+	) : null;
 };
 
 export const ActionButton = ({
