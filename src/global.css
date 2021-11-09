@@ -9,3 +9,11 @@ body {
 html {
 	height: 100%;
 }
+
+* {
+	box-sizing: border-box;
+}
+
+.testclass .ReactVirtualized__Table__row:last-child div div {
+	border-bottom: 0;
+}

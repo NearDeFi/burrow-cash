@@ -53,7 +53,7 @@ export const TableWrapper = styled(Paper)<{ height: string }>`
 	grid-column: 2;
 	width: 100%;
 	box-shadow: none !important;
-	height: ${(props: { height: string }) => props?.height || "400px"};
+	height: ${(props: { height: string }) => props?.height || "100%"};
 `;
 
 export const TokenNameCellWrapper = styled.div`

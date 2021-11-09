@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
 				}}
 			>
 				<Header />
-				{children}
+				<main>{children}</main>
 				<Footer />
 			</Box>
 			<Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 0 }}>

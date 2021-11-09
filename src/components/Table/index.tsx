@@ -2,7 +2,14 @@ import { createTheme } from "@mui/material/styles";
 import TableCell from "@mui/material/TableCell";
 import { withStyles } from "@mui/styles";
 import clsx from "clsx";
-import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from "react-virtualized";
+import {
+	AutoSizer,
+	Column,
+	Table,
+	TableCellRenderer,
+	TableHeaderProps,
+	WindowScroller,
+} from "react-virtualized";
 import { useLocation } from "react-router";
 import { useContext } from "react";
 import { Button } from "@mui/material";
@@ -26,7 +33,7 @@ import { repay, withdraw } from "../../store/tokens";
 import { IAsset } from "../../interfaces/account";
 
 const HEADER_HEIGHT = 32;
-const ROW_HEIGHT = 80;
+const ROW_HEIGHT = 60;
 
 const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	const modal: ModalState = useContext(ModalContext);
@@ -55,10 +62,10 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 				variant="body"
 				style={{ width: "200px", height: ROW_HEIGHT, color: "#000741" }}
 			>
-				<TokenNameCellWrapper>
+				<TokenNameCellWrapper style={{ display: "flex", alignItems: "center" }}>
 					<TokenIcon icon={rowData?.icon} />
 
-					<TokenNameTextWrapper>
+					<TokenNameTextWrapper style={{ marginLeft: 10 }}>
 						<Heading4 cellData={rowData?.symbol || rowData.token_id} />
 						<Heading6
 							cellData={
@@ -81,6 +88,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
+				style={{ justifyContent: "end", height: ROW_HEIGHT }}
 			>
 				<DefaultCellWrapper>
 					<Button
@@ -104,6 +112,7 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 					[classes.noClick]: onRowClick === null,
 				})}
 				variant="body"
+				style={{ justifyContent: "end", height: ROW_HEIGHT }}
 			>
 				<DefaultCellWrapper>
 					<Button
@@ -121,7 +130,13 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 
 	const APYCell: TableCellRenderer = ({ cellData, dataKey }) => {
 		const data = `${cellData}%`;
-		const style = { height: ROW_HEIGHT, color: "#000741", display: "grid" };
+		const style = {
+			maxwidth: 100,
+			height: ROW_HEIGHT,
+			color: "#000741",
+			display: "grid",
+			justifyContent: "right",
+		};
 
 		return (
 			<TableCell
@@ -160,10 +175,10 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 	const HeaderCell = ({ label, columnIndex }: TableHeaderProps & { columnIndex: number }) => {
 		const isFirstColumn = columnIndex === 0;
 		const isLastColumn = columnIndex === columns?.length - 1;
-		const justifyContent = isLastColumn ? "right" : isFirstColumn ? "left" : "center";
+		const justifyContent = isLastColumn ? "right" : isFirstColumn ? "left" : "right";
 		const style = {
 			fontWeight: 500,
-			fontSize: "12px",
+			fontSize: "13px",
 			lineHeight: "19px",
 			height: HEADER_HEIGHT,
 			color: "#000741",
@@ -217,44 +232,49 @@ const TableTemplate = (props: MuiVirtualizedTableProps) => {
 
 	return (
 		<div style={{ height: "100%" }}>
-			<AutoSizer>
-				{({ height, width }) => (
-					<Table
-						autoHeight
-						height={height}
-						width={width}
-						rowHeight={ROW_HEIGHT}
-						gridStyle={{
-							direction: "inherit",
-						}}
-						headerHeight={HEADER_HEIGHT}
-						className={classes.table}
-						rowClassName={getRowClassName}
-						onRowClick={handleModalOpen}
-						{...tableProps}
-					>
-						{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
-							return (
-								<Column
-									width={width}
-									key={dataKey}
-									headerRenderer={(headerProps) =>
-										HeaderCell({
-											...headerProps,
-											columnIndex: index,
-										})
-									}
-									className={classes.flexContainer}
-									cellRenderer={getCell(dataKey)}
-									cellDataGetter={cellDataGetter}
-									dataKey={dataKey}
-									label={other.label}
-								/>
-							);
-						})}
-					</Table>
+			<WindowScroller>
+				{({ height, scrollTop }) => (
+					<AutoSizer disableHeight>
+						{({ width }) => (
+							<Table
+								autoHeight
+								height={height}
+								width={width}
+								scrollTop={scrollTop}
+								rowHeight={ROW_HEIGHT}
+								gridStyle={{
+									direction: "inherit",
+								}}
+								headerHeight={HEADER_HEIGHT}
+								className={`testclass ${classes.table}`}
+								rowClassName={getRowClassName}
+								onRowClick={handleModalOpen}
+								{...tableProps}
+							>
+								{columns.map(({ dataKey, cellDataGetter, ...other }, index) => {
+									return (
+										<Column
+											width={width}
+											key={dataKey}
+											headerRenderer={(headerProps) =>
+												HeaderCell({
+													...headerProps,
+													columnIndex: index,
+												})
+											}
+											className={classes.flexContainer}
+											cellRenderer={getCell(dataKey)}
+											cellDataGetter={cellDataGetter}
+											dataKey={dataKey}
+											label={other.label}
+										/>
+									);
+								})}
+							</Table>
+						)}
+					</AutoSizer>
 				)}
-			</AutoSizer>
+			</WindowScroller>
 		</div>
 	);
 };
@@ -263,7 +283,7 @@ const defaultTheme = createTheme();
 
 const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
-const ReactVirtualizedTable = ({ rows = [], columns = [], height = "400px" }: TableProps) => (
+const ReactVirtualizedTable = ({ rows = [], columns = [], height = "100%" }: TableProps) => (
 	<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
 		<TableWrapper height={height}>
 			<VirtualizedTable

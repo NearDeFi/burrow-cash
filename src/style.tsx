@@ -10,12 +10,12 @@ export const typography = {};
 
 export const Heading6 = ({ cellData = "" }) => {
 	return (
-		<div style={{ color: colors.secondary, fontSize: "12px", fontWeight: 500 }}>{cellData}</div>
+		<div style={{ color: colors.secondary, fontSize: "13px", fontWeight: 400 }}>{cellData}</div>
 	);
 };
 
 export const Heading4 = ({ cellData = "" }) => {
 	return (
-		<div style={{ color: colors.secondary, fontSize: "14px", fontWeight: 700 }}>{cellData}</div>
+		<div style={{ color: colors.secondary, fontSize: "15px", fontWeight: 700 }}>{cellData}</div>
 	);
 };
