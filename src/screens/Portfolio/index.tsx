@@ -31,6 +31,15 @@ const Portfolio = () => {
 		.reduce((sum, a) => sum + a, 0)
 		.toLocaleString(undefined, USD_FORMAT);
 
+	const suppliedRows = portfolio?.supplied.map((supplied) => ({
+		...supplied,
+		...assets.find((m) => m.token_id === supplied.token_id),
+		...metadata.find((m) => m.token_id === supplied.token_id),
+		collateral: portfolio?.collateral.find(
+			(collateral) => collateral.token_id === supplied.token_id,
+		),
+	}));
+
 	const suppliedColumns: ColumnData[] = [
 		{
 			width: 200,
@@ -74,6 +83,12 @@ const Portfolio = () => {
 			},
 		},
 	];
+
+	const borrowRows = portfolio?.borrowed.map((borrowed) => ({
+		...borrowed,
+		...assets.find((m) => m.token_id === borrowed.token_id),
+		...metadata.find((a) => a.token_id === borrowed.token_id),
+	}));
 
 	const borrowColumns: ColumnData[] = [
 		{
@@ -126,18 +141,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.supplied.length ? (
-				<Table
-					height="240px"
-					rows={portfolio?.supplied.map((supplied) => ({
-						...supplied,
-						...assets.find((m) => m.token_id === supplied.token_id),
-						...metadata.find((m) => m.token_id === supplied.token_id),
-						collateral: portfolio?.collateral.find(
-							(collateral) => collateral.token_id === supplied.token_id,
-						),
-					}))}
-					columns={suppliedColumns}
-				/>
+				<Table rows={suppliedRows} columns={suppliedColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No supplied assets yet</div>
 			)}
@@ -147,15 +151,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.borrowed.length ? (
-				<Table
-					height="240px"
-					rows={portfolio?.borrowed.map((borrowed) => ({
-						...borrowed,
-						...assets.find((m) => m.token_id === borrowed.token_id),
-						...metadata.find((a) => a.token_id === borrowed.token_id),
-					}))}
-					columns={borrowColumns}
-				/>
+				<Table rows={borrowRows} columns={borrowColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}

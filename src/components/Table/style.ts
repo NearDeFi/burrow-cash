@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import styled from "styled-components";
 
@@ -49,11 +49,9 @@ export const styles = (theme: Theme) =>
 		},
 	} as const);
 
-export const TableWrapper = styled(Paper)<{ height: string }>`
+export const TableWrapper = styled(Box)`
 	grid-column: 2;
 	width: 100%;
-	box-shadow: none !important;
-	height: ${(props: { height: string }) => props?.height || "400px"};
 `;
 
 export const TokenNameCellWrapper = styled.div`
