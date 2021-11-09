@@ -265,7 +265,7 @@ const VirtualizedTable = withStyles(styles, { defaultTheme })(TableTemplate);
 
 const ReactVirtualizedTable = ({ rows = [], columns = [] }: TableProps) => (
 	<div style={{ display: "grid", width: "100%", gridTemplateColumns: "0.1fr 1fr 0.1fr" }}>
-		<TableWrapper>
+		<TableWrapper height="400px">
 			<VirtualizedTable
 				rowCount={rows?.length}
 				rowGetter={({ index }) => rows[index]}

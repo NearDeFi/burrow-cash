@@ -4,7 +4,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { USD_FORMAT } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, Table } from "../../components";
+import { InfoBox } from "../../components";
 
 import Table2 from "../../components/Table2";
 import { suppliedColumns, borrowColumns } from "./tabledata";
@@ -69,7 +69,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.borrowed.length ? (
-				<Table rows={borrowRows} columns={borrowColumns} />
+				<Table2 rows={borrowRows} columns={borrowColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}

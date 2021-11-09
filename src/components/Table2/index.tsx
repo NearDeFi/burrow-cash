@@ -6,17 +6,24 @@ import {
 	TableHead,
 	TableRow,
 	Box,
+	useTheme,
 } from "@mui/material";
 
 function Table({ rows, columns }) {
-	console.log(columns, rows);
+	const theme = useTheme();
 	return (
 		<TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto" }}>
 			<MUITable aria-label="table">
 				<TableHead>
 					<TableRow>
-						{columns?.map(({ dataKey, label }) => (
-							<TableCell key={dataKey}>{label}</TableCell>
+						{columns?.map(({ dataKey, label, align }) => (
+							<TableCell
+								align={align}
+								sx={{ color: theme.palette.secondary.main, fontSize: 12 }}
+								key={dataKey}
+							>
+								{label}
+							</TableCell>
 						))}
 					</TableRow>
 				</TableHead>
@@ -27,9 +34,12 @@ function Table({ rows, columns }) {
 							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 						>
 							{columns?.map(
-								({ dataKey, Cell }) =>
+								({ dataKey, align, Cell }) =>
 									Cell && (
-										<TableCell>
+										<TableCell
+											align={align}
+											sx={{ color: theme.palette.secondary.main, fontWeight: "bold" }}
+										>
 											<Cell key={dataKey} rowData={rowData} />
 										</TableCell>
 									),
