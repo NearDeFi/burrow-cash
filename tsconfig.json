@@ -26,5 +26,9 @@
     "**/*.ts",
     "**/*.tsx",
     "src"
+  ],
+  "exclude": [
+    ".parcel-cache",
+    "dist"
   ]
 }

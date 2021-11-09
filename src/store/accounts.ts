@@ -56,11 +56,12 @@ export const getPortfolio = async (
 
 	const accountDetailed: IAccountDetailed | null = await getAccountDetailed(account.accountId!);
 
+	// todo: rework shrink tokens here, maybe return another object instead replacing the values
+
 	if (accountDetailed) {
 		for (const asset of [...accountDetailed.supplied]) {
 			const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
 			const decimals = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
-			console.log("portfolio", asset.token_id, decimals);
 			asset.shares = shrinkToken(asset.shares, decimals);
 			asset.balance = shrinkToken(asset.balance, decimals);
 		}
@@ -69,7 +70,6 @@ export const getPortfolio = async (
 			const meta = metadata.find((m) => m.token_id === asset.token_id);
 			const decimals =
 				DECIMAL_OVERRIDES[meta ? meta.symbol : ""] || meta?.decimals || TOKEN_DECIMALS;
-			console.log("portfolio", asset.token_id, decimals);
 			asset.shares = shrinkToken(asset.shares, decimals);
 			asset.balance = shrinkToken(asset.balance, decimals);
 		}

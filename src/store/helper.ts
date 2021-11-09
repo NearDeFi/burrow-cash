@@ -1,10 +1,11 @@
 import Decimal from "decimal.js";
 import { Account, Contract } from "near-api-js";
 
-import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
+import { DECIMAL_OVERRIDES, DEFAULT_PRECISION, NANOS_PER_YEAR, TOKEN_DECIMALS } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle } from "../interfaces/contract-methods";
 import { IAssetPrice, IPrices } from "../interfaces/oracle";
+import { IAssetDetailed, IMetadata } from "../interfaces/asset";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -72,6 +73,13 @@ export const expandToken = (value: string | number, decimals: string | number): 
 
 export const shrinkToken = (value: string | number, decimals: string | number): string => {
 	return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed();
+};
+
+export const toUsd = (value: string, asset: IAssetDetailed & IMetadata): number => {
+	return asset.price?.usd
+		? Number(shrinkToken(value, DECIMAL_OVERRIDES[asset.symbol] || TOKEN_DECIMALS)) *
+				asset.price.usd
+		: 0;
 };
 
 export const getContract = async (
