@@ -9,7 +9,15 @@ import {
 	useTheme,
 } from "@mui/material";
 
-function Table({ rows, columns }) {
+import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
+
+interface TableProps {
+	rows: any;
+	columns: any;
+	onRowClick?: (rowData: IAssetDetailed & IMetadata) => void;
+}
+
+function Table({ rows, columns, onRowClick }: TableProps) {
 	const theme = useTheme();
 	return (
 		<TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto" }}>
@@ -31,7 +39,12 @@ function Table({ rows, columns }) {
 					{rows.map((rowData) => (
 						<TableRow
 							key={rowData.token_id}
-							sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+							sx={{
+								"&:last-child td, &:last-child th": { border: 0 },
+								cursor: onRowClick && "pointer",
+								"&:hover": { background: onRowClick && theme.palette.background.default },
+							}}
+							onClick={() => onRowClick && onRowClick(rowData)}
 						>
 							{columns?.map(
 								({ dataKey, align, Cell }) =>

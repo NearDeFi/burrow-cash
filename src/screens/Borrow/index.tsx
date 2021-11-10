@@ -1,20 +1,22 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
 
-import { USD_FORMAT } from "../../store/constants";
+import { USD_FORMAT, DECIMAL_OVERRIDES } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { toUsd } from "../../store";
+import { toUsd, shrinkToken, getAvailableAmount } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
 import Table2 from "../../components/Table2";
+import { ModalContext, ModalState } from "../../components/Modal";
 import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
 
 const Borrow = () => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const { assets, metadata, portfolio } = useContext(ContractContext);
+	const modal: ModalState = useContext(ModalContext);
 
 	const yourBorrowBalance = portfolio?.borrowed
 		.map(
@@ -46,6 +48,33 @@ const Borrow = () => {
 			...metadata.find((m) => m.token_id === asset.token_id),
 		}));
 
+	const handleOnRowClick = (rowData) => {
+		modal.setModalData({
+			type: "Borrow",
+			title: "Borrow",
+			totalAmountTitle: "Total Borrow",
+			asset: {
+				token_id: rowData.token_id,
+				amount: Number(
+					shrinkToken(
+						getAvailableAmount(rowData),
+						DECIMAL_OVERRIDES[rowData.symbol] || rowData.decimals,
+					),
+				),
+				name: rowData?.name || "Unknown",
+				symbol: rowData?.symbol || "???",
+				icon: rowData?.icon,
+				valueInUSD: rowData.price?.usd || 0,
+				apy: rowData.borrow_apr,
+				canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
+			},
+			buttonText: "Borrow",
+			rates: [],
+			ratesTitle: "rates",
+		});
+		modal.handleOpen();
+	};
+
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
 			<InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
@@ -56,7 +85,7 @@ const Borrow = () => {
 				<InfoBox title="Risk Factor" value="0" />
 			</InfoWrapper>
 			<PageTitle first="Borrow" second="Assets" />
-			<Table2 rows={rows} columns={columns} />
+			<Table2 rows={rows} columns={columns} onRowClick={handleOnRowClick} />
 			<InfoWrapper>
 				<InfoBox title="Total Borrow" value={totalBorrow} />
 			</InfoWrapper>

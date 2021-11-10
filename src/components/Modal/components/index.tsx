@@ -230,7 +230,7 @@ export const TokenBasicDetails = ({
 			>
 				{tokenName}
 				<br />
-				{`${apy.toFixed(PERCENT_DIGITS)}% APY`}
+				{`${Number(apy).toFixed(PERCENT_DIGITS)}% APY`}
 			</Typography>
 		</>
 	);
