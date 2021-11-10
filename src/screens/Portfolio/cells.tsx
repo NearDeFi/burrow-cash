@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
 import { IAsset } from "../../interfaces/account";
 import { IAssetDetailed } from "../../interfaces/asset";
-import TokenIcon from "../TokenIcon";
+import TokenIcon from "../../components/TokenIcon";
 
 interface CellProps {
 	rowData: IAsset & IAssetDetailed;

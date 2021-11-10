@@ -8,7 +8,7 @@ import {
 	BorrowAPYCell,
 	BorrowedCell,
 	RepayCell,
-} from "../../components/Table2/cells";
+} from "./cells";
 
 export const suppliedColumns = [
 	{

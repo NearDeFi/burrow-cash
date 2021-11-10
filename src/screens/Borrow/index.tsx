@@ -1,14 +1,16 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
-import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-import { ColumnData } from "../../components/Table/types";
-import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
+
+import { USD_FORMAT } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import { toUsd } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
+
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, Table, PageTitle } from "../../components";
+import { InfoBox, PageTitle } from "../../components";
+import Table2 from "../../components/Table2";
+import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
 
 const Borrow = () => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
@@ -33,53 +35,16 @@ const Borrow = () => {
 		.reduce((sum, a) => sum + a, 0)
 		.toLocaleString(undefined, USD_FORMAT);
 
-	const columns: ColumnData[] = [
-		{
-			width: 300,
-			label: "Name",
-			dataKey: "name",
-		},
-		{
-			width: 300,
-			label: "Borrow APY",
-			dataKey: "borrowAPY",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
-			},
-		},
-		{
-			width: 120,
-			label: "Liquidity",
-			dataKey: "liquidity",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return rowData.price?.usd
-					? toUsd(rowData.borrowed.balance, rowData).toLocaleString(undefined, USD_FORMAT)
-					: "$-.-";
-			},
-		},
-		{
-			width: 120,
-			label: "Collateral Factor",
-			dataKey: "collateralFactor",
-			cellDataGetter: () => {
-				return `${(0).toFixed(PERCENT_DIGITS)}%`;
-			},
-		},
-	];
+	const columns = walletConnection?.isSignedIn()
+		? [...defaultColumns, amountBorrowedColumn(portfolio)]
+		: defaultColumns;
 
-	if (walletConnection?.isSignedIn()) {
-		columns.push({
-			width: 100,
-			label: "Amount Borrowed",
-			dataKey: "borrowed",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return Number(
-					portfolio?.borrowed.find((b) => b.token_id === rowData.token_id)?.balance || 0,
-				).toLocaleString(undefined, TOKEN_FORMAT);
-			},
-		});
-	}
+	const rows = assets
+		.filter((asset) => asset.config.can_borrow)
+		.map((asset) => ({
+			...asset,
+			...metadata.find((m) => m.token_id === asset.token_id),
+		}));
 
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
@@ -91,15 +56,7 @@ const Borrow = () => {
 				<InfoBox title="Risk Factor" value="0" />
 			</InfoWrapper>
 			<PageTitle first="Borrow" second="Assets" />
-			<Table
-				rows={assets
-					.filter((asset) => asset.config.can_borrow)
-					.map((asset) => ({
-						...asset,
-						...metadata.find((m) => m.token_id === asset.token_id),
-					}))}
-				columns={columns}
-			/>
+			<Table2 rows={rows} columns={columns} />
 			<InfoWrapper>
 				<InfoBox title="Total Borrow" value={totalBorrow} />
 			</InfoWrapper>
