@@ -9,7 +9,7 @@ import { IBurrow } from "../../interfaces/burrow";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
-import Table2 from "../../components/Table2";
+import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
 
@@ -85,7 +85,7 @@ const Borrow = () => {
 				<InfoBox title="Risk Factor" value="0" />
 			</InfoWrapper>
 			<PageTitle first="Borrow" second="Assets" />
-			<Table2 rows={rows} columns={columns} onRowClick={handleOnRowClick} />
+			<Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
 			<InfoWrapper>
 				<InfoBox title="Total Borrow" value={totalBorrow} />
 			</InfoWrapper>

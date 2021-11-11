@@ -6,7 +6,7 @@ import { ContractContext } from "../../context/contracts";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox } from "../../components";
 
-import Table2 from "../../components/Table2";
+import Table from "../../components/Table";
 import { suppliedColumns, borrowColumns } from "./tabledata";
 
 const Portfolio = () => {
@@ -59,7 +59,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.supplied.length ? (
-				<Table2 rows={suppliedRows} columns={suppliedColumns} />
+				<Table rows={suppliedRows} columns={suppliedColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No supplied assets yet</div>
 			)}
@@ -69,7 +69,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.borrowed.length ? (
-				<Table2 rows={borrowRows} columns={borrowColumns} />
+				<Table rows={borrowRows} columns={borrowColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}

@@ -9,7 +9,7 @@ import { IBurrow } from "../../interfaces/burrow";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
 import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
-import Table2 from "../../components/Table2";
+import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 
 const Supply = () => {
@@ -78,7 +78,7 @@ const Supply = () => {
 				<InfoBox title="Net APY" value="0%" />
 			</InfoWrapper>
 			<PageTitle first="Supply" second="Assets" />
-			<Table2 rows={rows} columns={columns} onRowClick={handleOnRowClick} />
+			<Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
 			{assets.length > 0 && (
 				<InfoWrapper>
 					<InfoBox title="Supply" value={totalSupply} />
