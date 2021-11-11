@@ -5,18 +5,18 @@ export const NEAR_DECIMALS = 24;
 export const PERCENT_DIGITS = 2;
 
 export const USD_FORMAT = {
-	style: "currency",
-	currency: "USD",
-	currencyDisplay: "narrowSymbol",
-	minimumFractionDigits: 2,
+  style: "currency",
+  currency: "USD",
+  currencyDisplay: "narrowSymbol",
+  minimumFractionDigits: 2,
 };
 
 export const TOKEN_FORMAT = {
-	style: "decimal",
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2,
+  style: "decimal",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 };
 
 export const DECIMAL_OVERRIDES = {
-	wNEAR: NEAR_DECIMALS,
+  wNEAR: NEAR_DECIMALS,
 };
