@@ -1,19 +1,19 @@
 import {
-	connect,
-	Contract,
-	keyStores,
-	WalletConnection,
-	transactions,
-	// ConnectedWalletAccount,
+  connect,
+  Contract,
+  keyStores,
+  WalletConnection,
+  transactions,
+  // ConnectedWalletAccount,
 } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
-	ChangeMethodsLogic,
-	ChangeMethodsOracle,
-	ViewMethodsLogic,
-	ViewMethodsOracle,
+  ChangeMethodsLogic,
+  ChangeMethodsOracle,
+  ViewMethodsLogic,
+  ViewMethodsOracle,
 } from "./interfaces/contract-methods";
 import { IBurrow } from "./interfaces/burrow";
 import { BatchWallet, getContract, BatchWalletAccount } from "./store";
@@ -25,135 +25,135 @@ console.log(`Using network ${nearConfig.networkId}!`);
 let burrow: IBurrow;
 
 export const getBurrow = async (): Promise<IBurrow> => {
-	if (burrow) return burrow;
+  if (burrow) return burrow;
 
-	// Initialize connection to the NEAR testnet
-	const near = await connect({
-		deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
-		...nearConfig,
-	});
+  // Initialize connection to the NEAR testnet
+  const near = await connect({
+    deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
+    ...nearConfig,
+  });
 
-	// Initializing Wallet based Account. It can work with NEAR testnet wallet that
-	// is hosted at https://wallet.testnet.near.org
-	const walletConnection = new BatchWallet(near, null);
+  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
+  // is hosted at https://wallet.testnet.near.org
+  const walletConnection = new BatchWallet(near, null);
 
-	// Getting the Account ID. If still unauthorized, it's just empty string
-	const account: BatchWalletAccount = new BatchWalletAccount(
-		walletConnection,
-		near.connection,
-		walletConnection.account().accountId,
-	);
+  // Getting the Account ID. If still unauthorized, it's just empty string
+  const account: BatchWalletAccount = new BatchWalletAccount(
+    walletConnection,
+    near.connection,
+    walletConnection.account().accountId,
+  );
 
-	if (walletConnection?.isSignedIn()) {
-		console.log("access keys", await account.getAccessKeys());
-	}
+  if (walletConnection?.isSignedIn()) {
+    console.log("access keys", await account.getAccessKeys());
+  }
 
-	const view = async (
-		contract: Contract,
-		methodName: string,
-		args: Record<string, unknown> = {},
-		json = true,
-	): Promise<Record<string, unknown> | string> => {
-		try {
-			return await account.viewFunction(contract.contractId, methodName, args, {
-				// always parse to string, JSON parser will fail if its not a json
-				parse: (data: Uint8Array) => {
-					const result = Buffer.from(data).toString();
-					return json ? JSON.parse(result) : result;
-				},
-			});
-		} catch (err: any) {
-			console.error(
-				`view failed on ${contract.contractId} method: ${methodName}, ${JSON.stringify(args)}`,
-			);
-			throw err;
-		}
-	};
+  const view = async (
+    contract: Contract,
+    methodName: string,
+    args: Record<string, unknown> = {},
+    json = true,
+  ): Promise<Record<string, unknown> | string> => {
+    try {
+      return await account.viewFunction(contract.contractId, methodName, args, {
+        // always parse to string, JSON parser will fail if its not a json
+        parse: (data: Uint8Array) => {
+          const result = Buffer.from(data).toString();
+          return json ? JSON.parse(result) : result;
+        },
+      });
+    } catch (err: any) {
+      console.error(
+        `view failed on ${contract.contractId} method: ${methodName}, ${JSON.stringify(args)}`,
+      );
+      throw err;
+    }
+  };
 
-	const call = async (
-		contract: Contract,
-		methodName: string,
-		args: Record<string, unknown> = {},
-		deposit = "1",
-	) => {
-		const gas = new BN(150000000000000);
-		const attachedDeposit = new BN(deposit);
+  const call = async (
+    contract: Contract,
+    methodName: string,
+    args: Record<string, unknown> = {},
+    deposit = "1",
+  ) => {
+    const gas = new BN(150000000000000);
+    const attachedDeposit = new BN(deposit);
 
-		console.log(
-			"transaction",
-			contract.contractId,
-			methodName,
-			args,
-			attachedDeposit.toString(),
-			gas.toString(),
-		);
+    console.log(
+      "transaction",
+      contract.contractId,
+      methodName,
+      args,
+      attachedDeposit.toString(),
+      gas.toString(),
+    );
 
-		const actions = [
-			transactions.functionCall(
-				methodName,
-				Buffer.from(JSON.stringify(args)),
-				gas,
-				attachedDeposit,
-			),
-		];
+    const actions = [
+      transactions.functionCall(
+        methodName,
+        Buffer.from(JSON.stringify(args)),
+        gas,
+        attachedDeposit,
+      ),
+    ];
 
-		// @ts-ignore
-		return account.signAndSendTransaction({
-			receiverId: contract.contractId,
-			actions,
-		});
-	};
+    // @ts-ignore
+    return account.signAndSendTransaction({
+      receiverId: contract.contractId,
+      actions,
+    });
+  };
 
-	const logicContract: Contract = await getContract(
-		walletConnection.account(),
-		LOGIC_CONTRACT_NAME,
-		ViewMethodsLogic,
-		ChangeMethodsLogic,
-	);
+  const logicContract: Contract = await getContract(
+    walletConnection.account(),
+    LOGIC_CONTRACT_NAME,
+    ViewMethodsLogic,
+    ChangeMethodsLogic,
+  );
 
-	// get oracle address from
-	const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
-		oracle_account_id: string;
-	};
+  // get oracle address from
+  const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
+    oracle_account_id: string;
+  };
 
-	console.log("oracle address", config.oracle_account_id);
+  console.log("oracle address", config.oracle_account_id);
 
-	const oracleContract: Contract = await getContract(
-		walletConnection.account(),
-		config.oracle_account_id,
-		ViewMethodsOracle,
-		ChangeMethodsOracle,
-	);
+  const oracleContract: Contract = await getContract(
+    walletConnection.account(),
+    config.oracle_account_id,
+    ViewMethodsOracle,
+    ChangeMethodsOracle,
+  );
 
-	burrow = {
-		walletConnection,
-		account,
-		logicContract,
-		oracleContract,
-		view,
-		call,
-	} as IBurrow;
+  burrow = {
+    walletConnection,
+    account,
+    logicContract,
+    oracleContract,
+    view,
+    call,
+  } as IBurrow;
 
-	return burrow;
+  return burrow;
 };
 
 // Initialize contract & set global variables
 export async function initContract(): Promise<IBurrow> {
-	return getBurrow();
+  return getBurrow();
 }
 
 export function logout(walletConnection: WalletConnection) {
-	walletConnection.signOut();
-	// reload page
-	window.location.replace(window.location.origin + window.location.pathname);
+  walletConnection.signOut();
+  // reload page
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export async function login(walletConnection: WalletConnection) {
-	// Allow the current app to make calls to the specified contract on the
-	// user's behalf.
-	// This works by creating a new access key for the user's account and storing
-	// the private key in localStorage.
-	await walletConnection.requestSignIn({
-		contractId: LOGIC_CONTRACT_NAME,
-	});
+  // Allow the current app to make calls to the specified contract on the
+  // user's behalf.
+  // This works by creating a new access key for the user's account and storing
+  // the private key in localStorage.
+  await walletConnection.requestSignIn({
+    contractId: LOGIC_CONTRACT_NAME,
+  });
 }

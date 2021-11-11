@@ -3,18 +3,18 @@ import Footer from "../Footer";
 import Header from "../Header";
 
 const Layout = ({ children }) => (
-	<Box
-		sx={{
-			display: "grid",
-			gridTemplateRows: "64px 1fr 64px",
-			gridTemplateColumns: "100%",
-			minHeight: "100%",
-		}}
-	>
-		<Header />
-		<main style={{ zIndex: 100 }}>{children}</main>
-		<Footer />
-	</Box>
+  <Box
+    sx={{
+      display: "grid",
+      gridTemplateRows: "64px 1fr 64px",
+      gridTemplateColumns: "100%",
+      minHeight: "100%",
+    }}
+  >
+    <Header />
+    <main style={{ zIndex: 100 }}>{children}</main>
+    <Footer />
+  </Box>
 );
 
 export default Layout;

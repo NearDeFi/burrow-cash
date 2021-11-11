@@ -1,29 +1,32 @@
-export type ModalType = "Borrow" | "Supply";
+export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay";
 
 export interface TokenActionsInput {
-	type: ModalType;
-	title: string;
-	totalAmountTitle: string;
-	asset: {
-		token_id: string;
-		amount: number;
-		name: string;
-		symbol: string;
-		valueInUSD: number;
-		icon?: string;
-		apy: number;
-		canBeUsedAsCollateral: boolean;
-	};
-	buttonText: string;
-	rates: any[];
-	ratesTitle: string;
+  type: ModalType;
+  title: string;
+  totalAmountTitle: string;
+  asset: {
+    token_id: string;
+    amount: number;
+    name: string;
+    symbol: string;
+    valueInUSD: number;
+    icon?: string;
+    apy: number;
+    canBeUsedAsCollateral: boolean;
+    collateral?: {
+      balance: number;
+    };
+  };
+  buttonText: string;
+  rates?: any[];
+  ratesTitle?: string;
 }
 
 export enum Templates {
-	TokenActions,
+  TokenActions,
 }
 
 export enum Inputs {
-	String,
-	Switch,
+  String,
+  Switch,
 }
