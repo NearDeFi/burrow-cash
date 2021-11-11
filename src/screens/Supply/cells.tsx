@@ -4,26 +4,13 @@ import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants"
 import { IAsset } from "../../interfaces/account";
 import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
 import { toUsd } from "../../store";
-import TokenIcon from "../../components/TokenIcon";
+import { TokenCell } from "../../components/Table/common/cells";
 
 interface CellProps {
 	rowData: IAsset & IAssetDetailed & IMetadata;
 }
 
-export const TokenCell = ({ rowData }: CellProps) => {
-	const { symbol, price } = rowData;
-	return (
-		<Box display="flex">
-			<Box>
-				<TokenIcon icon={rowData?.icon} />
-			</Box>
-			<Box px="1rem">
-				<Box>{symbol}</Box>
-				<Box>{price ? `${price.usd.toLocaleString(undefined, USD_FORMAT)}` : "$-.-"}</Box>
-			</Box>
-		</Box>
-	);
-};
+export { TokenCell };
 
 export const BoostCell = () => {
 	return <Box>xxx</Box>;
