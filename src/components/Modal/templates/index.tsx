@@ -3,7 +3,14 @@ import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { borrow, supply, withdraw, repay } from "../../../store/tokens";
+import {
+  borrow,
+  supply,
+  withdraw,
+  repay,
+  addCollateral,
+  removeCollateral,
+} from "../../../store/tokens";
 
 const borrowRates = [
   { value: "1.00%", title: "Borrow APY" },
@@ -36,6 +43,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
   const [amount, setAmount] = useState(0);
   const [useAsCollateral, setUseAsCollateral] = useState(false);
 
+  const collateralBalance = Number(asset.collateral?.balance) || 0;
   const isDisabled = amount <= 0 || amount > asset.amount;
 
   return (
@@ -48,6 +56,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         tokenPriceInUSD={asset.valueInUSD}
         totalAmountTitle={totalAmountTitle}
         onChange={(a) => setAmount(a)}
+        defaultValue={collateralBalance}
       />
       <Rates rates={rates} ratesTitle={ratesTitle} />
 
@@ -74,6 +83,14 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               break;
             case "Repay":
               void repay(asset.token_id, amount);
+              break;
+            case "Adjust":
+              if (amount < collateralBalance) {
+                removeCollateral(asset.token_id, amount);
+              }
+              if (amount > collateralBalance) {
+                addCollateral(asset.token_id, amount);
+              }
               break;
             default:
               break;

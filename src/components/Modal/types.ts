@@ -1,4 +1,4 @@
-export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Repay";
+export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay";
 
 export interface TokenActionsInput {
   type: ModalType;
@@ -13,6 +13,9 @@ export interface TokenActionsInput {
     icon?: string;
     apy: number;
     canBeUsedAsCollateral: boolean;
+    collateral?: {
+      balance: number;
+    };
   };
   buttonText: string;
   rates?: any[];
