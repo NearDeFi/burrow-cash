@@ -8,6 +8,7 @@ import {
   BorrowAPYCell,
   BorrowedCell,
   RepayCell,
+  AdjustCell,
 } from "./cells";
 
 export const suppliedColumns = [
@@ -38,6 +39,11 @@ export const suppliedColumns = [
     dataKey: "withdraw",
     align: "right",
     Cell: WithdrawCell,
+  },
+  {
+    dataKey: "adjust",
+    align: "right",
+    Cell: AdjustCell,
   },
 ];
 

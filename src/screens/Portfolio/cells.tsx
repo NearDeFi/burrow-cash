@@ -62,6 +62,38 @@ export const WithdrawCell = ({ rowData }) => {
   );
 };
 
+export const AdjustCell = ({ rowData }) => {
+  const modal: ModalState = useContext(ModalContext);
+  const handleClick = () => {
+    modal.setModalData({
+      type: "Adjust",
+      title: "Adjust Collateral",
+      totalAmountTitle: "Amount designated as collateral",
+      asset: {
+        token_id: rowData.token_id,
+        amount: Number(rowData.balance),
+        name: rowData?.name || "Unknown",
+        symbol: rowData?.symbol || "???",
+        icon: rowData?.icon,
+        valueInUSD: rowData.price?.usd || 0,
+        apy: rowData.borrow_apr,
+        collateral: rowData.collateral,
+        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
+      },
+      buttonText: "Adjust",
+    });
+    modal.handleOpen();
+  };
+
+  return (
+    <Box>
+      <Button size="small" variant="contained" onClick={handleClick}>
+        Adjust
+      </Button>
+    </Box>
+  );
+};
+
 export const BorrowSuppplyAPYCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%</Box>;
 };
@@ -74,11 +106,33 @@ export const BorrowedCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 
-export const RepayCell = ({ rowData }: CellProps) => {
+export const RepayCell = ({ rowData }) => {
   console.info(rowData);
+  const modal: ModalState = useContext(ModalContext);
+
+  const handleClick = () => {
+    modal.setModalData({
+      type: "Repay",
+      title: "Repay",
+      totalAmountTitle: "Repay Borrow Amount",
+      asset: {
+        token_id: rowData.token_id,
+        amount: Number(rowData.balance),
+        name: rowData?.name || "Unknown",
+        symbol: rowData?.symbol || "???",
+        icon: rowData?.icon,
+        valueInUSD: rowData.price?.usd || 0,
+        apy: rowData.borrow_apr,
+        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
+      },
+      buttonText: "Repay",
+    });
+    modal.handleOpen();
+  };
+
   return (
     <Box>
-      <Button size="small" variant="contained">
+      <Button size="small" variant="contained" onClick={handleClick}>
         Repay
       </Button>
     </Box>

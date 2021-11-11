@@ -44,17 +44,19 @@ export const TokenInputs = ({
   tokenPriceInUSD,
   totalAmountTitle,
   onChange,
+  defaultValue = 0,
 }: {
   availableTokens: number;
   tokenSymbol: string;
   tokenPriceInUSD: number;
   totalAmountTitle: string;
   onChange: (amount: number) => void;
+  defaultValue?: number;
 }) => {
   const totalAvailableTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [sliderValue, setSliderValue] = useState(0);
-  const [inputValue, setInputValue] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(defaultValue * tokenPriceInUSD);
+  const [sliderValue, setSliderValue] = useState((100 * defaultValue) / Number(availableTokens));
+  const [inputValue, setInputValue] = useState(defaultValue);
 
   const handleMaxClick = () => {
     if (!availableTokens) return;
