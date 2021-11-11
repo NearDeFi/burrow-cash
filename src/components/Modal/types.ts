@@ -1,4 +1,4 @@
-export type ModalType = "Borrow" | "Supply";
+export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Repay";
 
 export interface TokenActionsInput {
 	type: ModalType;
@@ -15,8 +15,8 @@ export interface TokenActionsInput {
 		canBeUsedAsCollateral: boolean;
 	};
 	buttonText: string;
-	rates: any[];
-	ratesTitle: string;
+	rates?: any[];
+	ratesTitle?: string;
 }
 
 export enum Templates {

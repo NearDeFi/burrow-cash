@@ -3,7 +3,7 @@ import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { TokenActionsInput } from "../types";
-import { borrow, supply } from "../../../store/tokens";
+import { borrow, supply, withdraw } from "../../../store/tokens";
 
 const borrowRates = [
 	{ value: "1.00%", title: "Borrow APY" },
@@ -62,10 +62,18 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
 				text={buttonText}
 				isDisabled={isDisabled}
 				onClick={() => {
-					if (type === "Borrow") {
-						void borrow(asset.token_id, amount);
-					} else {
-						void supply(asset.token_id, amount, useAsCollateral);
+					switch (type) {
+						case "Borrow":
+							void borrow(asset.token_id, amount);
+							break;
+						case "Supply":
+							void supply(asset.token_id, amount, useAsCollateral);
+							break;
+						case "Withdraw":
+							void withdraw(asset.token_id, amount);
+							break;
+						default:
+							break;
 					}
 				}}
 			/>

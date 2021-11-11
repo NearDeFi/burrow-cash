@@ -50,10 +50,11 @@ function Table({ rows, columns, onRowClick }: TableProps) {
 								({ dataKey, align, Cell }) =>
 									Cell && (
 										<TableCell
+											key={dataKey}
 											align={align}
 											sx={{ color: theme.palette.secondary.main, fontWeight: "bold" }}
 										>
-											<Cell key={dataKey} rowData={rowData} />
+											<Cell rowData={rowData} />
 										</TableCell>
 									),
 							)}
