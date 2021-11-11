@@ -82,7 +82,7 @@ export const RepayCell = ({ rowData }) => {
     modal.setModalData({
       type: "Repay",
       title: "Repay",
-      totalAmountTitle: "Withdraw Supply Amount",
+      totalAmountTitle: "Repay Borrow Amount",
       asset: {
         token_id: rowData.token_id,
         amount: Number(rowData.balance),
