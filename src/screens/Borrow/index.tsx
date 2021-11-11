@@ -1,18 +1,22 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
-import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-import { ColumnData } from "../../components/Table/types";
-import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
+
+import { USD_FORMAT, DECIMAL_OVERRIDES } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { toUsd } from "../../store";
+import { toUsd, shrinkToken, getAvailableAmount } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
+
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, Table, PageTitle } from "../../components";
+import { InfoBox, PageTitle } from "../../components";
+import Table from "../../components/Table";
+import { ModalContext, ModalState } from "../../components/Modal";
+import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
 
 const Borrow = () => {
 	const { walletConnection } = useContext<IBurrow>(Burrow);
 	const { assets, metadata, portfolio } = useContext(ContractContext);
+	const modal: ModalState = useContext(ModalContext);
 
 	const yourBorrowBalance = portfolio?.borrowed
 		.map(
@@ -33,53 +37,43 @@ const Borrow = () => {
 		.reduce((sum, a) => sum + a, 0)
 		.toLocaleString(undefined, USD_FORMAT);
 
-	const columns: ColumnData[] = [
-		{
-			width: 300,
-			label: "Name",
-			dataKey: "name",
-		},
-		{
-			width: 300,
-			label: "Borrow APY",
-			dataKey: "borrowAPY",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
-			},
-		},
-		{
-			width: 120,
-			label: "Liquidity",
-			dataKey: "liquidity",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return rowData.price?.usd
-					? toUsd(rowData.borrowed.balance, rowData).toLocaleString(undefined, USD_FORMAT)
-					: "$-.-";
-			},
-		},
-		{
-			width: 120,
-			label: "Collateral Factor",
-			dataKey: "collateralFactor",
-			cellDataGetter: () => {
-				return `${(0).toFixed(PERCENT_DIGITS)}%`;
-			},
-		},
-	];
+	const columns = walletConnection?.isSignedIn()
+		? [...defaultColumns, amountBorrowedColumn(portfolio)]
+		: defaultColumns;
 
-	if (walletConnection?.isSignedIn()) {
-		columns.push({
-			width: 100,
-			label: "Amount Borrowed",
-			dataKey: "borrowed",
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed & IMetadata }) => {
-				return Number(
-					portfolio?.borrowed.find((b) => b.token_id === rowData.token_id)?.balance || 0,
-				).toLocaleString(undefined, TOKEN_FORMAT);
+	const rows = assets
+		.filter((asset) => asset.config.can_borrow)
+		.map((asset) => ({
+			...asset,
+			...metadata.find((m) => m.token_id === asset.token_id),
+		}));
+
+	const handleOnRowClick = (rowData) => {
+		modal.setModalData({
+			type: "Borrow",
+			title: "Borrow",
+			totalAmountTitle: "Total Borrow",
+			asset: {
+				token_id: rowData.token_id,
+				amount: Number(
+					shrinkToken(
+						getAvailableAmount(rowData),
+						DECIMAL_OVERRIDES[rowData.symbol] || rowData.decimals,
+					),
+				),
+				name: rowData?.name || "Unknown",
+				symbol: rowData?.symbol || "???",
+				icon: rowData?.icon,
+				valueInUSD: rowData.price?.usd || 0,
+				apy: rowData.borrow_apr,
+				canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
 			},
+			buttonText: "Borrow",
+			rates: [],
+			ratesTitle: "rates",
 		});
-	}
+		modal.handleOpen();
+	};
 
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
@@ -91,15 +85,7 @@ const Borrow = () => {
 				<InfoBox title="Risk Factor" value="0" />
 			</InfoWrapper>
 			<PageTitle first="Borrow" second="Assets" />
-			<Table
-				rows={assets
-					.filter((asset) => asset.config.can_borrow)
-					.map((asset) => ({
-						...asset,
-						...metadata.find((m) => m.token_id === asset.token_id),
-					}))}
-				columns={columns}
-			/>
+			<Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
 			<InfoWrapper>
 				<InfoBox title="Total Borrow" value={totalBorrow} />
 			</InfoWrapper>

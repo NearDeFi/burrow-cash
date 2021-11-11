@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 
-import { ColumnData } from "../../components/Table/types";
-import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
-import { IAsset } from "../../interfaces/account";
+import { USD_FORMAT } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { IAssetDetailed } from "../../interfaces/asset";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, Table } from "../../components";
+import { InfoBox } from "../../components";
+
+import Table from "../../components/Table";
+import { suppliedColumns, borrowColumns } from "./tabledata";
 
 const Portfolio = () => {
 	const { assets, metadata, portfolio } = useContext(ContractContext);
@@ -31,88 +31,20 @@ const Portfolio = () => {
 		.reduce((sum, a) => sum + a, 0)
 		.toLocaleString(undefined, USD_FORMAT);
 
-	const suppliedColumns: ColumnData[] = [
-		{
-			width: 200,
-			label: "Name",
-			dataKey: "name",
-		},
-		{
-			width: 120,
-			label: "APY",
-			dataKey: "apy",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.apr).toFixed(PERCENT_DIGITS);
-			},
-		},
-		{
-			width: 120,
-			label: "Collateral",
-			dataKey: "collateralSum",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: any }) => {
-				return (
-					rowData.collateral &&
-					Number(rowData.collateral.balance).toLocaleString(undefined, TOKEN_FORMAT)
-				);
-			},
-		},
-		{
-			width: 120,
-			label: "Supplied",
-			dataKey: "balance",
-			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT);
-			},
-		},
-		{
-			width: 45,
-			dataKey: "withdraw",
-		},
-		{
-			width: 45,
-			dataKey: "adjust",
-		},
-	];
+	const suppliedRows = portfolio?.supplied.map((supplied) => ({
+		...assets.find((m) => m.token_id === supplied.token_id),
+		...metadata.find((m) => m.token_id === supplied.token_id),
+		...supplied,
+		collateral: portfolio?.collateral.find(
+			(collateral) => collateral.token_id === supplied.token_id,
+		),
+	}));
 
-	const borrowColumns: ColumnData[] = [
-		{
-			width: 200,
-			label: "Name",
-			dataKey: "name",
-		},
-		{
-			width: 120,
-			label: "APY",
-			dataKey: "apy",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return Number(rowData.supply_apr).toFixed(PERCENT_DIGITS);
-			},
-		},
-		{
-			width: 120,
-			label: "Borrow APY",
-			dataKey: "borrowAPY",
-			numeric: true,
-			cellDataGetter: ({ rowData }: { rowData: IAssetDetailed }) => {
-				return Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS);
-			},
-		},
-		{
-			width: 120,
-			label: "Borrowed",
-			dataKey: "shares",
-			cellDataGetter: ({ rowData }: { rowData: IAsset }) => {
-				return Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT);
-			},
-		},
-		{
-			width: 45,
-			dataKey: "repay",
-		},
-	];
+	const borrowRows = portfolio?.borrowed.map((borrowed) => ({
+		...assets.find((m) => m.token_id === borrowed.token_id),
+		...metadata.find((a) => a.token_id === borrowed.token_id),
+		...borrowed,
+	}));
 
 	return (
 		<Box sx={{ paddingBottom: 10 }}>
@@ -127,18 +59,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.supplied.length ? (
-				<Table
-					height="240px"
-					rows={portfolio?.supplied.map((supplied) => ({
-						...assets.find((m) => m.token_id === supplied.token_id),
-						...metadata.find((m) => m.token_id === supplied.token_id),
-						...supplied,
-						collateral: portfolio?.collateral.find(
-							(collateral) => collateral.token_id === supplied.token_id,
-						),
-					}))}
-					columns={suppliedColumns}
-				/>
+				<Table rows={suppliedRows} columns={suppliedColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No supplied assets yet</div>
 			)}
@@ -148,15 +69,7 @@ const Portfolio = () => {
 			</Typography>
 
 			{portfolio?.borrowed.length ? (
-				<Table
-					height="240px"
-					rows={portfolio?.borrowed.map((borrowed) => ({
-						...assets.find((m) => m.token_id === borrowed.token_id),
-						...metadata.find((a) => a.token_id === borrowed.token_id),
-						...borrowed,
-					}))}
-					columns={borrowColumns}
-				/>
+				<Table rows={borrowRows} columns={borrowColumns} />
 			) : (
 				<div style={{ textAlign: "center" }}>No borrowed assets yet</div>
 			)}
