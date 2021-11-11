@@ -86,10 +86,10 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               break;
             case "Adjust":
               if (amount < collateralBalance) {
-                removeCollateral(asset.token_id, amount);
+                void removeCollateral(asset.token_id, amount);
               }
               if (amount > collateralBalance) {
-                addCollateral(asset.token_id, amount);
+                void addCollateral(asset.token_id, amount);
               }
               break;
             default:
