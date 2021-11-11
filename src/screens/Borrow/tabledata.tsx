@@ -33,7 +33,6 @@ export const columns = [
 ];
 
 export const amountBorrowedColumn = (portfolio) => ({
-	width: 100,
 	label: "Amount Borrowed",
 	dataKey: "borrowed",
 	Cell: (props) => <AmountBorrowedCell {...props} portfolio={portfolio} />,
