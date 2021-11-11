@@ -12,10 +12,10 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   borderRadius: "4px",
   padding: "0.75rem 1rem",
   width: "100%",
-  maxWidth: "200px",
-  minWidth: "200px",
+  maxWidth: "250px",
+  minWidth: "250px",
   height: "100%",
-  minHeight: "90px",
+  minHeight: "110px",
 }));
 
 export const Title = styled(Typography)(() => ({
