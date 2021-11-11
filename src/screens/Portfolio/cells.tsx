@@ -74,11 +74,33 @@ export const BorrowedCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 
-export const RepayCell = ({ rowData }: CellProps) => {
+export const RepayCell = ({ rowData }) => {
   console.info(rowData);
+  const modal: ModalState = useContext(ModalContext);
+
+  const handleClick = () => {
+    modal.setModalData({
+      type: "Repay",
+      title: "Repay",
+      totalAmountTitle: "Withdraw Supply Amount",
+      asset: {
+        token_id: rowData.token_id,
+        amount: Number(rowData.balance),
+        name: rowData?.name || "Unknown",
+        symbol: rowData?.symbol || "???",
+        icon: rowData?.icon,
+        valueInUSD: rowData.price?.usd || 0,
+        apy: rowData.borrow_apr,
+        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
+      },
+      buttonText: "Repay",
+    });
+    modal.handleOpen();
+  };
+
   return (
     <Box>
-      <Button size="small" variant="contained">
+      <Button size="small" variant="contained" onClick={handleClick}>
         Repay
       </Button>
     </Box>
