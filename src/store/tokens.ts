@@ -211,6 +211,12 @@ export const borrow = async (token_id: string, amount: number) => {
             amount: expandedAmount,
           },
         },
+        {
+          Withdraw: {
+            token_id,
+            amount: expandedAmount,
+          },
+        },
       ],
     },
   };
