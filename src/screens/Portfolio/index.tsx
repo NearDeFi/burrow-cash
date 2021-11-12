@@ -31,14 +31,20 @@ const Portfolio = () => {
     .reduce((sum, a) => sum + a, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
-  const suppliedRows = portfolio?.supplied.map((supplied) => ({
-    ...assets.find((m) => m.token_id === supplied.token_id),
-    ...metadata.find((m) => m.token_id === supplied.token_id),
-    ...supplied,
-    collateral: portfolio?.collateral.find(
-      (collateral) => collateral.token_id === supplied.token_id,
-    ),
-  }));
+  const suppliedRows = assets
+    .filter(
+      (asset) =>
+        !!portfolio?.supplied.find((s) => s.token_id === asset.token_id) ||
+        !!portfolio?.collateral.find((s) => s.token_id === asset.token_id),
+    )
+    .map((asset) => ({
+      ...asset,
+      ...metadata.find((m) => m.token_id === asset.token_id),
+      ...portfolio?.supplied.find((a) => a.token_id === asset.token_id),
+      collateral: portfolio?.collateral.find(
+        (collateral) => collateral.token_id === asset.token_id,
+      ),
+    }));
 
   const borrowRows = portfolio?.borrowed.map((borrowed) => ({
     ...assets.find((m) => m.token_id === borrowed.token_id),
@@ -51,7 +57,7 @@ const Portfolio = () => {
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
         <InfoBox title="Total Supplied" value={totalSupplied} />
         <InfoBox title="Net APR" value="0.00" />
-        <InfoBox title="Total Bottowed" value={totalBorrowed} />
+        <InfoBox title="Total Borrowed" value={totalBorrowed} />
       </InfoWrapper>
 
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
