@@ -1,4 +1,5 @@
-import { TokenCell, BoostCell, APYCell, TotalSupplyCell, WalletBalanceCell } from "./cells";
+import { TokenCell, APYCell, TotalSupplyCell, WalletBalanceCell } from "./cells";
+// "BoostCell" removed from destructured object "./cells" import
 
 export const columns = [
   {
@@ -6,12 +7,16 @@ export const columns = [
     dataKey: "name",
     Cell: TokenCell,
   },
+
+  /** *************** Remove "BRRR Boost" and add "Amount Supplied" to Supply page #112 
   {
     label: "BRRR Boost",
     dataKey: "boost",
     align: "right",
     Cell: BoostCell,
   },
+  ******************** */
+
   {
     label: "APY",
     dataKey: "apy",
