@@ -63,8 +63,25 @@ const Supply = () => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Supply",
-      rates: [],
-      ratesTitle: "rates",
+      rates: [
+        {
+          title: "Deposit APY",
+          value: "0.00%",
+        },
+        {
+          title: "Extra Reward APY",
+          value: "0.00%",
+        },
+        {
+          title: "Total APY",
+          value: "0.00%",
+        },
+        {
+          title: "Collateral Factor",
+          value: "0.00%",
+        },
+      ],
+      ratesTitle: "Rates",
     });
     modal.handleOpen();
   };

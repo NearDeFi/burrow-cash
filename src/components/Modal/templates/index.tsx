@@ -11,6 +11,7 @@ import {
   addCollateral,
   removeCollateral,
 } from "../../../store/tokens";
+import { colors } from "../../../style";
 
 const borrowRates: ListEntry[] = [
   { value: "1.00%", title: "Borrow APY" },
@@ -61,9 +62,22 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
       <Rates rates={rates} ratesTitle={ratesTitle} />
 
       {type === "Supply" && asset.canBeUsedAsCollateral && (
-        <Box px="1rem">
-          Use as collateral
-          <Switch onChange={(event) => setUseAsCollateral(event.target.checked)} />
+        <Box
+          px="1rem"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridGap: "2em",
+            padding: "1em",
+            paddingTop: 0,
+          }}
+        >
+          <div style={{ color: colors.secondary, fontSize: "14px", fontWeight: 400 }}>
+            Use as Collateral
+          </div>
+          <div style={{ justifySelf: "end" }}>
+            <Switch onChange={(event) => setUseAsCollateral(event.target.checked)} />
+          </div>
         </Box>
       )}
 

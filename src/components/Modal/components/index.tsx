@@ -137,6 +137,7 @@ export const TokenInputs = ({
 const createListItem = ({ title, value, valueType = Inputs.String }: ListEntry) => {
   return (
     <div
+      key={`${title}-${value}`}
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
