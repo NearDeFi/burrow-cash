@@ -1,4 +1,4 @@
-import { TokenCell, APYCell, TotalSupplyCell, WalletBalanceCell } from "./cells";
+import { TokenCell, AmountSupplied, APYCell, TotalSupplyCell, WalletBalanceCell } from "./cells";
 // "BoostCell" removed from destructured object "./cells" import
 
 export const columns = [
@@ -16,6 +16,13 @@ export const columns = [
     Cell: BoostCell,
   },
   ******************** */
+
+  {
+    label: "Amount Supplied",
+    dataKey: "supplied",
+    align: "right",
+    Cell: AmountSupplied,
+  },
 
   {
     label: "APY",
