@@ -13,7 +13,7 @@ interface IAssetConfig {
   can_borrow: boolean;
 }
 
-export interface IAsset {
+export interface IAssetEntry {
   token_id: string;
   supplied: { shares: string; string: string };
   borrowed: { shares: string; string: string };
@@ -22,7 +22,7 @@ export interface IAsset {
   config: IAssetConfig;
 }
 
-export type AssetEntry = [string, IAsset];
+export type AssetEntry = [string, IAssetEntry];
 
 interface IPool {
   shares: string;
@@ -55,6 +55,7 @@ interface IAssetFarmView {
   farm_id: string;
   rewards: IAssetFarmReward[];
 }
+
 export interface IAssetDetailed {
   token_id: string;
   /// Total supplied including collateral, but excluding reserved.

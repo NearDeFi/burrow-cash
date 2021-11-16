@@ -1,14 +1,13 @@
 import Decimal from "decimal.js";
 
-import { IAsset, IAssetDetailed, AssetEntry } from "../interfaces/asset";
+import { IAssetEntry, IAssetDetailed, AssetEntry, ViewMethodsLogic } from "../interfaces";
 import { getBurrow } from "../utils";
-import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { DEFAULT_PRECISION } from "./constants";
 import { getPrices, rateToApr } from "./helper";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
-export const getAssets = async (): Promise<IAsset[]> => {
+export const getAssets = async (): Promise<IAssetEntry[]> => {
   const { view, logicContract } = await getBurrow();
 
   return (
@@ -41,7 +40,7 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 };
 
 export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
-  const assets: IAsset[] = await getAssets();
+  const assets: IAssetEntry[] = await getAssets();
 
   const priceResponse = await getPrices(assets.map((asset) => asset.token_id));
   let detailedAssets = await Promise.all(assets.map((asset) => getAssetDetailed(asset.token_id)));

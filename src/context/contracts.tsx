@@ -1,8 +1,6 @@
 import { createContext, ReactElement, useEffect, useState } from "react";
-import { IAssetDetailed, IMetadata } from "../interfaces/asset";
-import { getAssetsDetailed, getBalances, getPortfolio } from "../store";
-import { IAccountDetailed, IBalance } from "../interfaces/account";
-import { getAllMetadata } from "../store/tokens";
+import { IAssetDetailed, IMetadata, IAccountDetailed, IBalance } from "../interfaces";
+import { getAssetsDetailed, getBalances, getPortfolio, getAllMetadata } from "../store";
 
 const initialContractsState: {
   assets: IAssetDetailed[];

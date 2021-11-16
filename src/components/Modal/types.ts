@@ -19,7 +19,7 @@ export interface TokenActionsInput {
     valueInUSD: number;
     icon?: string;
     apy: number;
-    canBeUsedAsCollateral: boolean;
+    canBeUsedAsCollateral?: boolean;
     collateral?: {
       balance: number;
     };

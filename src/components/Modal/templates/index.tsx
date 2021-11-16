@@ -93,17 +93,17 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               void supply(asset.token_id, amount, useAsCollateral);
               break;
             case "Withdraw":
-              void withdraw(asset.token_id, amount);
+              void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);
               break;
             case "Repay":
               void repay(asset.token_id, amount);
               break;
             case "Adjust":
               if (amount < collateralBalance) {
-                void removeCollateral(asset.token_id, amount);
+                void removeCollateral(asset.token_id, amount === asset.amount ? undefined : amount);
               }
               if (amount > collateralBalance) {
-                void addCollateral(asset.token_id, amount);
+                void addCollateral(asset.token_id, amount === asset.amount ? undefined : amount);
               }
               break;
             default:
