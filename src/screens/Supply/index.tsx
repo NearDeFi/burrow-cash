@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
-import { USD_FORMAT } from "../../store/constants";
+import { PERCENT_DIGITS, USD_FORMAT } from "../../store/constants";
 import { toUsd } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
@@ -63,8 +63,28 @@ const Supply = () => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Supply",
-      rates: [],
-      ratesTitle: "rates",
+      rates: [
+        {
+          title: "Deposit APY",
+          value: `${Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%`,
+        },
+        {
+          title: "Extra Reward APY",
+          value: "0.00%",
+          hidden: true,
+        },
+        {
+          title: "Total APY",
+          value: "0.00%",
+          hidden: true,
+        },
+        {
+          title: "Collateral Factor",
+          value: "0.00%",
+          hidden: true,
+        },
+      ],
+      ratesTitle: "Rates",
     });
     modal.handleOpen();
   };

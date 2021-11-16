@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
 
-import { USD_FORMAT, DECIMAL_OVERRIDES } from "../../store/constants";
+import { USD_FORMAT, DECIMAL_OVERRIDES, PERCENT_DIGITS } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import { toUsd, shrinkToken, getAvailableAmount } from "../../store";
 import { Burrow } from "../../index";
@@ -72,19 +72,22 @@ const Borrow = () => {
       rates: [
         {
           title: "Borrow APY",
-          value: "-0.00%",
+          value: `${Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%`,
         },
         {
           title: "Extra Rewards APY",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Risk Factor",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Limit Used",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Pool Liquidity",

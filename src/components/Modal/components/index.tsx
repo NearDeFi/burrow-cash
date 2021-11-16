@@ -137,6 +137,7 @@ export const TokenInputs = ({
 const createListItem = ({ title, value, valueType = Inputs.String }: ListEntry) => {
   return (
     <div
+      key={`${title}-${value}`}
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
@@ -171,7 +172,7 @@ export const Rates = ({ ratesTitle, rates }: { ratesTitle?: string; rates?: List
   return rates && rates?.length > 0 ? (
     <>
       <div style={{ padding: "1em", fontSize: "14px", fontWeight: 500 }}>{ratesTitle}</div>
-      {rates?.map((r) => createListItem(r))}
+      {rates?.filter((r) => !r.hidden).map((r) => createListItem(r))}
     </>
   ) : null;
 };
