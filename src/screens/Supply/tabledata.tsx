@@ -18,13 +18,6 @@ export const columns = [
   ******************** */
 
   {
-    label: "Amount Supplied",
-    dataKey: "supplied",
-    align: "right",
-    Cell: AmountSupplied,
-  },
-
-  {
     label: "APY",
     dataKey: "apy",
     align: "right",
@@ -38,9 +31,16 @@ export const columns = [
   },
 ];
 
-export const amountSuppliedColumn = (balances) => ({
+export const amountSuppliedColumn = (portfolio) => ({
+  label: "Amount Supplied",
+  dataKey: "supplied",
+  align: "right",
+  Cell: (props) => <AmountSupplied {...props} portfolio={portfolio} />,
+});
+
+export const walletColumn = (balances) => ({
   label: "Wallet",
-  dataKey: "balance",
+  dataKey: "wallet",
   Cell: (props) => <WalletBalanceCell {...props} balances={balances} />,
   align: "right",
 });
