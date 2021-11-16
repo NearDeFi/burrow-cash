@@ -3,7 +3,7 @@ import { Button, Switch, Typography, Box } from "@mui/material";
 import { useState } from "react";
 import { Input, Slider } from "../..";
 import { colors } from "../../../style";
-import { Inputs } from "../types";
+import { Inputs, ListEntry } from "../types";
 import TokenIcon from "../../TokenIcon";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../../store/constants";
 
@@ -134,17 +134,10 @@ export const TokenInputs = ({
   );
 };
 
-const createListItem = ({
-  title,
-  value,
-  valueType = Inputs.String,
-}: {
-  title: string;
-  value: any;
-  valueType?: Inputs;
-}) => {
+const createListItem = ({ title, value, valueType = Inputs.String }: ListEntry) => {
   return (
     <div
+      key={`${title}-${value}`}
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
@@ -175,11 +168,11 @@ const createListItem = ({
   );
 };
 
-export const Rates = ({ ratesTitle, rates }: { ratesTitle?: string; rates?: any }) => {
-  return rates?.length > 0 ? (
+export const Rates = ({ ratesTitle, rates }: { ratesTitle?: string; rates?: ListEntry[] }) => {
+  return rates && rates?.length > 0 ? (
     <>
       <div style={{ padding: "1em", fontSize: "14px", fontWeight: 500 }}>{ratesTitle}</div>
-      {rates?.map((r) => createListItem(r))}
+      {rates?.filter((r) => !r.hidden).map((r) => createListItem(r))}
     </>
   ) : null;
 };

@@ -1,5 +1,12 @@
 export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay";
 
+export interface ListEntry {
+  title: string;
+  value: any;
+  valueType?: Inputs;
+  hidden?: boolean;
+}
+
 export interface TokenActionsInput {
   type: ModalType;
   title: string;
@@ -18,7 +25,7 @@ export interface TokenActionsInput {
     };
   };
   buttonText: string;
-  rates?: any[];
+  rates?: ListEntry[];
   ratesTitle?: string;
 }
 
