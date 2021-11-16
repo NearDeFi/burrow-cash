@@ -14,7 +14,7 @@ interface CellProps {
 export { TokenCell };
 
 export const SupplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.apr).toFixed(PERCENT_DIGITS)}%</Box>;
+  return <Box>{rowData.apr && <>{Number(rowData.apr).toFixed(PERCENT_DIGITS)}%</>}</Box>;
 };
 
 export const CollateralCell = ({ rowData }) => {
@@ -27,10 +27,14 @@ export const CollateralCell = ({ rowData }) => {
 };
 
 export const SuppliedCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
+  return (
+    <Box>{rowData.balance && Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>
+  );
 };
 
 export const WithdrawCell = ({ rowData }) => {
+  if (!rowData.balance) return false;
+
   const modal: ModalState = useContext(ModalContext);
 
   const handleClick = () => {
