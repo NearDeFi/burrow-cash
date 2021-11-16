@@ -56,7 +56,7 @@ const Portfolio = () => {
     <Box sx={{ paddingBottom: 10 }}>
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
         <InfoBox title="Total Supplied" value={totalSupplied} />
-        <InfoBox title="Net APR" value="0.00" />
+        {false && <InfoBox title="Net APR" value="0.00" />}
         <InfoBox title="Total Borrowed" value={totalBorrowed} />
       </InfoWrapper>
 

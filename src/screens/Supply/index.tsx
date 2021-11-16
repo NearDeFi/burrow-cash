@@ -75,7 +75,7 @@ const Supply = () => {
         {walletConnection?.isSignedIn() && (
           <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
         )}
-        <InfoBox title="Net APY" value="0%" />
+        {false && <InfoBox title="Net APY" value="0%" />}
       </InfoWrapper>
       <PageTitle first="Supply" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
