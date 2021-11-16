@@ -1,7 +1,7 @@
 import {
   TokenCell,
   APYCell,
-  LiquiditylCell,
+  LiquidityCell,
   CollateralFactorCell,
   AmountBorrowedCell,
 } from "./cells";
@@ -22,7 +22,7 @@ export const columns = [
     label: "Liquidity",
     dataKey: "liquidity",
     align: "right",
-    Cell: LiquiditylCell,
+    Cell: LiquidityCell,
   },
   {
     label: "Collateral Factor",

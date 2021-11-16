@@ -15,7 +15,7 @@ export const APYCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
-export const LiquiditylCell = ({ rowData }: CellProps) => {
+export const LiquidityCell = ({ rowData }: CellProps) => {
   return (
     <Box>
       {rowData.price?.usd

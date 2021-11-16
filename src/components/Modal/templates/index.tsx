@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
-import { TokenActionsInput } from "../types";
+import { ListEntry, TokenActionsInput } from "../types";
 import {
   borrow,
   supply,
@@ -12,7 +12,7 @@ import {
   removeCollateral,
 } from "../../../store/tokens";
 
-const borrowRates = [
+const borrowRates: ListEntry[] = [
   { value: "1.00%", title: "Borrow APY" },
   { value: "2.00%", title: "Extra Rewards APY" },
   { value: "3.00%", title: "Risk Factor" },

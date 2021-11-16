@@ -69,8 +69,29 @@ const Borrow = () => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Borrow",
-      rates: [],
-      ratesTitle: "rates",
+      rates: [
+        {
+          title: "Borrow APY",
+          value: "-0.00%",
+        },
+        {
+          title: "Extra Rewards APY",
+          value: "0.00%",
+        },
+        {
+          title: "Risk Factor",
+          value: "0.00%",
+        },
+        {
+          title: "Limit Used",
+          value: "0.00%",
+        },
+        {
+          title: "Pool Liquidity",
+          value: toUsd(getAvailableAmount(rowData), rowData).toLocaleString(undefined, USD_FORMAT),
+        },
+      ],
+      ratesTitle: "Rates",
     });
     modal.handleOpen();
   };
