@@ -102,8 +102,8 @@ const Borrow = () => {
         {walletConnection?.isSignedIn() && (
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
-        <InfoBox title="Borrow Limit" value="0%" />
-        <InfoBox title="Risk Factor" value="0" />
+        {false && <InfoBox title="Borrow Limit" value="0%" />}
+        {false && <InfoBox title="Risk Factor" value="0" />}
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
