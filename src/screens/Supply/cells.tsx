@@ -16,10 +16,6 @@ export const BoostCell = () => {
   return <Box>xxx</Box>;
 };
 
-export const AmountSupplied = () => {
-  return <Box>xxx</Box>;
-};
-
 export const APYCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%</Box>;
 };
@@ -32,6 +28,11 @@ export const TotalSupplyCell = ({ rowData }: CellProps) => {
         : "$-.-"}
     </Box>
   );
+};
+
+export const AmountSupplied = ({ rowData, portfolio }: CellProps & { portfolio: any }) => {
+  const balance = portfolio?.supplied.find((b) => b.token_id === rowData.token_id)?.balance;
+  return <Box>{Number(balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 
 export const WalletBalanceCell = ({ rowData, balances }: CellProps & { balances: any }) => {
