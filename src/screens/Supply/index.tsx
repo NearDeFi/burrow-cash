@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
-import { USD_FORMAT } from "../../store/constants";
+import { PERCENT_DIGITS, USD_FORMAT } from "../../store/constants";
 import { toUsd } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces/burrow";
@@ -66,7 +66,7 @@ const Supply = () => {
       rates: [
         {
           title: "Deposit APY",
-          value: "0.00%",
+          value: `${Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%`,
         },
         {
           title: "Extra Reward APY",
