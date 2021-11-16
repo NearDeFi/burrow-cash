@@ -1,13 +1,12 @@
 import { Box } from "@mui/material";
 
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
-import { IAsset } from "../../interfaces/account";
-import { IAssetDetailed } from "../../interfaces/asset";
-import { toUsd } from "../../store";
+import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
+import { getAvailableAmount, toUsd } from "../../store";
 import { TokenCell } from "../../components/Table/common/cells";
 
 interface CellProps {
-  rowData: IAsset & IAssetDetailed;
+  rowData: IAssetDetailed & IMetadata;
 }
 
 export { TokenCell };
@@ -16,11 +15,11 @@ export const APYCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
-export const LiquiditylCell = ({ rowData }) => {
+export const LiquiditylCell = ({ rowData }: CellProps) => {
   return (
     <Box>
       {rowData.price?.usd
-        ? toUsd(rowData.borrowed.balance, rowData).toLocaleString(undefined, USD_FORMAT)
+        ? toUsd(getAvailableAmount(rowData), rowData).toLocaleString(undefined, USD_FORMAT)
         : "$-.-"}
     </Box>
   );
