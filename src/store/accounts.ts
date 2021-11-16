@@ -67,11 +67,10 @@ export const getPortfolio = async (
     }
 
     for (const asset of [...accountDetailed.borrowed, ...accountDetailed.collateral]) {
-      const meta = metadata.find((m) => m.token_id === asset.token_id);
-      const decimals =
-        DECIMAL_OVERRIDES[meta ? meta.symbol : ""] || meta?.decimals || TOKEN_DECIMALS;
-      asset.shares = shrinkToken(asset.shares, decimals);
-      asset.balance = shrinkToken(asset.balance, decimals);
+      const { symbol, decimals } = metadata.find((m) => m.token_id === asset.token_id)!;
+      const d = DECIMAL_OVERRIDES[symbol] || decimals || TOKEN_DECIMALS;
+      asset.shares = shrinkToken(asset.shares, d);
+      asset.balance = shrinkToken(asset.balance, d);
     }
 
     console.log("portfolio", accountDetailed);

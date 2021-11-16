@@ -2,8 +2,7 @@ import { useContext } from "react";
 import { Box, Button } from "@mui/material";
 
 import { PERCENT_DIGITS, TOKEN_FORMAT } from "../../store/constants";
-import { IAsset } from "../../interfaces/account";
-import { IAssetDetailed } from "../../interfaces/asset";
+import { IAssetDetailed, IMetadata, IAsset, IBalance } from "../../interfaces";
 import { TokenCell } from "../../components/Table/common/cells";
 import { ModalContext, ModalState } from "../../components/Modal";
 
@@ -112,7 +111,11 @@ export const BorrowedCell = ({ rowData }: CellProps) => {
   return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 
-export const RepayCell = ({ rowData }) => {
+export const RepayCell = ({
+  rowData,
+}: {
+  rowData: IMetadata & IAsset & IAssetDetailed & { wallet: IBalance };
+}) => {
   console.info(rowData);
   const modal: ModalState = useContext(ModalContext);
 
@@ -123,13 +126,15 @@ export const RepayCell = ({ rowData }) => {
       totalAmountTitle: "Repay Borrow Amount",
       asset: {
         token_id: rowData.token_id,
-        amount: Number(rowData.balance),
+        amount:
+          rowData.wallet.balance > Number(rowData.balance)
+            ? Number(rowData.balance)
+            : rowData.wallet.balance,
         name: rowData?.name || "Unknown",
         symbol: rowData?.symbol || "???",
         icon: rowData?.icon,
         valueInUSD: rowData.price?.usd || 0,
-        apy: rowData.borrow_apr,
-        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
+        apy: Number(rowData.borrow_apr),
       },
       buttonText: "Repay",
     });

@@ -3,9 +3,14 @@ import { Account, Contract } from "near-api-js";
 
 import { DECIMAL_OVERRIDES, DEFAULT_PRECISION, NANOS_PER_YEAR, TOKEN_DECIMALS } from "./constants";
 import { getBurrow } from "../utils";
-import { ViewMethodsOracle } from "../interfaces/contract-methods";
-import { IAssetPrice, IPrices } from "../interfaces/oracle";
-import { IAssetDetailed, IMetadata } from "../interfaces/asset";
+import {
+  ViewMethodsOracle,
+  IAssetPrice,
+  IPrices,
+  IAccountDetailed,
+  IAssetDetailed,
+  IMetadata,
+} from "../interfaces";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -92,6 +97,33 @@ export const getAvailableAmount = (asset: IAssetDetailed): string => {
 
   console.log("availableAmount", result);
   return result;
+};
+
+export const computeMaxDiscount = (
+  assets: IAssetDetailed[],
+  portfolio: IAccountDetailed,
+): number => {
+  const collateralSum = portfolio?.collateral
+    .map(
+      (collateral) =>
+        Number(collateral.balance) *
+        (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
+    )
+    .reduce((sum, a) => sum + a, 0);
+
+  const borrowSum = portfolio?.borrowed
+    .map(
+      (borrowed) =>
+        Number(borrowed.balance) *
+        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+    )
+    .reduce((sum, a) => sum + a, 0);
+
+  console.log("wwww", collateralSum, borrowSum);
+
+  if (borrowSum <= collateralSum) return 0;
+
+  return (borrowSum - collateralSum) / borrowSum;
 };
 
 export const getContract = async (

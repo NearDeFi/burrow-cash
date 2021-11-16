@@ -3,15 +3,15 @@ import Decimal from "decimal.js";
 import BN from "bn.js";
 
 import { getBurrow } from "../utils";
-import { IMetadata } from "../interfaces/asset";
-import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
+import { DEFAULT_PRECISION, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import {
   ChangeMethodsLogic,
   ChangeMethodsOracle,
   ChangeMethodsToken,
   ViewMethodsToken,
-} from "../interfaces/contract-methods";
+  IMetadata,
+} from "../interfaces";
 import {
   executeMultipleTransactions,
   FunctionCallOptions,
@@ -38,8 +38,6 @@ export const getMetadata = async (token_id: string): Promise<IMetadata | undefin
     )) as IMetadata;
 
     metadata.token_id = token_id;
-
-    console.log("metadata", metadata);
     return metadata;
   } catch (err: any) {
     console.error(`Failed to get metadata for ${token_id} ${err.message}`);
@@ -79,6 +77,7 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
     await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
   ).filter((m): m is IMetadata => !!m);
 
+  console.log("metadata", metadata);
   return metadata;
 };
 
@@ -157,13 +156,14 @@ export const supply = async (
       {
         IncreaseCollateral: {
           token_id,
+          amount: undefined as unknown as string,
         },
       },
     ],
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral["amount"] = expandToken(
+    args.actions[0].IncreaseCollateral.amount = expandToken(
       amount,
       metadata?.decimals || NEAR_DECIMALS,
     );
@@ -199,7 +199,6 @@ export const borrow = async (token_id: string, amount: number) => {
   const { oracleContract, logicContract, account } = await getBurrow();
 
   const metadata = await getMetadata(token_id);
-  const expandedAmount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
   const accountDetailed = await getAccountDetailed(account.accountId);
 
   const borrowTemplate = {
@@ -208,13 +207,13 @@ export const borrow = async (token_id: string, amount: number) => {
         {
           Borrow: {
             token_id,
-            amount: expandedAmount,
+            amount: expandToken(amount, metadata?.decimals || NEAR_DECIMALS),
           },
         },
         {
           Withdraw: {
             token_id,
-            amount: expandedAmount,
+            amount: expandToken(amount, TOKEN_DECIMALS),
           },
         },
       ],
@@ -280,13 +279,14 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
       {
         DecreaseCollateral: {
           token_id,
+          amount: undefined as unknown as string,
         },
       },
     ],
   };
 
   if (amount) {
-    args.actions[0].DecreaseCollateral["amount"] = expandToken(
+    args.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
       metadata?.decimals || NEAR_DECIMALS,
     );
@@ -313,7 +313,9 @@ export const withdraw = async (token_id: string, amount?: number) => {
   };
 
   if (amount) {
-    args.actions[0].Withdraw.amount = expandToken(amount, metadata?.decimals || NEAR_DECIMALS);
+    const expandedAmount = expandToken(amount, TOKEN_DECIMALS);
+    args.actions[0].Withdraw.amount = expandedAmount;
+    console.log("withdraw", metadata?.decimals, token_id, amount, expandedAmount);
   }
 
   await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
