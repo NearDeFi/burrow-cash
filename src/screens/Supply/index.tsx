@@ -71,14 +71,17 @@ const Supply = () => {
         {
           title: "Extra Reward APY",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Total APY",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Collateral Factor",
           value: "0.00%",
+          hidden: true,
         },
       ],
       ratesTitle: "Rates",

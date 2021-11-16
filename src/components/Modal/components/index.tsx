@@ -172,7 +172,7 @@ export const Rates = ({ ratesTitle, rates }: { ratesTitle?: string; rates?: List
   return rates && rates?.length > 0 ? (
     <>
       <div style={{ padding: "1em", fontSize: "14px", fontWeight: 500 }}>{ratesTitle}</div>
-      {rates?.map((r) => createListItem(r))}
+      {rates?.filter((r) => !r.hidden).map((r) => createListItem(r))}
     </>
   ) : null;
 };

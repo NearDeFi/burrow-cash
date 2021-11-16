@@ -77,14 +77,17 @@ const Borrow = () => {
         {
           title: "Extra Rewards APY",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Risk Factor",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Limit Used",
           value: "0.00%",
+          hidden: true,
         },
         {
           title: "Pool Liquidity",

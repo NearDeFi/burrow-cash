@@ -4,6 +4,7 @@ export interface ListEntry {
   title: string;
   value: any;
   valueType?: Inputs;
+  hidden?: boolean;
 }
 
 export interface TokenActionsInput {
