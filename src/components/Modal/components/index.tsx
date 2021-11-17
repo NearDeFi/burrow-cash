@@ -1,11 +1,13 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Button, Switch, Typography, Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Input, Slider } from "../..";
 import { colors } from "../../../style";
 import { Inputs, ListEntry } from "../types";
 import TokenIcon from "../../TokenIcon";
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../../store/constants";
+import { IBurrow } from "../../../interfaces/burrow";
+import { Burrow } from "../../../index";
 
 export const CloseModalIcon = ({ closeModal }: { closeModal: () => void }) => {
   return (
@@ -86,7 +88,7 @@ export const TokenInputs = ({
     setSliderValue((value * 100) / Number(availableTokens));
     if (onChange) onChange(value);
   };
-
+  const { walletConnection } = useContext<IBurrow>(Burrow);
   return (
     <>
       <div
@@ -112,15 +114,22 @@ export const TokenInputs = ({
         )}`}</div>
       </div>
       <div style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
-        <Input
-          value={inputValue}
-          type="number"
-          onClickMax={handleMaxClick}
-          onChange={handleInputChange}
-        />
+        {walletConnection?.isSignedIn() ? (
+          <Input
+            value={inputValue}
+            type="number"
+            onClickMax={handleMaxClick}
+            onChange={handleInputChange}
+          />
+        ) : (
+          <Input value={0} type="number" />
+        )}
       </div>
       <Box px="1.5rem" mt="1rem">
-        <Slider value={sliderValue} onChange={handleSliderChange} />
+        <Slider
+          value={walletConnection?.isSignedIn() ? sliderValue : 0}
+          onChange={walletConnection?.isSignedIn() ? handleSliderChange : undefined}
+        />
       </Box>
       <Typography
         style={{ textAlign: "center", fontSize: "1rem", fontWeight: 500 }}
@@ -186,20 +195,27 @@ export const ActionButton = ({
   text: string;
   onClick?: () => void;
 }) => {
+  const { walletConnection } = useContext<IBurrow>(Burrow);
   return (
     <Typography
       style={{ textAlign: "center", color: colors.secondary }}
       id="modal-modal-description"
       sx={{ mt: 2 }}
     >
-      <Button
-        disabled={isDisabled}
-        style={{ backgroundColor: colors.primary }}
-        variant="contained"
-        onClick={onClick}
-      >
-        {text}
-      </Button>
+      {walletConnection?.isSignedIn() ? (
+        <Button
+          disabled={isDisabled}
+          style={{ backgroundColor: colors.primary }}
+          variant="contained"
+          onClick={onClick}
+        >
+          {text}
+        </Button>
+      ) : (
+        <Button disabled style={{ backgroundColor: colors.primary }} variant="contained">
+          {text}
+        </Button>
+      )}
     </Typography>
   );
 };
