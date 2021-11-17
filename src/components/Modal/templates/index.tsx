@@ -45,14 +45,15 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
   const [useAsCollateral, setUseAsCollateral] = useState(false);
 
   const collateralBalance = Number(asset.collateral?.balance) || 0;
-  const isDisabled = amount <= 0 || amount > asset.amount;
+  const availableTokens = type === "Adjust" ? collateralBalance : asset.amount;
+  const isDisabled = amount <= 0 || amount > availableTokens;
 
   return (
     <>
       <ModalTitle title={title} />
       <TokenBasicDetails tokenName={asset.name} icon={asset.icon} apy={asset.apy} />
       <TokenInputs
-        availableTokens={asset.amount}
+        availableTokens={availableTokens}
         tokenSymbol={asset.symbol}
         tokenPriceInUSD={asset.valueInUSD}
         totalAmountTitle={totalAmountTitle}
