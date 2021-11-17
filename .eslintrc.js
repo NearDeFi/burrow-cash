@@ -52,6 +52,8 @@ module.exports = {
 		"no-restricted-syntax": 1,
 		"no-unused-expressions": [1, { allowShortCircuit: false, allowTernary: false }],
 		"no-void": [1, { allowAsStatement: true }],
+		"react/function-component-definition": 0,
+		"react/jsx-no-constructed-context-values": 0
 	},
 	settings: {
 		react: {
