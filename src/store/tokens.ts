@@ -264,7 +264,7 @@ export const addCollateral = async (token_id: string, amount?: number) => {
   if (amount) {
     args.actions[0].IncreaseCollateral.amount = expandToken(
       amount,
-      metadata?.decimals || NEAR_DECIMALS,
+      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
     );
   }
 
@@ -291,7 +291,7 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
   if (amount) {
     args.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
-      metadata?.decimals || NEAR_DECIMALS,
+      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
     );
   }
 
@@ -345,7 +345,10 @@ export const repay = async (token_id: string, amount: number) => {
 
   const args = {
     receiver_id: logicContract.contractId,
-    amount: expandToken(amount, metadata?.decimals || NEAR_DECIMALS),
+    amount: expandToken(
+      amount,
+      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || metadata?.decimals,
+    ),
     msg: JSON.stringify(msg),
   };
 
