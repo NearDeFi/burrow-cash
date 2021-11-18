@@ -202,20 +202,14 @@ export const ActionButton = ({
       id="modal-modal-description"
       sx={{ mt: 2 }}
     >
-      {walletConnection?.isSignedIn() ? (
-        <Button
-          disabled={isDisabled}
-          style={{ backgroundColor: colors.primary }}
-          variant="contained"
-          onClick={onClick}
-        >
-          {text}
-        </Button>
-      ) : (
-        <Button disabled style={{ backgroundColor: colors.primary }} variant="contained">
-          {text}
-        </Button>
-      )}
+      <Button
+        disabled={walletConnection?.isSignedIn() ? isDisabled : true}
+        style={{ backgroundColor: colors.primary }}
+        variant="contained"
+        onClick={onClick}
+      >
+        {text}
+      </Button>
     </Typography>
   );
 };
