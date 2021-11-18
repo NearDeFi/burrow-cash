@@ -80,8 +80,7 @@ const Supply = () => {
         },
         {
           title: "Collateral Factor",
-          value: "0.00%",
-          hidden: true,
+          value: `${(Number(rowData.config.reserve_ratio) / 100).toFixed(2)}%`,
         },
       ],
       ratesTitle: "Rates",
