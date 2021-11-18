@@ -103,27 +103,29 @@ export const computeMaxDiscount = (
   assets: IAssetDetailed[],
   portfolio: IAccountDetailed,
 ): number => {
-  const collateralSum = portfolio?.collateral
-    .map(
-      (collateral) =>
-        Number(collateral.balance) *
-        (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
-    )
-    .reduce((sum, a) => sum + a, 0);
+  const collateralSum =
+    portfolio?.collateral
+      .map(
+        (collateral) =>
+          Number(collateral.balance) *
+          (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
+      )
+      .reduce((sum, a) => sum + a, 0) || 0;
 
-  const borrowSum = portfolio?.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
-    .reduce((sum, a) => sum + a, 0);
+  const borrowSum =
+    portfolio?.borrowed
+      .map(
+        (borrowed) =>
+          Number(borrowed.balance) *
+          (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+      )
+      .reduce((sum, a) => sum + a, 0) || 0;
 
-  console.log("wwww", collateralSum, borrowSum);
+  const discount = borrowSum <= collateralSum ? 0 : (borrowSum - collateralSum) / borrowSum;
 
-  if (borrowSum <= collateralSum) return 0;
+  console.log("max discount", "c", collateralSum, "b", borrowSum, discount);
 
-  return (borrowSum - collateralSum) / borrowSum;
+  return discount;
 };
 
 export const getContract = async (

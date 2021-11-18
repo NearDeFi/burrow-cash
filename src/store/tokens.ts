@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import BN from "bn.js";
 
 import { getBurrow } from "../utils";
-import { DEFAULT_PRECISION, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
+import { DECIMAL_OVERRIDES, DEFAULT_PRECISION, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import {
   ChangeMethodsLogic,
@@ -207,7 +207,10 @@ export const borrow = async (token_id: string, amount: number) => {
         {
           Borrow: {
             token_id,
-            amount: expandToken(amount, metadata?.decimals || NEAR_DECIMALS),
+            amount: expandToken(
+              amount,
+              DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
+            ),
           },
         },
         {

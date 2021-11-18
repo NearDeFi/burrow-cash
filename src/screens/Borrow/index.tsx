@@ -1,11 +1,16 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
 
-import { USD_FORMAT, DECIMAL_OVERRIDES, PERCENT_DIGITS } from "../../store/constants";
+import {
+  USD_FORMAT,
+  DECIMAL_OVERRIDES,
+  PERCENT_DIGITS,
+  TOKEN_DECIMALS,
+} from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { toUsd, shrinkToken, getAvailableAmount } from "../../store";
+import { toUsd, shrinkToken, getAvailableAmount, computeMaxDiscount } from "../../store";
 import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces/burrow";
+import { IBurrow } from "../../interfaces";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
@@ -58,7 +63,7 @@ const Borrow = () => {
         amount: Number(
           shrinkToken(
             getAvailableAmount(rowData),
-            DECIMAL_OVERRIDES[rowData.symbol] || rowData.decimals,
+            DECIMAL_OVERRIDES[rowData.symbol] || TOKEN_DECIMALS,
           ),
         ),
         name: rowData?.name || "Unknown",
@@ -106,7 +111,12 @@ const Borrow = () => {
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
         {false && <InfoBox title="Borrow Limit" value="0%" />}
-        {false && <InfoBox title="Risk Factor" value="0" />}
+        {walletConnection?.isSignedIn() && (
+          <InfoBox
+            title="Risk Factor"
+            value={`${(computeMaxDiscount(assets, portfolio!) * 100).toFixed(PERCENT_DIGITS)}%`}
+          />
+        )}
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
