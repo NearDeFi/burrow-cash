@@ -12,7 +12,7 @@ const Layout = ({ children }) => (
     }}
   >
     <Header />
-    <main style={{ zIndex: 100 }}>{children}</main>
+    <main>{children}</main>
     <Footer />
   </Box>
 );
