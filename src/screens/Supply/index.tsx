@@ -3,9 +3,9 @@ import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
 import { PERCENT_DIGITS, USD_FORMAT } from "../../store/constants";
-import { toUsd } from "../../store";
+import { sumReducer, toUsd } from "../../store";
 import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces/burrow";
+import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
 import { columns as defaultColumns, amountSuppliedColumn, walletColumn } from "./tabledata";
@@ -23,7 +23,7 @@ const Supply = () => {
         Number(supplied.balance) *
         (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
     )
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const totalSupply = assets
@@ -33,7 +33,7 @@ const Supply = () => {
         ...metadata.find((m) => m.token_id === asset.token_id)!,
       });
     })
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const rows = assets
@@ -100,7 +100,7 @@ const Supply = () => {
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
       {assets.length > 0 && (
         <InfoWrapper>
-          <InfoBox title="Supply" value={totalSupply} />
+          <InfoBox title="Total Supply" value={totalSupply} />
         </InfoWrapper>
       )}
     </Box>

@@ -31,7 +31,7 @@ export const TotalSupplyCell = ({ rowData }: CellProps) => {
 };
 
 export const AmountSupplied = ({ rowData, portfolio }: CellProps & { portfolio: any }) => {
-  const balance = portfolio?.supplied.find((b) => b.token_id === rowData.token_id)?.balance;
+  const balance = portfolio?.supplied.find((b) => b.token_id === rowData.token_id)?.balance || 0;
   return <Box>{Number(balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 

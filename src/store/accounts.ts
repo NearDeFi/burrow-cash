@@ -59,19 +59,19 @@ export const getPortfolio = async (
   // todo: rework shrink tokens here, maybe return another object instead replacing the values
 
   if (accountDetailed) {
-    for (const asset of [
-      ...accountDetailed.supplied,
-      ...accountDetailed.borrowed,
-      ...accountDetailed.collateral,
-    ]) {
+    console.log("portfolio before", accountDetailed);
+
+    const acc = JSON.parse(JSON.stringify(accountDetailed));
+
+    for (const asset of [...acc.supplied, ...acc.borrowed, ...acc.collateral]) {
       const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
       const d = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
       asset.shares = shrinkToken(asset.shares, d);
       asset.balance = shrinkToken(asset.balance, d);
     }
 
-    console.log("portfolio", accountDetailed);
-    return accountDetailed;
+    console.log("portfolio", acc);
+    return acc;
   }
   return undefined;
 };

@@ -8,7 +8,13 @@ import {
   TOKEN_DECIMALS,
 } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import { toUsd, shrinkToken, getAvailableAmount, computeMaxDiscount } from "../../store";
+import {
+  toUsd,
+  shrinkToken,
+  getAvailableAmount,
+  computeHealthFactor,
+  sumReducer,
+} from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 
@@ -29,7 +35,7 @@ const Borrow = () => {
         Number(borrowed.balance) *
         (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
     )
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const totalBorrow = assets
@@ -39,7 +45,7 @@ const Borrow = () => {
         ...metadata.find((m) => m.token_id === asset.token_id)!,
       });
     })
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const columns = walletConnection?.isSignedIn()
@@ -110,10 +116,10 @@ const Borrow = () => {
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
         {false && <InfoBox title="Borrow Limit" value="0%" />}
-        {walletConnection?.isSignedIn() && (
+        {walletConnection?.isSignedIn() && !!portfolio && (
           <InfoBox
-            title="Risk Factor"
-            value={`${(computeMaxDiscount(assets, portfolio!) * 100).toFixed(PERCENT_DIGITS)}%`}
+            title="Health Factor"
+            value={`${computeHealthFactor(assets, portfolio!).toFixed(2)}%`}
           />
         )}
       </InfoWrapper>
