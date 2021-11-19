@@ -8,6 +8,7 @@ import { InfoBox } from "../../components";
 
 import Table from "../../components/Table";
 import { suppliedColumns, borrowColumns } from "./tabledata";
+import { sumReducer } from "../../store";
 
 const Portfolio = () => {
   const { assets, metadata, portfolio, balances } = useContext(ContractContext);
@@ -19,7 +20,7 @@ const Portfolio = () => {
         Number(supplied.balance) *
         (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
     )
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const totalBorrowed = portfolio?.borrowed
@@ -28,7 +29,7 @@ const Portfolio = () => {
         Number(borrowed.balance) *
         (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
     )
-    .reduce((sum, a) => sum + a, 0)
+    .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
   const suppliedRows = assets

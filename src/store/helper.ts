@@ -14,6 +14,8 @@ import {
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
+export const sumReducer = (sum: number, a: number) => sum + a;
+
 export const aprToRate = (apr: string): string => {
   console.log("Input APR", apr);
   const exp = new Decimal(1).dividedBy(new Decimal(NANOS_PER_YEAR));
@@ -103,29 +105,57 @@ export const computeMaxDiscount = (
   assets: IAssetDetailed[],
   portfolio: IAccountDetailed,
 ): number => {
-  const collateralSum =
-    portfolio?.collateral
-      .map(
-        (collateral) =>
-          Number(collateral.balance) *
-          (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
-      )
-      .reduce((sum, a) => sum + a, 0) || 0;
+  const collateralSum = portfolio.collateral
+    .map(
+      (collateral) =>
+        Number(collateral.balance) *
+        (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
+    )
+    .reduce(sumReducer, 0);
 
-  const borrowSum =
-    portfolio?.borrowed
-      .map(
-        (borrowed) =>
-          Number(borrowed.balance) *
-          (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-      )
-      .reduce((sum, a) => sum + a, 0) || 0;
+  const borrowSum = portfolio.borrowed
+    .map(
+      (borrowed) =>
+        Number(borrowed.balance) *
+        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
+    )
+    .reduce(sumReducer, 0);
 
   const discount = borrowSum <= collateralSum ? 0 : (borrowSum - collateralSum) / borrowSum;
 
   console.log("max discount", "c", collateralSum, "b", borrowSum, discount);
 
   return discount;
+};
+
+export const computeHealthFactor = (
+  assets: IAssetDetailed[],
+  portfolio: IAccountDetailed,
+): number => {
+  const collateralSum = portfolio.collateral
+    .map((collateral) => {
+      const asset = assets.find((a) => a.token_id === collateral.token_id)!;
+      return (
+        Number(collateral.balance) * (asset.price?.usd || 0) * (asset.config.volatility_ratio / 100)
+      );
+    })
+    .reduce(sumReducer, 0);
+
+  const borrowedSum = portfolio.borrowed
+    .map((borrowed) => {
+      const asset = assets.find((a) => a.token_id === borrowed.token_id)!;
+      return (
+        (Number(borrowed.balance) * (asset?.price?.usd || 0)) /
+        (asset.config.volatility_ratio / 100)
+      );
+    })
+    .reduce(sumReducer, 0);
+
+  const healthFactor = collateralSum / borrowedSum;
+
+  console.log("healthFactor", "c", collateralSum, "b", borrowedSum, healthFactor);
+
+  return !Number.isNaN(healthFactor) ? healthFactor : 100;
 };
 
 export const getContract = async (

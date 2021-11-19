@@ -325,11 +325,11 @@ export const withdraw = async (token_id: string, amount?: number) => {
 };
 
 export const repay = async (token_id: string, amount: number) => {
-  console.log(`Repaying ${amount} of ${token_id}`);
-
   const { logicContract, call } = await getBurrow();
   const tokenContract = await getTokenContract(token_id);
-  const metadata = await getMetadata(token_id);
+  const { symbol, decimals } = (await getMetadata(token_id))!;
+
+  console.log(`Repaying ${new Decimal(amount).toFixed(decimals)} of ${token_id}`);
 
   const msg = {
     Execute: {
@@ -345,10 +345,7 @@ export const repay = async (token_id: string, amount: number) => {
 
   const args = {
     receiver_id: logicContract.contractId,
-    amount: expandToken(
-      amount,
-      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || metadata?.decimals,
-    ),
+    amount: expandToken(amount, DECIMAL_OVERRIDES[symbol] || decimals),
     msg: JSON.stringify(msg),
   };
 
