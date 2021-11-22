@@ -25,8 +25,8 @@ export const LiquidityCell = ({ rowData }: CellProps) => {
   );
 };
 
-export const CollateralFactorCell = () => {
-  return <Box>{(0).toFixed(PERCENT_DIGITS)}%</Box>;
+export const CollateralFactorCell = ({ rowData }: CellProps) => {
+  return <Box>{Number(rowData.config.volatility_ratio / 100)}%</Box>;
 };
 
 export const AmountBorrowedCell = ({ rowData, portfolio }) => {
