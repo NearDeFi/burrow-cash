@@ -1,8 +1,18 @@
 import "regenerator-runtime/runtime";
 import { Navigate } from "react-router";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
 import { Borrow, Portfolio, Supply, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.DEFAULT_NETWORK,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
 
 const App = () => {
   return (
