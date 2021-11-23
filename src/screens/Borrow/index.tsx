@@ -91,7 +91,7 @@ const Borrow = () => {
           hidden: true,
         },
         {
-          title: "Risk Factor",
+          title: "Collateral Factor",
           value: `${(Number(rowData.config.volatility_ratio) / 100).toFixed(2)}%`,
         },
         {
