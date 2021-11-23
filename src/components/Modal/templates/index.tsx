@@ -11,6 +11,7 @@ import {
   addCollateral,
   removeCollateral,
 } from "../../../store/tokens";
+import { deposit } from "../../../store/wnear-token";
 import { colors } from "../../../style";
 
 const borrowRates: ListEntry[] = [
@@ -87,6 +88,9 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         isDisabled={isDisabled}
         onClick={() => {
           switch (type) {
+            case "Deposit":
+              void deposit(asset.token_id, amount.toString());
+              break;
             case "Borrow":
               void borrow(asset.token_id, amount);
               break;

@@ -1,4 +1,4 @@
-export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay";
+export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay" | "Deposit";
 
 export interface ListEntry {
   title: string;

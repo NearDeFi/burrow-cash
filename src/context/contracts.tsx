@@ -1,16 +1,22 @@
 import { createContext, ReactElement, useEffect, useState } from "react";
+import { Account } from "near-api-js";
+
 import { IAssetDetailed, IMetadata, IAccountDetailed, IBalance } from "../interfaces";
-import { getAssetsDetailed, getBalances, getPortfolio, getAllMetadata } from "../store";
+import { getAssetsDetailed, getBalances, getPortfolio, getAllMetadata, getAccount } from "../store";
 
 const initialContractsState: {
   assets: IAssetDetailed[];
   balances: IBalance[];
   metadata: IMetadata[];
   portfolio?: IAccountDetailed;
+  account?: Account;
+  accountBalance?: string;
 } = {
   assets: [],
   balances: [],
   metadata: [],
+  account: undefined,
+  accountBalance: undefined,
 };
 
 export const ContractContext = createContext(initialContractsState);
@@ -20,6 +26,8 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
   const [balances, setBalances] = useState<IBalance[]>([]);
   const [metadata, setMetadata] = useState<IMetadata[]>([]);
   const [portfolio, setPortfolio] = useState<IAccountDetailed>();
+  const [account, setAccount] = useState<Account>();
+  const [accountBalance, setAccountBalance] = useState<string>();
 
   useEffect(() => {
     (async () => {
@@ -38,6 +46,12 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
       if (p) {
         setPortfolio(p);
       }
+
+      const acc = await getAccount();
+      if (acc) {
+        setAccount(acc);
+        setAccountBalance((await acc.getAccountBalance()).available);
+      }
     })();
   }, []);
 
@@ -46,11 +60,15 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
     balances: IBalance[];
     metadata: IMetadata[];
     portfolio?: IAccountDetailed;
+    account?: Account;
+    accountBalance?: string;
   } = {
     assets,
     balances,
     metadata,
     portfolio,
+    account,
+    accountBalance,
   };
 
   return <ContractContext.Provider value={state}>{children}</ContractContext.Provider>;
