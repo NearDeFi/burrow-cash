@@ -123,9 +123,11 @@ const Supply = () => {
       </InfoWrapper>
       <PageTitle first="Supply" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
-      <Box display="flex" justifyContent="center" onClick={handleSupplyNear}>
-        <Button variant="contained">Deposit NEAR ({balance})</Button>
-      </Box>
+      {accountBalance && (
+        <Box display="flex" justifyContent="center" onClick={handleSupplyNear}>
+          <Button variant="contained">Deposit NEAR ({balance})</Button>
+        </Box>
+      )}
       {assets.length > 0 && (
         <InfoWrapper>
           <InfoBox title="Total Supply" value={totalSupply} />
