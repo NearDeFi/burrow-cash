@@ -47,6 +47,8 @@
     "@mui/styles": "^5.1.1",
     "@mui/system": "^5.1.1",
     "@mui/utils": "^5.1.1",
+    "@sentry/react": "^6.15.0",
+    "@sentry/tracing": "^6.15.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.9",
