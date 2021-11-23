@@ -1,10 +1,8 @@
-import { IAccount, IAccountDetailed, IBalance } from "../interfaces/account";
+import { IAccount, IAccountDetailed, IBalance, ViewMethodsLogic, IMetadata } from "../interfaces";
 import { getBurrow } from "../utils";
-import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { shrinkToken } from "./helper";
 import { DECIMAL_OVERRIDES, TOKEN_DECIMALS } from "./constants";
 import { getBalance } from "./tokens";
-import { IMetadata } from "../interfaces/asset";
 
 export const getAccounts = async (): Promise<IAccount[]> => {
   const { view, logicContract } = await getBurrow();
@@ -63,7 +61,14 @@ export const getPortfolio = async (
 
     const acc = JSON.parse(JSON.stringify(accountDetailed));
 
-    for (const asset of [...acc.supplied, ...acc.borrowed, ...acc.collateral]) {
+    for (const asset of [...acc.collateral]) {
+      const { symbol, decimals } = metadata.find((m) => m.token_id === asset.token_id)!;
+      const d = DECIMAL_OVERRIDES[symbol] || decimals;
+      asset.shares = shrinkToken(asset.shares, d);
+      asset.balance = shrinkToken(asset.balance, d);
+    }
+
+    for (const asset of [...acc.supplied, ...acc.borrowed]) {
       const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
       const d = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
       asset.shares = shrinkToken(asset.shares, d);
