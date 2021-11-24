@@ -74,8 +74,12 @@ export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined
   }
 };
 
-export const expandToken = (value: string | number, decimals: string | number): string => {
-  return new Decimal(value).mul(new Decimal(10).pow(decimals)).toFixed();
+export const expandToken = (
+  value: string | number,
+  decimals: string | number,
+  fixed?: number,
+): string => {
+  return new Decimal(value).mul(new Decimal(10).pow(decimals)).toFixed(fixed);
 };
 
 export const shrinkToken = (
