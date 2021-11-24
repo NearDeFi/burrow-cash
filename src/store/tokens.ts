@@ -83,7 +83,7 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
 
 const prepareAndExecuteTokenTransactions = async (
   tokenContract: Contract,
-  functionCall: FunctionCallOptions,
+  functionCall?: FunctionCallOptions,
   additionalOperations: Transaction[] = [],
 ) => {
   const { account } = await getBurrow();
@@ -99,8 +99,10 @@ const prepareAndExecuteTokenTransactions = async (
     });
   }
 
-  // add the actual transaction to be executed
-  functionCalls.push(functionCall);
+  if (functionCall) {
+    // add the actual transaction to be executed
+    functionCalls.push(functionCall);
+  }
 
   transactions.push({
     receiverId: tokenContract.contractId,
@@ -226,6 +228,7 @@ export const borrow = async (token_id: string, amount: number) => {
   const asset_ids = accountDetailed
     ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
         .map((c) => c.token_id)
+        .filter((t, i, assetIds) => i === assetIds.indexOf(t))
         .filter((t) => t !== token_id)
     : [];
 
@@ -277,7 +280,7 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
   console.log(`Removing collateral ${amount} of ${token_id}`);
 
   const { oracleContract, account, logicContract } = await getBurrow();
-  const metadata = await getMetadata(token_id);
+  const { decimals } = (await getMetadata(token_id))!;
   const accountDetailed = await getAccountDetailed(account.accountId);
 
   const decreaseCollateralTemplate = {
@@ -296,13 +299,15 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
   if (amount) {
     decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
-      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
+      decimals || TOKEN_DECIMALS,
+      0,
     );
   }
 
   const asset_ids = accountDetailed
     ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
         .map((c) => c.token_id)
+        .filter((t, i, assetIds) => i === assetIds.indexOf(t))
         .filter((t) => t !== token_id)
     : [];
 
@@ -326,8 +331,9 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
 export const withdraw = async (token_id: string, amount?: number) => {
   console.log(`Withdrawing ${amount} of ${token_id}`);
 
-  const { call, logicContract } = await getBurrow();
+  const { logicContract } = await getBurrow();
   const metadata = await getMetadata(token_id);
+  const tokenContract = await getTokenContract(token_id);
 
   const args = {
     actions: [
@@ -346,13 +352,23 @@ export const withdraw = async (token_id: string, amount?: number) => {
     console.log("withdraw", metadata?.decimals, token_id, amount, expandedAmount);
   }
 
-  await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
+  const withdrawTemplate = {
+    receiverId: logicContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
+        args,
+      },
+    ],
+  };
+
+  await prepareAndExecuteTokenTransactions(tokenContract, undefined, [withdrawTemplate]);
 };
 
 export const repay = async (token_id: string, amount: number) => {
-  const { logicContract, call } = await getBurrow();
+  const { logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(token_id);
-  const { symbol, decimals } = (await getMetadata(token_id))!;
+  const { decimals } = (await getMetadata(token_id))!;
 
   console.log(`Repaying ${new Decimal(amount).toFixed(decimals)} of ${token_id}`);
 
@@ -368,11 +384,12 @@ export const repay = async (token_id: string, amount: number) => {
     },
   };
 
-  const args = {
-    receiver_id: logicContract.contractId,
-    amount: expandToken(amount, DECIMAL_OVERRIDES[symbol] || decimals),
-    msg: JSON.stringify(msg),
-  };
-
-  await call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], args);
+  await prepareAndExecuteTokenTransactions(tokenContract, {
+    methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
+    args: {
+      receiver_id: logicContract.contractId,
+      amount: expandToken(amount, decimals || TOKEN_DECIMALS),
+      msg: JSON.stringify(msg),
+    },
+  });
 };
