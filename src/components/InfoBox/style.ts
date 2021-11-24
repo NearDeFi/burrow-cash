@@ -11,6 +11,7 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
   borderRadius: "4px",
   padding: "0.75rem 1rem",
+  margin: "0.75rem",
   width: "100%",
   maxWidth: "250px",
   minWidth: "250px",
@@ -42,5 +43,6 @@ export const InfoWrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "auto",
+    rowGap: "1rem",
   },
 }));
