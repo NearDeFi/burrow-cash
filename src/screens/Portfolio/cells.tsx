@@ -67,6 +67,7 @@ export const WithdrawCell = ({ rowData }) => {
 
 export const AdjustCell = ({ rowData }) => {
   if (!rowData.config.can_use_as_collateral) return false;
+  console.log(rowData);
 
   const modal: ModalState = useContext(ModalContext);
   const handleClick = () => {
