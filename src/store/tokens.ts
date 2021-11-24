@@ -200,7 +200,6 @@ export const borrow = async (token_id: string, amount: number) => {
 
   const { oracleContract, logicContract, account } = await getBurrow();
 
-  const metadata = await getMetadata(token_id);
   const accountDetailed = await getAccountDetailed(account.accountId);
 
   const borrowTemplate = {
@@ -209,10 +208,7 @@ export const borrow = async (token_id: string, amount: number) => {
         {
           Borrow: {
             token_id,
-            amount: expandToken(
-              amount,
-              DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
-            ),
+            amount: expandToken(amount, TOKEN_DECIMALS),
           },
         },
         {
