@@ -223,8 +223,10 @@ export const borrow = async (token_id: string, amount: number) => {
     },
   };
 
-  const collateral = accountDetailed
-    ? accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id)
+  const asset_ids = accountDetailed
+    ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
+        .map((c) => c.token_id)
+        .filter((t) => t !== token_id)
     : [];
 
   await prepareAndExecuteTransactions([
@@ -235,7 +237,7 @@ export const borrow = async (token_id: string, amount: number) => {
           methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
           args: {
             receiver_id: logicContract.contractId,
-            asset_ids: [...collateral, token_id],
+            asset_ids: [...asset_ids, token_id],
             msg: JSON.stringify(borrowTemplate),
           },
         },
@@ -278,7 +280,7 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
   const metadata = await getMetadata(token_id);
   const accountDetailed = await getAccountDetailed(account.accountId);
 
-  const args = {
+  const decreaseCollateralTemplate = {
     Execute: {
       actions: [
         {
@@ -292,14 +294,16 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
   };
 
   if (amount) {
-    args.Execute.actions[0].DecreaseCollateral.amount = expandToken(
+    decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
       DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
     );
   }
 
-  const collateral = accountDetailed
-    ? accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id)
+  const asset_ids = accountDetailed
+    ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
+        .map((c) => c.token_id)
+        .filter((t) => t !== token_id)
     : [];
 
   await prepareAndExecuteTransactions([
@@ -310,8 +314,8 @@ export const removeCollateral = async (token_id: string, amount?: number) => {
           methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
           args: {
             receiver_id: logicContract.contractId,
-            asset_ids: [...collateral, token_id],
-            msg: JSON.stringify(args),
+            asset_ids: [...asset_ids, token_id],
+            msg: JSON.stringify(decreaseCollateralTemplate),
           },
         },
       ],
