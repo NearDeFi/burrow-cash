@@ -16,7 +16,7 @@ import { colors } from "../../../style";
 const borrowRates: ListEntry[] = [
   { value: "1.00%", title: "Borrow APY" },
   { value: "2.00%", title: "Extra Rewards APY" },
-  { value: "3.00%", title: "Risk Factor" },
+  { value: "3.00%", title: "Collateral Factor" },
   { value: "4.00%", title: "Limit Used" },
   { value: "1,000,000", title: "Pool Liquidit" },
 ];

@@ -19,7 +19,7 @@ export const columns = [
     Cell: APYCell,
   },
   {
-    label: "Liquidity",
+    label: "Available Liquidity",
     dataKey: "liquidity",
     align: "right",
     Cell: LiquidityCell,
