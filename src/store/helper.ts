@@ -159,9 +159,13 @@ export const computeHealthFactor = (
     })
     .reduce(sumReducer, 0);
 
-  const healthFactor = collateralSum / borrowedSum;
+  let healthFactor = collateralSum / borrowedSum;
 
   console.log("healthFactor", "c", collateralSum, "b", borrowedSum, healthFactor);
+
+  if (healthFactor > 1000) {
+    healthFactor = 1000;
+  }
 
   return !Number.isNaN(healthFactor) ? healthFactor : 100;
 };
