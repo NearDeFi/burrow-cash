@@ -46,7 +46,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
   const [useAsCollateral, setUseAsCollateral] = useState(false);
 
   const collateralBalance = Number(asset.collateral?.balance) || 0;
-  const availableTokens = type === "Adjust" ? collateralBalance : asset.amount;
+  const availableTokens = type === "Adjust" ? collateralBalance + asset.amount : asset.amount;
   const isDisabled = amount <= 0 || amount > availableTokens;
 
   return (
@@ -105,10 +105,16 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               break;
             case "Adjust":
               if (amount < collateralBalance) {
-                void removeCollateral(asset.token_id, amount === asset.amount ? undefined : amount);
+                void removeCollateral(
+                  asset.token_id,
+                  amount === asset.amount ? undefined : collateralBalance - amount,
+                );
               }
               if (amount > collateralBalance) {
-                void addCollateral(asset.token_id, amount === asset.amount ? undefined : amount);
+                void addCollateral(
+                  asset.token_id,
+                  amount === asset.amount ? undefined : amount - collateralBalance,
+                );
               }
               break;
             default:
