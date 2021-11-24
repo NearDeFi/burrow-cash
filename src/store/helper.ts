@@ -78,8 +78,12 @@ export const expandToken = (value: string | number, decimals: string | number): 
   return new Decimal(value).mul(new Decimal(10).pow(decimals)).toFixed();
 };
 
-export const shrinkToken = (value: string | number, decimals: string | number): string => {
-  return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed();
+export const shrinkToken = (
+  value: string | number,
+  decimals: string | number,
+  fixed?: number,
+): string => {
+  return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed(fixed);
 };
 
 export const toUsd = (value: string, asset: IAssetDetailed & IMetadata): number => {

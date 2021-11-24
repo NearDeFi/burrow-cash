@@ -35,7 +35,6 @@ export const Subtitle = styled(Typography)(() => ({
 
 export const InfoWrapper = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridGap: "1rem",
   gridTemplateColumns: "auto auto",
   margin: "3rem auto",
   justifyContent: "center",

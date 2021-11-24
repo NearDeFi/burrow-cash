@@ -99,3 +99,8 @@ export const getBalances = async (token_ids: string[]): Promise<IBalance[]> => {
 
   return balances;
 };
+
+export const getAccount = async () => {
+  const { account } = await getBurrow();
+  return account;
+};
