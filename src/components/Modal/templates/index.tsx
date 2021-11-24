@@ -113,7 +113,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               if (amount > collateralBalance) {
                 void addCollateral(
                   asset.token_id,
-                  amount === asset.amount ? undefined : collateralBalance + amount,
+                  amount === asset.amount ? undefined : amount - collateralBalance,
                 );
               }
               break;
