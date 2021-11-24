@@ -167,7 +167,7 @@ export const computeHealthFactor = (
     healthFactor = 1000;
   }
 
-  return !Number.isNaN(healthFactor) ? healthFactor : 100;
+  return !Number.isNaN(healthFactor) || healthFactor !== Infinity ? healthFactor : 100;
 };
 
 export const getContract = async (
