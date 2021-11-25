@@ -40,7 +40,7 @@ const Slider = ({ value, onChange }: Props) => {
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"
       step={1}
-      valueLabelFormat={(v) => `${Math.round(v)}%`}
+      valueLabelFormat={(v) => `${Math.round(v || 0)}%`}
       marks={marks}
       onChange={onChange}
     />
