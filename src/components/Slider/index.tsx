@@ -32,7 +32,7 @@ interface Props {
   onChange?: (e: Event) => void;
 }
 
-const Slider = ({ value, onChange }: Props) => {
+const Slider = ({ value = 0, onChange }: Props) => {
   return (
     <SliderStyled
       aria-label="Custom value"
