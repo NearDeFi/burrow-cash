@@ -32,7 +32,7 @@ interface Props {
   onChange?: (e: Event) => void;
 }
 
-const Slider = ({ value, onChange }: Props) => {
+const Slider = ({ value = 0, onChange }: Props) => {
   return (
     <SliderStyled
       aria-label="Custom value"
@@ -40,7 +40,7 @@ const Slider = ({ value, onChange }: Props) => {
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"
       step={1}
-      valueLabelFormat={(v) => `${Math.round(v)}%`}
+      valueLabelFormat={(v) => `${Math.round(v || 0)}%`}
       marks={marks}
       onChange={onChange}
     />
