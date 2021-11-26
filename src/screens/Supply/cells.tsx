@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
 
 import { PERCENT_DIGITS, TOKEN_FORMAT, USD_FORMAT } from "../../store/constants";
-import { IAsset } from "../../interfaces/account";
-import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-import { toUsd } from "../../store";
+import { IAssetDetailed, IMetadata, IAsset } from "../../interfaces";
+import { getTotalSupply, toUsd } from "../../store";
 import { TokenCell } from "../../components/Table/common/cells";
 
 interface CellProps {
@@ -24,7 +23,7 @@ export const TotalSupplyCell = ({ rowData }: CellProps) => {
   return (
     <Box>
       {rowData.price?.usd
-        ? toUsd(rowData.supplied.balance, rowData).toLocaleString(undefined, USD_FORMAT)
+        ? toUsd(getTotalSupply(rowData), rowData).toLocaleString(undefined, USD_FORMAT)
         : "$-.-"}
     </Box>
   );

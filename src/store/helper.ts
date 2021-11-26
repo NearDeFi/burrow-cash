@@ -99,7 +99,7 @@ export const toUsd = (value: string, asset: IAssetDetailed & IMetadata): number 
 
 export const getAvailableAmount = (asset: IAssetDetailed): string => {
   let amount = new Decimal(asset.supplied.balance)
-    .plus(new Decimal(asset.reserved))
+    .minus(new Decimal(asset.reserved).mul(asset.config.reserve_ratio))
     .minus(new Decimal(asset.borrowed.balance));
 
   amount = amount.minus(amount.mul(0.001));
@@ -107,6 +107,12 @@ export const getAvailableAmount = (asset: IAssetDetailed): string => {
 
   console.log("availableAmount", result);
   return result;
+};
+
+export const getTotalSupply = (asset: IAssetDetailed): string => {
+  const amount = new Decimal(asset.supplied.balance).plus(new Decimal(asset.reserved));
+
+  return amount.toFixed();
 };
 
 export const computeMaxDiscount = (
