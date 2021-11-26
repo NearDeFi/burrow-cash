@@ -18,5 +18,6 @@ export const TOKEN_FORMAT = {
 };
 
 export const DECIMAL_OVERRIDES = {
+  "wrap.testnet": NEAR_DECIMALS,
   wNEAR: NEAR_DECIMALS,
 };

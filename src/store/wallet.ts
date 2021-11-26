@@ -125,7 +125,5 @@ export const isRegistered = async (account_id: string, contract: Contract): Prom
     account_id,
   })) as Balance;
 
-  console.log("balance", balance);
-
-  return balance?.total !== "0";
+  return balance && balance?.total !== "0";
 };

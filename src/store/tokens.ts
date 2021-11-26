@@ -202,13 +202,15 @@ export const borrow = async (token_id: string, amount: number) => {
 
   const accountDetailed = await getAccountDetailed(account.accountId);
 
+  const deciamls = DECIMAL_OVERRIDES[token_id] || TOKEN_DECIMALS;
+
   const borrowTemplate = {
     Execute: {
       actions: [
         {
           Borrow: {
             token_id,
-            amount: expandToken(amount, TOKEN_DECIMALS),
+            amount: expandToken(amount, deciamls),
           },
         },
         {
