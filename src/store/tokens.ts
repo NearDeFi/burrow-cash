@@ -81,7 +81,7 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
   return metadata;
 };
 
-const prepareAndExecuteTokenTransactions = async (
+export const prepareAndExecuteTokenTransactions = async (
   tokenContract: Contract,
   functionCall?: FunctionCallOptions,
   additionalOperations: Transaction[] = [],
@@ -114,7 +114,7 @@ const prepareAndExecuteTokenTransactions = async (
   await prepareAndExecuteTransactions(transactions);
 };
 
-const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
+export const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
   const { account, logicContract } = await getBurrow();
   const transactions: Transaction[] = [];
 

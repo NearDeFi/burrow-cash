@@ -89,7 +89,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         onClick={() => {
           switch (type) {
             case "Deposit":
-              void deposit(asset.token_id, amount.toString());
+              void deposit(amount);
               break;
             case "Borrow":
               void borrow(asset.token_id, amount);

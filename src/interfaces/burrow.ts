@@ -2,7 +2,7 @@ import { Account, Contract } from "near-api-js";
 import { BatchWallet } from "../store";
 
 import { IPrices } from "./oracle";
-import { IMetadata, AssetEntry, IAssetDetailed } from "./asset";
+import { IMetadata, AssetEntry, IAssetDetailed, Balance } from "./asset";
 import { IAccount, IAccountDetailed } from "./account";
 
 export interface IBurrow {
@@ -15,7 +15,14 @@ export interface IBurrow {
     methodName: string,
     args?: any,
   ) => Promise<
-    IPrices | IMetadata | AssetEntry[] | IAssetDetailed | IAccountDetailed | IAccount[] | string
+    | IPrices
+    | IMetadata
+    | AssetEntry[]
+    | IAssetDetailed
+    | IAccountDetailed
+    | IAccount[]
+    | Balance
+    | string
   >;
   call: (
     contract: Contract,

@@ -84,3 +84,8 @@ export interface AssetFarm {
   /// Rewards for the given farm
   rewards: IAssetFarmReward;
 }
+
+export interface Balance {
+  available: string;
+  total: string;
+}
