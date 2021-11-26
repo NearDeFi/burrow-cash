@@ -109,6 +109,12 @@ export const getAvailableAmount = (asset: IAssetDetailed): string => {
   return result;
 };
 
+export const getTotalSupply = (asset: IAssetDetailed): string => {
+  const amount = new Decimal(asset.supplied.balance).plus(new Decimal(asset.reserved));
+
+  return amount.toFixed();
+};
+
 export const computeMaxDiscount = (
   assets: IAssetDetailed[],
   portfolio: IAccountDetailed,
