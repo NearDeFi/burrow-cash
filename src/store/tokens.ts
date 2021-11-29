@@ -344,8 +344,10 @@ export const withdraw = async (token_id: string, amount?: number) => {
     ],
   };
 
+  const deciamls = DECIMAL_OVERRIDES[token_id] || TOKEN_DECIMALS;
+
   if (amount) {
-    const expandedAmount = expandToken(amount, TOKEN_DECIMALS);
+    const expandedAmount = expandToken(amount, deciamls);
     args.actions[0].Withdraw.amount = expandedAmount;
     console.log("withdraw", metadata?.decimals, token_id, amount, expandedAmount);
   }
