@@ -3,15 +3,13 @@ import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { ListEntry, TokenActionsInput } from "../types";
-import {
-  borrow,
-  supply,
-  withdraw,
-  repay,
-  addCollateral,
-  removeCollateral,
-} from "../../../store/tokens";
-import { deposit } from "../../../store/wnear-token";
+import { repay } from "../../../store/actions/repay";
+import { withdraw } from "../../../store/actions/withdraw";
+import { removeCollateral } from "../../../store/actions/removeCollateral";
+import { addCollateral } from "../../../store/actions/addCollateral";
+import { borrow } from "../../../store/actions/borrow";
+import { supply } from "../../../store/actions/supply";
+import { deposit } from "../../../store/actions/deposit";
 import { colors } from "../../../style";
 
 const borrowRates: ListEntry[] = [
