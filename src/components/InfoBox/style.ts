@@ -42,6 +42,7 @@ export const InfoWrapper = styled(Box)(({ theme }) => ({
   alignContent: "center",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
+    margin: "2rem auto",
     gridTemplateColumns: "auto",
     rowGap: "1rem",
   },

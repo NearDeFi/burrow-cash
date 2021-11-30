@@ -33,13 +33,3 @@ export const AmountSupplied = ({ rowData, portfolio }: CellProps & { portfolio: 
   const balance = portfolio?.supplied.find((b) => b.token_id === rowData.token_id)?.balance || 0;
   return <Box>{Number(balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
-
-export const WalletBalanceCell = ({ rowData, balances }: CellProps & { balances: any }) => {
-  return (
-    <Box>
-      {balances
-        .find((b) => b.token_id === rowData.token_id)
-        ?.balance.toLocaleString(undefined, TOKEN_FORMAT)}
-    </Box>
-  );
-};

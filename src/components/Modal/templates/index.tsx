@@ -42,10 +42,11 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
   const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
   const [amount, setAmount] = useState(0);
   const [useAsCollateral, setUseAsCollateral] = useState(false);
+  const isAdjust = type === "Adjust";
 
   const collateralBalance = Number(asset.collateral?.balance) || 0;
-  const availableTokens = type === "Adjust" ? collateralBalance + asset.amount : asset.amount;
-  const isDisabled = amount <= 0 || amount > availableTokens;
+  const availableTokens = isAdjust ? collateralBalance + asset.amount : asset.amount;
+  const isDisabled = isAdjust ? false : amount <= 0 || amount > availableTokens;
 
   return (
     <>
@@ -86,14 +87,15 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         isDisabled={isDisabled}
         onClick={() => {
           switch (type) {
-            case "Deposit":
-              void deposit(amount);
-              break;
             case "Borrow":
               void borrow(asset.token_id, amount);
               break;
             case "Supply":
-              void supply(asset.token_id, amount, useAsCollateral);
+              if (asset.token_id === "wrap.testnet") {
+                void deposit(amount, useAsCollateral);
+              } else {
+                void supply(asset.token_id, amount, useAsCollateral);
+              }
               break;
             case "Withdraw":
               void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);

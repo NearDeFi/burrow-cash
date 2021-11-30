@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
 import { PERCENT_DIGITS, USD_FORMAT, NEAR_DECIMALS } from "../../store/constants";
@@ -8,7 +8,7 @@ import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
-import { columns as defaultColumns, amountSuppliedColumn, walletColumn } from "./tabledata";
+import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 
@@ -44,7 +44,7 @@ const Supply = () => {
     }));
 
   const columns = walletConnection?.isSignedIn()
-    ? [...defaultColumns, amountSuppliedColumn(portfolio), walletColumn(balances)]
+    ? [...defaultColumns, amountSuppliedColumn(portfolio)]
     : defaultColumns;
 
   const balance = accountBalance
@@ -52,13 +52,18 @@ const Supply = () => {
     : "...";
 
   const handleOnRowClick = (rowData) => {
+    const isNear = rowData.token_id === "wrap.testnet";
+    const amount = isNear
+      ? Number(balance)
+      : balances.find((b) => b.token_id === rowData.token_id)?.balance || 0;
+
     modal.setModalData({
       type: "Supply",
       title: "Supply",
       totalAmountTitle: "Total Supply",
       asset: {
         token_id: rowData.token_id,
-        amount: balances.find((b) => b.token_id === rowData.token_id)?.balance || 0,
+        amount,
         name: rowData?.name || "Unknown",
         symbol: rowData?.symbol || "???",
         icon: rowData?.icon,
@@ -92,27 +97,6 @@ const Supply = () => {
     modal.handleOpen();
   };
 
-  const handleSupplyNear = () => {
-    const wNear = assets.find((a) => a.token_id === "wrap.testnet");
-    modal.setModalData({
-      type: "Deposit",
-      title: "Deposit",
-      totalAmountTitle: "Deposit NEAR",
-      asset: {
-        token_id: "NEAR",
-        amount: Number(balance),
-        name: "NEAR",
-        symbol: "NEAR",
-        icon: "",
-        valueInUSD: wNear?.price?.usd || 0,
-        apy: 0,
-        canBeUsedAsCollateral: false,
-      },
-      buttonText: "Supply",
-    });
-    modal.handleOpen();
-  };
-
   return (
     <Box>
       <InfoWrapper>
@@ -123,11 +107,6 @@ const Supply = () => {
       </InfoWrapper>
       <PageTitle first="Supply" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
-      {accountBalance && (
-        <Box display="flex" justifyContent="center" onClick={handleSupplyNear}>
-          <Button variant="contained">Deposit NEAR ({balance})</Button>
-        </Box>
-      )}
       {assets.length > 0 && (
         <InfoWrapper>
           <InfoBox title="Total Supply" value={totalSupply} />
