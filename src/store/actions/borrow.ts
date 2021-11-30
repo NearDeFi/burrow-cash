@@ -27,7 +27,7 @@ export async function borrow(token_id: string, amount: number) {
         {
           Withdraw: {
             token_id,
-            amount: expandToken(amount, TOKEN_DECIMALS),
+            max_amount: expandToken(amount, TOKEN_DECIMALS),
           },
         },
       ],
