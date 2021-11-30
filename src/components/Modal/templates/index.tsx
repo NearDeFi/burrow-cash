@@ -86,14 +86,15 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         isDisabled={isDisabled}
         onClick={() => {
           switch (type) {
-            case "Deposit":
-              void deposit(amount);
-              break;
             case "Borrow":
               void borrow(asset.token_id, amount);
               break;
             case "Supply":
-              void supply(asset.token_id, amount, useAsCollateral);
+              if (asset.token_id === "wrap.testnet") {
+                void deposit(amount, useAsCollateral);
+              } else {
+                void supply(asset.token_id, amount, useAsCollateral);
+              }
               break;
             case "Withdraw":
               void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);

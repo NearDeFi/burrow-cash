@@ -6,7 +6,7 @@ const Layout = ({ children }) => (
   <Box
     sx={{
       display: "grid",
-      gridTemplateRows: "64px 1fr 64px",
+      gridTemplateRows: "auto 1fr auto",
       gridTemplateColumns: "100%",
       minHeight: "100%",
     }}
