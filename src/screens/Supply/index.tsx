@@ -8,7 +8,7 @@ import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
-import { columns as defaultColumns, amountSuppliedColumn, walletColumn } from "./tabledata";
+import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 
@@ -44,7 +44,7 @@ const Supply = () => {
     }));
 
   const columns = walletConnection?.isSignedIn()
-    ? [...defaultColumns, amountSuppliedColumn(portfolio), walletColumn(balances)]
+    ? [...defaultColumns, amountSuppliedColumn(portfolio)]
     : defaultColumns;
 
   const balance = accountBalance
