@@ -58,11 +58,11 @@ export const TokenInputs = ({
   const totalAvailableTokensPrice = Number(availableTokens) * Number(tokenPriceInUSD);
   const [totalAmount, setTotalAmount] = useState(defaultValue * tokenPriceInUSD);
   const [sliderValue, setSliderValue] = useState((100 * defaultValue) / Number(availableTokens));
-  const [inputValue, setInputValue] = useState(defaultValue);
+  const [inputValue, setInputValue] = useState(Number(defaultValue.toFixed(PERCENT_DIGITS)));
 
   const handleMaxClick = () => {
     if (!availableTokens) return;
-    const e = { target: { value: availableTokens } };
+    const e = { target: { value: availableTokens.toFixed(PERCENT_DIGITS) } };
     handleInputChange(e);
   };
 
@@ -84,7 +84,7 @@ export const TokenInputs = ({
     const value = (Number(availableTokens) * percent) / 100;
 
     setTotalAmount(value * tokenPriceInUSD);
-    setInputValue(value);
+    setInputValue(Number(value.toFixed(PERCENT_DIGITS)));
     setSliderValue((value * 100) / Number(availableTokens));
     if (onChange) onChange(value);
   };
