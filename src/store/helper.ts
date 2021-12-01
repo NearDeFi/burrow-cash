@@ -162,11 +162,7 @@ export const computeHealthFactor = (
     })
     .reduce(sumReducer, 0);
 
-  let healthFactor = (collateralSum / borrowedSum) * 100;
-
-  if (healthFactor > 10000) {
-    healthFactor = 10000;
-  }
+  const healthFactor = (collateralSum / borrowedSum) * 100;
 
   return healthFactor < 10000 ? healthFactor : 10000;
 };
