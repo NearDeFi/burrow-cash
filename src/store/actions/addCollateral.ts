@@ -5,8 +5,6 @@ import { ChangeMethodsLogic } from "../../interfaces";
 import { getMetadata } from "../tokens";
 
 export async function addCollateral(token_id: string, amount?: number) {
-  console.log(`Adding collateral ${amount} of ${token_id}`);
-
   const { logicContract, call } = await getBurrow();
   const metadata = await getMetadata(token_id);
 

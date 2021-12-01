@@ -20,8 +20,6 @@ import { BatchWallet, getContract, BatchWalletAccount } from "./store";
 
 const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
 
-console.log(`Using network ${nearConfig.networkId}!`);
-
 let burrow: IBurrow;
 
 export const getBurrow = async (): Promise<IBurrow> => {
@@ -43,10 +41,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
     near.connection,
     walletConnection.account().accountId,
   );
-
-  if (walletConnection?.isSignedIn()) {
-    console.log("access keys", await account.getAccessKeys());
-  }
 
   const view = async (
     contract: Contract,
@@ -79,15 +73,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
     const gas = new BN(150000000000000);
     const attachedDeposit = new BN(deposit);
 
-    console.log(
-      "transaction",
-      contract.contractId,
-      methodName,
-      args,
-      attachedDeposit.toString(),
-      gas.toString(),
-    );
-
     const actions = [
       transactions.functionCall(
         methodName,
@@ -115,8 +100,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
   const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
     oracle_account_id: string;
   };
-
-  console.log("oracle address", config.oracle_account_id);
 
   const oracleContract: Contract = await getContract(
     walletConnection.account(),

@@ -9,15 +9,11 @@ export async function supply(
   amount: number,
   useAsCollateral: boolean,
 ): Promise<void> {
-  console.log(`Supplying ${amount} to ${token_id}`);
-
   const { logicContract } = await getBurrow();
 
   const tokenContract = await getTokenContract(token_id);
   const metadata = await getMetadata(token_id);
   const expandedAmount = expandToken(amount, metadata?.decimals! || NEAR_DECIMALS);
-
-  console.log("transaction fixed amount", expandedAmount);
 
   const args = {
     actions: [

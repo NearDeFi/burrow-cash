@@ -116,7 +116,6 @@ export const RepayCell = ({
 }: {
   rowData: IMetadata & IAsset & IAssetDetailed & { wallet: IBalance };
 }) => {
-  console.info(rowData);
   const modal: ModalState = useContext(ModalContext);
 
   const handleClick = () => {

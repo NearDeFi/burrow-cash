@@ -70,7 +70,6 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
     await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
   ).filter((m): m is IMetadata => !!m);
 
-  console.log("metadata", metadata);
   return metadata;
 };
 
@@ -125,8 +124,5 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
   }
 
   transactions.push(...operations);
-
-  console.log("transactions being dispatched", JSON.stringify(transactions, null, 2));
-
   await executeMultipleTransactions(transactions);
 };

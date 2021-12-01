@@ -7,8 +7,6 @@ import { getAccountDetailed } from "../accounts";
 import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
 
 export async function removeCollateral(token_id: string, amount?: number) {
-  console.log(`Removing collateral ${amount} of ${token_id}`);
-
   const { oracleContract, account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
   const accountDetailed = await getAccountDetailed(account.accountId);

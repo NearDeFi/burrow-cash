@@ -12,9 +12,6 @@ export const getAccounts = async (): Promise<IAccount[]> => {
     ViewMethodsLogic[ViewMethodsLogic.get_accounts_paged],
   )) as IAccount[];
 
-  // base accounts
-  console.log("accounts", accounts);
-
   return accounts;
 };
 
@@ -30,9 +27,6 @@ export const getAccountDetailed = async (account_id: string): Promise<IAccountDe
       account_id,
     },
   )) as IAccountDetailed;
-
-  // detailed accounts
-  console.log("account detailed", accountDetailed);
 
   return accountDetailed;
 };
@@ -57,8 +51,6 @@ export const getPortfolio = async (
   // todo: rework shrink tokens here, maybe return another object instead replacing the values
 
   if (accountDetailed) {
-    console.log("portfolio before", accountDetailed);
-
     const acc = JSON.parse(JSON.stringify(accountDetailed));
 
     for (const asset of [...acc.collateral]) {
@@ -75,7 +67,6 @@ export const getPortfolio = async (
       asset.balance = shrinkToken(asset.balance, d);
     }
 
-    console.log("portfolio", acc);
     return acc;
   }
   return undefined;

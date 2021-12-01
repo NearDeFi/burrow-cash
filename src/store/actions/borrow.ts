@@ -7,8 +7,6 @@ import { getAccountDetailed } from "../accounts";
 import { prepareAndExecuteTransactions } from "../tokens";
 
 export async function borrow(token_id: string, amount: number) {
-  console.log(`Borrowing ${amount} of ${token_id}`);
-
   const { oracleContract, logicContract, account } = await getBurrow();
 
   const accountDetailed = await getAccountDetailed(account.accountId);

@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import { IAssetEntry, IAssetDetailed, AssetEntry, ViewMethodsLogic } from "../interfaces";
 import { getBurrow } from "../utils";
 import { DEFAULT_PRECISION } from "./constants";
-import { getPrices, rateToApr } from "./helper";
+import { getPrices } from "./helper";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -29,13 +29,6 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
     },
   )) as IAssetDetailed;
 
-  console.log(
-    "xxx",
-    "target_utilization_rate",
-    rateToApr(assetDetails.config.target_utilization_rate),
-  );
-  console.log("xxx", "max_utilization_rate", rateToApr(assetDetails.config.max_utilization_rate));
-
   return assetDetails;
 };
 
@@ -51,6 +44,5 @@ export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
       priceResponse?.prices.find((p) => p.asset_id === detailedAsset.token_id)?.price || undefined,
   }));
 
-  console.log("detailed assets", detailedAssets);
   return detailedAssets;
 };
