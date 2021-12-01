@@ -137,32 +137,6 @@ export const getMaxBorrowAmount = (
   return max;
 };
 
-export const computeMaxDiscount = (
-  assets: IAssetDetailed[],
-  portfolio: IAccountDetailed,
-): number => {
-  if (!assets || !portfolio) return 0;
-
-  const collateralSum = portfolio.collateral
-    .map(
-      (collateral) =>
-        Number(collateral.balance) *
-        (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0);
-
-  const borrowSum = portfolio.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0);
-
-  const discount = borrowSum <= collateralSum ? 0 : (borrowSum - collateralSum) / borrowSum;
-  return discount;
-};
-
 export const computeHealthFactor = (
   assets: IAssetDetailed[],
   portfolio: IAccountDetailed,
