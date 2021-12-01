@@ -102,6 +102,43 @@ export const getTotalSupply = (asset: IAssetDetailed): string => {
   return amount.toFixed();
 };
 
+export const getMaxBorrowAmount = (
+  tokenId: string,
+  assets: IAssetDetailed[],
+  portfolio?: IAccountDetailed,
+) => {
+  console.log(assets, portfolio, tokenId);
+
+  if (!portfolio) {
+    return 0;
+  }
+
+  const collateralSum = portfolio.collateral
+    .map((collateral) => {
+      const asset = assets.find((a) => a.token_id === collateral.token_id);
+      const balance = Number(collateral.balance) * (asset?.price?.usd || 0);
+      const volatiliyRatio = asset?.config.volatility_ratio || 0;
+      console.info("collateral ->", balance, volatiliyRatio);
+      return balance * volatiliyRatio;
+    })
+    .reduce(sumReducer, 0);
+
+  const borrowSum = portfolio.borrowed
+    .map((borrowed) => {
+      const asset = assets.find((a) => a.token_id === borrowed.token_id);
+      const balance = Number(borrowed.balance) * (asset?.price?.usd || 0);
+      const volatiliyRatio = asset?.config.volatility_ratio || 0;
+      console.info("borrowed ->", balance, volatiliyRatio);
+      return balance / volatiliyRatio;
+    })
+    .reduce(sumReducer, 0);
+
+  console.log("collateralSum", collateralSum);
+  console.log("borrowSum", borrowSum);
+
+  return 0;
+};
+
 export const computeMaxDiscount = (
   assets: IAssetDetailed[],
   portfolio: IAccountDetailed,

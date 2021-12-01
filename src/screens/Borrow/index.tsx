@@ -14,6 +14,7 @@ import {
   getAvailableAmount,
   computeHealthFactor,
   sumReducer,
+  getMaxBorrowAmount,
 } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
@@ -60,6 +61,9 @@ const Borrow = () => {
     }));
 
   const handleOnRowClick = (rowData) => {
+    const maxBorrowAmount = getMaxBorrowAmount(rowData.token_id, assets, portfolio);
+    console.log("maxBorrowAmount", maxBorrowAmount);
+
     modal.setModalData({
       type: "Borrow",
       title: "Borrow",
