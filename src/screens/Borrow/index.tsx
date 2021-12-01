@@ -1,19 +1,14 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
 
-import {
-  USD_FORMAT,
-  DECIMAL_OVERRIDES,
-  PERCENT_DIGITS,
-  TOKEN_DECIMALS,
-} from "../../store/constants";
+import { USD_FORMAT, PERCENT_DIGITS } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import {
   toUsd,
-  shrinkToken,
   getAvailableAmount,
   computeHealthFactor,
   sumReducer,
+  getMaxBorrowAmount,
 } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
@@ -60,18 +55,16 @@ const Borrow = () => {
     }));
 
   const handleOnRowClick = (rowData) => {
+    const maxBorrowAmount = getMaxBorrowAmount(rowData.token_id, assets, portfolio);
+    const amount = Number((maxBorrowAmount / rowData.price.usd).toFixed(PERCENT_DIGITS));
+
     modal.setModalData({
       type: "Borrow",
       title: "Borrow",
       totalAmountTitle: "Total Borrow",
       asset: {
         token_id: rowData.token_id,
-        amount: Number(
-          shrinkToken(
-            getAvailableAmount(rowData),
-            DECIMAL_OVERRIDES[rowData.symbol] || TOKEN_DECIMALS,
-          ),
-        ),
+        amount,
         name: rowData?.name || "Unknown",
         symbol: rowData?.symbol || "???",
         icon: rowData?.icon,

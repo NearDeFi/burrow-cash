@@ -102,30 +102,39 @@ export const getTotalSupply = (asset: IAssetDetailed): string => {
   return amount.toFixed();
 };
 
-export const computeMaxDiscount = (
+export const getMaxBorrowAmount = (
+  tokenId: string,
   assets: IAssetDetailed[],
-  portfolio: IAccountDetailed,
-): number => {
-  if (!assets || !portfolio) return 0;
+  portfolio?: IAccountDetailed,
+) => {
+  const MAX_RATIO = 10000;
+
+  if (!portfolio) {
+    return 0;
+  }
 
   const collateralSum = portfolio.collateral
-    .map(
-      (collateral) =>
-        Number(collateral.balance) *
-        (assets.find((a) => a.token_id === collateral.token_id)?.price?.usd || 0),
-    )
+    .map((collateral) => {
+      const asset = assets.find((a) => a.token_id === collateral.token_id);
+      const balance = Number(collateral.balance) * (asset?.price?.usd || 0);
+      const volatiliyRatio = asset?.config.volatility_ratio || 0;
+      return balance * (volatiliyRatio / MAX_RATIO);
+    })
     .reduce(sumReducer, 0);
 
   const borrowSum = portfolio.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
+    .map((borrowed) => {
+      const asset = assets.find((a) => a.token_id === borrowed.token_id);
+      const balance = Number(borrowed.balance) * (asset?.price?.usd || 0);
+      const volatiliyRatio = asset?.config.volatility_ratio || 0;
+      return balance / (volatiliyRatio / MAX_RATIO);
+    })
     .reduce(sumReducer, 0);
 
-  const discount = borrowSum <= collateralSum ? 0 : (borrowSum - collateralSum) / borrowSum;
-  return discount;
+  const volatiliyRatio = assets.find((a) => a.token_id === tokenId)?.config.volatility_ratio || 0;
+  const max = (collateralSum - borrowSum) * (volatiliyRatio / MAX_RATIO);
+
+  return max;
 };
 
 export const computeHealthFactor = (
