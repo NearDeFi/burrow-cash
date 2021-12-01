@@ -162,13 +162,13 @@ export const computeHealthFactor = (
     })
     .reduce(sumReducer, 0);
 
-  let healthFactor = collateralSum / borrowedSum;
+  let healthFactor = (collateralSum / borrowedSum) * 100;
 
-  if (healthFactor > 1000) {
-    healthFactor = 1000;
+  if (healthFactor > 10000) {
+    healthFactor = 10000;
   }
 
-  return !Number.isNaN(healthFactor) || healthFactor !== Infinity ? healthFactor : 100;
+  return healthFactor < 10000 ? healthFactor : 10000;
 };
 
 export const getContract = async (
