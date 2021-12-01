@@ -107,7 +107,7 @@ export const getMaxBorrowAmount = (
   assets: IAssetDetailed[],
   portfolio?: IAccountDetailed,
 ) => {
-  console.log(assets, portfolio, tokenId);
+  const MAX_RATIO = 10000;
 
   if (!portfolio) {
     return 0;
@@ -118,8 +118,7 @@ export const getMaxBorrowAmount = (
       const asset = assets.find((a) => a.token_id === collateral.token_id);
       const balance = Number(collateral.balance) * (asset?.price?.usd || 0);
       const volatiliyRatio = asset?.config.volatility_ratio || 0;
-      console.info("collateral ->", balance, volatiliyRatio);
-      return balance * volatiliyRatio;
+      return balance * (volatiliyRatio / MAX_RATIO);
     })
     .reduce(sumReducer, 0);
 
@@ -128,15 +127,14 @@ export const getMaxBorrowAmount = (
       const asset = assets.find((a) => a.token_id === borrowed.token_id);
       const balance = Number(borrowed.balance) * (asset?.price?.usd || 0);
       const volatiliyRatio = asset?.config.volatility_ratio || 0;
-      console.info("borrowed ->", balance, volatiliyRatio);
-      return balance / volatiliyRatio;
+      return balance / (volatiliyRatio / MAX_RATIO);
     })
     .reduce(sumReducer, 0);
 
-  console.log("collateralSum", collateralSum);
-  console.log("borrowSum", borrowSum);
+  const volatiliyRatio = assets.find((a) => a.token_id === tokenId)?.config.volatility_ratio || 0;
+  const max = (collateralSum - borrowSum) * (volatiliyRatio / MAX_RATIO);
 
-  return 0;
+  return max;
 };
 
 export const computeMaxDiscount = (
