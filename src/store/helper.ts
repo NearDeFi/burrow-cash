@@ -14,6 +14,8 @@ import {
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
+const MAX_RATIO = 10000;
+
 export const sumReducer = (sum: number, a: number) => sum + a;
 
 export const aprToRate = (apr: string): string => {
@@ -107,8 +109,6 @@ export const getMaxBorrowAmount = (
   assets: IAssetDetailed[],
   portfolio?: IAccountDetailed,
 ) => {
-  const MAX_RATIO = 10000;
-
   if (!portfolio) {
     return 0;
   }
@@ -145,7 +145,9 @@ export const computeHealthFactor = (
     .map((collateral) => {
       const asset = assets.find((a) => a.token_id === collateral.token_id)!;
       return (
-        Number(collateral.balance) * (asset.price?.usd || 0) * (asset.config.volatility_ratio / 100)
+        Number(collateral.balance) *
+        (asset.price?.usd || 0) *
+        (asset.config.volatility_ratio / MAX_RATIO)
       );
     })
     .reduce(sumReducer, 0);
@@ -155,7 +157,7 @@ export const computeHealthFactor = (
       const asset = assets.find((a) => a.token_id === borrowed.token_id)!;
       return (
         (Number(borrowed.balance) * (asset?.price?.usd || 0)) /
-        (asset.config.volatility_ratio / 100)
+        (asset.config.volatility_ratio / MAX_RATIO)
       );
     })
     .reduce(sumReducer, 0);
