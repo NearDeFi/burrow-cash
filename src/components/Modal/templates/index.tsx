@@ -88,7 +88,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         onClick={() => {
           switch (type) {
             case "Borrow":
-              void borrow(asset.token_id, amount);
+              void borrow(asset.token_id, amount, config);
               break;
             case "Supply":
               if (asset.token_id === "wrap.testnet") {
@@ -108,12 +108,14 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
                 void removeCollateral(
                   asset.token_id,
                   amount === asset.amount ? undefined : collateralBalance - amount,
+                  config,
                 );
               }
               if (amount > collateralBalance) {
                 void addCollateral(
                   asset.token_id,
                   amount === asset.amount ? undefined : amount - collateralBalance,
+                  config,
                 );
               }
               break;

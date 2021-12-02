@@ -1,7 +1,13 @@
-import { IAccount, IAccountDetailed, IBalance, ViewMethodsLogic, IMetadata } from "../interfaces";
+import {
+  IAccount,
+  IAccountDetailed,
+  IBalance,
+  ViewMethodsLogic,
+  IMetadata,
+  IAssetDetailed,
+} from "../interfaces";
 import { getBurrow } from "../utils";
 import { shrinkToken } from "./helper";
-import { DECIMAL_OVERRIDES, TOKEN_DECIMALS } from "./constants";
 import { getBalance } from "./tokens";
 
 export const getAccounts = async (): Promise<IAccount[]> => {
@@ -43,27 +49,20 @@ export const getAccountsDetailed = async (): Promise<IAccountDetailed[]> => {
 
 export const getPortfolio = async (
   metadata: IMetadata[],
+  assets: IAssetDetailed[],
 ): Promise<IAccountDetailed | undefined> => {
   const { account } = await getBurrow();
 
   const accountDetailed: IAccountDetailed | null = await getAccountDetailed(account.accountId!);
 
-  // todo: rework shrink tokens here, maybe return another object instead replacing the values
-
   if (accountDetailed) {
     const acc = JSON.parse(JSON.stringify(accountDetailed));
 
-    for (const asset of [...acc.collateral]) {
-      const { symbol, decimals } = metadata.find((m) => m.token_id === asset.token_id)!;
-      const d = DECIMAL_OVERRIDES[symbol] || decimals;
-      asset.shares = shrinkToken(asset.shares, d);
-      asset.balance = shrinkToken(asset.balance, d);
-    }
-
-    for (const asset of [...acc.supplied, ...acc.borrowed]) {
-      const { symbol } = metadata.find((m) => m.token_id === asset.token_id)!;
-      const d = DECIMAL_OVERRIDES[symbol] || TOKEN_DECIMALS;
-      asset.shares = shrinkToken(asset.shares, d);
+    for (const asset of [...acc.supplied, ...acc.borrowed, ...acc.collateral]) {
+      const { decimals } = metadata.find((m) => m.token_id === asset.token_id)!;
+      const { config } = assets.find((a) => a.token_id === asset.token_id)!;
+      const d = decimals + config.extra_decimals;
+      // asset.shares = shrinkToken(asset.shares, d);
       asset.balance = shrinkToken(asset.balance, d);
     }
 

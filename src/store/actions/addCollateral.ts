@@ -1,10 +1,9 @@
 import { getBurrow } from "../../utils";
-import { TOKEN_DECIMALS } from "../constants";
 import { expandToken } from "../helper";
 import { ChangeMethodsLogic } from "../../interfaces";
 import { getMetadata } from "../tokens";
 
-export async function addCollateral(token_id: string, amount?: number) {
+export async function addCollateral(token_id: string, amount?: number, config?: any) {
   const { logicContract, call } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
 
@@ -20,7 +19,11 @@ export async function addCollateral(token_id: string, amount?: number) {
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(amount, decimals || TOKEN_DECIMALS, 0);
+    args.actions[0].IncreaseCollateral.amount = expandToken(
+      amount,
+      decimals + config.extra_decimals,
+      0,
+    );
   }
 
   await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);

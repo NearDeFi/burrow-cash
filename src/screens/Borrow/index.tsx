@@ -98,6 +98,7 @@ const Borrow = () => {
         },
       ],
       ratesTitle: "Rates",
+      config: rowData.config,
     });
     modal.handleOpen();
   };

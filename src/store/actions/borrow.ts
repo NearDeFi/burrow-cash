@@ -1,17 +1,15 @@
 import { getBurrow } from "../../utils";
-import { DECIMAL_OVERRIDES, TOKEN_DECIMALS } from "../constants";
 import { expandToken } from "../helper";
 import { ChangeMethodsOracle } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
-import { prepareAndExecuteTransactions } from "../tokens";
+import { prepareAndExecuteTransactions, getMetadata } from "../tokens";
 
-export async function borrow(token_id: string, amount: number) {
+export async function borrow(token_id: string, amount: number, config) {
   const { oracleContract, logicContract, account } = await getBurrow();
+  const { decimals } = (await getMetadata(token_id))!;
 
   const accountDetailed = await getAccountDetailed(account.accountId);
-
-  const deciamls = DECIMAL_OVERRIDES[token_id] || TOKEN_DECIMALS;
 
   const borrowTemplate = {
     Execute: {
@@ -19,13 +17,13 @@ export async function borrow(token_id: string, amount: number) {
         {
           Borrow: {
             token_id,
-            amount: expandToken(amount, deciamls),
+            amount: expandToken(amount, decimals + config.extra_decimals),
           },
         },
         {
           Withdraw: {
             token_id,
-            max_amount: expandToken(amount, TOKEN_DECIMALS),
+            max_amount: expandToken(amount, decimals + config.extra_decimals),
           },
         },
       ],
