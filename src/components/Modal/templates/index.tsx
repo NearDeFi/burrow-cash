@@ -36,10 +36,14 @@ export const BorrowData: TokenActionsInput = {
     apy: 10,
     canBeUsedAsCollateral: true,
   },
+  // @ts-ignore
+  config: {
+    extra_decimals: 0,
+  },
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
+  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type, config } = input;
   const [amount, setAmount] = useState(0);
   const [useAsCollateral, setUseAsCollateral] = useState(false);
   const isAdjust = type === "Adjust";
@@ -88,7 +92,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         onClick={() => {
           switch (type) {
             case "Borrow":
-              void borrow(asset.token_id, amount);
+              void borrow(asset.token_id, config, amount);
               break;
             case "Supply":
               if (asset.token_id === "wrap.testnet") {
@@ -98,21 +102,23 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               }
               break;
             case "Withdraw":
-              void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);
+              void withdraw(asset.token_id, config, amount === asset.amount ? undefined : amount);
               break;
             case "Repay":
-              void repay(asset.token_id, amount);
+              void repay(asset.token_id, config, amount);
               break;
             case "Adjust":
               if (amount < collateralBalance) {
                 void removeCollateral(
                   asset.token_id,
+                  config,
                   amount === asset.amount ? undefined : collateralBalance - amount,
                 );
               }
               if (amount > collateralBalance) {
                 void addCollateral(
                   asset.token_id,
+                  config,
                   amount === asset.amount ? undefined : amount - collateralBalance,
                 );
               }

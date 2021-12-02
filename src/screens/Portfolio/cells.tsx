@@ -17,6 +17,7 @@ export const SupplyAPYCell = ({ rowData }: CellProps) => {
 };
 
 export const CollateralCell = ({ rowData }) => {
+  // console.log("CollateralCell", rowData);
   return (
     <Box>
       {rowData.collateral &&
@@ -26,6 +27,7 @@ export const CollateralCell = ({ rowData }) => {
 };
 
 export const SuppliedCell = ({ rowData }: CellProps) => {
+  // console.log("SuppliedCell", rowData);
   return (
     <Box>{rowData.balance && Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>
   );
@@ -52,6 +54,7 @@ export const WithdrawCell = ({ rowData }) => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Withdraw",
+      config: rowData.config,
     });
     modal.handleOpen();
   };
@@ -86,6 +89,7 @@ export const AdjustCell = ({ rowData }) => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Adjust",
+      config: rowData.config,
     });
     modal.handleOpen();
   };
@@ -136,6 +140,7 @@ export const RepayCell = ({
         apy: Number(rowData.borrow_apr),
       },
       buttonText: "Repay",
+      config: rowData.config,
     });
     modal.handleOpen();
   };

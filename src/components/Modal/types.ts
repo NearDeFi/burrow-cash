@@ -1,3 +1,5 @@
+import { IAssetConfig } from "../../interfaces/asset";
+
 export type ModalType = "Borrow" | "Supply" | "Withdraw" | "Adjust" | "Repay" | "Deposit";
 
 export interface ListEntry {
@@ -27,6 +29,7 @@ export interface TokenActionsInput {
   buttonText: string;
   rates?: ListEntry[];
   ratesTitle?: string;
+  config: IAssetConfig;
 }
 
 export enum Templates {
