@@ -1,9 +1,9 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic } from "../../interfaces";
+import { ChangeMethodsLogic, IAssetConfig } from "../../interfaces";
 import { getMetadata } from "../tokens";
 
-export async function addCollateral(token_id: string, amount?: number, config?: any) {
+export async function addCollateral(token_id: string, config: IAssetConfig, amount?: number) {
   const { logicContract, call } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
 

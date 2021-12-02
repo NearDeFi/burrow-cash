@@ -1,11 +1,11 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle } from "../../interfaces";
+import { ChangeMethodsOracle, IAssetConfig } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { prepareAndExecuteTransactions, getMetadata } from "../tokens";
 
-export async function borrow(token_id: string, amount: number, config) {
+export async function borrow(token_id: string, config: IAssetConfig, amount: number) {
   const { oracleContract, logicContract, account } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
 

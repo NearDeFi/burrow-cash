@@ -93,6 +93,7 @@ const Supply = () => {
         },
       ],
       ratesTitle: "Rates",
+      config: rowData.config,
     });
     modal.handleOpen();
   };

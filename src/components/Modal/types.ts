@@ -29,7 +29,7 @@ export interface TokenActionsInput {
   buttonText: string;
   rates?: ListEntry[];
   ratesTitle?: string;
-  config?: IAssetConfig;
+  config: IAssetConfig;
 }
 
 export enum Templates {

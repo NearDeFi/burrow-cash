@@ -36,6 +36,10 @@ export const BorrowData: TokenActionsInput = {
     apy: 10,
     canBeUsedAsCollateral: true,
   },
+  // @ts-ignore
+  config: {
+    extra_decimals: 0,
+  },
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
@@ -88,7 +92,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         onClick={() => {
           switch (type) {
             case "Borrow":
-              void borrow(asset.token_id, amount, config);
+              void borrow(asset.token_id, config, amount);
               break;
             case "Supply":
               if (asset.token_id === "wrap.testnet") {
@@ -98,24 +102,24 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               }
               break;
             case "Withdraw":
-              void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);
+              void withdraw(asset.token_id, config, amount === asset.amount ? undefined : amount);
               break;
             case "Repay":
-              void repay(asset.token_id, amount, config);
+              void repay(asset.token_id, config, amount);
               break;
             case "Adjust":
               if (amount < collateralBalance) {
                 void removeCollateral(
                   asset.token_id,
-                  amount === asset.amount ? undefined : collateralBalance - amount,
                   config,
+                  amount === asset.amount ? undefined : collateralBalance - amount,
                 );
               }
               if (amount > collateralBalance) {
                 void addCollateral(
                   asset.token_id,
-                  amount === asset.amount ? undefined : amount - collateralBalance,
                   config,
+                  amount === asset.amount ? undefined : amount - collateralBalance,
                 );
               }
               break;

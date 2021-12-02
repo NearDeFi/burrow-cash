@@ -1,9 +1,9 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsToken } from "../../interfaces";
+import { ChangeMethodsToken, IAssetConfig } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
 
-export async function repay(token_id: string, amount: number, config) {
+export async function repay(token_id: string, config: IAssetConfig, amount: number) {
   const { logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(token_id);
   const { decimals } = (await getMetadata(token_id))!;
@@ -13,7 +13,7 @@ export async function repay(token_id: string, amount: number, config) {
       actions: [
         {
           Repay: {
-            max_amount: expandToken(amount, decimals + config.extra_decimals),
+            max_amount: expandToken(amount, decimals + config.extra_decimals, 0),
             token_id,
           },
         },
@@ -25,7 +25,7 @@ export async function repay(token_id: string, amount: number, config) {
     methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
     args: {
       receiver_id: logicContract.contractId,
-      amount: expandToken(amount, decimals + config.extra_decimals),
+      amount: expandToken(amount, decimals, 0),
       msg: JSON.stringify(msg),
     },
   });

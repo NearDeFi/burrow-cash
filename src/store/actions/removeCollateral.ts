@@ -1,11 +1,11 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle } from "../../interfaces";
+import { ChangeMethodsOracle, IAssetConfig } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
 
-export async function removeCollateral(token_id: string, amount?: number, config?: any) {
+export async function removeCollateral(token_id: string, config: IAssetConfig, amount?: number) {
   const { oracleContract, account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
   const accountDetailed = await getAccountDetailed(account.accountId);

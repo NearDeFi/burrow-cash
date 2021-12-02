@@ -54,6 +54,7 @@ export const WithdrawCell = ({ rowData }) => {
         canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
       },
       buttonText: "Withdraw",
+      config: rowData.config,
     });
     modal.handleOpen();
   };
