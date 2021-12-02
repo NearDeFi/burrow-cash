@@ -1,14 +1,14 @@
 import { getBurrow } from "../../utils";
-import { DECIMAL_OVERRIDES, TOKEN_DECIMALS } from "../constants";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic } from "../../interfaces";
-import { getTokenContract, prepareAndExecuteTokenTransactions } from "../tokens";
+import { ChangeMethodsLogic, IAssetConfig } from "../../interfaces";
+import { getMetadata, getTokenContract, prepareAndExecuteTokenTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction } from "../wallet";
 
-export async function withdraw(token_id: string, amount?: number) {
+export async function withdraw(token_id: string, config: IAssetConfig, amount?: number) {
   const { logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(token_id);
+  const { decimals } = (await getMetadata(token_id))!;
 
   const additionalOperations: Transaction[] = [];
 
@@ -23,10 +23,8 @@ export async function withdraw(token_id: string, amount?: number) {
     ],
   };
 
-  const deciamls = DECIMAL_OVERRIDES[token_id] || TOKEN_DECIMALS;
-
   if (amount) {
-    const expandedAmount = expandToken(amount, deciamls);
+    const expandedAmount = expandToken(amount, decimals + config.extra_decimals, 0);
     args.actions[0].Withdraw.amount = expandedAmount;
 
     if (token_id === "wrap.testnet") {
@@ -35,7 +33,7 @@ export async function withdraw(token_id: string, amount?: number) {
         functionCalls: [
           {
             methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-            args: { amount: expandToken(amount, deciamls) },
+            args: { amount: expandToken(amount, decimals + config.extra_decimals, 0) },
           },
         ],
       });

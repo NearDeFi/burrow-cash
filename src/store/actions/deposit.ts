@@ -14,7 +14,6 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
   const transactions: Transaction[] = [];
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS);
-
   transactions.push({
     receiverId: tokenContract.contractId,
     functionCalls: [

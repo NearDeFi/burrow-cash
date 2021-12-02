@@ -1,12 +1,11 @@
 import { getBurrow } from "../../utils";
-import { TOKEN_DECIMALS } from "../constants";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle } from "../../interfaces";
+import { ChangeMethodsOracle, IAssetConfig } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
 
-export async function removeCollateral(token_id: string, amount?: number) {
+export async function removeCollateral(token_id: string, config: IAssetConfig, amount?: number) {
   const { oracleContract, account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(token_id))!;
   const accountDetailed = await getAccountDetailed(account.accountId);
@@ -27,7 +26,7 @@ export async function removeCollateral(token_id: string, amount?: number) {
   if (amount) {
     decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
-      decimals || TOKEN_DECIMALS,
+      decimals + config.extra_decimals,
       0,
     );
   }
