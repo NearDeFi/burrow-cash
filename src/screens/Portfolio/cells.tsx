@@ -17,7 +17,6 @@ export const SupplyAPYCell = ({ rowData }: CellProps) => {
 };
 
 export const CollateralCell = ({ rowData }) => {
-  // console.log("CollateralCell", rowData);
   return (
     <Box>
       {rowData.collateral &&
@@ -27,7 +26,6 @@ export const CollateralCell = ({ rowData }) => {
 };
 
 export const SuppliedCell = ({ rowData }: CellProps) => {
-  // console.log("SuppliedCell", rowData);
   return (
     <Box>{rowData.balance && Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>
   );

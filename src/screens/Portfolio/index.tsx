@@ -14,8 +14,6 @@ const Portfolio = () => {
   const { assets, metadata, portfolio, balances } = useContext(ContractContext);
   const theme = useTheme();
 
-  // console.log("portfolio:", assets, balances);
-
   const totalSupplied = portfolio?.supplied
     .map(
       (supplied) =>

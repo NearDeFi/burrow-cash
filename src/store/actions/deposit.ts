@@ -22,13 +22,11 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
       ...(await registerNearFnCall(account.accountId, tokenContract)),
       {
         methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
-        gas: new BN(5_000_000_000),
+        gas: new BN("5000000000000"),
         attachedDeposit: expandedAmount,
       },
-      ...(await registerTokenFnCall(account.accountId, tokenContract)),
       {
         methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-        // gas: new BN(6_000_000_000),
         gas: new BN("100000000000000"),
         args: {
           receiver_id: logicContract.contractId,
@@ -45,7 +43,6 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
       functionCalls: [
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-          // gas: new BN(5_000_000_000),
           gas: new BN("100000000000000"),
           args: {
             actions: [
@@ -75,19 +72,6 @@ const registerNearFnCall = async (accountId: string, contract: Contract) =>
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
           attachedDeposit: expandToken(0.00125, NEAR_DECIMALS),
-          // gas: new BN(1_250_000),
-          gas: new BN("5000000000000"),
-        },
-      ]
-    : [];
-
-const registerTokenFnCall = async (accountId: string, contract: Contract) =>
-  !(await isRegistered(accountId, contract))
-    ? [
-        {
-          methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: expandToken(0.1, NEAR_DECIMALS),
-          // gas: new BN(1_000_000_000),
           gas: new BN("5000000000000"),
         },
       ]
