@@ -39,7 +39,7 @@ export const BorrowData: TokenActionsInput = {
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
+  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type, config } = input;
   const [amount, setAmount] = useState(0);
   const [useAsCollateral, setUseAsCollateral] = useState(false);
   const isAdjust = type === "Adjust";
@@ -101,7 +101,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               void withdraw(asset.token_id, amount === asset.amount ? undefined : amount);
               break;
             case "Repay":
-              void repay(asset.token_id, amount);
+              void repay(asset.token_id, amount, config);
               break;
             case "Adjust":
               if (amount < collateralBalance) {

@@ -1,6 +1,6 @@
 import { IPrice } from "./oracle";
 
-interface IAssetConfig {
+export interface IAssetConfig {
   reserve_ratio: number;
   target_utilization: number;
   target_utilization_rate: string;

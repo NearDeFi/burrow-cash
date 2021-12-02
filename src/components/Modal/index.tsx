@@ -46,6 +46,7 @@ const ModalContainer = ({ children }: { children: React.ReactElement }) => {
               }`}
               rates={modalData.rates}
               ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}
+              config={modalData.config}
             />
           )}
         </Box>

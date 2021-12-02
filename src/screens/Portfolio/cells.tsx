@@ -136,6 +136,7 @@ export const RepayCell = ({
         apy: Number(rowData.borrow_apr),
       },
       buttonText: "Repay",
+      config: rowData.config,
     });
     modal.handleOpen();
   };
