@@ -18,14 +18,14 @@ export async function supply(
       {
         IncreaseCollateral: {
           token_id,
-          amount: undefined as unknown as string,
+          max_amount: undefined as unknown as string,
         },
       },
     ],
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(
+    args.actions[0].IncreaseCollateral.max_amount = expandToken(
       amount,
       decimals + config.extra_decimals,
       0,
