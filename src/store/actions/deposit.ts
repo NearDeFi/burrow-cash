@@ -52,11 +52,16 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
         args: {
           receiver_id: logicContract.contractId,
           amount: expandedAmount,
-          msg: useAsCollateral ? JSON.stringify(collateralTemplate) : "",
+          // msg: useAsCollateral ? JSON.stringify(collateralTemplate) : "",
+          msg: "",
         },
       },
     ],
   });
+
+  if (useAsCollateral) {
+    transactions.push(collateralTemplate);
+  }
 
   try {
     await prepareAndExecuteTransactions(transactions);
