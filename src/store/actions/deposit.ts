@@ -15,7 +15,7 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
   const tokenContract: Contract = await getTokenContract(tokenId);
   const transactions: Transaction[] = [];
 
-  const expandedAmount = expandToken(amount, NEAR_DECIMALS);
+  const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
 
   const collateralTemplate = {
     receiverId: logicContract.contractId,

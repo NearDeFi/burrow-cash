@@ -17,13 +17,13 @@ export async function borrow(token_id: string, config: IAssetConfig, amount: num
         {
           Borrow: {
             token_id,
-            amount: expandToken(amount, decimals + config.extra_decimals),
+            amount: expandToken(amount, decimals + config.extra_decimals, 0),
           },
         },
         {
           Withdraw: {
             token_id,
-            max_amount: expandToken(amount, decimals + config.extra_decimals),
+            max_amount: expandToken(amount, decimals + config.extra_decimals, 0),
           },
         },
       ],
