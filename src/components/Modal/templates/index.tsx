@@ -98,7 +98,7 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
               if (asset.token_id === "wrap.testnet") {
                 void deposit(amount, useAsCollateral);
               } else {
-                void supply(asset.token_id, amount, useAsCollateral);
+                void supply(asset.token_id, config, amount, useAsCollateral);
               }
               break;
             case "Withdraw":

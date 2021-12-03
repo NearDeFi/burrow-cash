@@ -1,19 +1,19 @@
 import { getBurrow } from "../../utils";
-import { NEAR_DECIMALS } from "../constants";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
+import { ChangeMethodsLogic, ChangeMethodsToken, IAssetConfig } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
 
 export async function supply(
   token_id: string,
+  config: IAssetConfig,
   amount: number,
   useAsCollateral: boolean,
 ): Promise<void> {
   const { logicContract } = await getBurrow();
-
+  const { decimals } = (await getMetadata(token_id))!;
   const tokenContract = await getTokenContract(token_id);
-  const metadata = await getMetadata(token_id);
-  const expandedAmount = expandToken(amount, metadata?.decimals! || NEAR_DECIMALS);
+
+  const expandedAmount = expandToken(amount, decimals + config.extra_decimals, 0);
 
   const args = {
     actions: [
@@ -27,10 +27,7 @@ export async function supply(
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(
-      amount,
-      metadata?.decimals || NEAR_DECIMALS,
-    );
+    args.actions[0].IncreaseCollateral.amount = expandedAmount;
   }
 
   const addCollateralTx = {
