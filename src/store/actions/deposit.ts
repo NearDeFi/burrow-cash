@@ -16,6 +16,27 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
   const transactions: Transaction[] = [];
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS);
+
+  const collateralTemplate = {
+    receiverId: logicContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
+        gas: new BN("100000000000000"),
+        args: {
+          actions: [
+            {
+              IncreaseCollateral: {
+                token_id: tokenId,
+                max_amount: expandedAmount,
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+
   transactions.push({
     receiverId: tokenContract.contractId,
     functionCalls: [
@@ -31,33 +52,11 @@ export async function deposit(amount: number, useAsCollateral: boolean) {
         args: {
           receiver_id: logicContract.contractId,
           amount: expandedAmount,
-          msg: "",
+          msg: useAsCollateral ? JSON.stringify(collateralTemplate) : "",
         },
       },
     ],
   });
-
-  if (useAsCollateral) {
-    transactions.push({
-      receiverId: logicContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-          gas: new BN("100000000000000"),
-          args: {
-            actions: [
-              {
-                IncreaseCollateral: {
-                  token_id: tokenId,
-                  amount: expandedAmount,
-                },
-              },
-            ],
-          },
-        },
-      ],
-    });
-  }
 
   try {
     await prepareAndExecuteTransactions(transactions);
