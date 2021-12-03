@@ -13,8 +13,6 @@ export async function supply(
   const { decimals } = (await getMetadata(token_id))!;
   const tokenContract = await getTokenContract(token_id);
 
-  const expandedAmount = expandToken(amount, decimals + config.extra_decimals, 0);
-
   const args = {
     actions: [
       {
@@ -27,7 +25,11 @@ export async function supply(
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandedAmount;
+    args.actions[0].IncreaseCollateral.amount = expandToken(
+      amount,
+      decimals + config.extra_decimals,
+      0,
+    );
   }
 
   const addCollateralTx = {
@@ -46,7 +48,7 @@ export async function supply(
       methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
       args: {
         receiver_id: logicContract.contractId,
-        amount: expandedAmount,
+        amount: expandToken(amount, decimals, 0),
         msg: "",
       },
     },
