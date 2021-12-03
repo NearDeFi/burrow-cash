@@ -13,7 +13,7 @@ interface CellProps {
 export { TokenCell };
 
 export const SupplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{rowData.apr && <>{Number(rowData.apr).toFixed(PERCENT_DIGITS)}%</>}</Box>;
+  return <Box>{rowData.apr && <>{(Number(rowData.apr) * 100).toFixed(PERCENT_DIGITS)}%</>}</Box>;
 };
 
 export const CollateralCell = ({ rowData }) => {
@@ -102,11 +102,11 @@ export const AdjustCell = ({ rowData }) => {
 };
 
 export const BorrowSuppplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%</Box>;
+  return <Box>{(Number(rowData.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
 export const BorrowAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%</Box>;
+  return <Box>{(Number(rowData.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
 export const BorrowedCell = ({ rowData }: CellProps) => {

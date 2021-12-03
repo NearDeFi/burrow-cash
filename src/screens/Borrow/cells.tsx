@@ -12,7 +12,7 @@ interface CellProps {
 export { TokenCell };
 
 export const APYCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%</Box>;
+  return <Box>{(Number(rowData.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
 export const LiquidityCell = ({ rowData }: CellProps) => {

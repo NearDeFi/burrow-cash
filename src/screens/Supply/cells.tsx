@@ -16,7 +16,7 @@ export const BoostCell = () => {
 };
 
 export const APYCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%</Box>;
+  return <Box>{(Number(rowData.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
 };
 
 export const TotalSupplyCell = ({ rowData }: CellProps) => {

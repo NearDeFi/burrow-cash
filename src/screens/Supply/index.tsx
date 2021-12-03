@@ -75,7 +75,7 @@ const Supply = () => {
       rates: [
         {
           title: "Deposit APY",
-          value: `${Number(rowData.supply_apr).toFixed(PERCENT_DIGITS)}%`,
+          value: `${(Number(rowData.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
         },
         {
           title: "Extra Reward APY",

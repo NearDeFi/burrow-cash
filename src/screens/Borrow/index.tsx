@@ -76,7 +76,7 @@ const Borrow = () => {
       rates: [
         {
           title: "Borrow APY",
-          value: `${Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%`,
+          value: `${(Number(rowData.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
         },
         {
           title: "Extra Rewards APY",
