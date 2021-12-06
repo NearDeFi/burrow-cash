@@ -8,12 +8,14 @@ export async function repay(token_id: string, config: IAssetConfig, amount: numb
   const tokenContract = await getTokenContract(token_id);
   const { decimals } = (await getMetadata(token_id))!;
 
+  const repayAmount = Number(amount) + (Number(amount) * 0.1) / 100;
+
   const msg = {
     Execute: {
       actions: [
         {
           Repay: {
-            max_amount: expandToken(amount, decimals + config.extra_decimals, 0),
+            max_amount: expandToken(repayAmount, decimals + config.extra_decimals, 0),
             token_id,
           },
         },
