@@ -2,6 +2,7 @@ import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
 export const Wrapper = styled("div")(({ theme }) => ({
+  position: "relative",
   display: "grid",
   alignItems: "center",
   color: theme.palette.secondary.main,
@@ -11,7 +12,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
     gap: "1rem",
-    position: "fixed",
+    // position: "fixed",
     bottom: 0,
     left: 0,
     right: 0,
@@ -27,6 +28,8 @@ export const CopyWrapper = styled("div")(({ theme }) => ({
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     justifyContent: "space-around",
+    gridRow: 2,
+    marginBottom: theme.spacing(3),
   },
   [theme.breakpoints.up("sm")]: {
     margin: theme.spacing(2),
@@ -54,11 +57,13 @@ export const LinksWrapper = styled("div")(({ theme }) => ({
   fontSize: "12px",
   display: "flex",
   gap: "1rem",
+  alignItems: "center",
   [theme.breakpoints.down("sm")]: {
-    gridRow: 2,
+    // gridRow: 1,
     fontWeight: 500,
     justifyContent: "center",
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
   },
   [theme.breakpoints.up("sm")]: {
     justifySelf: "end",
