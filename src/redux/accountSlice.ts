@@ -1,4 +1,7 @@
+import { omit } from "ramda";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+import { IAccountDetailed } from "../interfaces";
 
 interface Balance {
   [tokenId: string]: string;
@@ -32,18 +35,40 @@ const initialState: AccountState = {
   balances: undefined,
 };
 
+const listToMap = (list) =>
+  list
+    .map((asset) => ({ [asset.token_id]: omit(["token_id"], asset) }))
+    .reduce((a, b) => ({ ...a, ...b }), {});
+
 export const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
     receivedAccount(
       state,
-      action: PayloadAction<{ accountId: string; balances: Balance; portfolio: Portfolio }>,
+      action: PayloadAction<{
+        accountId: string;
+        accountBalance: string;
+        balances: string[];
+        portfolio: IAccountDetailed;
+        tokenIds: string[];
+      }>,
     ) {
-      const { accountId, balances, portfolio } = action.payload;
+      const { accountId, accountBalance, balances, portfolio, tokenIds } = action.payload;
+
       state.accountId = accountId;
-      state.balances = balances;
-      state.portfolio = portfolio;
+      state.balances = {
+        ...balances.map((b, i) => ({ [tokenIds[i]]: b })).reduce((a, b) => ({ ...a, ...b }), {}),
+        near: accountBalance,
+      };
+
+      const { supplied, borrowed, collateral } = portfolio;
+
+      state.portfolio = {
+        supplied: listToMap(supplied),
+        borrowed: listToMap(borrowed),
+        collateral: listToMap(collateral),
+      };
     },
   },
 });
