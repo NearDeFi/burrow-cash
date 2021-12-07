@@ -1,6 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
+import { sumReducer, shrinkToken, USD_FORMAT } from "../store";
 import { IAssetDetailed, IMetadata } from "../interfaces";
+import type { RootState } from "./store";
 
 export interface AssetsState {
   [id: string]: IAssetDetailed & {
@@ -28,6 +30,23 @@ export const assetSlice = createSlice({
     },
   },
 });
+
+export const getTotalSupplyBalance = createSelector(
+  (state: RootState) => state.assets,
+  (assets) =>
+    Object.keys(assets)
+      .map((tokenId) => {
+        const asset = assets[tokenId];
+        const { balance } = asset.supplied;
+
+        return asset.price?.usd
+          ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+              asset.price.usd
+          : 0;
+      })
+      .reduce(sumReducer, 0)
+      .toLocaleString(undefined, USD_FORMAT),
+);
 
 export const { receivedAssets } = assetSlice.actions;
 export default assetSlice.reducer;

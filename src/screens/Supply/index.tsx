@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
 import { PERCENT_DIGITS, USD_FORMAT, NEAR_DECIMALS } from "../../store/constants";
-import { sumReducer, toUsd, shrinkToken } from "../../store";
+import { sumReducer, shrinkToken } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
@@ -11,11 +11,15 @@ import { InfoBox, PageTitle } from "../../components";
 import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
+import { useAppSelector } from "../../redux/hooks";
+import { getTotalSupplyBalance } from "../../redux/assetsSlice";
 
 const Supply = () => {
   const { walletConnection } = useContext<IBurrow>(Burrow);
   const { assets, metadata, balances, portfolio, accountBalance } = useContext(ContractContext);
   const modal: ModalState = useContext(ModalContext);
+
+  const totalSupplyBalance = useAppSelector(getTotalSupplyBalance);
 
   const yourSupplyBalance = portfolio?.supplied
     .map(
@@ -23,16 +27,6 @@ const Supply = () => {
         Number(supplied.balance) *
         (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
     )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
-
-  const totalSupply = assets
-    .map((asset) => {
-      return toUsd(asset.supplied.balance, {
-        ...asset,
-        ...metadata.find((m) => m.token_id === asset.token_id)!,
-      });
-    })
     .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
@@ -110,7 +104,7 @@ const Supply = () => {
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
       {assets.length > 0 && (
         <InfoWrapper>
-          <InfoBox title="Total Supply" value={totalSupply} />
+          <InfoBox title="Total Supply" value={totalSupplyBalance} />
         </InfoWrapper>
       )}
     </Box>
