@@ -5,20 +5,16 @@ import { colors } from "../../style";
 import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
-import { ContractContext } from "../../context/contracts";
-import { PERCENT_DIGITS, NEAR_DECIMALS } from "../../store/constants";
-import { shrinkToken } from "../../store";
+import { useAppSelector } from "../../redux/hooks";
+import { getAccountBalance } from "../../redux/accountSlice";
 
 const WalletButton = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { walletConnection, account } = useContext<IBurrow>(Burrow);
-  const { accountBalance } = useContext(ContractContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const balance = accountBalance
-    ? shrinkToken(accountBalance, NEAR_DECIMALS, PERCENT_DIGITS)
-    : "...";
+  const balance = useAppSelector(getAccountBalance);
 
   const onWalletButtonClick = (event) => {
     if (!walletConnection?.isSignedIn()) {

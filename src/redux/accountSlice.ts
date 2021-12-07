@@ -1,7 +1,9 @@
 import { omit } from "ramda";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
+import { PERCENT_DIGITS, NEAR_DECIMALS, shrinkToken } from "../store";
 import { IAccountDetailed } from "../interfaces";
+import type { RootState } from "./store";
 
 interface Balance {
   [tokenId: string]: string;
@@ -72,6 +74,13 @@ export const accountSlice = createSlice({
     },
   },
 });
+
+export const getAccountBalance = createSelector(
+  (state: RootState) => state.account.balances,
+  (balances) => {
+    return balances?.near ? shrinkToken(balances?.near, NEAR_DECIMALS, PERCENT_DIGITS) : "...";
+  },
+);
 
 export const { receivedAccount } = accountSlice.actions;
 export default accountSlice.reducer;
