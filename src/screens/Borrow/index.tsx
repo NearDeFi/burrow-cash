@@ -3,13 +3,7 @@ import { Box } from "@mui/material";
 
 import { USD_FORMAT, PERCENT_DIGITS } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
-import {
-  toUsd,
-  getAvailableAmount,
-  computeHealthFactor,
-  sumReducer,
-  getMaxBorrowAmount,
-} from "../../store";
+import { toUsd, getAvailableAmount, computeHealthFactor, getMaxBorrowAmount } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 
@@ -20,6 +14,7 @@ import { ModalContext, ModalState } from "../../components/Modal";
 import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBalance } from "../../redux/assetsSlice";
+import { getTotalAccountBalance } from "../../redux/accountSlice";
 
 const Borrow = () => {
   const { walletConnection } = useContext<IBurrow>(Burrow);
@@ -27,15 +22,7 @@ const Borrow = () => {
   const modal: ModalState = useContext(ModalContext);
 
   const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
-
-  const yourBorrowBalance = portfolio?.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
+  const yourBorrowBalance = useAppSelector(getTotalAccountBalance("borrowed"));
 
   const columns = walletConnection?.isSignedIn()
     ? [...defaultColumns, amountBorrowedColumn(portfolio)]

@@ -53,6 +53,7 @@
     "@svgr/parcel-plugin-svgr": "^5.5.0",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.9",
+    "@types/ramda": "^0.27.59",
     "@types/react": "^17.0.35",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.20",

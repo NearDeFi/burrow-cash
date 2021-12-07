@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { Box } from "@mui/material";
 
 import { ContractContext } from "../../context/contracts";
-import { PERCENT_DIGITS, USD_FORMAT, NEAR_DECIMALS } from "../../store/constants";
-import { sumReducer, shrinkToken } from "../../store";
+import { PERCENT_DIGITS, NEAR_DECIMALS } from "../../store/constants";
+import { shrinkToken } from "../../store";
 import { Burrow } from "../../index";
 import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
@@ -13,6 +13,7 @@ import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBalance } from "../../redux/assetsSlice";
+import { getTotalAccountBalance } from "../../redux/accountSlice";
 
 const Supply = () => {
   const { walletConnection } = useContext<IBurrow>(Burrow);
@@ -20,15 +21,7 @@ const Supply = () => {
   const modal: ModalState = useContext(ModalContext);
 
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
-
-  const yourSupplyBalance = portfolio?.supplied
-    .map(
-      (supplied) =>
-        Number(supplied.balance) *
-        (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
+  const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
 
   const rows = assets
     .filter((asset) => asset.config.can_deposit)

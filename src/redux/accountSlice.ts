@@ -1,7 +1,7 @@
 import { omit } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { PERCENT_DIGITS, NEAR_DECIMALS, shrinkToken } from "../store";
+import { sumReducer, shrinkToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
 
@@ -27,14 +27,19 @@ interface Portfolio {
   };
 }
 export interface AccountState {
-  accountId?: string;
-  balances?: Balance;
-  portfolio?: Portfolio;
+  accountId: string;
+  balances: Balance;
+  portfolio: Portfolio;
 }
 
 const initialState: AccountState = {
-  accountId: undefined,
-  balances: undefined,
+  accountId: "",
+  balances: {},
+  portfolio: {
+    supplied: {},
+    collateral: {},
+    borrowed: {},
+  },
 };
 
 const listToMap = (list) =>
@@ -81,6 +86,26 @@ export const getAccountBalance = createSelector(
     return balances?.near ? shrinkToken(balances?.near, NEAR_DECIMALS, PERCENT_DIGITS) : "...";
   },
 );
+
+export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      const tokens = account.portfolio[source];
+      return Object.keys(tokens)
+        .map((tokenId) => {
+          const { price, metadata, config } = assets[tokenId];
+          return price?.usd
+            ? Number(
+                shrinkToken(tokens[tokenId].balance, metadata.decimals + config.extra_decimals),
+              ) * price.usd
+            : 0;
+        })
+        .reduce(sumReducer, 0)
+        .toLocaleString(undefined, USD_FORMAT);
+    },
+  );
 
 export const { receivedAccount } = accountSlice.actions;
 export default accountSlice.reducer;

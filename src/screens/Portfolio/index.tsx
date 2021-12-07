@@ -1,36 +1,21 @@
 import { useContext } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 
-import { USD_FORMAT } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox } from "../../components";
 
 import Table from "../../components/Table";
 import { suppliedColumns, borrowColumns } from "./tabledata";
-import { sumReducer } from "../../store";
+import { useAppSelector } from "../../redux/hooks";
+import { getTotalAccountBalance } from "../../redux/accountSlice";
 
 const Portfolio = () => {
   const { assets, metadata, portfolio, balances } = useContext(ContractContext);
   const theme = useTheme();
 
-  const totalSupplied = portfolio?.supplied
-    .map(
-      (supplied) =>
-        Number(supplied.balance) *
-        (assets.find((a) => a.token_id === supplied.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
-
-  const totalBorrowed = portfolio?.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
+  const totalSuppliedBalance = useAppSelector(getTotalAccountBalance("supplied"));
+  const totalBorroedBalance = useAppSelector(getTotalAccountBalance("borrowed"));
 
   const suppliedRows = assets
     .filter(
@@ -57,9 +42,9 @@ const Portfolio = () => {
   return (
     <Box sx={{ paddingBottom: 10 }}>
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Supplied" value={totalSupplied} />
+        <InfoBox title="Total Supplied" value={totalSuppliedBalance} />
         {false && <InfoBox title="Net APR" value="0.00" />}
-        <InfoBox title="Total Borrowed" value={totalBorrowed} />
+        <InfoBox title="Total Borrowed" value={totalBorroedBalance} />
       </InfoWrapper>
 
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
