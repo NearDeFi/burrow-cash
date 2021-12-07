@@ -9,10 +9,13 @@ import { Borrow, Portfolio, Supply, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import {
   getAssetsDetailed,
-  // getBalances, getPortfolio, getAllMetadata, getAccount
+  getBalances,
+  getAllMetadata,
+  // getPortfolio, getAccount
 } from "./store";
 import { useAppDispatch } from "./redux/hooks";
 import { receivedAssets } from "./redux/assetsSlice";
+import { receivedBalances } from "./redux/balancesSlice";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -23,10 +26,21 @@ Sentry.init({
 
 const App = () => {
   const dispatch = useAppDispatch();
+
+  const fetchData = async () => {
+    const assets = await getAssetsDetailed();
+
+    const [metadata, balances] = await Promise.all([
+      getAllMetadata(assets.map((asset) => asset.token_id)),
+      getBalances(assets.map((asset) => asset.token_id)),
+    ]);
+
+    dispatch(receivedAssets({ assets, metadata }));
+    dispatch(receivedBalances(balances));
+  };
+
   useEffect(() => {
-    getAssetsDetailed().then((a) => {
-      dispatch(receivedAssets(a));
-    });
+    fetchData();
   }, []);
   return (
     <BrowserRouter>

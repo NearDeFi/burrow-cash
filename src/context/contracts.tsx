@@ -52,6 +52,8 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
         setAccount(acc);
         setAccountBalance((await acc.getAccountBalance()).available);
       }
+
+      // console.info(a, m, b);
     })();
   }, []);
 
