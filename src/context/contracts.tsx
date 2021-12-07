@@ -50,10 +50,12 @@ export const ContractContextProvider = ({ children }: { children: ReactElement }
       const acc = await getAccount();
       if (acc.accountId) {
         setAccount(acc);
-        setAccountBalance((await acc.getAccountBalance()).available);
+        const acb = (await acc.getAccountBalance()).available;
+        setAccountBalance(acb);
+        // console.info(p);
+        // console.info(acc);
+        // console.info(acb);
       }
-
-      // console.info(a, m, b);
     })();
   }, []);
 

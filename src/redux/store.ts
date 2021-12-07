@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import assetsReducer from "./assetsSlice";
-import balancesReducer from "./balancesSlice";
+import accountReducer from "./accountSlice";
 
 export const store = configureStore({
   reducer: {
     assets: assetsReducer,
-    balances: balancesReducer,
+    account: accountReducer,
   },
 });
 
