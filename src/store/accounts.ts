@@ -34,6 +34,7 @@ export const getAccountDetailed = async (account_id: string): Promise<IAccountDe
     },
   )) as IAccountDetailed;
 
+  console.log(accountDetailed);
   return accountDetailed;
 };
 
