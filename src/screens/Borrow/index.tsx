@@ -18,11 +18,15 @@ import { InfoBox, PageTitle } from "../../components";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
+import { useAppSelector } from "../../redux/hooks";
+import { getTotalBalance } from "../../redux/assetsSlice";
 
 const Borrow = () => {
   const { walletConnection } = useContext<IBurrow>(Burrow);
   const { assets, metadata, portfolio } = useContext(ContractContext);
   const modal: ModalState = useContext(ModalContext);
+
+  const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
 
   const yourBorrowBalance = portfolio?.borrowed
     .map(
@@ -30,16 +34,6 @@ const Borrow = () => {
         Number(borrowed.balance) *
         (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
     )
-    .reduce(sumReducer, 0)
-    .toLocaleString(undefined, USD_FORMAT);
-
-  const totalBorrow = assets
-    .map((asset) => {
-      return toUsd(asset.borrowed.balance, {
-        ...asset,
-        ...metadata.find((m) => m.token_id === asset.token_id)!,
-      });
-    })
     .reduce(sumReducer, 0)
     .toLocaleString(undefined, USD_FORMAT);
 
@@ -120,7 +114,7 @@ const Borrow = () => {
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
       <InfoWrapper>
-        <InfoBox title="Total Borrow" value={totalBorrow} />
+        <InfoBox title="Total Borrow" value={totalBorrowBalance} />
       </InfoWrapper>
     </Box>
   );

@@ -31,22 +31,23 @@ export const assetSlice = createSlice({
   },
 });
 
-export const getTotalSupplyBalance = createSelector(
-  (state: RootState) => state.assets,
-  (assets) =>
-    Object.keys(assets)
-      .map((tokenId) => {
-        const asset = assets[tokenId];
-        const { balance } = asset.supplied;
+export const getTotalBalance = (source: "borrowed" | "supplied") =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (assets) =>
+      Object.keys(assets)
+        .map((tokenId) => {
+          const asset = assets[tokenId];
+          const { balance } = asset[source];
 
-        return asset.price?.usd
-          ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-              asset.price.usd
-          : 0;
-      })
-      .reduce(sumReducer, 0)
-      .toLocaleString(undefined, USD_FORMAT),
-);
+          return asset.price?.usd
+            ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+                asset.price.usd
+            : 0;
+        })
+        .reduce(sumReducer, 0)
+        .toLocaleString(undefined, USD_FORMAT),
+  );
 
 export const { receivedAssets } = assetSlice.actions;
 export default assetSlice.reducer;

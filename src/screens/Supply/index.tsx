@@ -12,14 +12,14 @@ import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalSupplyBalance } from "../../redux/assetsSlice";
+import { getTotalBalance } from "../../redux/assetsSlice";
 
 const Supply = () => {
   const { walletConnection } = useContext<IBurrow>(Burrow);
   const { assets, metadata, balances, portfolio, accountBalance } = useContext(ContractContext);
   const modal: ModalState = useContext(ModalContext);
 
-  const totalSupplyBalance = useAppSelector(getTotalSupplyBalance);
+  const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
 
   const yourSupplyBalance = portfolio?.supplied
     .map(
