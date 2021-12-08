@@ -4,8 +4,9 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { sumReducer, shrinkToken, USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../store";
 import { IAssetDetailed, IMetadata } from "../interfaces";
 import type { RootState } from "./store";
+import { toUsd } from "./utils";
 
-type Asset = IAssetDetailed & {
+export type Asset = IAssetDetailed & {
   metadata: IMetadata;
 };
 export interface AssetsState {
@@ -32,12 +33,6 @@ export const assetSlice = createSlice({
     },
   },
 });
-
-const toUsd = (balance: string, asset: Asset) =>
-  asset.price?.usd
-    ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-      asset.price.usd
-    : 0;
 
 export const getTotalBalance = (source: "borrowed" | "supplied") =>
   createSelector(

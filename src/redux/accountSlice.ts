@@ -1,9 +1,17 @@
 import { omit } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { sumReducer, shrinkToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
+import {
+  sumReducer,
+  shrinkToken,
+  USD_FORMAT,
+  PERCENT_DIGITS,
+  NEAR_DECIMALS,
+  TOKEN_FORMAT,
+} from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
+import { emptyAsset } from "./utils";
 
 interface Balance {
   [tokenId: string]: string;
@@ -111,6 +119,56 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
         .toLocaleString(undefined, USD_FORMAT);
     },
   );
+
+export const getPortfolioAssets = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    const portfolioAssets = {
+      ...account.portfolio.supplied,
+      ...account.portfolio.collateral,
+    };
+    const supplied = Object.keys(portfolioAssets)
+      .map((tokenId) => {
+        const asset = assets[tokenId];
+        const collateral = shrinkToken(
+          account.portfolio.collateral[tokenId].balance,
+          asset.metadata.decimals + asset.config.extra_decimals,
+        );
+        const suppliedBalance = account.portfolio.supplied[tokenId]?.balance || 0;
+        return {
+          symbol: asset.metadata.symbol,
+          icon: asset.metadata.icon,
+          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
+          apy: `${(Number(portfolioAssets[tokenId].apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+          collateral: Number(collateral).toLocaleString(undefined, TOKEN_FORMAT),
+          supplied: Number(
+            shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+          ).toLocaleString(undefined, TOKEN_FORMAT),
+          canUseAsCollateral: asset.config.can_use_as_collateral,
+        };
+      })
+      .filter(emptyAsset);
+
+    const borrowed = Object.keys(account.portfolio.borrowed).map((tokenId) => {
+      const asset = assets[tokenId];
+
+      const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
+
+      return {
+        symbol: asset.metadata.symbol,
+        icon: asset.metadata.icon,
+        price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
+        supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+        borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+        borrowed: Number(
+          shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+        ).toLocaleString(undefined, TOKEN_FORMAT),
+      };
+    });
+    return [supplied, borrowed];
+  },
+);
 
 export const { receivedAccount } = accountSlice.actions;
 export default accountSlice.reducer;

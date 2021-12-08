@@ -1,15 +1,5 @@
-import {
-  TokenCell,
-  SupplyAPYCell,
-  CollateralCell,
-  SuppliedCell,
-  WithdrawCell,
-  BorrowSuppplyAPYCell,
-  BorrowAPYCell,
-  BorrowedCell,
-  RepayCell,
-  AdjustCell,
-} from "./cells";
+import { TokenCell, Cell } from "../../components/Table/common/cells";
+import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 
 export const suppliedColumns = [
   {
@@ -21,19 +11,19 @@ export const suppliedColumns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: SupplyAPYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.apy} />,
   },
   {
     label: "Collateral",
     dataKey: "collateralSum",
     align: "right",
-    Cell: CollateralCell,
+    Cell: ({ rowData }) => <Cell value={rowData.collateral} />,
   },
   {
     label: "Supplied",
     dataKey: "balance",
     align: "right",
-    Cell: SuppliedCell,
+    Cell: ({ rowData }) => <Cell value={rowData.supplied} />,
   },
   {
     dataKey: "withdraw",
@@ -47,7 +37,7 @@ export const suppliedColumns = [
   },
 ];
 
-export const borrowColumns = [
+export const borrowedColumns = [
   {
     label: "Name",
     dataKey: "name",
@@ -57,19 +47,19 @@ export const borrowColumns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: BorrowSuppplyAPYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.supplyApy} />,
   },
   {
     label: "Borrow APY",
     dataKey: "borrowAPY",
     align: "right",
-    Cell: BorrowAPYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} />,
   },
   {
     label: "Borrowed",
     dataKey: "shares",
     align: "right",
-    Cell: BorrowedCell,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowed} />,
   },
   {
     dataKey: "repay",

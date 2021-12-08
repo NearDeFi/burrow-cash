@@ -1,38 +1,11 @@
 import { useContext } from "react";
 import { Box, Button } from "@mui/material";
 
-import { PERCENT_DIGITS, TOKEN_FORMAT } from "../../store/constants";
 import { IAssetDetailed, IMetadata, IAsset, IBalance } from "../../interfaces";
-import { TokenCell } from "../../components/Table/common/cells";
 import { ModalContext, ModalState } from "../../components/Modal";
 
-interface CellProps {
-  rowData: IAsset & IAssetDetailed;
-}
-
-export { TokenCell };
-
-export const SupplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{rowData.apr && <>{(Number(rowData.apr) * 100).toFixed(PERCENT_DIGITS)}%</>}</Box>;
-};
-
-export const CollateralCell = ({ rowData }) => {
-  return (
-    <Box>
-      {rowData.collateral &&
-        Number(rowData.collateral.balance).toLocaleString(undefined, TOKEN_FORMAT)}
-    </Box>
-  );
-};
-
-export const SuppliedCell = ({ rowData }: CellProps) => {
-  return (
-    <Box>{rowData.balance && Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>
-  );
-};
-
 export const WithdrawCell = ({ rowData }) => {
-  if (!rowData.balance) return false;
+  if (!rowData.supplied) return false;
 
   const modal: ModalState = useContext(ModalContext);
 
@@ -67,7 +40,7 @@ export const WithdrawCell = ({ rowData }) => {
 };
 
 export const AdjustCell = ({ rowData }) => {
-  if (!rowData.config.can_use_as_collateral) return false;
+  if (!rowData.canUseAsCollateral) return false;
 
   const modal: ModalState = useContext(ModalContext);
   const handleClick = () => {
@@ -99,18 +72,6 @@ export const AdjustCell = ({ rowData }) => {
       </Button>
     </Box>
   );
-};
-
-export const BorrowSuppplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{(Number(rowData.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
-};
-
-export const BorrowAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{(Number(rowData.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
-};
-
-export const BorrowedCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
 };
 
 export const RepayCell = ({
