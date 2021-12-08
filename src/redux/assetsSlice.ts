@@ -49,35 +49,49 @@ export const getTotalBalance = (source: "borrowed" | "supplied") =>
         .toLocaleString(undefined, USD_FORMAT),
   );
 
-export const getAvailableSupplyAssets = createSelector(
-  (state: RootState) => state.assets,
-  (state: RootState) => state.account,
-  (assets, account) => {
-    const availableAssets = Object.keys(assets)
-      .filter((tokenId) => assets[tokenId].config.can_deposit)
-      .map((tokenId) => {
-        const asset = assets[tokenId];
-        const totalSupply = new Decimal(asset.supplied.balance)
-          .plus(new Decimal(asset.reserved))
-          .toFixed();
-        const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
+export const getAvailableAssets = (source: "supply" | "borrow") =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      const filterKey = source === "supply" ? "can_deposit" : "can_borrow";
+      const availableAssets = Object.keys(assets)
+        .filter((tokenId) => assets[tokenId].config[filterKey])
+        .map((tokenId) => {
+          const asset = assets[tokenId];
+          const totalSupply = new Decimal(asset.supplied.balance)
+            .plus(new Decimal(asset.reserved))
+            .toFixed();
+          const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
 
-        return {
-          symbol: asset.metadata.symbol,
-          icon: asset.metadata.icon,
-          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          apy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
-          totalSupply: toUsd(totalSupply, asset).toLocaleString(undefined, USD_FORMAT),
-          supplied:
-            supplied &&
-            Number(
+          // TODO: refactor: remove temp vars using ramda
+          const temp1 = new Decimal(asset.supplied.balance)
+            .plus(new Decimal(asset.reserved))
+            .minus(new Decimal(asset.borrowed.balance));
+          const temp2 = temp1.minus(temp1.mul(0.001)).toFixed(0);
+          const availableLiquidity = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
+          const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
+
+          return {
+            symbol: asset.metadata.symbol,
+            icon: asset.metadata.icon,
+            price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
+            supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+            totalSupply: toUsd(totalSupply, asset).toLocaleString(undefined, USD_FORMAT),
+            supplied: Number(
               shrinkToken(supplied, asset.metadata.decimals + asset.config.extra_decimals),
             ).toLocaleString(undefined, TOKEN_FORMAT),
-        };
-      });
-    return availableAssets;
-  },
-);
+            borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+            availableLiquidity,
+            collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
+            borrowed: Number(
+              shrinkToken(borrowed, asset.metadata.decimals + asset.config.extra_decimals),
+            ).toLocaleString(undefined, TOKEN_FORMAT),
+          };
+        });
+      return availableAssets;
+    },
+  );
 
 export const { receivedAssets } = assetSlice.actions;
 export default assetSlice.reducer;

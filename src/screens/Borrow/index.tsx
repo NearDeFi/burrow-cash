@@ -4,36 +4,29 @@ import { Box } from "@mui/material";
 import { USD_FORMAT, PERCENT_DIGITS } from "../../store/constants";
 import { ContractContext } from "../../context/contracts";
 import { toUsd, getAvailableAmount, computeHealthFactor, getMaxBorrowAmount } from "../../store";
-import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
-import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
+import { columns as defaultColumns } from "./tabledata";
+
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalBalance } from "../../redux/assetsSlice";
-import { getTotalAccountBalance } from "../../redux/accountSlice";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
+import { getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
 
 const Borrow = () => {
-  const { walletConnection } = useContext<IBurrow>(Burrow);
-  const { assets, metadata, portfolio } = useContext(ContractContext);
+  const { assets, portfolio } = useContext(ContractContext);
   const modal: ModalState = useContext(ModalContext);
 
   const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
   const yourBorrowBalance = useAppSelector(getTotalAccountBalance("borrowed"));
+  const accountId = useAppSelector(getAccountId);
+  const rows = useAppSelector(getAvailableAssets("borrow"));
 
-  const columns = walletConnection?.isSignedIn()
-    ? [...defaultColumns, amountBorrowedColumn(portfolio)]
+  const columns = !accountId
+    ? [...defaultColumns.filter((col) => col.dataKey !== "borrowed")]
     : defaultColumns;
-
-  const rows = assets
-    .filter((asset) => asset.config.can_borrow)
-    .map((asset) => ({
-      ...asset,
-      ...metadata.find((m) => m.token_id === asset.token_id),
-    }));
 
   const handleOnRowClick = (rowData) => {
     const maxBorrowAmount = getMaxBorrowAmount(rowData.token_id, assets, portfolio);
@@ -87,11 +80,11 @@ const Borrow = () => {
   return (
     <Box sx={{ paddingBottom: 10 }}>
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        {walletConnection?.isSignedIn() && (
+        {accountId && (
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
         {false && <InfoBox title="Borrow Limit" value="0%" />}
-        {walletConnection?.isSignedIn() && !!portfolio && (
+        {accountId && !!portfolio && (
           <InfoBox
             title="Health Factor"
             value={`${computeHealthFactor(assets, portfolio!).toFixed(2)}%`}

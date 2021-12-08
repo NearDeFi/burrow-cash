@@ -11,7 +11,7 @@ export const columns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.apy} />,
+    Cell: ({ rowData }) => <Cell value={rowData.supplyApy} />,
   },
   {
     label: "Total Supply",

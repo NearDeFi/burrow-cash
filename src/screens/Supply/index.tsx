@@ -11,7 +11,7 @@ import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
 
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalBalance, getAvailableSupplyAssets } from "../../redux/assetsSlice";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
 import { getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
 
 const Supply = () => {
@@ -21,7 +21,7 @@ const Supply = () => {
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableSupplyAssets);
+  const rows = useAppSelector(getAvailableAssets("supply"));
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => col.dataKey !== "supplied")]
