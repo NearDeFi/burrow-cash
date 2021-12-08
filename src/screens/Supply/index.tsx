@@ -4,34 +4,27 @@ import { Box } from "@mui/material";
 import { ContractContext } from "../../context/contracts";
 import { PERCENT_DIGITS, NEAR_DECIMALS } from "../../store/constants";
 import { shrinkToken } from "../../store";
-import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
-import { columns as defaultColumns, amountSuppliedColumn } from "./tabledata";
+import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { ModalContext, ModalState } from "../../components/Modal";
+
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalBalance } from "../../redux/assetsSlice";
-import { getTotalAccountBalance } from "../../redux/accountSlice";
+import { getTotalBalance, getAvailableSupplyAssets } from "../../redux/assetsSlice";
+import { getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
 
 const Supply = () => {
-  const { walletConnection } = useContext<IBurrow>(Burrow);
-  const { assets, metadata, balances, portfolio, accountBalance } = useContext(ContractContext);
+  const { assets, balances, accountBalance } = useContext(ContractContext);
   const modal: ModalState = useContext(ModalContext);
 
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
+  const accountId = useAppSelector(getAccountId);
+  const rows = useAppSelector(getAvailableSupplyAssets);
 
-  const rows = assets
-    .filter((asset) => asset.config.can_deposit)
-    .map((a) => ({
-      ...a,
-      ...metadata.find((m) => m.token_id === a.token_id),
-    }));
-
-  const columns = walletConnection?.isSignedIn()
-    ? [...defaultColumns, amountSuppliedColumn(portfolio)]
+  const columns = !accountId
+    ? [...defaultColumns.filter((col) => col.dataKey !== "supplied")]
     : defaultColumns;
 
   const balance = accountBalance
@@ -88,7 +81,7 @@ const Supply = () => {
   return (
     <Box>
       <InfoWrapper>
-        {walletConnection?.isSignedIn() && (
+        {accountId && (
           <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
         )}
         {false && <InfoBox title="Net APY" value="0%" />}

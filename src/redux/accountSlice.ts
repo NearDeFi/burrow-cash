@@ -80,6 +80,11 @@ export const accountSlice = createSlice({
   },
 });
 
+export const getAccountId = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.accountId,
+);
+
 export const getAccountBalance = createSelector(
   (state: RootState) => state.account.balances,
   (balances) => {

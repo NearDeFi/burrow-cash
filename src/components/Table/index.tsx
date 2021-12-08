@@ -38,7 +38,7 @@ function Table({ rows, columns, onRowClick }: TableProps) {
         <TableBody>
           {rows.map((rowData) => (
             <TableRow
-              key={rowData.token_id}
+              key={rowData.symbol}
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
                 cursor: onRowClick && "pointer",
