@@ -1,21 +1,28 @@
-import { useState } from "react";
 import { Modal as MUIModal, Typography, Box, Switch, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+import { USD_FORMAT, PERCENT_DIGITS } from "../../store";
 import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getModalStatus, getAssetData, hideModal } from "../../redux/appSlice";
+import {
+  getModalStatus,
+  getAssetData,
+  hideModal,
+  updateAmount,
+  toggleUseAsCollateral,
+  getSelectedValues,
+} from "../../redux/appSlice";
 import { getMaxBorrowAmount, getAccountId } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 
 const Modal = () => {
-  const [useAsCollateral, setUseCollateral] = useState(false);
   const isOpen = useAppSelector(getModalStatus);
   const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
+  const { amount } = useAppSelector(getSelectedValues);
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(asset.tokenId));
   const dispatch = useAppDispatch();
   const handleClose = () => dispatch(hideModal());
@@ -27,6 +34,7 @@ const Modal = () => {
     icon,
     apy,
     price,
+    price$,
     available,
     available$,
     totalTitle,
@@ -34,24 +42,29 @@ const Modal = () => {
     canUseAsCollateral,
   } = getModalData({ ...asset, maxBorrowAmount });
 
-  const inputValue = 0;
-  const sliderValue = 0;
-  const total = 0;
+  const sliderValue = (amount * 100) / available;
+  const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
 
-  const handleInputChange = () => {
-    console.log("handleInputChange");
+  const handleInputChange = (e) => {
+    dispatch(updateAmount({ amount: e.target.value }));
   };
 
   const handleMaxClick = () => {
-    console.log("handleMaxClick");
+    dispatch(updateAmount({ amount: available }));
   };
 
-  const handleSliderChange = () => {
-    console.log("handleSliderChange");
+  const handleSliderChange = (e) => {
+    const { value: percent } = e.target;
+    const value = (Number(available) * percent) / 100;
+    dispatch(updateAmount({ amount: Number(value.toFixed(PERCENT_DIGITS)) }));
+  };
+
+  const handleSwitchToggle = (event) => {
+    dispatch(toggleUseAsCollateral({ useAsCollateral: event.target.checked }));
   };
 
   const handleActionButtonClick = () => {
-    console.log("handleActionButtonClick", useAsCollateral);
+    console.log("handleActionButtonClick");
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
@@ -106,7 +119,7 @@ const Modal = () => {
           </Typography>
         </Box>
         <Input
-          value={inputValue}
+          value={amount}
           type="number"
           onClickMax={handleMaxClick}
           onChange={handleInputChange}
@@ -144,7 +157,7 @@ const Modal = () => {
                 <Typography variant="body1" fontSize="0.85rem">
                   Use as Collateral
                 </Typography>
-                <Switch onChange={(event) => setUseCollateral(event.target.checked)} />
+                <Switch onChange={handleSwitchToggle} />
               </Box>
             )}
           </Box>

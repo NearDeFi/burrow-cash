@@ -1,4 +1,4 @@
-import { USD_FORMAT } from "../../store";
+import { USD_FORMAT, TOKEN_FORMAT } from "../../store";
 
 export const getModalData = (asset) => {
   const {
@@ -35,7 +35,10 @@ export const getModalData = (asset) => {
       data.rates = [
         { label: "Borrow APY", value: borrowApy },
         { label: "Collateral Factor", value: collateralFactor },
-        { label: "Pool Liquidity", value: availableLiquidity },
+        {
+          label: "Pool Liquidity",
+          value: availableLiquidity.toLocaleString(undefined, TOKEN_FORMAT),
+        },
       ];
       break;
     case "Withdraw":

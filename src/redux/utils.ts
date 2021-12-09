@@ -24,19 +24,19 @@ interface UIAsset {
   icon: string;
   symbol: string;
   name: string;
-  price: string;
+  price: number;
   price$: number;
   supplyApy: string;
-  totalSupply: string;
+  totalSupply: number;
   totalSupply$: string;
   borrowApy: string;
-  availableLiquidity: string;
+  availableLiquidity: number;
   availableLiquidity$: string;
   collateralFactor: string;
   canUseAsCollateral: boolean;
   supplied: string;
   borrowed: string;
-  available: string;
+  available: number;
   available$: string;
 }
 
@@ -48,7 +48,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
 
   const totalSupply = Number(
     shrinkToken(totalSupplyD, asset.metadata.decimals + asset.config.extra_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
+  );
 
   // TODO: refactor: remove temp vars using ramda
   const temp1 = new Decimal(asset.supplied.balance)
@@ -57,13 +57,13 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
   const temp2 = temp1.minus(temp1.mul(0.001)).toFixed(0);
   const availableLiquidity = Number(
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
+  );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
 
   let accountAttrs = {
     supplied: "0",
     borrowed: "0",
-    available: "0",
+    available: 0,
     available$: "0",
   };
 
@@ -75,7 +75,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
         account.balances[tokenId === "wrap.testnet" ? "near" : tokenId],
         asset.metadata.decimals + asset.config.extra_decimals,
       ),
-    ).toLocaleString(undefined, TOKEN_FORMAT);
+    );
 
     accountAttrs = {
       supplied: Number(
@@ -95,7 +95,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
   return {
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
-    price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
+    price: asset.price ? asset.price.usd : 0,
     price$: asset.price ? asset.price.usd : 0,
     supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
     totalSupply,

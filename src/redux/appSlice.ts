@@ -10,6 +10,8 @@ export interface AppState {
   selected: {
     action?: TokenAction;
     tokenId: string;
+    useAsCollateral: boolean;
+    amount: number;
   };
 }
 
@@ -18,6 +20,8 @@ const initialState: AppState = {
   selected: {
     action: undefined,
     tokenId: "",
+    useAsCollateral: false,
+    amount: 0,
   },
 };
 
@@ -29,8 +33,14 @@ export const appSlice = createSlice({
       state.showModal = false;
     },
     showModal(state, action: PayloadAction<{ action: TokenAction; tokenId: string }>) {
-      state.selected = action.payload;
+      state.selected = { useAsCollateral: false, amount: 0, ...action.payload };
       state.showModal = true;
+    },
+    updateAmount(state, action: PayloadAction<{ amount: number }>) {
+      state.selected.amount = action.payload.amount;
+    },
+    toggleUseAsCollateral(state, action: PayloadAction<{ useAsCollateral: boolean }>) {
+      state.selected.useAsCollateral = action.payload.useAsCollateral;
     },
   },
 });
@@ -38,6 +48,11 @@ export const appSlice = createSlice({
 export const getModalStatus = createSelector(
   (state: RootState) => state.app,
   (app) => app.showModal,
+);
+
+export const getSelectedValues = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.selected,
 );
 
 export const getAssetData = createSelector(
@@ -54,5 +69,5 @@ export const getAssetData = createSelector(
   },
 );
 
-export const { hideModal, showModal } = appSlice.actions;
+export const { hideModal, showModal, updateAmount, toggleUseAsCollateral } = appSlice.actions;
 export default appSlice.reducer;

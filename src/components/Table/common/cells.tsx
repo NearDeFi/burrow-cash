@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 
 import TokenIcon from "../../TokenIcon";
+import { USD_FORMAT } from "../../../store";
 
 export const TokenCell = ({ rowData }) => {
   const { symbol, price } = rowData;
@@ -11,7 +12,7 @@ export const TokenCell = ({ rowData }) => {
       </Box>
       <Box px="1rem">
         <Box>{symbol}</Box>
-        <Box>{price || "$-.-"}</Box>
+        <Box>{price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
       </Box>
     </Box>
   );
