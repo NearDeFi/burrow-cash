@@ -6,7 +6,7 @@ import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getModalStatus, getAssetData, hideModal } from "../../redux/appSlice";
-import { getMaxBorrowAmount } from "../../redux/accountSlice";
+import { getMaxBorrowAmount, getAccountId } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
@@ -14,6 +14,7 @@ import { getModalData } from "./utils";
 const Modal = () => {
   const [useAsCollateral, setUseCollateral] = useState(false);
   const isOpen = useAppSelector(getModalStatus);
+  const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(asset.tokenId));
   const dispatch = useAppDispatch();
@@ -58,7 +59,31 @@ const Modal = () => {
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
-        <Box onClick={handleClose} position="absolute" right="1rem" sx={{ cursor: "pointer" }}>
+        {!accountId && (
+          <Box
+            position="absolute"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            bgcolor="rgba(255,255,255,0.85)"
+            zIndex="1"
+          >
+            <Typography variant="h5" bgcolor="#fff">
+              Please connect your account
+            </Typography>
+          </Box>
+        )}
+        <Box
+          onClick={handleClose}
+          position="absolute"
+          right="1rem"
+          zIndex="2"
+          sx={{ cursor: "pointer" }}
+        >
           <CloseIcon />
         </Box>
         <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">

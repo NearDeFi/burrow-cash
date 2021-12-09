@@ -29,15 +29,15 @@ interface UIAsset {
   supplyApy: string;
   totalSupply: string;
   totalSupply$: string;
-  supplied: string;
   borrowApy: string;
   availableLiquidity: string;
   availableLiquidity$: string;
   collateralFactor: string;
+  canUseAsCollateral: boolean;
+  supplied: string;
   borrowed: string;
   available: string;
   available$: string;
-  canUseAsCollateral: boolean;
 }
 
 export const transformAsset = (asset: Asset, account: AccountState): UIAsset => {
@@ -50,8 +50,6 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     shrinkToken(totalSupplyD, asset.metadata.decimals + asset.config.extra_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
 
-  const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
-
   // TODO: refactor: remove temp vars using ramda
   const temp1 = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
@@ -61,14 +59,38 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
-  const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
 
-  const available = Number(
-    shrinkToken(
-      account.balances[tokenId === "wrap.testnet" ? "near" : tokenId],
-      asset.metadata.decimals + asset.config.extra_decimals,
-    ),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
+  let accountAttrs = {
+    supplied: "0",
+    borrowed: "0",
+    available: "0",
+    available$: "0",
+  };
+
+  if (account.accountId) {
+    const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
+    const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
+    const available = Number(
+      shrinkToken(
+        account.balances[tokenId === "wrap.testnet" ? "near" : tokenId],
+        asset.metadata.decimals + asset.config.extra_decimals,
+      ),
+    ).toLocaleString(undefined, TOKEN_FORMAT);
+
+    accountAttrs = {
+      supplied: Number(
+        shrinkToken(supplied, asset.metadata.decimals + asset.config.extra_decimals),
+      ).toLocaleString(undefined, TOKEN_FORMAT),
+      borrowed: Number(
+        shrinkToken(borrowed, asset.metadata.decimals + asset.config.extra_decimals),
+      ).toLocaleString(undefined, TOKEN_FORMAT),
+      available,
+      available$: (Number(available) * (asset.price?.usd || 0)).toLocaleString(
+        undefined,
+        USD_FORMAT,
+      ),
+    };
+  }
 
   return {
     tokenId,
@@ -78,18 +100,11 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
-    supplied: Number(
-      shrinkToken(supplied, asset.metadata.decimals + asset.config.extra_decimals),
-    ).toLocaleString(undefined, TOKEN_FORMAT),
     borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
     availableLiquidity,
     availableLiquidity$,
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
-    borrowed: Number(
-      shrinkToken(borrowed, asset.metadata.decimals + asset.config.extra_decimals),
-    ).toLocaleString(undefined, TOKEN_FORMAT),
-    available,
-    available$: (Number(available) * (asset.price?.usd || 0)).toLocaleString(undefined, USD_FORMAT),
     canUseAsCollateral: asset.config.can_use_as_collateral,
+    ...accountAttrs,
   };
 };

@@ -59,6 +59,7 @@ export const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
+    logoutAccount: () => initialState,
     receivedAccount(
       state,
       action: PayloadAction<{
@@ -179,6 +180,7 @@ export const getMaxBorrowAmount = (tokenId: string) =>
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (!account.accountId || !tokenId) return 0;
       const collateralSum = Object.keys(account.portfolio.collateral)
         .map((id) => {
           const asset = assets[id];
@@ -211,5 +213,5 @@ export const getMaxBorrowAmount = (tokenId: string) =>
     },
   );
 
-export const { receivedAccount } = accountSlice.actions;
+export const { receivedAccount, logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;

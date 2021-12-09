@@ -11,7 +11,6 @@ import { showModal } from "../../redux/appSlice";
 
 const Supply = () => {
   const dispatch = useAppDispatch();
-
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);

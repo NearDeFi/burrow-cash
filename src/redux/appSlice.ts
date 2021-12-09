@@ -40,19 +40,14 @@ export const getModalStatus = createSelector(
   (app) => app.showModal,
 );
 
-export const getSelectedAction = createSelector(
-  (state: RootState) => state.app,
-  (app) => app.selected,
-);
-
 export const getAssetData = createSelector(
   (state: RootState) => state.app,
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (app, assets, account) => {
-    const asset = assets[app.selected.tokenId];
+    const asset = assets[app.selected?.tokenId];
     return {
-      tokenId: asset.token_id,
+      tokenId: asset?.token_id,
       action: app.selected.action,
       ...(asset ? transformAsset(asset, account) : {}),
     };

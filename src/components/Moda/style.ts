@@ -5,6 +5,7 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   padding: "1em",
   boxShadow: "1.5rem",
   backgroundColor: "white",
+  position: "relative",
   [theme.breakpoints.down("sm")]: {
     position: "relative",
     height: "100%",

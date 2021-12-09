@@ -5,10 +5,11 @@ import { colors } from "../../style";
 import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
-import { useAppSelector } from "../../redux/hooks";
-import { getAccountBalance } from "../../redux/accountSlice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { getAccountBalance, logoutAccount } from "../../redux/accountSlice";
 
 const WalletButton = () => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { walletConnection, account } = useContext<IBurrow>(Burrow);
@@ -26,6 +27,11 @@ const WalletButton = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutAccount());
+    logout(walletConnection);
   };
 
   return (
@@ -60,7 +66,7 @@ const WalletButton = () => {
           "aria-labelledby": "logout-button",
         }}
       >
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={() => logout(walletConnection)}>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
           Log Out
         </MenuItem>
       </Menu>
