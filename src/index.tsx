@@ -21,11 +21,10 @@ window.nearInitPromise = initContract()
       <Provider store={store}>
         <Burrow.Provider value={initResults}>
           <ThemeProvider theme={theme}>
-            <Modal>
-              <ContractContextProvider>
-                <App />
-              </ContractContextProvider>
-            </Modal>
+            <ContractContextProvider>
+              <App />
+            </ContractContextProvider>
+            <Modal />
           </ThemeProvider>
         </Burrow.Provider>
       </Provider>,

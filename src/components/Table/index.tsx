@@ -9,12 +9,10 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-
 interface TableProps {
   rows: any;
   columns: any;
-  onRowClick?: (rowData: IAssetDetailed & IMetadata) => void;
+  onRowClick?: (rowData: any) => void;
 }
 
 function Table({ rows, columns, onRowClick }: TableProps) {

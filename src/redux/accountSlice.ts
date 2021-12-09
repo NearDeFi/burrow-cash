@@ -23,7 +23,7 @@ interface PortfolioAsset {
   shares: string;
 }
 
-interface Portfolio {
+export interface Portfolio {
   supplied: {
     [tokenId: string]: PortfolioAsset;
   };
@@ -132,11 +132,12 @@ export const getPortfolioAssets = createSelector(
       .map((tokenId) => {
         const asset = assets[tokenId];
         const collateral = shrinkToken(
-          account.portfolio.collateral[tokenId].balance,
+          account.portfolio.collateral[tokenId]?.balance || 0,
           asset.metadata.decimals + asset.config.extra_decimals,
         );
         const suppliedBalance = account.portfolio.supplied[tokenId]?.balance || 0;
         return {
+          tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
@@ -156,6 +157,7 @@ export const getPortfolioAssets = createSelector(
       const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
 
       return {
+        tokenId,
         symbol: asset.metadata.symbol,
         icon: asset.metadata.icon,
         price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
@@ -169,6 +171,45 @@ export const getPortfolioAssets = createSelector(
     return [supplied, borrowed];
   },
 );
+
+const MAX_RATIO = 10000;
+
+export const getMaxBorrowAmount = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      const collateralSum = Object.keys(account.portfolio.collateral)
+        .map((id) => {
+          const asset = assets[id];
+          const balance =
+            Number(account.portfolio.collateral[id].balance) * (asset.price?.usd || 0);
+          const volatiliyRatio = asset.config.volatility_ratio || 0;
+
+          return (
+            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+            (volatiliyRatio / MAX_RATIO)
+          );
+        })
+        .reduce(sumReducer, 0);
+
+      const borrowSum = Object.keys(account.portfolio.borrowed)
+        .map((id) => {
+          const asset = assets[id];
+          const balance = Number(account.portfolio.borrowed[id].balance) * (asset.price?.usd || 0);
+          const volatiliyRatio = asset.config.volatility_ratio || 0;
+          return (
+            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
+            (volatiliyRatio / MAX_RATIO)
+          );
+        })
+        .reduce(sumReducer, 0);
+
+      const volatiliyRatio = assets[tokenId].config.volatility_ratio || 0;
+      const max = (collateralSum - borrowSum) * (volatiliyRatio / MAX_RATIO);
+      return max.toLocaleString(undefined, TOKEN_FORMAT);
+    },
+  );
 
 export const { receivedAccount } = accountSlice.actions;
 export default accountSlice.reducer;
