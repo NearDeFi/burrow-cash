@@ -3,13 +3,13 @@ import { Switch, Box } from "@mui/material";
 
 import { ActionButton, ModalTitle, Rates, TokenBasicDetails, TokenInputs } from "../components";
 import { ListEntry, TokenActionsInput } from "../types";
-import { repay } from "../../../store/actions/repay";
-import { withdraw } from "../../../store/actions/withdraw";
-import { removeCollateral } from "../../../store/actions/removeCollateral";
-import { addCollateral } from "../../../store/actions/addCollateral";
-import { borrow } from "../../../store/actions/borrow";
-import { supply } from "../../../store/actions/supply";
-import { deposit } from "../../../store/actions/deposit";
+// import { repay } from "../../../store/actions/repay";
+// import { withdraw } from "../../../store/actions/withdraw";
+// import { removeCollateral } from "../../../store/actions/removeCollateral";
+// import { addCollateral } from "../../../store/actions/addCollateral";
+// import { borrow } from "../../../store/actions/borrow";
+// import { supply } from "../../../store/actions/supply";
+// import { deposit } from "../../../store/actions/deposit";
 import { colors } from "../../../style";
 
 const borrowRates: ListEntry[] = [
@@ -43,7 +43,7 @@ export const BorrowData: TokenActionsInput = {
 };
 
 export const TokenActionsTemplate = (input: TokenActionsInput) => {
-  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type, config } = input;
+  const { title, asset, totalAmountTitle, buttonText, rates, ratesTitle, type } = input;
   const [amount, setAmount] = useState(0);
   const [useAsCollateral, setUseAsCollateral] = useState(false);
   const isAdjust = type === "Adjust";
@@ -90,42 +90,43 @@ export const TokenActionsTemplate = (input: TokenActionsInput) => {
         text={buttonText}
         isDisabled={isDisabled}
         onClick={() => {
-          switch (type) {
-            case "Borrow":
-              void borrow(asset.token_id, config, amount);
-              break;
-            case "Supply":
-              if (asset.token_id === "wrap.testnet") {
-                void deposit(amount, useAsCollateral);
-              } else {
-                void supply(asset.token_id, config, amount, useAsCollateral);
-              }
-              break;
-            case "Withdraw":
-              void withdraw(asset.token_id, config, amount === asset.amount ? undefined : amount);
-              break;
-            case "Repay":
-              void repay(asset.token_id, config, amount);
-              break;
-            case "Adjust":
-              if (amount < collateralBalance) {
-                void removeCollateral(
-                  asset.token_id,
-                  config,
-                  amount === asset.amount ? undefined : collateralBalance - amount,
-                );
-              }
-              if (amount > collateralBalance) {
-                void addCollateral(
-                  asset.token_id,
-                  config,
-                  amount === asset.amount ? undefined : amount - collateralBalance,
-                );
-              }
-              break;
-            default:
-              break;
-          }
+          console.log(useAsCollateral);
+          // switch (type) {
+          //   case "Borrow":
+          //     void borrow(asset.token_id, config, amount);
+          //     break;
+          //   case "Supply":
+          //     if (asset.token_id === "wrap.testnet") {
+          //       void deposit(amount, useAsCollateral);
+          //     } else {
+          //       void supply(asset.token_id, config, amount, useAsCollateral);
+          //     }
+          //     break;
+          //   case "Withdraw":
+          //     void withdraw(asset.token_id, config, amount === asset.amount ? undefined : amount);
+          //     break;
+          //   case "Repay":
+          //     void repay(asset.token_id, config, amount);
+          //     break;
+          //   case "Adjust":
+          //     if (amount < collateralBalance) {
+          //       void removeCollateral(
+          //         asset.token_id,
+          //         config,
+          //         amount === asset.amount ? undefined : collateralBalance - amount,
+          //       );
+          //     }
+          //     if (amount > collateralBalance) {
+          //       void addCollateral(
+          //         asset.token_id,
+          //         config,
+          //         amount === asset.amount ? undefined : amount - collateralBalance,
+          //       );
+          //     }
+          //     break;
+          //   default:
+          //     break;
+          // }
         }}
       />
     </>

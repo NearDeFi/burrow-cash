@@ -1,13 +1,21 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle, IAssetConfig } from "../../interfaces";
+import { ChangeMethodsOracle } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
 
-export async function removeCollateral(token_id: string, config: IAssetConfig, amount?: number) {
+export async function removeCollateral({
+  tokenId,
+  extraDecimals,
+  amount,
+}: {
+  tokenId: string;
+  extraDecimals: number;
+  amount?: number;
+}) {
   const { oracleContract, account, logicContract } = await getBurrow();
-  const { decimals } = (await getMetadata(token_id))!;
+  const { decimals } = (await getMetadata(tokenId))!;
   const accountDetailed = await getAccountDetailed(account.accountId);
 
   const decreaseCollateralTemplate = {
@@ -15,7 +23,7 @@ export async function removeCollateral(token_id: string, config: IAssetConfig, a
       actions: [
         {
           DecreaseCollateral: {
-            token_id,
+            token_id: tokenId,
             amount: undefined as unknown as string,
           },
         },
@@ -26,7 +34,7 @@ export async function removeCollateral(token_id: string, config: IAssetConfig, a
   if (amount) {
     decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral.amount = expandToken(
       amount,
-      decimals + config.extra_decimals,
+      decimals + extraDecimals,
       0,
     );
   }
@@ -35,7 +43,7 @@ export async function removeCollateral(token_id: string, config: IAssetConfig, a
     ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
         .map((c) => c.token_id)
         .filter((t, i, assetIds) => i === assetIds.indexOf(t))
-        .filter((t) => t !== token_id)
+        .filter((t) => t !== tokenId)
     : [];
 
   await prepareAndExecuteTransactions([
@@ -46,7 +54,7 @@ export async function removeCollateral(token_id: string, config: IAssetConfig, a
           methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
           args: {
             receiver_id: logicContract.contractId,
-            asset_ids: [...asset_ids, token_id],
+            asset_ids: [...asset_ids, tokenId],
             msg: JSON.stringify(decreaseCollateralTemplate),
           },
         },

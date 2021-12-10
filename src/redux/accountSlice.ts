@@ -94,6 +94,18 @@ export const getAccountId = createSelector(
   (account) => account.accountId,
 );
 
+export const getCollateralAmount = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      const collateral = account.portfolio.collateral[tokenId];
+      if (!collateral) return 0;
+      const { metadata, config } = assets[tokenId];
+      return Number(shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals));
+    },
+  );
+
 export const getAccountBalance = createSelector(
   (state: RootState) => state.account.balances,
   (balances) => {

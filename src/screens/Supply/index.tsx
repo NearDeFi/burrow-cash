@@ -21,7 +21,7 @@ const Supply = () => {
     : defaultColumns;
 
   const handleOnRowClick = ({ tokenId }) => {
-    dispatch(showModal({ action: "Supply", tokenId }));
+    dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
   };
 
   return (

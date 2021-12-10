@@ -1,14 +1,22 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic, IAssetConfig } from "../../interfaces";
+import { ChangeMethodsLogic } from "../../interfaces";
 import { getMetadata, getTokenContract, prepareAndExecuteTokenTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction } from "../wallet";
 
-export async function withdraw(token_id: string, config: IAssetConfig, amount?: number) {
+export async function withdraw({
+  tokenId,
+  extraDecimals,
+  amount,
+}: {
+  tokenId: string;
+  extraDecimals: number;
+  amount: number;
+}) {
   const { logicContract } = await getBurrow();
-  const tokenContract = await getTokenContract(token_id);
-  const { decimals } = (await getMetadata(token_id))!;
+  const tokenContract = await getTokenContract(tokenId);
+  const { decimals } = (await getMetadata(tokenId))!;
 
   const additionalOperations: Transaction[] = [];
 
@@ -16,7 +24,7 @@ export async function withdraw(token_id: string, config: IAssetConfig, amount?: 
     actions: [
       {
         Withdraw: {
-          token_id,
+          token_id: tokenId,
           amount: undefined as unknown as string,
         },
       },
@@ -24,16 +32,16 @@ export async function withdraw(token_id: string, config: IAssetConfig, amount?: 
   };
 
   if (amount) {
-    const expandedAmount = expandToken(amount, decimals + config.extra_decimals, 0);
+    const expandedAmount = expandToken(amount, decimals + extraDecimals, 0);
     args.actions[0].Withdraw.amount = expandedAmount;
 
-    if (token_id === "wrap.testnet") {
+    if (tokenId === "wrap.testnet") {
       additionalOperations.push({
         receiverId: tokenContract.contractId,
         functionCalls: [
           {
             methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-            args: { amount: expandToken(amount, decimals + config.extra_decimals, 0) },
+            args: { amount: expandToken(amount, decimals + extraDecimals, 0) },
           },
         ],
       });

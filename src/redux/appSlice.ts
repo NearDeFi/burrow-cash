@@ -32,8 +32,11 @@ export const appSlice = createSlice({
     hideModal(state) {
       state.showModal = false;
     },
-    showModal(state, action: PayloadAction<{ action: TokenAction; tokenId: string }>) {
-      state.selected = { useAsCollateral: false, amount: 0, ...action.payload };
+    showModal(
+      state,
+      action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
+    ) {
+      state.selected = { useAsCollateral: false, ...action.payload };
       state.showModal = true;
     },
     updateAmount(state, action: PayloadAction<{ amount: number }>) {

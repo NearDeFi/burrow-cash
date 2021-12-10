@@ -1,23 +1,28 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic, ChangeMethodsToken, IAssetConfig } from "../../interfaces";
+import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
 
-export async function supply(
-  token_id: string,
-  config: IAssetConfig,
-  amount: number,
-  useAsCollateral: boolean,
-): Promise<void> {
+export async function supply({
+  tokenId,
+  extraDecimals,
+  useAsCollateral,
+  amount,
+}: {
+  tokenId: string;
+  extraDecimals: number;
+  useAsCollateral: boolean;
+  amount: number;
+}): Promise<void> {
   const { logicContract } = await getBurrow();
-  const { decimals } = (await getMetadata(token_id))!;
-  const tokenContract = await getTokenContract(token_id);
+  const { decimals } = (await getMetadata(tokenId))!;
+  const tokenContract = await getTokenContract(tokenId);
 
   const args = {
     actions: [
       {
         IncreaseCollateral: {
-          token_id,
+          token_id: tokenId,
           max_amount: undefined as unknown as string,
         },
       },
@@ -27,7 +32,7 @@ export async function supply(
   if (amount) {
     args.actions[0].IncreaseCollateral.max_amount = expandToken(
       amount,
-      decimals + config.extra_decimals,
+      decimals + extraDecimals,
       0,
     );
   }

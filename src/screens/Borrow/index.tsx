@@ -26,7 +26,7 @@ const Borrow = () => {
     : defaultColumns;
 
   const handleOnRowClick = ({ tokenId }) => {
-    dispatch(showModal({ action: "Borrow", tokenId }));
+    dispatch(showModal({ action: "Borrow", tokenId, amount: 0 }));
   };
 
   return (

@@ -9,7 +9,13 @@ import { expandToken } from "../helper";
 import { NEAR_DECIMALS } from "../constants";
 import { isRegistered, Transaction } from "../wallet";
 
-export async function deposit(amount: number, useAsCollateral: boolean) {
+export async function deposit({
+  amount,
+  useAsCollateral,
+}: {
+  amount: number;
+  useAsCollateral: boolean;
+}) {
   const tokenId = "wrap.testnet";
   const { account, logicContract } = await getBurrow();
   const tokenContract: Contract = await getTokenContract(tokenId);

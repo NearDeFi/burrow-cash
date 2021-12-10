@@ -19,7 +19,7 @@ export const emptyAsset = (asset: { supplied: string; collateral: string }): boo
   (asset.supplied !== (0).toLocaleString(undefined, TOKEN_FORMAT) &&
     asset.collateral === (0).toLocaleString(undefined, TOKEN_FORMAT));
 
-interface UIAsset {
+export interface UIAsset {
   tokenId: string;
   icon: string;
   symbol: string;
@@ -34,10 +34,12 @@ interface UIAsset {
   availableLiquidity$: string;
   collateralFactor: string;
   canUseAsCollateral: boolean;
-  supplied: string;
-  borrowed: string;
+  supplied: number;
+  collateral: number;
+  borrowed: number;
   available: number;
   available$: string;
+  extraDecimals: number;
 }
 
 export const transformAsset = (asset: Asset, account: AccountState): UIAsset => {
@@ -61,14 +63,18 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
 
   let accountAttrs = {
-    supplied: "0",
-    borrowed: "0",
+    supplied: 0,
+    collateral: 0,
+    borrowed: 0,
     available: 0,
     available$: "0",
+    extraDecimals: 0,
   };
 
+  // TODO: refactor this without conditional
   if (account.accountId) {
     const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
+    const collateral = account.portfolio.collateral[tokenId]?.balance || 0;
     const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
     const available = Number(
       shrinkToken(
@@ -80,15 +86,19 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     accountAttrs = {
       supplied: Number(
         shrinkToken(supplied, asset.metadata.decimals + asset.config.extra_decimals),
-      ).toLocaleString(undefined, TOKEN_FORMAT),
+      ),
+      collateral: Number(
+        shrinkToken(collateral, asset.metadata.decimals + asset.config.extra_decimals),
+      ),
       borrowed: Number(
         shrinkToken(borrowed, asset.metadata.decimals + asset.config.extra_decimals),
-      ).toLocaleString(undefined, TOKEN_FORMAT),
+      ),
       available,
       available$: (Number(available) * (asset.price?.usd || 0)).toLocaleString(
         undefined,
         USD_FORMAT,
       ),
+      extraDecimals: asset.config.extra_decimals,
     };
   }
 

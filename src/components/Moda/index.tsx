@@ -1,4 +1,6 @@
-import { Modal as MUIModal, Typography, Box, Switch, Button } from "@mui/material";
+import { useState } from "react";
+import { Modal as MUIModal, Typography, Box, Switch } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { USD_FORMAT, PERCENT_DIGITS } from "../../store";
@@ -17,17 +19,26 @@ import { getMaxBorrowAmount, getAccountId } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
+import { repay } from "../../store/actions/repay";
+import { supply } from "../../store/actions/supply";
+import { deposit } from "../../store/actions/deposit";
+import { borrow } from "../../store/actions/borrow";
+import { withdraw } from "../../store/actions/withdraw";
+import { removeCollateral } from "../../store/actions/removeCollateral";
+import { addCollateral } from "../../store/actions/addCollateral";
 
 const Modal = () => {
+  const [loading, setLoading] = useState(false);
   const isOpen = useAppSelector(getModalStatus);
   const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
-  const { amount } = useAppSelector(getSelectedValues);
+  const { amount, useAsCollateral } = useAppSelector(getSelectedValues);
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(asset.tokenId));
   const dispatch = useAppDispatch();
   const handleClose = () => dispatch(hideModal());
 
   const {
+    tokenId,
     action,
     name,
     symbol,
@@ -40,6 +51,8 @@ const Modal = () => {
     totalTitle,
     rates,
     canUseAsCollateral,
+    extraDecimals,
+    collateral,
   } = getModalData({ ...asset, maxBorrowAmount });
 
   const sliderValue = (amount * 100) / available;
@@ -63,11 +76,48 @@ const Modal = () => {
     dispatch(toggleUseAsCollateral({ useAsCollateral: event.target.checked }));
   };
 
-  const handleActionButtonClick = () => {
-    console.log("handleActionButtonClick");
+  const handleActionButtonClick = async () => {
+    setLoading(true);
+    switch (action) {
+      case "Supply":
+        if (tokenId === "wrap.testnet") {
+          await deposit({ amount, useAsCollateral });
+        } else {
+          await supply({ tokenId, extraDecimals, useAsCollateral, amount });
+        }
+        break;
+      case "Borrow":
+        await borrow({ tokenId, extraDecimals, amount });
+        break;
+      case "Withdraw":
+        await withdraw({ tokenId, extraDecimals, amount });
+        break;
+      case "Adjust":
+        if (amount < collateral) {
+          await removeCollateral({
+            tokenId,
+            extraDecimals,
+            amount: amount === available ? undefined : collateral - amount,
+          });
+        }
+        if (amount > collateral) {
+          await addCollateral({
+            tokenId,
+            extraDecimals,
+            amount: amount === available ? undefined : amount - collateral,
+          });
+        }
+        break;
+      case "Repay":
+        await repay({ tokenId, amount, extraDecimals });
+        break;
+      default:
+        break;
+    }
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
+  const actionDisabled = !amount || amount > available || amount === collateral;
 
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
@@ -163,9 +213,14 @@ const Modal = () => {
           </Box>
         )}
         <Box display="flex" justifyContent="center" mt="2rem">
-          <Button variant="contained" onClick={handleActionButtonClick}>
+          <LoadingButton
+            disabled={actionDisabled}
+            variant="contained"
+            onClick={handleActionButtonClick}
+            loading={loading}
+          >
             {action} {symbol}
-          </Button>
+          </LoadingButton>
         </Box>
       </Wrapper>
     </MUIModal>
