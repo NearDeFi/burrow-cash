@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery } from "@mui/material";
 
-import { colors } from "../../style";
 import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
@@ -51,7 +50,11 @@ const WalletButton = () => {
       )}
       <Button
         size="small"
-        sx={{ justifySelf: "end", alignItems: "center", backgroundColor: colors.primary }}
+        sx={{
+          justifySelf: "end",
+          alignItems: "center",
+          backgroundColor: theme.palette.primary.main,
+        }}
         variant="contained"
         onClick={onWalletButtonClick}
       >
