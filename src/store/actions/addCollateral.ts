@@ -20,14 +20,13 @@ export async function addCollateral({
       {
         IncreaseCollateral: {
           token_id: tokenId,
-          amount: "",
         },
       },
     ],
   };
 
   if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(amount, decimals + extraDecimals, 0);
+    args.actions[0].IncreaseCollateral["amount"] = expandToken(amount, decimals + extraDecimals, 0);
   }
 
   await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);

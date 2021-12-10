@@ -14,10 +14,10 @@ export const toUsd = (balance: string, asset: Asset) =>
     : 0;
 
 export const emptyAsset = (asset: { supplied: string; collateral: string }): boolean =>
-  (asset.supplied !== (0).toLocaleString(undefined, TOKEN_FORMAT) &&
-    asset.collateral !== (0).toLocaleString(undefined, TOKEN_FORMAT)) ||
-  (asset.supplied !== (0).toLocaleString(undefined, TOKEN_FORMAT) &&
-    asset.collateral === (0).toLocaleString(undefined, TOKEN_FORMAT));
+  !(
+    asset.supplied === (0).toLocaleString(undefined, TOKEN_FORMAT) &&
+    asset.collateral === (0).toLocaleString(undefined, TOKEN_FORMAT)
+  );
 
 export interface UIAsset {
   tokenId: string;

@@ -24,7 +24,6 @@ export async function removeCollateral({
         {
           DecreaseCollateral: {
             token_id: tokenId,
-            amount: undefined as unknown as string,
           },
         },
       ],
@@ -32,7 +31,7 @@ export async function removeCollateral({
   };
 
   if (amount) {
-    decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral.amount = expandToken(
+    decreaseCollateralTemplate.Execute.actions[0].DecreaseCollateral["amount"] = expandToken(
       amount,
       decimals + extraDecimals,
       0,
