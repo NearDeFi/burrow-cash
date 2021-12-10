@@ -14,7 +14,7 @@ const Portfolio = () => {
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
 
   return (
-    <Box sx={{ paddingBottom: 10 }}>
+    <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
         <InfoBox title="Total Supplied" value={totalSuppliedBalance} />
         {false && <InfoBox title="Net APR" value="0.00" />}

@@ -26,8 +26,9 @@ const Borrow = () => {
   };
 
   return (
-    <Box sx={{ paddingBottom: 10 }}>
+    <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
+        <InfoBox title="Total Borrow" value={totalBorrowBalance} />
         {accountId && (
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
@@ -36,9 +37,6 @@ const Borrow = () => {
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
-      <InfoWrapper>
-        <InfoBox title="Total Borrow" value={totalBorrowBalance} />
-      </InfoWrapper>
     </Box>
   );
 };

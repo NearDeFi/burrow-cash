@@ -25,20 +25,15 @@ const Supply = () => {
   };
 
   return (
-    <Box>
+    <Box pb="2.5rem">
       <InfoWrapper>
+        {rows.length > 0 && <InfoBox title="Total Supply" value={totalSupplyBalance} />}
         {accountId && (
           <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
         )}
-        {false && <InfoBox title="Net APY" value="0%" />}
       </InfoWrapper>
       <PageTitle first="Supply" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
-      {rows.length > 0 && (
-        <InfoWrapper>
-          <InfoBox title="Total Supply" value={totalSupplyBalance} />
-        </InfoWrapper>
-      )}
     </Box>
   );
 };
