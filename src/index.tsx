@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 
 import App from "./App";
 import { Modal } from "./components";
-import { ContractContextProvider } from "./context/contracts";
 import "./global.css";
 import { initContract } from "./utils";
 import { IBurrow } from "./interfaces/burrow";
@@ -21,9 +20,7 @@ window.nearInitPromise = initContract()
       <Provider store={store}>
         <Burrow.Provider value={initResults}>
           <ThemeProvider theme={theme}>
-            <ContractContextProvider>
-              <App />
-            </ContractContextProvider>
+            <App />
             <Modal />
           </ThemeProvider>
         </Burrow.Provider>
