@@ -1,5 +1,5 @@
 import Input from "./Input";
-import Modal from "./Moda";
+import Modal from "./Modal";
 import Slider from "./Slider";
 import Table from "./Table";
 import Layout from "./Layout";

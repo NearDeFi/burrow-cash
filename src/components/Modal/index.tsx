@@ -1,80 +1,230 @@
-import { Box } from "@mui/material";
-import Modal from "@mui/material/Modal";
-import * as React from "react";
-// @ts-ignore
-import useMobileDetect from "use-mobile-detect-hook";
-import { CloseModalIcon } from "./components";
-import { BorrowData, TokenActionsTemplate } from "./templates";
-import { Templates, TokenActionsInput } from "./types";
+import { useState } from "react";
+import { Modal as MUIModal, Typography, Box, Switch } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import CloseIcon from "@mui/icons-material/Close";
 
-export interface ModalState {
-  handleOpen: () => void;
-  setTemplate: (i: Templates) => void;
-  setModalData: (i: TokenActionsInput) => void;
-}
+import { USD_FORMAT, PERCENT_DIGITS } from "../../store";
+import Input from "../Input";
+import Slider from "../Slider";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import {
+  getModalStatus,
+  getAssetData,
+  hideModal,
+  updateAmount,
+  toggleUseAsCollateral,
+  getSelectedValues,
+} from "../../redux/appSlice";
+import { getMaxBorrowAmount, getAccountId } from "../../redux/accountSlice";
+import TokenIcon from "../TokenIcon";
+import { Wrapper } from "./style";
+import { getModalData } from "./utils";
+import { repay } from "../../store/actions/repay";
+import { supply } from "../../store/actions/supply";
+import { deposit } from "../../store/actions/deposit";
+import { borrow } from "../../store/actions/borrow";
+import { withdraw } from "../../store/actions/withdraw";
+import { removeCollateral } from "../../store/actions/removeCollateral";
+import { addCollateral } from "../../store/actions/addCollateral";
 
-export const ModalContext = React.createContext<ModalState>({} as ModalState);
+const Modal = () => {
+  const [loading, setLoading] = useState(false);
+  const isOpen = useAppSelector(getModalStatus);
+  const accountId = useAppSelector(getAccountId);
+  const asset = useAppSelector(getAssetData);
+  const { amount, useAsCollateral } = useAppSelector(getSelectedValues);
+  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(asset.tokenId));
+  const dispatch = useAppDispatch();
+  const handleClose = () => dispatch(hideModal());
 
-const ModalContainer = ({ children }: { children: React.ReactElement }) => {
-  const detectMobile = useMobileDetect();
-  const style = detectMobile.isMobile() ? mobileStyle : desktopStyle;
-  const [template, setTemplate] = React.useState<Templates>(Templates.TokenActions);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [modalData, setModalData] = React.useState<TokenActionsInput>(BorrowData);
+  const {
+    tokenId,
+    action,
+    name,
+    symbol,
+    icon,
+    apy,
+    price,
+    price$,
+    available,
+    available$,
+    totalTitle,
+    rates,
+    canUseAsCollateral,
+    extraDecimals,
+    collateral,
+  } = getModalData({ ...asset, maxBorrowAmount });
 
-  const state: ModalState = {
-    handleOpen,
-    setTemplate,
-    setModalData,
+  const sliderValue = (amount * 100) / available;
+  const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
+
+  const handleInputChange = (e) => {
+    dispatch(updateAmount({ amount: e.target.value }));
   };
 
+  const handleMaxClick = () => {
+    dispatch(updateAmount({ amount: available }));
+  };
+
+  const handleSliderChange = (e) => {
+    const { value: percent } = e.target;
+    const value = (Number(available) * percent) / 100;
+    dispatch(updateAmount({ amount: Number(value.toFixed(PERCENT_DIGITS)) }));
+  };
+
+  const handleSwitchToggle = (event) => {
+    dispatch(toggleUseAsCollateral({ useAsCollateral: event.target.checked }));
+  };
+
+  const handleActionButtonClick = async () => {
+    setLoading(true);
+    switch (action) {
+      case "Supply":
+        if (tokenId === "wrap.testnet") {
+          await deposit({ amount, useAsCollateral });
+        } else {
+          await supply({ tokenId, extraDecimals, useAsCollateral, amount });
+        }
+        break;
+      case "Borrow":
+        await borrow({ tokenId, extraDecimals, amount });
+        break;
+      case "Withdraw":
+        await withdraw({ tokenId, extraDecimals, amount });
+        break;
+      case "Adjust":
+        if (amount < collateral) {
+          await removeCollateral({
+            tokenId,
+            extraDecimals,
+            amount: amount === available ? undefined : collateral - amount,
+          });
+        }
+        if (amount > collateral) {
+          await addCollateral({
+            tokenId,
+            extraDecimals,
+            amount: amount === available ? undefined : amount - collateral,
+          });
+        }
+        break;
+      case "Repay":
+        await repay({ tokenId, amount, extraDecimals });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const showToggle = action === "Supply" && canUseAsCollateral;
+  const actionDisabled = !amount || amount > available || amount === collateral;
+
   return (
-    <ModalContext.Provider value={state}>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <CloseModalIcon closeModal={handleClose} />
-          {template === Templates.TokenActions && (
-            <TokenActionsTemplate
-              title={modalData.title}
-              type={modalData.type}
-              asset={modalData.asset}
-              totalAmountTitle={modalData.totalAmountTitle}
-              buttonText={`${modalData.type} ${
-                modalData.type === "Adjust" ? "" : modalData.asset.symbol
-              }`}
-              rates={modalData.rates}
-              ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}
-              config={modalData.config}
-            />
-          )}
+    <MUIModal open={isOpen} onClose={handleClose}>
+      <Wrapper>
+        {!accountId && (
+          <Box
+            position="absolute"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            bgcolor="rgba(255,255,255,0.85)"
+            zIndex="1"
+          >
+            <Typography variant="h5" bgcolor="#fff">
+              Please connect your account
+            </Typography>
+          </Box>
+        )}
+        <Box
+          onClick={handleClose}
+          position="absolute"
+          right="1rem"
+          zIndex="2"
+          sx={{ cursor: "pointer" }}
+        >
+          <CloseIcon />
         </Box>
-      </Modal>
-      {children}
-    </ModalContext.Provider>
+        <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
+          {action}
+        </Typography>
+        <Box display="grid" justifyContent="center" mt="2rem">
+          <TokenIcon icon={icon} />
+        </Box>
+        <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
+          {name}
+          <br />
+          <span>{apy}</span>
+        </Typography>
+        <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
+          <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
+            Available: {available} {symbol} ({available$})
+          </Typography>
+          <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
+            1 {symbol} = {price}
+          </Typography>
+        </Box>
+        <Input
+          value={amount}
+          type="number"
+          onClickMax={handleMaxClick}
+          onChange={handleInputChange}
+        />
+        <Box px="0.5rem" my="1rem">
+          <Slider value={sliderValue} onChange={handleSliderChange} />
+        </Box>
+        <Typography textAlign="center" fontSize="1rem" fontWeight="500">
+          <span>{totalTitle}</span>
+          <span>{total}</span>
+        </Typography>
+        {rates && (
+          <Box>
+            <Typography fontSize="0.85rem" fontWeight="bold">
+              {action} Rates
+            </Typography>
+            {rates.map(({ label, value }) => (
+              <Box
+                mt="0.5rem"
+                key={label}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="body1" fontSize="0.85rem">
+                  {label}
+                </Typography>
+                <Typography variant="body1" fontSize="0.85rem" fontWeight="bold">
+                  {value}
+                </Typography>
+              </Box>
+            ))}
+            {showToggle && (
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="body1" fontSize="0.85rem">
+                  Use as Collateral
+                </Typography>
+                <Switch onChange={handleSwitchToggle} />
+              </Box>
+            )}
+          </Box>
+        )}
+        <Box display="flex" justifyContent="center" mt="2rem">
+          <LoadingButton
+            disabled={actionDisabled}
+            variant="contained"
+            onClick={handleActionButtonClick}
+            loading={loading}
+          >
+            {action} {symbol}
+          </LoadingButton>
+        </Box>
+      </Wrapper>
+    </MUIModal>
   );
 };
 
-const mobileStyle = {
-  height: "100%",
-  padding: "0.6em",
-  paddingLeft: 0,
-  width: "100%",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-};
-
-const desktopStyle = {
-  position: "absolute" as const,
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  padding: "0.6em",
-  paddingLeft: 0,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  width: "448px",
-};
-
-export default ModalContainer;
+export default Modal;
