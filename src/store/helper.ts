@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { Account, Contract } from "near-api-js";
 
-import { DECIMAL_OVERRIDES, DEFAULT_PRECISION, NANOS_PER_YEAR, TOKEN_DECIMALS } from "./constants";
+import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBurrow } from "../utils";
 import {
   ViewMethodsOracle,
@@ -9,7 +9,6 @@ import {
   IPrices,
   IAccountDetailed,
   IAssetDetailed,
-  IMetadata,
 } from "../interfaces";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
@@ -79,62 +78,6 @@ export const shrinkToken = (
   fixed?: number,
 ): string => {
   return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed(fixed);
-};
-
-export const toUsd = (value: string, asset: IAssetDetailed & IMetadata): number => {
-  return asset.price?.usd
-    ? Number(shrinkToken(value, DECIMAL_OVERRIDES[asset.symbol] || TOKEN_DECIMALS)) *
-        asset.price.usd
-    : 0;
-};
-
-export const getAvailableAmount = (asset: IAssetDetailed): string => {
-  let amount = new Decimal(asset.supplied.balance)
-    .plus(new Decimal(asset.reserved))
-    .minus(new Decimal(asset.borrowed.balance));
-
-  amount = amount.minus(amount.mul(0.001));
-  const result = amount.toFixed(0);
-  return result;
-};
-
-export const getTotalSupply = (asset: IAssetDetailed): string => {
-  const amount = new Decimal(asset.supplied.balance).plus(new Decimal(asset.reserved));
-
-  return amount.toFixed();
-};
-
-export const getMaxBorrowAmount = (
-  tokenId: string,
-  assets: IAssetDetailed[],
-  portfolio?: IAccountDetailed,
-) => {
-  if (!portfolio) {
-    return 0;
-  }
-
-  const collateralSum = portfolio.collateral
-    .map((collateral) => {
-      const asset = assets.find((a) => a.token_id === collateral.token_id);
-      const balance = Number(collateral.balance) * (asset?.price?.usd || 0);
-      const volatiliyRatio = asset?.config.volatility_ratio || 0;
-      return balance * (volatiliyRatio / MAX_RATIO);
-    })
-    .reduce(sumReducer, 0);
-
-  const borrowSum = portfolio.borrowed
-    .map((borrowed) => {
-      const asset = assets.find((a) => a.token_id === borrowed.token_id);
-      const balance = Number(borrowed.balance) * (asset?.price?.usd || 0);
-      const volatiliyRatio = asset?.config.volatility_ratio || 0;
-      return balance / (volatiliyRatio / MAX_RATIO);
-    })
-    .reduce(sumReducer, 0);
-
-  const volatiliyRatio = assets.find((a) => a.token_id === tokenId)?.config.volatility_ratio || 0;
-  const max = (collateralSum - borrowSum) * (volatiliyRatio / MAX_RATIO);
-
-  return max;
 };
 
 export const computeHealthFactor = (
