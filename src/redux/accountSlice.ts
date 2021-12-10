@@ -1,17 +1,11 @@
 import { omit } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import {
-  sumReducer,
-  shrinkToken,
-  USD_FORMAT,
-  PERCENT_DIGITS,
-  NEAR_DECIMALS,
-  TOKEN_FORMAT,
-} from "../store";
+import { shrinkToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS, TOKEN_FORMAT } from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
-import { emptyAsset } from "./utils";
+import { emptyAsset, sumReducer } from "./utils";
+import { AssetsState } from "./assetsSlice";
 
 interface Balance {
   [tokenId: string]: string;
@@ -187,43 +181,60 @@ export const getPortfolioAssets = createSelector(
 
 const MAX_RATIO = 10000;
 
+const getCollateralSum = (assets: AssetsState, account: AccountState) =>
+  Object.keys(account.portfolio.collateral)
+    .map((id) => {
+      const asset = assets[id];
+      const balance = Number(account.portfolio.collateral[id].balance) * (asset.price?.usd || 0);
+      const volatiliyRatio = asset.config.volatility_ratio || 0;
+
+      return (
+        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+        (volatiliyRatio / MAX_RATIO)
+      );
+    })
+    .reduce(sumReducer, 0);
+
+const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
+  Object.keys(account.portfolio.borrowed)
+    .map((id) => {
+      const asset = assets[id];
+      const balance = Number(account.portfolio.borrowed[id].balance) * (asset.price?.usd || 0);
+      const volatiliyRatio = asset.config.volatility_ratio || 0;
+      return (
+        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
+        (volatiliyRatio / MAX_RATIO)
+      );
+    })
+    .reduce(sumReducer, 0);
+
 export const getMaxBorrowAmount = (tokenId: string) =>
   createSelector(
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.accountId || !tokenId) return 0;
-      const collateralSum = Object.keys(account.portfolio.collateral)
-        .map((id) => {
-          const asset = assets[id];
-          const balance =
-            Number(account.portfolio.collateral[id].balance) * (asset.price?.usd || 0);
-          const volatiliyRatio = asset.config.volatility_ratio || 0;
-
-          return (
-            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-            (volatiliyRatio / MAX_RATIO)
-          );
-        })
-        .reduce(sumReducer, 0);
-
-      const borrowSum = Object.keys(account.portfolio.borrowed)
-        .map((id) => {
-          const asset = assets[id];
-          const balance = Number(account.portfolio.borrowed[id].balance) * (asset.price?.usd || 0);
-          const volatiliyRatio = asset.config.volatility_ratio || 0;
-          return (
-            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
-            (volatiliyRatio / MAX_RATIO)
-          );
-        })
-        .reduce(sumReducer, 0);
+      const collateralSum = getCollateralSum(assets, account);
+      const borrowedSum = getBorrowedSum(assets, account);
 
       const volatiliyRatio = assets[tokenId].config.volatility_ratio || 0;
-      const max = (collateralSum - borrowSum) * (volatiliyRatio / MAX_RATIO);
+      const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
       return max.toLocaleString(undefined, TOKEN_FORMAT);
     },
   );
+
+export const getHealthFactor = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    if (!account.portfolio) return null;
+    const collateralSum = getCollateralSum(assets, account);
+    const borrowedSum = getBorrowedSum(assets, account);
+
+    const healthFactor = (collateralSum / borrowedSum) * 100;
+    return healthFactor < 10000 ? healthFactor : 10000;
+  },
+);
 
 export const { receivedAccount, logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;

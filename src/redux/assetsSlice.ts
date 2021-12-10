@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { sumReducer, USD_FORMAT } from "../store";
+import { USD_FORMAT } from "../store";
 import { IAssetDetailed, IMetadata } from "../interfaces";
 import type { RootState } from "./store";
-import { toUsd, transformAsset } from "./utils";
+import { toUsd, transformAsset, sumReducer } from "./utils";
 
 export type Asset = IAssetDetailed & {
   metadata: IMetadata;

@@ -3,19 +3,9 @@ import { Account, Contract } from "near-api-js";
 
 import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
 import { getBurrow } from "../utils";
-import {
-  ViewMethodsOracle,
-  IAssetPrice,
-  IPrices,
-  IAccountDetailed,
-  IAssetDetailed,
-} from "../interfaces";
+import { ViewMethodsOracle, IAssetPrice, IPrices } from "../interfaces";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
-
-const MAX_RATIO = 10000;
-
-export const sumReducer = (sum: number, a: number) => sum + a;
 
 export const aprToRate = (apr: string): string => {
   const exp = new Decimal(1).dividedBy(new Decimal(NANOS_PER_YEAR));
@@ -78,36 +68,6 @@ export const shrinkToken = (
   fixed?: number,
 ): string => {
   return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed(fixed);
-};
-
-export const computeHealthFactor = (
-  assets: IAssetDetailed[],
-  portfolio: IAccountDetailed,
-): number => {
-  const collateralSum = portfolio.collateral
-    .map((collateral) => {
-      const asset = assets.find((a) => a.token_id === collateral.token_id)!;
-      return (
-        Number(collateral.balance) *
-        (asset.price?.usd || 0) *
-        (asset.config.volatility_ratio / MAX_RATIO)
-      );
-    })
-    .reduce(sumReducer, 0);
-
-  const borrowedSum = portfolio.borrowed
-    .map((borrowed) => {
-      const asset = assets.find((a) => a.token_id === borrowed.token_id)!;
-      return (
-        (Number(borrowed.balance) * (asset?.price?.usd || 0)) /
-        (asset.config.volatility_ratio / MAX_RATIO)
-      );
-    })
-    .reduce(sumReducer, 0);
-
-  const healthFactor = (collateralSum / borrowedSum) * 100;
-
-  return healthFactor < 10000 ? healthFactor : 10000;
 };
 
 export const getContract = async (
