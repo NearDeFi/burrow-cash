@@ -72,13 +72,14 @@ export const accountSlice = createSlice({
         near: accountBalance,
       };
 
-      const { supplied, borrowed, collateral } = portfolio;
-
-      state.portfolio = {
-        supplied: listToMap(supplied),
-        borrowed: listToMap(borrowed),
-        collateral: listToMap(collateral),
-      };
+      if (portfolio) {
+        const { supplied, borrowed, collateral } = portfolio;
+        state.portfolio = {
+          supplied: listToMap(supplied),
+          borrowed: listToMap(borrowed),
+          collateral: listToMap(collateral),
+        };
+      }
     },
   },
 });

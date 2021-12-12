@@ -22,7 +22,7 @@ export async function repay({
         {
           Repay: {
             max_amount: expandToken(amount, decimals + extraDecimals, 0),
-            tokenId,
+            token_id: tokenId,
           },
         },
       ],
