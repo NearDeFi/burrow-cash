@@ -6,6 +6,7 @@ import type { Asset } from "./assetsSlice";
 import type { AccountState } from "./accountSlice";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
+export const sumReducerD = (sum: Decimal, a: Decimal) => sum.plus(a);
 
 export const toUsd = (balance: string, asset: Asset) =>
   asset.price?.usd

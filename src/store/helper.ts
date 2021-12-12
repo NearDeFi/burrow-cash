@@ -1,11 +1,18 @@
 import Decimal from "decimal.js";
 import { Account, Contract } from "near-api-js";
 
-import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
+import { DEFAULT_PRECISION, NANOS_PER_YEAR, MAX_RATIO, NUM_DECIMALS } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle, IAssetPrice, IPrices } from "../interfaces";
+import { Asset } from "../redux/assetsSlice";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
+
+interface Price {
+  multiplier: string;
+  decimals: number;
+  usd: number;
+}
 
 export const aprToRate = (apr: string): string => {
   const exp = new Decimal(1).dividedBy(new Decimal(NANOS_PER_YEAR));
@@ -23,7 +30,7 @@ export const rateToApr = (rate: string): string => {
   return apr.toFixed(2);
 };
 
-export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined> => {
+export const getPrices = async (tokenIds: string[]): Promise<IPrices> => {
   const { view, oracleContract } = await getBurrow();
 
   try {
@@ -38,19 +45,17 @@ export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined
     if (priceResponse) {
       priceResponse.prices = priceResponse?.prices.map((assetPrice: IAssetPrice) => ({
         ...assetPrice,
-        price: assetPrice.price
-          ? {
-              ...assetPrice.price,
-              usd: new Decimal(assetPrice.price?.multiplier || 0).div(10000).toNumber(),
-            }
-          : null,
+        price: {
+          ...assetPrice.price,
+          usd: new Decimal(assetPrice.price?.multiplier || 0).div(10000).toNumber(),
+        },
       }))!;
     }
 
     return priceResponse;
   } catch (err: any) {
     console.error("Getting prices failed: ", err.message);
-    return undefined;
+    throw new Error(err);
   }
 };
 
@@ -68,6 +73,10 @@ export const shrinkToken = (
   fixed?: number,
 ): string => {
   return new Decimal(value).div(new Decimal(10).pow(decimals)).toFixed(fixed);
+};
+
+export const shrinkTokenD = (value: Decimal, decimals: number): Decimal => {
+  return new Decimal(value).div(new Decimal(10).pow(decimals));
 };
 
 export const getContract = async (
@@ -89,3 +98,40 @@ export const getContract = async (
 
   return contract;
 };
+
+export const sharesToAmount = (asset: Asset, shares: string, roundUp: boolean): Decimal => {
+  const sharesD = new Decimal(shares);
+  const assetSuppliedBalanceD = new Decimal(asset.supplied.balance);
+  const assetSuppliedSharesD = new Decimal(asset.supplied.shares);
+
+  if (
+    sharesD.comparedTo(assetSuppliedBalanceD) >= 0 ||
+    sharesD.comparedTo(assetSuppliedSharesD) === 0
+  ) {
+    return assetSuppliedBalanceD;
+  }
+
+  const extra = roundUp ? assetSuppliedSharesD.minus(new Decimal(1)) : new Decimal(0);
+  return assetSuppliedBalanceD.mul(sharesD).plus(extra).div(assetSuppliedSharesD);
+};
+
+export const fromBalancePrice = (balance: Decimal, price: Price, extraDecimals: number) => {
+  const num = new Decimal(price.multiplier).mul(balance);
+  const denominatorDecimals = price.decimals + extraDecimals;
+  if (denominatorDecimals > NUM_DECIMALS) {
+    return num.div(new Decimal(10).pow(denominatorDecimals - NUM_DECIMALS));
+  }
+  return num.mul(new Decimal(10).pow(NUM_DECIMALS - denominatorDecimals));
+};
+
+export const multRatio = (balance: Decimal, ratio: number) =>
+  balance
+    .mul(ratio)
+    .plus(new Decimal(MAX_RATIO / 2))
+    .div(new Decimal(MAX_RATIO));
+
+export const divRatio = (balance: Decimal, ratio: number) =>
+  balance
+    .mul(new Decimal(MAX_RATIO))
+    .plus(new Decimal(MAX_RATIO / 2))
+    .div(ratio);

@@ -6,7 +6,7 @@ export interface IPrice {
 
 export interface IAssetPrice {
   asset_id: string;
-  price: IPrice | null;
+  price: IPrice;
 }
 
 export interface IPrices {

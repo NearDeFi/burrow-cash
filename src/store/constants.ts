@@ -4,6 +4,9 @@ export const TOKEN_DECIMALS = 18;
 export const NEAR_DECIMALS = 24;
 export const PERCENT_DIGITS = 4; // Decrease APY decimals to the thousandth #111
 
+export const MAX_RATIO = 10000;
+export const NUM_DECIMALS = 27;
+
 export const USD_FORMAT = {
   style: "currency",
   currency: "USD",

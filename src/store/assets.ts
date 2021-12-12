@@ -40,8 +40,7 @@ export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
 
   detailedAssets = detailedAssets?.map((detailedAsset) => ({
     ...detailedAsset,
-    price:
-      priceResponse?.prices.find((p) => p.asset_id === detailedAsset.token_id)?.price || undefined,
+    price: priceResponse?.prices.find((p) => p.asset_id === detailedAsset.token_id)?.price!,
   }));
 
   return detailedAssets;

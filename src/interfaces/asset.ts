@@ -76,7 +76,7 @@ export interface IAssetDetailed {
   /// Asset farms
   farms: IAssetFarmView[];
   // price mixin
-  price?: IPrice;
+  price: IPrice;
 }
 
 export interface AssetFarm {

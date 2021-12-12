@@ -1,10 +1,23 @@
 import { omit } from "ramda";
+import Decimal from "decimal.js";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { shrinkToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS, TOKEN_FORMAT } from "../store";
+import {
+  shrinkToken,
+  // shrinkTokenD,
+  USD_FORMAT,
+  MAX_RATIO,
+  PERCENT_DIGITS,
+  NEAR_DECIMALS,
+  TOKEN_FORMAT,
+  sharesToAmount,
+  fromBalancePrice,
+  multRatio,
+  divRatio,
+} from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
-import { emptyAsset, sumReducer } from "./utils";
+import { emptyAsset, sumReducer, sumReducerD } from "./utils";
 import { AssetsState } from "./assetsSlice";
 
 interface Balance {
@@ -180,8 +193,6 @@ export const getPortfolioAssets = createSelector(
   },
 );
 
-const MAX_RATIO = 10000;
-
 const getCollateralSum = (assets: AssetsState, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
@@ -209,6 +220,30 @@ const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
     })
     .reduce(sumReducer, 0);
 
+const getCollateralSumD = (assets: AssetsState, account: AccountState) =>
+  Object.keys(account.portfolio.collateral)
+    .map((id) => {
+      const asset = assets[id];
+      const { shares } = account.portfolio.collateral[id];
+      const balanceD = sharesToAmount(asset, shares, false);
+      const volatiliyRatio = asset.config.volatility_ratio;
+      const balancePrice = fromBalancePrice(balanceD, asset.price, asset.config.extra_decimals);
+      return multRatio(balancePrice, volatiliyRatio);
+    })
+    .reduce(sumReducerD, new Decimal(0));
+
+const getBorrowedSumD = (assets: AssetsState, account: AccountState) =>
+  Object.keys(account.portfolio.borrowed)
+    .map((id) => {
+      const asset = assets[id];
+      const { shares } = account.portfolio.borrowed[id];
+      const balanceD = sharesToAmount(asset, shares, true);
+      const volatiliyRatio = asset.config.volatility_ratio;
+      const balancePrice = fromBalancePrice(balanceD, asset.price, asset.config.extra_decimals);
+      return divRatio(balancePrice, volatiliyRatio);
+    })
+    .reduce(sumReducerD, new Decimal(0));
+
 export const getMaxBorrowAmount = (tokenId: string) =>
   createSelector(
     (state: RootState) => state.assets,
@@ -218,8 +253,21 @@ export const getMaxBorrowAmount = (tokenId: string) =>
       const collateralSum = getCollateralSum(assets, account);
       const borrowedSum = getBorrowedSum(assets, account);
 
-      const volatiliyRatio = assets[tokenId].config.volatility_ratio || 0;
+      const collateralSumD = getCollateralSumD(assets, account);
+      const borrowedSumD = getBorrowedSumD(assets, account);
+
+      console.log(` c: ${collateralSum} \ncD: ${collateralSumD.toNumber()}`);
+      console.log(` b: ${borrowedSum} \nbD: ${borrowedSumD.toNumber()}`);
+
+      const volatiliyRatio = assets[tokenId].config.volatility_ratio;
+
       const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
+      // const maxD = collateralSumD.minus(borrowedSumD).mul(volatiliyRatio / MAX_RATIO);
+      const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD);
+      console.log(`max: ${max}\nmaxD: ${maxD.toNumber()}\n${maxD}`);
+      console.log(borrowedSum <= collateralSum);
+      console.log(borrowedSumD.toNumber() <= collateralSumD.toNumber());
+
       return max.toLocaleString(undefined, TOKEN_FORMAT);
     },
   );
