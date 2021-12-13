@@ -59,7 +59,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     const available = Number(
       shrinkToken(
         account.balances[tokenId === "wrap.testnet" ? "near" : tokenId],
-        asset.metadata.decimals + asset.config.extra_decimals,
+        asset.metadata.decimals,
       ),
     );
 

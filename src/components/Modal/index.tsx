@@ -168,7 +168,7 @@ const Modal = () => {
             {available$})
           </Typography>
           <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            1 {displaySymbol} = {price}
+            1 {displaySymbol} = ${price}
           </Typography>
         </Box>
         <Input
