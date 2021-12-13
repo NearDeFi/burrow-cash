@@ -3,7 +3,7 @@ import { Modal as MUIModal, Typography, Box, Switch } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { USD_FORMAT, PERCENT_DIGITS } from "../../store";
+import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../../store";
 import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -119,6 +119,8 @@ const Modal = () => {
   const showToggle = action === "Supply" && canUseAsCollateral;
   const actionDisabled = !amount || amount > available || amount === collateral;
 
+  const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
+
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
@@ -162,10 +164,11 @@ const Modal = () => {
         </Typography>
         <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
           <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            Available: {available} {symbol} ({available$})
+            Available: {available.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
+            {available$})
           </Typography>
           <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            1 {symbol} = {price}
+            1 {displaySymbol} = {price}
           </Typography>
         </Box>
         <Input
@@ -219,7 +222,7 @@ const Modal = () => {
             onClick={handleActionButtonClick}
             loading={loading}
           >
-            {action} {symbol}
+            {action} {displaySymbol}
           </LoadingButton>
         </Box>
       </Wrapper>

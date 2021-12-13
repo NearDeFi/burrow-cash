@@ -1,5 +1,5 @@
 import { USD_FORMAT, TOKEN_FORMAT } from "../../store";
-import type { UIAsset } from "../../redux/utils";
+import type { UIAsset } from "../../interfaces";
 
 interface Props {
   rates: Array<{ label: string; value: string }>;

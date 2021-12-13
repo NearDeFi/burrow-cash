@@ -4,6 +4,7 @@ import { pick } from "ramda";
 import { shrinkToken, USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../store";
 import type { Asset } from "./assetsSlice";
 import type { AccountState } from "./accountSlice";
+import { UIAsset } from "../interfaces";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
 
@@ -13,34 +14,13 @@ export const toUsd = (balance: string, asset: Asset) =>
       asset.price.usd
     : 0;
 
-export const emptyAsset = (asset: { supplied: string; collateral: string }): boolean =>
+export const emptyAsset = (asset: { supplied: number; collateral: number }): boolean =>
   !(
-    asset.supplied === (0).toLocaleString(undefined, TOKEN_FORMAT) &&
-    asset.collateral === (0).toLocaleString(undefined, TOKEN_FORMAT)
+    asset.supplied.toLocaleString(undefined, TOKEN_FORMAT) ===
+      (0).toLocaleString(undefined, TOKEN_FORMAT) &&
+    asset.collateral.toLocaleString(undefined, TOKEN_FORMAT) ===
+      (0).toLocaleString(undefined, TOKEN_FORMAT)
   );
-
-export interface UIAsset {
-  tokenId: string;
-  icon: string;
-  symbol: string;
-  name: string;
-  price: number;
-  price$: number;
-  supplyApy: string;
-  totalSupply: number;
-  totalSupply$: string;
-  borrowApy: string;
-  availableLiquidity: number;
-  availableLiquidity$: string;
-  collateralFactor: string;
-  canUseAsCollateral: boolean;
-  supplied: number;
-  collateral: number;
-  borrowed: number;
-  available: number;
-  available$: string;
-  extraDecimals: number;
-}
 
 export const transformAsset = (asset: Asset, account: AccountState): UIAsset => {
   const tokenId = asset.token_id;
