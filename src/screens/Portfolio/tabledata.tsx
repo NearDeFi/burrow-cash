@@ -44,12 +44,6 @@ export const borrowedColumns = [
     Cell: TokenCell,
   },
   {
-    label: "APY",
-    dataKey: "apy",
-    align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.supplyApy} rowData={rowData} />,
-  },
-  {
     label: "Borrow APY",
     dataKey: "borrowAPY",
     align: "right",
