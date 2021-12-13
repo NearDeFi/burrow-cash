@@ -108,6 +108,7 @@ export interface UIAsset {
   supplied: number;
   collateral: number;
   borrowed: number;
+  availableNEAR: number;
   available: number;
   available$: string;
   extraDecimals: number;

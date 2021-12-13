@@ -22,6 +22,7 @@ export const getModalData = (asset): UIAsset & Props => {
     collateral,
     borrowed,
     available,
+    availableNEAR,
   } = asset;
 
   const data: any = {
@@ -39,6 +40,7 @@ export const getModalData = (asset): UIAsset & Props => {
       if (symbol === "wNEAR") {
         data.name = "NEAR";
         data.symbol = "NEAR";
+        data.available = availableNEAR;
       }
       break;
     case "Borrow":
