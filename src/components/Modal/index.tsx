@@ -164,7 +164,7 @@ const Modal = () => {
         </Typography>
         <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
           <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            Available: {available.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
+            Available: {available?.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
             {available$})
           </Typography>
           <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
