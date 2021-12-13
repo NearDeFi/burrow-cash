@@ -7,6 +7,7 @@ type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 
 export interface AppState {
   showModal: boolean;
+  displayAsTokenValue: boolean;
   selected: {
     action?: TokenAction;
     tokenId: string;
@@ -17,6 +18,7 @@ export interface AppState {
 
 const initialState: AppState = {
   showModal: false,
+  displayAsTokenValue: false,
   selected: {
     action: undefined,
     tokenId: "",
@@ -45,12 +47,20 @@ export const appSlice = createSlice({
     toggleUseAsCollateral(state, action: PayloadAction<{ useAsCollateral: boolean }>) {
       state.selected.useAsCollateral = action.payload.useAsCollateral;
     },
+    toggleDisplayValues(state) {
+      state.displayAsTokenValue = !state.displayAsTokenValue;
+    },
   },
 });
 
 export const getModalStatus = createSelector(
   (state: RootState) => state.app,
   (app) => app.showModal,
+);
+
+export const getDisplayAsTokenValue = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.displayAsTokenValue,
 );
 
 export const getSelectedValues = createSelector(
@@ -72,5 +82,6 @@ export const getAssetData = createSelector(
   },
 );
 
-export const { hideModal, showModal, updateAmount, toggleUseAsCollateral } = appSlice.actions;
+export const { hideModal, showModal, updateAmount, toggleUseAsCollateral, toggleDisplayValues } =
+  appSlice.actions;
 export default appSlice.reducer;

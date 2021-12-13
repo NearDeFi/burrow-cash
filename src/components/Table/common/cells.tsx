@@ -3,6 +3,8 @@ import { Box } from "@mui/material";
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT } from "../../../store";
 import type { UIAsset } from "../../../interfaces";
+import { useAppSelector } from "../../../redux/hooks";
+import { getDisplayAsTokenValue } from "../../../redux/appSlice";
 
 export const TokenCell = ({ rowData }) => {
   const { symbol, price } = rowData;
@@ -30,9 +32,9 @@ export const Cell = ({
   format?: boolean;
 }) => {
   const { price = 0 } = rowData;
-  const displayAsToken = false;
+  const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const displayValue = format
-    ? displayAsToken
+    ? displayAsTokenValue
       ? value.toLocaleString(undefined, TOKEN_FORMAT)
       : (value * price).toLocaleString(undefined, USD_FORMAT)
     : value.toLocaleString(undefined, TOKEN_FORMAT);
