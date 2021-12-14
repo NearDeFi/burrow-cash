@@ -61,6 +61,7 @@ const Modal = () => {
   const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
 
   const handleInputChange = (e) => {
+    if (Number(e.target.value) > available) return;
     dispatch(updateAmount({ amount: e.target.value || 0 }));
   };
 
