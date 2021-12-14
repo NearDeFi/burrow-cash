@@ -173,7 +173,7 @@ export const getPortfolioAssets = createSelector(
     const borrowed = Object.keys(account.portfolio.borrowed).map((tokenId) => {
       const asset = assets[tokenId];
 
-      const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
+      const borrowedBalance = account.portfolio.borrowed[tokenId]?.balance || 0;
 
       return {
         tokenId,
@@ -196,7 +196,7 @@ const getCollateralSum = (assets: AssetsState, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
       const asset = assets[id];
-      const balance = Number(account.portfolio.collateral[id].balance) * (asset.price?.usd || 0);
+      const balance = Number(account.portfolio.collateral[id]?.balance) * (asset.price?.usd || 0);
       const volatiliyRatio = asset.config.volatility_ratio || 0;
 
       return (
@@ -210,7 +210,7 @@ const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
   Object.keys(account.portfolio.borrowed)
     .map((id) => {
       const asset = assets[id];
-      const balance = Number(account.portfolio.borrowed[id].balance) * (asset.price?.usd || 0);
+      const balance = Number(account.portfolio.borrowed[id]?.balance) * (asset.price?.usd || 0);
       const volatiliyRatio = asset.config.volatility_ratio || 0;
       return (
         Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
@@ -261,8 +261,8 @@ export const getMaxBorrowAmount = (tokenId: string) =>
       const volatiliyRatio = assets[tokenId].config.volatility_ratio;
 
       const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
-      // const maxD = collateralSumD.minus(borrowedSumD).mul(volatiliyRatio / MAX_RATIO);
-      const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD).div(new Decimal(2));
+      const maxD = collateralSumD.minus(borrowedSumD).mul(volatiliyRatio / MAX_RATIO);
+      // const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD).div(new Decimal(2));
       console.log(`max: ${max}\nmaxD: ${maxD.toNumber()}\n${maxD}`);
       console.log(borrowedSum <= collateralSum);
       console.log(borrowedSumD.toNumber() <= collateralSumD.toNumber());
@@ -294,7 +294,7 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
       const { metadata, config } = assets[tokenId];
 
       const newBalance = (
-        Number(account.portfolio.borrowed[tokenId].balance) +
+        Number(account.portfolio.borrowed[tokenId]?.balance) +
         Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
       ).toString();
 
