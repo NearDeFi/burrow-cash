@@ -192,34 +192,34 @@ export const getPortfolioAssets = createSelector(
   },
 );
 
+// const getCollateralSum_old = (assets: AssetsState, account: AccountState) =>
+//   Object.keys(account.portfolio.collateral)
+//     .map((id) => {
+//       const asset = assets[id];
+//       const balance = Number(account.portfolio.collateral[id]?.balance) * (asset.price?.usd || 0);
+//       const volatiliyRatio = asset.config.volatility_ratio || 0;
+
+//       return (
+//         Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+//         (volatiliyRatio / MAX_RATIO)
+//       );
+//     })
+//     .reduce(sumReducer, 0);
+
+// const getBorrowedSum_old = (assets: AssetsState, account: AccountState) =>
+//   Object.keys(account.portfolio.borrowed)
+//     .map((id) => {
+//       const asset = assets[id];
+//       const balance = Number(account.portfolio.borrowed[id]?.balance) * (asset.price?.usd || 0);
+//       const volatiliyRatio = asset.config.volatility_ratio || 0;
+//       return (
+//         Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
+//         (volatiliyRatio / MAX_RATIO)
+//       );
+//     })
+//     .reduce(sumReducer, 0);
+
 const getCollateralSum = (assets: AssetsState, account: AccountState) =>
-  Object.keys(account.portfolio.collateral)
-    .map((id) => {
-      const asset = assets[id];
-      const balance = Number(account.portfolio.collateral[id]?.balance) * (asset.price?.usd || 0);
-      const volatiliyRatio = asset.config.volatility_ratio || 0;
-
-      return (
-        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-        (volatiliyRatio / MAX_RATIO)
-      );
-    })
-    .reduce(sumReducer, 0);
-
-const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
-  Object.keys(account.portfolio.borrowed)
-    .map((id) => {
-      const asset = assets[id];
-      const balance = Number(account.portfolio.borrowed[id]?.balance) * (asset.price?.usd || 0);
-      const volatiliyRatio = asset.config.volatility_ratio || 0;
-      return (
-        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) /
-        (volatiliyRatio / MAX_RATIO)
-      );
-    })
-    .reduce(sumReducer, 0);
-
-const getCollateralSumD = (assets: AssetsState, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
       const asset = assets[id];
@@ -231,7 +231,7 @@ const getCollateralSumD = (assets: AssetsState, account: AccountState) =>
     })
     .reduce(sumReducerD, new Decimal(0));
 
-const getBorrowedSumD = (assets: AssetsState, account: AccountState) =>
+const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
   Object.keys(account.portfolio.borrowed)
     .map((id) => {
       const asset = assets[id];
@@ -249,25 +249,11 @@ export const getMaxBorrowAmount = (tokenId: string) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.accountId || !tokenId) return 0;
-      const collateralSum = getCollateralSum(assets, account);
-      const borrowedSum = getBorrowedSum(assets, account);
-
-      const collateralSumD = getCollateralSumD(assets, account);
-      const borrowedSumD = getBorrowedSumD(assets, account);
-
-      console.log(` c: ${collateralSum} \ncD: ${collateralSumD.toNumber()}`);
-      console.log(` b: ${borrowedSum} \nbD: ${borrowedSumD.toNumber()}`);
-
+      const collateralSumD = getCollateralSum(assets, account);
+      const borrowedSumD = getBorrowedSum(assets, account);
       const volatiliyRatio = assets[tokenId].config.volatility_ratio;
-
-      const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
       const maxD = collateralSumD.minus(borrowedSumD).mul(volatiliyRatio / MAX_RATIO);
-      // const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD).div(new Decimal(2));
-      console.log(`max: ${max}\nmaxD: ${maxD.toNumber()}\n${maxD}`);
-      console.log(borrowedSum <= collateralSum);
-      console.log(borrowedSumD.toNumber() <= collateralSumD.toNumber());
-
-      return max.toLocaleString(undefined, TOKEN_FORMAT);
+      return maxD.toNumber().toLocaleString(undefined, TOKEN_FORMAT);
     },
   );
 
@@ -279,7 +265,7 @@ export const getHealthFactor = createSelector(
     const collateralSum = getCollateralSum(assets, account);
     const borrowedSum = getBorrowedSum(assets, account);
 
-    const healthFactor = (collateralSum / borrowedSum) * 100;
+    const healthFactor = collateralSum.div(borrowedSum).mul(100).toNumber();
     return healthFactor < 10000 ? healthFactor : 10000;
   },
 );
@@ -298,15 +284,30 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
         Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
       ).toString();
 
+      const newShares = (
+        Number(account.portfolio.borrowed[tokenId]?.shares) +
+        Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
+      ).toString();
+
       const clonedAccount = clone(account);
       clonedAccount.portfolio.borrowed[tokenId] = {
         ...clonedAccount.portfolio.borrowed[tokenId],
         balance: newBalance,
+        shares: newShares,
       };
 
       const borrowedSum = getBorrowedSum(assets, clonedAccount);
 
-      const healthFactor = (collateralSum / borrowedSum) * 100;
+      // const healthFactor = (collateralSum.toNumber() / borrowedSum.toNumber()) * 100;
+      const healthFactor = collateralSum.div(borrowedSum).mul(100).toNumber();
+
+      console.log(
+        "healthFactor",
+        clonedAccount.portfolio.borrowed["dai.fakes.testnet"].balance,
+        clonedAccount.portfolio.borrowed["dai.fakes.testnet"].shares,
+        healthFactor,
+      );
+
       return healthFactor < 10000 ? healthFactor : 10000;
     },
   );
