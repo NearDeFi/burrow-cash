@@ -8,6 +8,7 @@ interface inputFieldProps {
   value?: number;
   onChange?: (e: React.SyntheticEvent) => void;
   onClickMax?: (e: React.SyntheticEvent) => void;
+  onFocus?: (e: React.SyntheticEvent) => void;
 }
 
 const InputField = (props: inputFieldProps) => {

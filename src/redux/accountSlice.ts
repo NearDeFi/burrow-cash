@@ -256,7 +256,7 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
       const { metadata, config } = assets[tokenId];
 
       const newBalance = (
-        Number(account.portfolio.borrowed[tokenId].balance) +
+        Number(account.portfolio.borrowed[tokenId]?.balance) +
         Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
       ).toString();
 

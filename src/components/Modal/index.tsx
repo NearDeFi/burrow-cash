@@ -61,11 +61,15 @@ const Modal = () => {
   const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
 
   const handleInputChange = (e) => {
-    dispatch(updateAmount({ amount: e.target.value }));
+    dispatch(updateAmount({ amount: e.target.value || 0 }));
   };
 
   const handleMaxClick = () => {
     dispatch(updateAmount({ amount: available }));
+  };
+
+  const handleFocus = (e) => {
+    e.target.select();
   };
 
   const handleSliderChange = (e) => {
@@ -180,6 +184,7 @@ const Modal = () => {
           type="number"
           onClickMax={handleMaxClick}
           onChange={handleInputChange}
+          onFocus={handleFocus}
         />
         <Box px="0.5rem" my="1rem">
           <Slider value={sliderValue} onChange={handleSliderChange} />
