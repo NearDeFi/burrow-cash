@@ -256,17 +256,26 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
       const { metadata, config } = assets[tokenId];
 
       const newBalance = (
-        Number(account.portfolio.borrowed[tokenId]?.balance) +
+        Number(account.portfolio.borrowed[tokenId]?.balance || 0) +
         Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
       ).toString();
 
       const clonedAccount = clone(account);
+
+      if (!clonedAccount.portfolio.borrowed[tokenId]) {
+        clonedAccount.portfolio.borrowed[tokenId] = {
+          balance: newBalance,
+          shares: newBalance,
+          apr: "0",
+        };
+      }
+
       clonedAccount.portfolio.borrowed[tokenId] = {
         ...clonedAccount.portfolio.borrowed[tokenId],
         balance: newBalance,
       };
 
-      const borrowedSum = getBorrowedSum(assets, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets, amount === 0 ? account : clonedAccount);
 
       const healthFactor = (collateralSum / borrowedSum) * 100;
       return healthFactor < 10000 ? healthFactor : 10000;
