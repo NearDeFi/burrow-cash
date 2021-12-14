@@ -97,10 +97,10 @@ export interface UIAsset {
   name: string;
   price: number;
   price$: number;
-  supplyApy: string;
+  supplyApy: number;
   totalSupply: number;
   totalSupply$: string;
-  borrowApy: string;
+  borrowApy: number;
   availableLiquidity: number;
   availableLiquidity$: string;
   collateralFactor: string;

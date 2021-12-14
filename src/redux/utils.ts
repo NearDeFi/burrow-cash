@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { pick } from "ramda";
 
-import { shrinkToken, USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../store";
+import { shrinkToken, USD_FORMAT, TOKEN_FORMAT } from "../store";
 import type { Asset } from "./assetsSlice";
 import type { AccountState } from "./accountSlice";
 import { UIAsset } from "../interfaces";
@@ -85,10 +85,10 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     ...pick(["icon", "symbol", "name"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
     price$: asset.price ? asset.price.usd : 0,
-    supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+    supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
-    borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+    borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,

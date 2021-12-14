@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 import TokenIcon from "../../TokenIcon";
-import { USD_FORMAT, TOKEN_FORMAT } from "../../../store";
+import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT } from "../../../store";
 import type { UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue } from "../../../redux/appSlice";
@@ -22,21 +22,32 @@ export const TokenCell = ({ rowData }) => {
   );
 };
 
+type FormatType = "apy" | "amount" | "string";
+type FormatMap = {
+  [t in FormatType]: (v: number | string) => string;
+};
+
 export const Cell = ({
   value,
   rowData,
   format,
 }: {
-  value: number;
+  value: number | string;
   rowData: UIAsset;
-  format?: boolean;
+  format: FormatType;
 }) => {
-  const { price = 0 } = rowData;
+  const { price$ } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
-  const displayValue = format
-    ? displayAsTokenValue
-      ? value.toLocaleString(undefined, TOKEN_FORMAT)
-      : (value * price).toLocaleString(undefined, USD_FORMAT)
-    : value.toLocaleString(undefined, TOKEN_FORMAT);
+
+  const formatMap: FormatMap = {
+    apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
+    amount: (v) =>
+      displayAsTokenValue
+        ? Number(v).toLocaleString(undefined, TOKEN_FORMAT)
+        : (Number(v) * price$).toLocaleString(undefined, USD_FORMAT),
+    string: (v) => v.toString(),
+  };
+
+  const displayValue = formatMap[format](value);
   return <Box>{displayValue}</Box>;
 };

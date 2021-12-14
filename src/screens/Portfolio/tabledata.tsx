@@ -11,19 +11,19 @@ export const suppliedColumns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.apy} rowData={rowData} />,
+    Cell: ({ rowData }) => <Cell value={rowData.apy} rowData={rowData} format="apy" />,
   },
   {
     label: "Collateral",
     dataKey: "collateralSum",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.collateral} rowData={rowData} />,
+    Cell: ({ rowData }) => <Cell value={rowData.collateral} rowData={rowData} format="amount" />,
   },
   {
     label: "Supplied",
     dataKey: "balance",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} />,
+    Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,
   },
   {
     dataKey: "withdraw",
@@ -47,13 +47,13 @@ export const borrowedColumns = [
     label: "Borrow APY",
     dataKey: "borrowAPY",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} />,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Borrowed",
     dataKey: "shares",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.borrowed} rowData={rowData} />,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowed} rowData={rowData} format="amount" />,
   },
   {
     dataKey: "repay",

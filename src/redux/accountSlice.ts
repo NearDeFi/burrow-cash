@@ -156,7 +156,8 @@ export const getPortfolioAssets = createSelector(
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          apy: `${(Number(portfolioAssets[tokenId].apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+          price$: asset.price?.usd ?? 1,
+          apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
           supplied: Number(
             shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
@@ -176,8 +177,9 @@ export const getPortfolioAssets = createSelector(
         symbol: asset.metadata.symbol,
         icon: asset.metadata.icon,
         price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-        supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
-        borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+        price$: asset.price?.usd ?? 0,
+        supplyApy: Number(asset.supply_apr) * 100,
+        borrowApy: Number(asset.borrow_apr) * 100,
         borrowed: Number(
           shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
         ),

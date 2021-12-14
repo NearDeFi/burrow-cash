@@ -76,7 +76,7 @@ const WalletButton = () => {
         }}
       >
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
-          Display values as {displayAsTokenValue ? "token" : "usd"}
+          Display values as {displayAsTokenValue ? "usd" : "token"}
         </MenuItem>
         <Divider />
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
