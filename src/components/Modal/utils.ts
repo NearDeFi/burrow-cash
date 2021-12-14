@@ -1,5 +1,5 @@
 import { USD_FORMAT, TOKEN_FORMAT } from "../../store";
-import type { UIAsset } from "../../redux/utils";
+import type { UIAsset } from "../../interfaces";
 
 interface Props {
   rates: Array<{ label: string; value: string }>;
@@ -22,6 +22,7 @@ export const getModalData = (asset): UIAsset & Props => {
     collateral,
     borrowed,
     available,
+    availableNEAR,
   } = asset;
 
   const data: any = {
@@ -39,6 +40,7 @@ export const getModalData = (asset): UIAsset & Props => {
       if (symbol === "wNEAR") {
         data.name = "NEAR";
         data.symbol = "NEAR";
+        data.available = availableNEAR;
       }
       break;
     case "Borrow":

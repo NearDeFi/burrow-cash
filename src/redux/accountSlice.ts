@@ -1,19 +1,16 @@
-import { omit } from "ramda";
+import { omit, clone } from "ramda";
 import Decimal from "decimal.js";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
+import { MAX_RATIO, PERCENT_DIGITS, NEAR_DECIMALS, TOKEN_FORMAT } from "../store/constants";
 import {
   shrinkToken,
-  // shrinkTokenD,
-  USD_FORMAT,
-  MAX_RATIO,
-  PERCENT_DIGITS,
-  NEAR_DECIMALS,
-  TOKEN_FORMAT,
+  expandToken,
   sharesToAmount,
   fromBalancePrice,
   multRatio,
   divRatio,
+  USD_FORMAT,
 } from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
@@ -162,11 +159,12 @@ export const getPortfolioAssets = createSelector(
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          apy: `${(Number(portfolioAssets[tokenId].apr) * 100).toFixed(PERCENT_DIGITS)}%`,
-          collateral: Number(collateral).toLocaleString(undefined, TOKEN_FORMAT),
+          price$: asset.price?.usd ?? 1,
+          apy: Number(portfolioAssets[tokenId].apr) * 100,
+          collateral: Number(collateral),
           supplied: Number(
             shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-          ).toLocaleString(undefined, TOKEN_FORMAT),
+          ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
         };
       })
@@ -182,11 +180,12 @@ export const getPortfolioAssets = createSelector(
         symbol: asset.metadata.symbol,
         icon: asset.metadata.icon,
         price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-        supplyApy: `${(Number(asset.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
-        borrowApy: `${(Number(asset.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%`,
+        price$: asset.price?.usd ?? 0,
+        supplyApy: Number(asset.supply_apr) * 100,
+        borrowApy: Number(asset.borrow_apr) * 100,
         borrowed: Number(
           shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-        ).toLocaleString(undefined, TOKEN_FORMAT),
+        ),
       };
     });
     return [supplied, borrowed];
@@ -284,6 +283,33 @@ export const getHealthFactor = createSelector(
     return healthFactor < 10000 ? healthFactor : 10000;
   },
 );
+
+export const recomputeHealthFactor = (tokenId: string, amount: number) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      if (!account.portfolio || !tokenId) return 0;
+      const collateralSum = getCollateralSum(assets, account);
+      const { metadata, config } = assets[tokenId];
+
+      const newBalance = (
+        Number(account.portfolio.borrowed[tokenId].balance) +
+        Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
+      ).toString();
+
+      const clonedAccount = clone(account);
+      clonedAccount.portfolio.borrowed[tokenId] = {
+        ...clonedAccount.portfolio.borrowed[tokenId],
+        balance: newBalance,
+      };
+
+      const borrowedSum = getBorrowedSum(assets, clonedAccount);
+
+      const healthFactor = (collateralSum / borrowedSum) * 100;
+      return healthFactor < 10000 ? healthFactor : 10000;
+    },
+  );
 
 export const { receivedAccount, logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;

@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
-import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery } from "@mui/material";
+import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@mui/material";
 
 import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountBalance, logoutAccount } from "../../redux/accountSlice";
+import { getDisplayAsTokenValue, toggleDisplayValues } from "../../redux/appSlice";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ const WalletButton = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const balance = useAppSelector(getAccountBalance);
+  const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
 
   const onWalletButtonClick = (event) => {
     if (!walletConnection?.isSignedIn()) {
@@ -26,6 +28,10 @@ const WalletButton = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleToggleDisplayValues = () => {
+    dispatch(toggleDisplayValues());
   };
 
   const handleLogout = () => {
@@ -69,6 +75,10 @@ const WalletButton = () => {
           "aria-labelledby": "logout-button",
         }}
       >
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
+          Display values as {displayAsTokenValue ? "usd" : "token"}
+        </MenuItem>
+        <Divider />
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
           Log Out
         </MenuItem>

@@ -64,6 +64,7 @@
     "bn.js": "^5.2.0",
     "borsh": "^0.6.0",
     "decimal.js": "^10.3.1",
+    "dotenv": "^10.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "near-api-js": "~0.43.1",
     "ramda": "^0.27.1",
