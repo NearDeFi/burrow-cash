@@ -262,7 +262,7 @@ export const getMaxBorrowAmount = (tokenId: string) =>
 
       const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
       // const maxD = collateralSumD.minus(borrowedSumD).mul(volatiliyRatio / MAX_RATIO);
-      const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD);
+      const maxD = borrowedSumD.minus(collateralSumD).div(borrowedSumD).div(new Decimal(2));
       console.log(`max: ${max}\nmaxD: ${maxD.toNumber()}\n${maxD}`);
       console.log(borrowedSum <= collateralSum);
       console.log(borrowedSumD.toNumber() <= collateralSumD.toNumber());

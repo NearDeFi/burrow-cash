@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { Account, Contract } from "near-api-js";
 
-import { DEFAULT_PRECISION, NANOS_PER_YEAR, MAX_RATIO, NUM_DECIMALS } from "./constants";
+import { DEFAULT_PRECISION, NANOS_PER_YEAR, MAX_RATIO } from "./constants";
 import { getBurrow } from "../utils";
 import { ViewMethodsOracle, IAssetPrice, IPrices } from "../interfaces";
 import { Asset } from "../redux/assetsSlice";
@@ -118,10 +118,7 @@ export const sharesToAmount = (asset: Asset, shares: string, roundUp: boolean): 
 export const fromBalancePrice = (balance: Decimal, price: Price, extraDecimals: number) => {
   const num = new Decimal(price.multiplier).mul(balance);
   const denominatorDecimals = price.decimals + extraDecimals;
-  if (denominatorDecimals > NUM_DECIMALS) {
-    return num.div(new Decimal(10).pow(denominatorDecimals - NUM_DECIMALS));
-  }
-  return num.mul(new Decimal(10).pow(NUM_DECIMALS - denominatorDecimals));
+  return num.div(new Decimal(10).pow(denominatorDecimals));
 };
 
 export const multRatio = (balance: Decimal, ratio: number) =>
