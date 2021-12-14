@@ -45,7 +45,7 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Borrow":
       data.totalTitle = `Total Borrow = `;
-      data.available = Math.min(maxBorrowAmount, availableLiquidity);
+      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity);
       data.available$ = (data.available * price$).toLocaleString(undefined, USD_FORMAT);
       data.rates = [
         { label: "Borrow APY", value: borrowApy },

@@ -57,10 +57,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
     const collateral = account.portfolio.collateral[tokenId]?.balance || 0;
     const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
-    const available = Math.max(
-      0,
-      Number(shrinkToken(account.balances[tokenId], asset.metadata.decimals)),
-    );
+    const available = Number(shrinkToken(account.balances[tokenId], asset.metadata.decimals));
     const availableNEAR = Number(shrinkToken(account.balances["near"], asset.metadata.decimals));
 
     accountAttrs = {
