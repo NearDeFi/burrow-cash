@@ -6,6 +6,8 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   boxShadow: "1.5rem",
   backgroundColor: "white",
   position: "relative",
+  display: "flex",
+  flexDirection: "column",
   [theme.breakpoints.down("sm")]: {
     position: "relative",
     height: "100%",

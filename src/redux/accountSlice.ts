@@ -1,7 +1,14 @@
-import { omit } from "ramda";
+import { omit, clone } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { shrinkToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS, TOKEN_FORMAT } from "../store";
+import {
+  shrinkToken,
+  expandToken,
+  USD_FORMAT,
+  PERCENT_DIGITS,
+  NEAR_DECIMALS,
+  TOKEN_FORMAT,
+} from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
 import { emptyAsset, sumReducer } from "./utils";
@@ -236,6 +243,33 @@ export const getHealthFactor = createSelector(
     return healthFactor < 10000 ? healthFactor : 10000;
   },
 );
+
+export const recomputeHealthFactor = (tokenId: string, amount: number) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      if (!account.portfolio || !tokenId) return 0;
+      const collateralSum = getCollateralSum(assets, account);
+      const { metadata, config } = assets[tokenId];
+
+      const newBalance = (
+        Number(account.portfolio.borrowed[tokenId].balance) +
+        Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
+      ).toString();
+
+      const clonedAccount = clone(account);
+      clonedAccount.portfolio.borrowed[tokenId] = {
+        ...clonedAccount.portfolio.borrowed[tokenId],
+        balance: newBalance,
+      };
+
+      const borrowedSum = getBorrowedSum(assets, clonedAccount);
+
+      const healthFactor = (collateralSum / borrowedSum) * 100;
+      return healthFactor < 10000 ? healthFactor : 10000;
+    },
+  );
 
 export const { receivedAccount, logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;
