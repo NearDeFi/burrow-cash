@@ -15,7 +15,12 @@ import {
   toggleUseAsCollateral,
   getSelectedValues,
 } from "../../redux/appSlice";
-import { getMaxBorrowAmount, getAccountId, recomputeHealthFactor } from "../../redux/accountSlice";
+import {
+  getMaxBorrowAmount,
+  getAccountId,
+  recomputeHealthFactor,
+  recomputeHealthFactorAdjust,
+} from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
@@ -55,7 +60,11 @@ const Modal = () => {
     collateral,
   } = getModalData({ ...asset, maxBorrowAmount });
 
-  const healthFactor = useAppSelector(recomputeHealthFactor(tokenId, amount));
+  const healthFactor = useAppSelector(
+    action === "Adjust"
+      ? recomputeHealthFactorAdjust(tokenId, amount)
+      : recomputeHealthFactor(tokenId, amount),
+  );
 
   const sliderValue = (amount * 100) / available;
   const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
@@ -127,7 +136,7 @@ const Modal = () => {
   const showToggle = action === "Supply" && canUseAsCollateral;
   const actionDisabled = !amount || amount > available || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
-  const showHealthFactor = action === "Borrow";
+  const showHealthFactor = action === "Borrow" || action === "Adjust";
   const healthFactorColor =
     healthFactor === -1
       ? "black"

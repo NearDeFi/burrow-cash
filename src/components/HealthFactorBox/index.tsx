@@ -9,7 +9,7 @@ const HealthFactorBox = ({ value }: Props) => {
   if (value === null) return null;
 
   const healthFactorDisplayValue =
-    value === -1 ? "N/A" : `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })}%`;
+    value === -1 ? "N/A" : `${value?.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
   const healthFactorColor =
     value === -1 ? "green" : value < 180 ? "red" : value < 200 ? "orange" : "green";
 
