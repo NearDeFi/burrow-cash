@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 
 import { getHealthFactor, getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle } from "../../components";
+import { InfoBox, PageTitle, HealthFactorBox } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -33,7 +33,7 @@ const Borrow = () => {
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
         {false && <InfoBox title="Borrow Limit" value="0%" />}
-        {accountId && <InfoBox title="Health Factor" value={`${healthFactor?.toFixed(2)}%`} />}
+        <HealthFactorBox value={healthFactor} />
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />

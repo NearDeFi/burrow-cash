@@ -238,6 +238,7 @@ export const getHealthFactor = createSelector(
   (state: RootState) => state.account,
   (assets, account) => {
     if (!account.portfolio) return null;
+    if (!Object.keys(account.portfolio.borrowed).length) return -1;
     const collateralSum = getCollateralSum(assets, account);
     const borrowedSum = getBorrowedSum(assets, account);
 
@@ -252,6 +253,7 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.portfolio || !tokenId) return 0;
+
       const collateralSum = getCollateralSum(assets, account);
       const { metadata, config } = assets[tokenId];
 
@@ -276,6 +278,8 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
       };
 
       const borrowedSum = getBorrowedSum(assets, amount === 0 ? account : clonedAccount);
+
+      if (!Object.keys(account.portfolio.borrowed).length && amount === 0) return -1;
 
       const healthFactor = (collateralSum / borrowedSum) * 100;
       return healthFactor < 10000 ? healthFactor : 10000;

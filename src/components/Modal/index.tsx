@@ -128,7 +128,15 @@ const Modal = () => {
   const actionDisabled = !amount || amount > available || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const showHealthFactor = action === "Borrow";
-  const healthColor = healthFactor < 180 ? "red" : healthFactor < 200 ? "orange" : "green";
+  const healthFactorColor =
+    healthFactor === -1
+      ? "black"
+      : healthFactor < 180
+      ? "red"
+      : healthFactor < 200
+      ? "orange"
+      : "green";
+  const healthFactorDisplayValue = healthFactor === -1 ? "N/A" : `${healthFactor?.toFixed(2)}%`;
 
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
@@ -203,8 +211,8 @@ const Modal = () => {
             justifyContent="center"
           >
             <span>Health Factor:</span>
-            <Box ml={1} color={healthColor}>
-              {healthFactor.toFixed(2)}%
+            <Box ml={1} color={healthFactorColor}>
+              {healthFactorDisplayValue}
             </Box>
           </Box>
         )}
