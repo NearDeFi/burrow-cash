@@ -134,7 +134,8 @@ const Modal = () => {
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
-  const actionDisabled = !amount || amount > available || amount === collateral;
+  const actionDisabled =
+    (!amount && action !== "Adjust") || amount > available || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const showHealthFactor = action === "Borrow" || action === "Adjust";
   const healthFactorColor =
