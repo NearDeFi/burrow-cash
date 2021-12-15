@@ -6,7 +6,12 @@ import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountBalance, logoutAccount } from "../../redux/accountSlice";
-import { getDisplayAsTokenValue, toggleDisplayValues } from "../../redux/appSlice";
+import {
+  getDisplayAsTokenValue,
+  toggleDisplayValues,
+  getShowDust,
+  toggleShowDust,
+} from "../../redux/appSlice";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +22,7 @@ const WalletButton = () => {
   const open = Boolean(anchorEl);
   const balance = useAppSelector(getAccountBalance);
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
+  const showDust = useAppSelector(getShowDust);
 
   const onWalletButtonClick = (event) => {
     if (!walletConnection?.isSignedIn()) {
@@ -32,6 +38,10 @@ const WalletButton = () => {
 
   const handleToggleDisplayValues = () => {
     dispatch(toggleDisplayValues());
+  };
+
+  const handleToggleShowDust = () => {
+    dispatch(toggleShowDust());
   };
 
   const handleLogout = () => {
@@ -77,6 +87,9 @@ const WalletButton = () => {
       >
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
           Display values as {displayAsTokenValue ? "usd" : "token"}
+        </MenuItem>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
+          {showDust ? "Hide" : "Show"} dust
         </MenuItem>
         <Divider />
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>

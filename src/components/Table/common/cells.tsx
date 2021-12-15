@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 
 import TokenIcon from "../../TokenIcon";
-import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT } from "../../../store";
+import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
 import type { UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
-import { getDisplayAsTokenValue } from "../../../redux/appSlice";
+import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSlice";
 
 export const TokenCell = ({ rowData }) => {
   const { symbol, price } = rowData;
@@ -38,12 +38,13 @@ export const Cell = ({
 }) => {
   const { price$ } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
+  const showDust = useAppSelector(getShowDust);
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
     amount: (v) =>
       displayAsTokenValue
-        ? Number(v).toLocaleString(undefined, TOKEN_FORMAT)
+        ? Number(v).toLocaleString(undefined, showDust ? DUST_FORMAT : TOKEN_FORMAT)
         : (Number(v) * price$).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
   };

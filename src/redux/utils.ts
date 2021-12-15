@@ -14,12 +14,18 @@ export const toUsd = (balance: string, asset: Asset) =>
       asset.price.usd
     : 0;
 
-export const emptyAsset = (asset: { supplied: number; collateral: number }): boolean =>
+export const emptySuppliedAsset = (asset: { supplied: number; collateral: number }): boolean =>
   !(
     asset.supplied.toLocaleString(undefined, TOKEN_FORMAT) ===
       (0).toLocaleString(undefined, TOKEN_FORMAT) &&
     asset.collateral.toLocaleString(undefined, TOKEN_FORMAT) ===
       (0).toLocaleString(undefined, TOKEN_FORMAT)
+  );
+
+export const emptyBorrowedAsset = (asset: { borrowed: number }): boolean =>
+  !(
+    asset.borrowed.toLocaleString(undefined, TOKEN_FORMAT) ===
+    (0).toLocaleString(undefined, TOKEN_FORMAT)
   );
 
 export const transformAsset = (asset: Asset, account: AccountState): UIAsset => {

@@ -8,6 +8,7 @@ type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
+  showDust: boolean;
   selected: {
     action?: TokenAction;
     tokenId: string;
@@ -18,7 +19,8 @@ export interface AppState {
 
 const initialState: AppState = {
   showModal: false,
-  displayAsTokenValue: false,
+  displayAsTokenValue: true,
+  showDust: false,
   selected: {
     action: undefined,
     tokenId: "",
@@ -50,6 +52,9 @@ export const appSlice = createSlice({
     toggleDisplayValues(state) {
       state.displayAsTokenValue = !state.displayAsTokenValue;
     },
+    toggleShowDust(state) {
+      state.showDust = !state.showDust;
+    },
   },
 });
 
@@ -61,6 +66,11 @@ export const getModalStatus = createSelector(
 export const getDisplayAsTokenValue = createSelector(
   (state: RootState) => state.app,
   (app) => app.displayAsTokenValue,
+);
+
+export const getShowDust = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.showDust,
 );
 
 export const getSelectedValues = createSelector(
@@ -82,6 +92,12 @@ export const getAssetData = createSelector(
   },
 );
 
-export const { hideModal, showModal, updateAmount, toggleUseAsCollateral, toggleDisplayValues } =
-  appSlice.actions;
+export const {
+  hideModal,
+  showModal,
+  updateAmount,
+  toggleUseAsCollateral,
+  toggleDisplayValues,
+  toggleShowDust,
+} = appSlice.actions;
 export default appSlice.reducer;

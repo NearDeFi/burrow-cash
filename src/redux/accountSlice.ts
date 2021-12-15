@@ -4,7 +4,7 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { shrinkToken, expandToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
-import { emptyAsset, sumReducer } from "./utils";
+import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer } from "./utils";
 import { AssetsState } from "./assetsSlice";
 
 interface Balance {
@@ -129,9 +129,10 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
   );
 
 export const getPortfolioAssets = createSelector(
+  (state: RootState) => state.app,
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
-  (assets, account) => {
+  (app, assets, account) => {
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
@@ -158,26 +159,29 @@ export const getPortfolioAssets = createSelector(
           canUseAsCollateral: asset.config.can_use_as_collateral,
         };
       })
-      .filter(emptyAsset);
+      .filter(app.showDust ? Boolean : emptySuppliedAsset);
 
-    const borrowed = Object.keys(account.portfolio.borrowed).map((tokenId) => {
-      const asset = assets[tokenId];
+    const borrowed = Object.keys(account.portfolio.borrowed)
+      .map((tokenId) => {
+        const asset = assets[tokenId];
 
-      const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
+        const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
 
-      return {
-        tokenId,
-        symbol: asset.metadata.symbol,
-        icon: asset.metadata.icon,
-        price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-        price$: asset.price?.usd ?? 0,
-        supplyApy: Number(asset.supply_apr) * 100,
-        borrowApy: Number(asset.borrow_apr) * 100,
-        borrowed: Number(
-          shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-        ),
-      };
-    });
+        return {
+          tokenId,
+          symbol: asset.metadata.symbol,
+          icon: asset.metadata.icon,
+          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
+          price$: asset.price?.usd ?? 0,
+          supplyApy: Number(asset.supply_apr) * 100,
+          borrowApy: Number(asset.borrow_apr) * 100,
+          borrowed: Number(
+            shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+          ),
+        };
+      })
+      .filter(app.showDust ? Boolean : emptyBorrowedAsset);
+
     return [supplied, borrowed];
   },
 );
