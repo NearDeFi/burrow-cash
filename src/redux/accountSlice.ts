@@ -1,14 +1,7 @@
 import { omit, clone } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import {
-  shrinkToken,
-  expandToken,
-  USD_FORMAT,
-  PERCENT_DIGITS,
-  NEAR_DECIMALS,
-  TOKEN_FORMAT,
-} from "../store";
+import { shrinkToken, expandToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
 import { emptyAsset, sumReducer } from "./utils";
@@ -228,8 +221,7 @@ export const getMaxBorrowAmount = (tokenId: string) =>
       const borrowedSum = getBorrowedSum(assets, account);
 
       const volatiliyRatio = assets[tokenId].config.volatility_ratio || 0;
-      const max = (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
-      return max.toLocaleString(undefined, TOKEN_FORMAT);
+      return (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
     },
   );
 
