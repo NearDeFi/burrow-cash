@@ -10,7 +10,7 @@ interface Alert {
 
 interface Props {
   rates: Array<{ label: string; value: string }>;
-  apy: string;
+  apy: number;
   action: string;
   totalTitle: string;
   healthFactor: number;

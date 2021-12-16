@@ -3,7 +3,7 @@ import { Modal as MUIModal, Typography, Box, Switch, Alert, Stack } from "@mui/m
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../../store";
+import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, APY_FORMAT } from "../../store";
 import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -194,7 +194,7 @@ const Modal = () => {
           <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
             {name}
             <br />
-            <span>{apy}</span>
+            <span>{apy.toLocaleString(undefined, APY_FORMAT)}%</span>
           </Typography>
           <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
             <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
