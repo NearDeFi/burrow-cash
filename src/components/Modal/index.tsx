@@ -194,7 +194,7 @@ const Modal = () => {
           <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
             {name}
             <br />
-            <span>{apy.toLocaleString(undefined, APY_FORMAT)}%</span>
+            <span>{apy?.toLocaleString(undefined, APY_FORMAT)}%</span>
           </Typography>
           <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
             <Typography variant="body1" fontSize="0.85rem" fontWeight="500">

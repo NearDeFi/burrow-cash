@@ -78,7 +78,7 @@ export const getModalData = (asset): UIAsset & Props => {
         },
       ];
 
-      if (amount.toFixed(PERCENT_DIGITS) === maxBorrowAmount.toFixed(PERCENT_DIGITS)) {
+      if (Number(amount).toFixed(PERCENT_DIGITS) === maxBorrowAmount?.toFixed(PERCENT_DIGITS)) {
         data.alerts["maxBorrow"] = {
           title: "Due to pricing fluctuations the max borrow amount is approximate",
           severity: "warning",
