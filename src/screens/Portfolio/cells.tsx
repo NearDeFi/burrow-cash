@@ -1,60 +1,15 @@
-import { useContext } from "react";
 import { Box, Button } from "@mui/material";
 
-import { PERCENT_DIGITS, TOKEN_FORMAT } from "../../store/constants";
-import { IAssetDetailed, IMetadata, IAsset, IBalance } from "../../interfaces";
-import { TokenCell } from "../../components/Table/common/cells";
-import { ModalContext, ModalState } from "../../components/Modal";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { showModal } from "../../redux/appSlice";
+import { getCollateralAmount } from "../../redux/accountSlice";
 
-interface CellProps {
-  rowData: IAsset & IAssetDetailed;
-}
-
-export { TokenCell };
-
-export const SupplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{rowData.apr && <>{(Number(rowData.apr) * 100).toFixed(PERCENT_DIGITS)}%</>}</Box>;
-};
-
-export const CollateralCell = ({ rowData }) => {
-  return (
-    <Box>
-      {rowData.collateral &&
-        Number(rowData.collateral.balance).toLocaleString(undefined, TOKEN_FORMAT)}
-    </Box>
-  );
-};
-
-export const SuppliedCell = ({ rowData }: CellProps) => {
-  return (
-    <Box>{rowData.balance && Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>
-  );
-};
-
-export const WithdrawCell = ({ rowData }) => {
-  if (!rowData.balance) return false;
-
-  const modal: ModalState = useContext(ModalContext);
+export const WithdrawCell = ({ rowData: { supplied, tokenId } }) => {
+  if (!supplied) return false;
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    modal.setModalData({
-      type: "Withdraw",
-      title: "Withdraw",
-      totalAmountTitle: "Withdraw Supply Amount",
-      asset: {
-        token_id: rowData.token_id,
-        amount: Number(rowData.balance),
-        name: rowData?.name || "Unknown",
-        symbol: rowData?.symbol || "???",
-        icon: rowData?.icon,
-        valueInUSD: rowData.price?.usd || 0,
-        apy: rowData.borrow_apr,
-        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
-      },
-      buttonText: "Withdraw",
-      config: rowData.config,
-    });
-    modal.handleOpen();
+    dispatch(showModal({ action: "Withdraw", tokenId, amount: 0 }));
   };
 
   return (
@@ -66,30 +21,13 @@ export const WithdrawCell = ({ rowData }) => {
   );
 };
 
-export const AdjustCell = ({ rowData }) => {
-  if (!rowData.config.can_use_as_collateral) return false;
+export const AdjustCell = ({ rowData: { canUseAsCollateral, tokenId } }) => {
+  if (!canUseAsCollateral) return false;
+  const dispatch = useAppDispatch();
+  const amount = useAppSelector(getCollateralAmount(tokenId));
 
-  const modal: ModalState = useContext(ModalContext);
   const handleClick = () => {
-    modal.setModalData({
-      type: "Adjust",
-      title: "Adjust Collateral",
-      totalAmountTitle: "Amount designated as collateral",
-      asset: {
-        token_id: rowData.token_id,
-        amount: Number(rowData.balance),
-        name: rowData?.name || "Unknown",
-        symbol: rowData?.symbol || "???",
-        icon: rowData?.icon,
-        valueInUSD: rowData.price?.usd || 0,
-        apy: rowData.borrow_apr,
-        collateral: rowData.collateral,
-        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
-      },
-      buttonText: "Adjust",
-      config: rowData.config,
-    });
-    modal.handleOpen();
+    dispatch(showModal({ action: "Adjust", tokenId, amount }));
   };
 
   return (
@@ -101,46 +39,11 @@ export const AdjustCell = ({ rowData }) => {
   );
 };
 
-export const BorrowSuppplyAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{(Number(rowData.supply_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
-};
-
-export const BorrowAPYCell = ({ rowData }: CellProps) => {
-  return <Box>{(Number(rowData.borrow_apr) * 100).toFixed(PERCENT_DIGITS)}%</Box>;
-};
-
-export const BorrowedCell = ({ rowData }: CellProps) => {
-  return <Box>{Number(rowData.balance).toLocaleString(undefined, TOKEN_FORMAT)}</Box>;
-};
-
-export const RepayCell = ({
-  rowData,
-}: {
-  rowData: IMetadata & IAsset & IAssetDetailed & { wallet: IBalance };
-}) => {
-  const modal: ModalState = useContext(ModalContext);
+export const RepayCell = ({ rowData: { tokenId } }) => {
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    modal.setModalData({
-      type: "Repay",
-      title: "Repay",
-      totalAmountTitle: "Repay Borrow Amount",
-      asset: {
-        token_id: rowData.token_id,
-        amount:
-          rowData.wallet.balance > Number(rowData.balance)
-            ? Number(rowData.balance)
-            : rowData.wallet.balance,
-        name: rowData?.name || "Unknown",
-        symbol: rowData?.symbol || "???",
-        icon: rowData?.icon,
-        valueInUSD: rowData.price?.usd || 0,
-        apy: Number(rowData.borrow_apr),
-      },
-      buttonText: "Repay",
-      config: rowData.config,
-    });
-    modal.handleOpen();
+    dispatch(showModal({ action: "Repay", tokenId, amount: 0 }));
   };
 
   return (

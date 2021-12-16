@@ -89,3 +89,27 @@ export interface Balance {
   available: string;
   total: string;
 }
+
+export interface UIAsset {
+  tokenId: string;
+  icon: string;
+  symbol: string;
+  name: string;
+  price: number;
+  price$: number;
+  supplyApy: number;
+  totalSupply: number;
+  totalSupply$: string;
+  borrowApy: number;
+  availableLiquidity: number;
+  availableLiquidity$: string;
+  collateralFactor: string;
+  canUseAsCollateral: boolean;
+  supplied: number;
+  collateral: number;
+  borrowed: number;
+  availableNEAR: number;
+  available: number;
+  available$: string;
+  extraDecimals: number;
+}

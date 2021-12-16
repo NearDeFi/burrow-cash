@@ -1,10 +1,4 @@
-import {
-  TokenCell,
-  APYCell,
-  LiquidityCell,
-  CollateralFactorCell,
-  AmountBorrowedCell,
-} from "./cells";
+import { TokenCell, Cell } from "../../components/Table/common/cells";
 
 export const columns = [
   {
@@ -16,25 +10,28 @@ export const columns = [
     label: "Borrow APY",
     dataKey: "borrowAPY",
     align: "right",
-    Cell: APYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Available Liquidity",
     dataKey: "liquidity",
     align: "right",
-    Cell: LiquidityCell,
+    Cell: ({ rowData }) => (
+      <Cell value={rowData.availableLiquidity} rowData={rowData} format="amount" />
+    ),
   },
   {
     label: "Collateral Factor",
     dataKey: "collateralFactor",
-    Cell: CollateralFactorCell,
+    Cell: ({ rowData }) => (
+      <Cell value={rowData.collateralFactor} rowData={rowData} format="string" />
+    ),
+    align: "right",
+  },
+  {
+    label: "Amount Borrowed",
+    dataKey: "borrowed",
+    Cell: ({ rowData }) => <Cell value={rowData.borrowed} rowData={rowData} format="amount" />,
     align: "right",
   },
 ];
-
-export const amountBorrowedColumn = (portfolio) => ({
-  label: "Amount Borrowed",
-  dataKey: "borrowed",
-  Cell: (props) => <AmountBorrowedCell {...props} portfolio={portfolio} />,
-  align: "right",
-});

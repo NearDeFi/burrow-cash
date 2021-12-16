@@ -1,24 +1,28 @@
 import { useContext, useState } from "react";
-import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery } from "@mui/material";
+import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@mui/material";
 
-import { colors } from "../../style";
 import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
-import { ContractContext } from "../../context/contracts";
-import { PERCENT_DIGITS, NEAR_DECIMALS } from "../../store/constants";
-import { shrinkToken } from "../../store";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { getAccountBalance, logoutAccount } from "../../redux/accountSlice";
+import {
+  getDisplayAsTokenValue,
+  toggleDisplayValues,
+  getShowDust,
+  toggleShowDust,
+} from "../../redux/appSlice";
 
 const WalletButton = () => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { walletConnection, account } = useContext<IBurrow>(Burrow);
-  const { accountBalance } = useContext(ContractContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const balance = accountBalance
-    ? shrinkToken(accountBalance, NEAR_DECIMALS, PERCENT_DIGITS)
-    : "...";
+  const balance = useAppSelector(getAccountBalance);
+  const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
+  const showDust = useAppSelector(getShowDust);
 
   const onWalletButtonClick = (event) => {
     if (!walletConnection?.isSignedIn()) {
@@ -30,6 +34,19 @@ const WalletButton = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleToggleDisplayValues = () => {
+    dispatch(toggleDisplayValues());
+  };
+
+  const handleToggleShowDust = () => {
+    dispatch(toggleShowDust());
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutAccount());
+    logout(walletConnection);
   };
 
   return (
@@ -49,7 +66,11 @@ const WalletButton = () => {
       )}
       <Button
         size="small"
-        sx={{ justifySelf: "end", alignItems: "center", backgroundColor: colors.primary }}
+        sx={{
+          justifySelf: "end",
+          alignItems: "center",
+          backgroundColor: theme.palette.primary.main,
+        }}
         variant="contained"
         onClick={onWalletButtonClick}
       >
@@ -64,7 +85,14 @@ const WalletButton = () => {
           "aria-labelledby": "logout-button",
         }}
       >
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={() => logout(walletConnection)}>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
+          Display values as {displayAsTokenValue ? "usd" : "token"}
+        </MenuItem>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
+          {showDust ? "Hide" : "Show"} dust
+        </MenuItem>
+        <Divider />
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
           Log Out
         </MenuItem>
       </Menu>

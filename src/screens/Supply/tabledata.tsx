@@ -1,5 +1,4 @@
-import { TokenCell, AmountSupplied, APYCell, TotalSupplyCell } from "./cells";
-// "BoostCell" removed from destructured object "./cells" import
+import { TokenCell, Cell } from "../../components/Table/common/cells";
 
 export const columns = [
   {
@@ -8,32 +7,22 @@ export const columns = [
     Cell: TokenCell,
   },
 
-  /** *************** Remove "BRRR Boost" and add "Amount Supplied" to Supply page #112 
-  {
-    label: "BRRR Boost",
-    dataKey: "boost",
-    align: "right",
-    Cell: BoostCell,
-  },
-  ******************** */
-
   {
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: APYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.supplyApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Total Supply",
     dataKey: "supply",
-    Cell: TotalSupplyCell,
+    Cell: ({ rowData }) => <Cell value={rowData.totalSupply} rowData={rowData} format="amount" />,
+    align: "right",
+  },
+  {
+    label: "Amount Supplied",
+    dataKey: "supplied",
+    Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,
     align: "right",
   },
 ];
-
-export const amountSuppliedColumn = (portfolio) => ({
-  label: "Amount Supplied",
-  dataKey: "supplied",
-  align: "right",
-  Cell: (props) => <AmountSupplied {...props} portfolio={portfolio} />,
-});

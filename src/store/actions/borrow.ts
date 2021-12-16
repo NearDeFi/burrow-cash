@@ -1,13 +1,21 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle, IAssetConfig } from "../../interfaces";
+import { ChangeMethodsOracle } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { prepareAndExecuteTransactions, getMetadata } from "../tokens";
 
-export async function borrow(token_id: string, config: IAssetConfig, amount: number) {
+export async function borrow({
+  tokenId,
+  extraDecimals,
+  amount,
+}: {
+  tokenId: string;
+  extraDecimals: number;
+  amount: number;
+}) {
   const { oracleContract, logicContract, account } = await getBurrow();
-  const { decimals } = (await getMetadata(token_id))!;
+  const { decimals } = (await getMetadata(tokenId))!;
 
   const accountDetailed = await getAccountDetailed(account.accountId);
 
@@ -16,14 +24,14 @@ export async function borrow(token_id: string, config: IAssetConfig, amount: num
       actions: [
         {
           Borrow: {
-            token_id,
-            amount: expandToken(amount, decimals + config.extra_decimals, 0),
+            token_id: tokenId,
+            amount: expandToken(amount, decimals + extraDecimals, 0),
           },
         },
         {
           Withdraw: {
-            token_id,
-            max_amount: expandToken(amount, decimals + config.extra_decimals, 0),
+            token_id: tokenId,
+            max_amount: expandToken(amount, decimals + extraDecimals, 0),
           },
         },
       ],
@@ -34,7 +42,7 @@ export async function borrow(token_id: string, config: IAssetConfig, amount: num
     ? [...accountDetailed.collateral, ...accountDetailed.borrowed]
         .map((c) => c.token_id)
         .filter((t, i, assetIds) => i === assetIds.indexOf(t))
-        .filter((t) => t !== token_id)
+        .filter((t) => t !== tokenId)
     : [];
 
   await prepareAndExecuteTransactions([
@@ -45,7 +53,7 @@ export async function borrow(token_id: string, config: IAssetConfig, amount: num
           methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
           args: {
             receiver_id: logicContract.contractId,
-            asset_ids: [...asset_ids, token_id],
+            asset_ids: [...asset_ids, tokenId],
             msg: JSON.stringify(borrowTemplate),
           },
         },

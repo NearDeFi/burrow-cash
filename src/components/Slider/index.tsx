@@ -35,7 +35,7 @@ interface Props {
 const Slider = ({ value = 0, onChange }: Props) => {
   return (
     <SliderStyled
-      aria-label="Custom value"
+      aria-label="Amount slider"
       value={value}
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"

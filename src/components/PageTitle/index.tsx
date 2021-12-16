@@ -1,20 +1,11 @@
-import styled from "styled-components";
-
-import { colors } from "../../style";
-
-const TitleWrapper = styled.div`
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 3rem;
-  font-size: 24px;
-  font-weight: 500;
-`;
+import { Box, useTheme } from "@mui/material";
 
 const PageTitle = ({ first, second }: { first: string; second: string }) => {
+  const theme = useTheme();
   return (
-    <TitleWrapper>
-      Available <span style={{ color: colors.primary }}>{first}</span> {second}
-    </TitleWrapper>
+    <Box textAlign="center" mt="1rem" mb="3rem" fontSize="1.5rem" fontWeight="500">
+      Available <span style={{ color: theme.palette.primary.main }}>{first}</span> {second}
+    </Box>
   );
 };
 

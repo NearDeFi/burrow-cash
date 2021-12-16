@@ -1,20 +1,28 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsToken, IAssetConfig } from "../../interfaces";
+import { ChangeMethodsToken } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
 
-export async function repay(token_id: string, config: IAssetConfig, amount: number) {
+export async function repay({
+  tokenId,
+  amount,
+  extraDecimals,
+}: {
+  tokenId: string;
+  amount: number;
+  extraDecimals: number;
+}) {
   const { logicContract } = await getBurrow();
-  const tokenContract = await getTokenContract(token_id);
-  const { decimals } = (await getMetadata(token_id))!;
+  const tokenContract = await getTokenContract(tokenId);
+  const { decimals } = (await getMetadata(tokenId))!;
 
   const msg = {
     Execute: {
       actions: [
         {
           Repay: {
-            max_amount: expandToken(amount, decimals + config.extra_decimals, 0),
-            token_id,
+            max_amount: expandToken(amount, decimals + extraDecimals, 0),
+            token_id: tokenId,
           },
         },
       ],
