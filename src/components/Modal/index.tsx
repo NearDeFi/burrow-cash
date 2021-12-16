@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal as MUIModal, Typography, Box, Switch } from "@mui/material";
+import { Modal as MUIModal, Typography, Box, Switch, Alert, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -38,13 +38,19 @@ const Modal = () => {
   const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
   const { amount, useAsCollateral } = useAppSelector(getSelectedValues);
-  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(asset.tokenId));
   const dispatch = useAppDispatch();
-  const handleClose = () => dispatch(hideModal());
+
+  const { action, tokenId } = asset;
+
+  const healthFactor = useAppSelector(
+    action === "Adjust"
+      ? recomputeHealthFactorAdjust(tokenId, amount)
+      : recomputeHealthFactor(tokenId, amount),
+  );
+
+  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
 
   const {
-    tokenId,
-    action,
     name,
     symbol,
     icon,
@@ -58,16 +64,13 @@ const Modal = () => {
     canUseAsCollateral,
     extraDecimals,
     collateral,
-  } = getModalData({ ...asset, maxBorrowAmount });
-
-  const healthFactor = useAppSelector(
-    action === "Adjust"
-      ? recomputeHealthFactorAdjust(tokenId, amount)
-      : recomputeHealthFactor(tokenId, amount),
-  );
+    alerts,
+  } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
 
   const sliderValue = (amount * 100) / available;
   const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
+
+  const handleClose = () => dispatch(hideModal());
 
   const handleInputChange = (e) => {
     if (Number(e.target.value) > available) return;
@@ -75,7 +78,7 @@ const Modal = () => {
   };
 
   const handleMaxClick = () => {
-    dispatch(updateAmount({ amount: available }));
+    dispatch(updateAmount({ amount: Number(available.toFixed(PERCENT_DIGITS)) }));
   };
 
   const handleFocus = (e) => {
@@ -103,9 +106,12 @@ const Modal = () => {
           await supply({ tokenId, extraDecimals, useAsCollateral, amount });
         }
         break;
-      case "Borrow":
-        await borrow({ tokenId, extraDecimals, amount });
+      case "Borrow": {
+        const amountToBorrow =
+          amount === Number(available.toFixed(PERCENT_DIGITS)) ? amount * 0.99 : amount;
+        await borrow({ tokenId, extraDecimals, amount: amountToBorrow });
         break;
+      }
       case "Withdraw":
         await withdraw({ tokenId, extraDecimals, amount });
         break;
@@ -134,8 +140,7 @@ const Modal = () => {
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
-  const actionDisabled =
-    (!amount && action !== "Adjust") || amount > available || amount === collateral;
+  const actionDisabled = (!amount && action !== "Adjust") || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const showHealthFactor = action === "Borrow" || action === "Adjust";
   const healthFactorColor =
@@ -151,127 +156,137 @@ const Modal = () => {
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
-        {!accountId && (
-          <Box
-            position="absolute"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            top="0"
-            left="0"
-            right="0"
-            bottom="0"
-            bgcolor="rgba(255,255,255,0.85)"
-            zIndex="1"
-          >
-            <Typography variant="h5" bgcolor="#fff">
-              Please connect your account
-            </Typography>
-          </Box>
-        )}
-        <Box
-          onClick={handleClose}
-          position="absolute"
-          right="1rem"
-          zIndex="2"
-          sx={{ cursor: "pointer" }}
-        >
-          <CloseIcon />
-        </Box>
-        <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
-          {action}
-        </Typography>
-        <Box display="grid" justifyContent="center" mt="2rem">
-          <TokenIcon icon={icon} />
-        </Box>
-        <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
-          {name}
-          <br />
-          <span>{apy}</span>
-        </Typography>
-        <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
-          <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            Available: {available?.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
-            {available$})
-          </Typography>
-          <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-            1 {displaySymbol} = ${price}
-          </Typography>
-        </Box>
-        <Input
-          value={amount}
-          type="number"
-          onClickMax={handleMaxClick}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-        />
-        <Box px="0.5rem" my="1rem">
-          <Slider value={sliderValue} onChange={handleSliderChange} />
-        </Box>
-        {showHealthFactor && (
-          <Box
-            fontSize="1rem"
-            fontWeight="500"
-            border="1px solid black"
-            p="0.5rem"
-            m="0.5rem"
-            width="15rem"
-            alignSelf="center"
-            display="flex"
-            justifyContent="center"
-          >
-            <span>Health Factor:</span>
-            <Box ml={1} color={healthFactorColor}>
-              {healthFactorDisplayValue}
+        <Box sx={{ overflowY: "auto", padding: "1rem" }}>
+          {!accountId && (
+            <Box
+              position="absolute"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              top="0"
+              left="0"
+              right="0"
+              bottom="0"
+              bgcolor="rgba(255,255,255,0.85)"
+              zIndex="1"
+            >
+              <Typography variant="h5" bgcolor="#fff">
+                Please connect your account
+              </Typography>
             </Box>
-          </Box>
-        )}
-        {action !== "Borrow" && (
-          <Typography textAlign="center" fontSize="1rem" fontWeight="500">
-            <span>{totalTitle}</span>
-            <span>{total}</span>
-          </Typography>
-        )}
-        {rates && (
-          <Box>
-            <Typography fontSize="0.85rem" fontWeight="bold">
-              {action} Rates
-            </Typography>
-            {rates.map(({ label, value }) => (
-              <Box
-                mt="0.5rem"
-                key={label}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography variant="body1" fontSize="0.85rem">
-                  {label}
-                </Typography>
-                <Typography variant="body1" fontSize="0.85rem" fontWeight="bold">
-                  {value}
-                </Typography>
-              </Box>
-            ))}
-            {showToggle && (
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="body1" fontSize="0.85rem">
-                  Use as Collateral
-                </Typography>
-                <Switch onChange={handleSwitchToggle} />
-              </Box>
-            )}
-          </Box>
-        )}
-        <Box display="flex" justifyContent="center" mt="2rem">
-          <LoadingButton
-            disabled={actionDisabled}
-            variant="contained"
-            onClick={handleActionButtonClick}
-            loading={loading}
+          )}
+          <Box
+            onClick={handleClose}
+            position="absolute"
+            right="1rem"
+            zIndex="2"
+            sx={{ cursor: "pointer" }}
+            bgcolor="white"
           >
-            {action} {displaySymbol}
-          </LoadingButton>
+            <CloseIcon />
+          </Box>
+          <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
+            {action}
+          </Typography>
+          <Box display="grid" justifyContent="center" mt="2rem">
+            <TokenIcon icon={icon} />
+          </Box>
+          <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
+            {name}
+            <br />
+            <span>{apy}</span>
+          </Typography>
+          <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
+            <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
+              Available: {available?.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
+              {available$})
+            </Typography>
+            <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
+              1 {displaySymbol} = ${price}
+            </Typography>
+          </Box>
+          <Input
+            value={amount}
+            type="number"
+            onClickMax={handleMaxClick}
+            onChange={handleInputChange}
+            onFocus={handleFocus}
+          />
+          <Box mx="1.5rem" my="1rem">
+            <Slider value={sliderValue} onChange={handleSliderChange} />
+          </Box>
+          {showHealthFactor && (
+            <Box
+              fontSize="1rem"
+              fontWeight="500"
+              border="1px solid black"
+              p="0.5rem"
+              m="0.5rem"
+              width="15rem"
+              margin="0 auto"
+              display="flex"
+              justifyContent="center"
+            >
+              <span>Health Factor:</span>
+              <Box ml={1} color={healthFactorColor}>
+                {healthFactorDisplayValue}
+              </Box>
+            </Box>
+          )}
+          {action !== "Borrow" && (
+            <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
+              <span>{totalTitle}</span>
+              <span>{total}</span>
+            </Typography>
+          )}
+          {rates && (
+            <Box>
+              <Typography fontSize="0.85rem" fontWeight="bold">
+                {action} Rates
+              </Typography>
+              {rates.map(({ label, value }) => (
+                <Box
+                  mt="0.5rem"
+                  key={label}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body1" fontSize="0.85rem">
+                    {label}
+                  </Typography>
+                  <Typography variant="body1" fontSize="0.85rem" fontWeight="bold">
+                    {value}
+                  </Typography>
+                </Box>
+              ))}
+              {showToggle && (
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body1" fontSize="0.85rem">
+                    Use as Collateral
+                  </Typography>
+                  <Switch onChange={handleSwitchToggle} />
+                </Box>
+              )}
+            </Box>
+          )}
+          <Stack my="1rem" spacing="1rem">
+            {Object.keys(alerts).map((alert) => (
+              <Alert key={alert} severity={alerts[alert].severity}>
+                {alerts[alert].title}
+              </Alert>
+            ))}
+          </Stack>
+          <Box display="flex" justifyContent="center">
+            <LoadingButton
+              disabled={actionDisabled}
+              variant="contained"
+              onClick={handleActionButtonClick}
+              loading={loading}
+            >
+              {action} {displaySymbol}
+            </LoadingButton>
+          </Box>
         </Box>
       </Wrapper>
     </MUIModal>

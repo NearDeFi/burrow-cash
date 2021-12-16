@@ -2,7 +2,6 @@ import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 
 export const Wrapper = styled(Box)(({ theme }) => ({
-  padding: "1em",
   boxShadow: "1.5rem",
   backgroundColor: "white",
   position: "relative",
@@ -14,10 +13,10 @@ export const Wrapper = styled(Box)(({ theme }) => ({
     width: "100%",
   },
   [theme.breakpoints.up("sm")]: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
+    top: "10%",
+    left: "25%",
+    display: "flex",
+    height: "80vh",
     width: "460px",
   },
 }));
