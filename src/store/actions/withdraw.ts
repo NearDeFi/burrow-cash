@@ -34,18 +34,6 @@ export async function withdraw({
   if (amount) {
     const expandedAmount = expandToken(amount, decimals + extraDecimals, 0);
     args.actions[0].Withdraw.amount = expandedAmount;
-
-    if (tokenId === "wrap.testnet") {
-      additionalOperations.push({
-        receiverId: tokenContract.contractId,
-        functionCalls: [
-          {
-            methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-            args: { amount: expandToken(amount, decimals + extraDecimals, 0) },
-          },
-        ],
-      });
-    }
   }
 
   additionalOperations.push({
@@ -57,6 +45,18 @@ export async function withdraw({
       },
     ],
   });
+
+  if (tokenId === "wrap.testnet") {
+    additionalOperations.push({
+      receiverId: tokenContract.contractId,
+      functionCalls: [
+        {
+          methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
+          args: { amount: expandToken(amount, decimals + extraDecimals, 0) },
+        },
+      ],
+    });
+  }
 
   await prepareAndExecuteTokenTransactions(tokenContract, undefined, additionalOperations);
 }
