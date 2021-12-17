@@ -13,7 +13,7 @@ const HealthFactorBox = ({ value }: Props) => {
   const healthFactorColor =
     value === -1 ? "green" : value < 180 ? "red" : value < 200 ? "orange" : "green";
 
-  const subtitle = value === -1 ? "" : value < 180 ? "low" : value < 200 ? "medium" : "good";
+  const subtitle = value === -1 ? "" : value < 180 ? "Low" : value < 200 ? "Medium" : "Good";
 
   return (
     <Wrapper>

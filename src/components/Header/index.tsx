@@ -1,27 +1,23 @@
-import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import { useTheme, useMediaQuery, Box } from "@mui/material";
+
 import BackgroundDesktop from "./bg-desktop.svg";
 import BackgroundMobile from "./bg-mobile.svg";
 import LogoIcon from "../../assets/logo.svg";
-import { Wrapper, Logo, Menu, ButtonStyled } from "./style";
+import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import WalletButton from "./WalletButton";
 
 const MenuItem = ({ title, pathname }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isSelected = location.pathname === pathname;
 
-  const handleClick = () => {
-    navigate(pathname);
-  };
-
   const style = isSelected ? { borderBottomColor: theme.palette.primary.main } : {};
+
   return (
-    <ButtonStyled variant="outlined" size="medium" onClick={handleClick} sx={style}>
+    <LinkStyled to={pathname} sx={style}>
       {title}
-    </ButtonStyled>
+    </LinkStyled>
   );
 };
 
