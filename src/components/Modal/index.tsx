@@ -19,6 +19,7 @@ import {
   getMaxBorrowAmount,
   getAccountId,
   recomputeHealthFactor,
+  recomputeHealthFactorWithdraw,
   recomputeHealthFactorAdjust,
 } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
@@ -43,7 +44,9 @@ const Modal = () => {
   const { action, tokenId } = asset;
 
   const healthFactor = useAppSelector(
-    action === "Adjust"
+    action === "Withdraw"
+      ? recomputeHealthFactorWithdraw(tokenId, amount)
+      : action === "Adjust"
       ? recomputeHealthFactorAdjust(tokenId, amount)
       : recomputeHealthFactor(tokenId, amount),
   );
@@ -142,7 +145,7 @@ const Modal = () => {
   const showToggle = action === "Supply" && canUseAsCollateral;
   const actionDisabled = (!amount && action !== "Adjust") || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
-  const showHealthFactor = action === "Borrow" || action === "Adjust";
+  const showHealthFactor = ["Borrow", "Withdraw", "Adjust"].includes(action as string);
   const healthFactorColor =
     healthFactor === -1
       ? "black"

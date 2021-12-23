@@ -87,7 +87,7 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = supplied;
+      data.available = supplied + collateral;
       data.alerts = {};
       break;
     case "Adjust":
