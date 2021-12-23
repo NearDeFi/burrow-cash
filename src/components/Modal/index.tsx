@@ -68,6 +68,7 @@ const Modal = () => {
     extraDecimals,
     collateral,
     alerts,
+    remainingCollateral,
   } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
 
   const sliderValue = (amount * 100) / available;
@@ -235,6 +236,11 @@ const Modal = () => {
                 {healthFactorDisplayValue}
               </Box>
             </Box>
+          )}
+          {action === "Withdraw" && (
+            <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
+              Remaining collateral: {remainingCollateral}
+            </Typography>
           )}
           {action !== "Borrow" && (
             <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
