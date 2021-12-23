@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
@@ -31,10 +31,12 @@ export const Cell = ({
   value,
   rowData,
   format,
+  tooltip,
 }: {
   value: number | string;
   rowData: UIAsset;
   format: FormatType;
+  tooltip?: string;
 }) => {
   const { price$ } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
@@ -50,5 +52,11 @@ export const Cell = ({
   };
 
   const displayValue = formatMap[format](value);
-  return <Box>{displayValue}</Box>;
+  return tooltip ? (
+    <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
+      <Box>{displayValue}</Box>
+    </Tooltip>
+  ) : (
+    <Box>{displayValue}</Box>
+  );
 };
