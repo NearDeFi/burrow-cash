@@ -153,9 +153,11 @@ export const getPortfolioAssets = createSelector(
           price$: asset.price?.usd ?? 1,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
-          supplied: Number(
-            shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-          ),
+          supplied:
+            Number(collateral) +
+            Number(
+              shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+            ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
         };
       })
