@@ -19,6 +19,7 @@ import {
   getMaxBorrowAmount,
   getAccountId,
   recomputeHealthFactor,
+  recomputeHealthFactorWithdraw,
   recomputeHealthFactorAdjust,
 } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
@@ -43,7 +44,9 @@ const Modal = () => {
   const { action, tokenId } = asset;
 
   const healthFactor = useAppSelector(
-    action === "Adjust"
+    action === "Withdraw"
+      ? recomputeHealthFactorWithdraw(tokenId, amount)
+      : action === "Adjust"
       ? recomputeHealthFactorAdjust(tokenId, amount)
       : recomputeHealthFactor(tokenId, amount),
   );
@@ -64,7 +67,9 @@ const Modal = () => {
     canUseAsCollateral,
     extraDecimals,
     collateral,
+    supplied,
     alerts,
+    remainingCollateral,
   } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
 
   const sliderValue = (amount * 100) / available;
@@ -112,9 +117,11 @@ const Modal = () => {
         await borrow({ tokenId, extraDecimals, amount: amountToBorrow });
         break;
       }
-      case "Withdraw":
-        await withdraw({ tokenId, extraDecimals, amount });
+      case "Withdraw": {
+        const collateralAmount = Math.abs(Math.min(0, supplied - amount));
+        await withdraw({ tokenId, extraDecimals, amount, collateralAmount });
         break;
+      }
       case "Adjust":
         if (amount < collateral) {
           await removeCollateral({
@@ -142,7 +149,7 @@ const Modal = () => {
   const showToggle = action === "Supply" && canUseAsCollateral;
   const actionDisabled = (!amount && action !== "Adjust") || amount === collateral;
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
-  const showHealthFactor = action === "Borrow" || action === "Adjust";
+  const showHealthFactor = ["Borrow", "Withdraw", "Adjust"].includes(action as string);
   const healthFactorColor =
     healthFactor === -1
       ? "black"
@@ -232,6 +239,11 @@ const Modal = () => {
                 {healthFactorDisplayValue}
               </Box>
             </Box>
+          )}
+          {action === "Withdraw" && (
+            <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
+              Remaining collateral: {remainingCollateral}
+            </Typography>
           )}
           {action !== "Borrow" && (
             <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">

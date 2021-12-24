@@ -15,6 +15,7 @@ interface Props {
   totalTitle: string;
   healthFactor: number;
   alerts: Alert;
+  remainingCollateral?: string;
 }
 
 export const getModalData = (asset): UIAsset & Props => {
@@ -87,8 +88,10 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = supplied;
-      data.alerts = {};
+      data.available = supplied + collateral;
+      data.remainingCollateral = Math.abs(
+        Math.min(collateral, collateral + supplied - amount),
+      ).toLocaleString(undefined, TOKEN_FORMAT);
       break;
     case "Adjust":
       data.totalTitle = `Amount designated as collateral = `;

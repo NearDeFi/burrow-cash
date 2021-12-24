@@ -17,7 +17,16 @@ export const suppliedColumns = [
     label: "Collateral",
     dataKey: "collateralSum",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.collateral} rowData={rowData} format="amount" />,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData.collateral}
+        rowData={rowData}
+        format="amount"
+        tooltip={`${((rowData.collateral / rowData.supplied) * 100).toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+        })}%`}
+      />
+    ),
   },
   {
     label: "Supplied",

@@ -153,9 +153,11 @@ export const getPortfolioAssets = createSelector(
           price$: asset.price?.usd ?? 1,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
-          supplied: Number(
-            shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-          ),
+          supplied:
+            Number(collateral) +
+            Number(
+              shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+            ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
         };
       })
@@ -309,6 +311,57 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
         ...clonedAccount.portfolio.collateral[tokenId],
         balance: newBalance,
       };
+
+      const collateralSum = getCollateralSum(assets, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets, account);
+
+      const healthFactor = (collateralSum / borrowedSum) * 100;
+      return healthFactor < 10000 ? healthFactor : 10000;
+    },
+  );
+
+export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      if (!account.portfolio || !tokenId) return 0;
+
+      const { metadata, config } = assets[tokenId];
+
+      const clonedAccount = clone(account);
+
+      if (!clonedAccount.portfolio.collateral[tokenId]) {
+        clonedAccount.portfolio.collateral[tokenId] = {
+          balance: "0",
+          shares: "0",
+          apr: "0",
+        };
+      }
+
+      const collateralBalanceInt = Number(
+        shrinkToken(
+          clonedAccount.portfolio.collateral[tokenId].balance,
+          metadata.decimals + config.extra_decimals,
+        ),
+      );
+
+      const suppliedBalanceInt = Number(
+        shrinkToken(
+          clonedAccount.portfolio.supplied[tokenId].balance,
+          metadata.decimals + config.extra_decimals,
+        ),
+      );
+
+      const newBalance = Number(
+        expandToken(
+          Math.min(collateralBalanceInt, collateralBalanceInt + suppliedBalanceInt - amount),
+          metadata.decimals + config.extra_decimals,
+          0,
+        ),
+      ).toString();
+
+      clonedAccount.portfolio.collateral[tokenId].balance = newBalance;
 
       const collateralSum = getCollateralSum(assets, clonedAccount);
       const borrowedSum = getBorrowedSum(assets, account);
