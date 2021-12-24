@@ -67,6 +67,7 @@ const Modal = () => {
     canUseAsCollateral,
     extraDecimals,
     collateral,
+    supplied,
     alerts,
     remainingCollateral,
   } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
@@ -116,9 +117,11 @@ const Modal = () => {
         await borrow({ tokenId, extraDecimals, amount: amountToBorrow });
         break;
       }
-      case "Withdraw":
-        await withdraw({ tokenId, extraDecimals, amount });
+      case "Withdraw": {
+        const collateralAmount = Math.abs(Math.min(0, supplied - amount));
+        await withdraw({ tokenId, extraDecimals, amount, collateralAmount });
         break;
+      }
       case "Adjust":
         if (amount < collateral) {
           await removeCollateral({
