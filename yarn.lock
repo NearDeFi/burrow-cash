@@ -2138,6 +2138,13 @@
   dependencies:
     "@parcel/types" "^2.0.1"
 
+"@parcel/reporter-bundle-buddy@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@parcel/reporter-bundle-buddy/-/reporter-bundle-buddy-2.0.1.tgz#68f7100aa8d24e83f77e781491183d2ff481dc94"
+  integrity sha512-cFvU82JqJVlsQz5lbpM0SdbsEn1vLZEQUIHDPpD8izilqW19R0RHvIqYUKseguQEhxMdliJa/VfRY9JSGP67Fg==
+  dependencies:
+    "@parcel/plugin" "^2.0.1"
+
 "@parcel/reporter-cli@^2.0.1":
   version "2.0.1"
   resolved "https://registry.npmjs.org/@parcel/reporter-cli/-/reporter-cli-2.0.1.tgz"
@@ -2448,6 +2455,11 @@
   version "2.10.2"
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.10.2.tgz"
   integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
+
+"@react-icons/all-files@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@react-icons/all-files/-/all-files-4.1.0.tgz#477284873a0821928224b6fc84c62d2534d6650b"
+  integrity sha512-hxBI2UOuVaI3O/BhQfhtb4kcGn9ft12RWAFVMUeNjqqhLsHvFtzIkFaptBJpFDANTKoDfdVoHTKZDlwKCACbMQ==
 
 "@reduxjs/toolkit@^1.6.2":
   version "1.6.2"

@@ -1,10 +1,13 @@
 import { Link, Divider, Box } from "@mui/material";
 
-import { FaDiscord, FaTwitter, FaMedium, FaGithub } from "react-icons/fa";
-import { SiGitbook } from "react-icons/si";
+import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
+import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
+import { FaMedium } from "@react-icons/all-files/fa/FaMedium";
+import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 
 // import BackgroundFooter from "./bg-footer.svg";
 import Logo from "../../assets/logo.svg";
+import Gitbook from "../../assets/GitBook.svg";
 import { Wrapper, CopyWrapper, LinksWrapper, LogoWrapper, Copyright } from "./style";
 
 const Footer = () => (
@@ -69,7 +72,7 @@ const Links = () => (
       <FaMedium />
     </Link>
     <Link href="https://docs.burrow.cash/" title="Docs" target="_blank" color="#000">
-      <SiGitbook />
+      <Gitbook />
     </Link>
   </Box>
 );

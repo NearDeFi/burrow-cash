@@ -4,6 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "rm -rf public && rm -rf dist && parcel build src/index.html --public-url ./ --no-cache",
+    "analyze": "BUNDLE_BUDDY=true parcel build src/index.html --reporter @parcel/reporter-bundle-buddy",
     "start": "parcel src/index.html --open",
     "prod": "parcel src/index.html",
     "deploy:pages": "gh-pages -d dist/",
@@ -19,6 +20,7 @@
     "@babel/preset-env": "~7.16.4",
     "@babel/preset-react": "~7.16.0",
     "@parcel/config-default": "^2.0.1",
+    "@parcel/reporter-bundle-buddy": "^2.0.1",
     "@parcel/transformer-svg-react": "^2.0.1",
     "@parcel/transformer-typescript-tsc": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
@@ -48,6 +50,7 @@
     "@mui/styles": "^5.1.1",
     "@mui/system": "^5.1.1",
     "@mui/utils": "^5.1.1",
+    "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@sentry/react": "^6.15.0",
     "@sentry/tracing": "^6.15.0",
