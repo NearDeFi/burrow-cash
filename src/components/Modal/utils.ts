@@ -42,7 +42,7 @@ export const getModalData = (asset): UIAsset & Props => {
     alerts: {},
   };
 
-  if (healthFactor <= 105) {
+  if (healthFactor >= 0 && healthFactor <= 105) {
     data.alerts["liquidation"] = {
       title: "Your health factor will be dangerously low and you're at risk of liquidation",
       severity: "error",
@@ -79,7 +79,10 @@ export const getModalData = (asset): UIAsset & Props => {
         },
       ];
 
-      if (Number(amount).toFixed(PERCENT_DIGITS) === maxBorrowAmount?.toFixed(PERCENT_DIGITS)) {
+      if (
+        amount !== 0 &&
+        Number(amount).toFixed(PERCENT_DIGITS) === maxBorrowAmount?.toFixed(PERCENT_DIGITS)
+      ) {
         data.alerts["maxBorrow"] = {
           title: "Due to pricing fluctuations the max borrow amount is approximate",
           severity: "warning",
