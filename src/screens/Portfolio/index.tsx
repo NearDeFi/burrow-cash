@@ -5,19 +5,20 @@ import { InfoBox } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalAccountBalance, getPortfolioAssets } from "../../redux/accountSlice";
+import { getTotalAccountBalance, getPortfolioAssets, getNetAPY } from "../../redux/accountSlice";
 
 const Portfolio = () => {
   const theme = useTheme();
   const totalSuppliedBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const totalBorroedBalance = useAppSelector(getTotalAccountBalance("borrowed"));
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
+  const netAPY = useAppSelector(getNetAPY);
 
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
         <InfoBox title="Total Supplied" value={totalSuppliedBalance} />
-        {false && <InfoBox title="Net APR" value="0.00" />}
+        <InfoBox title="Net APY" value={netAPY} />
         <InfoBox title="Total Borrowed" value={totalBorroedBalance} />
       </InfoWrapper>
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
