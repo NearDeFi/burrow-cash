@@ -79,7 +79,7 @@ const Modal = () => {
 
   const handleInputChange = (e) => {
     if (Number(e.target.value) > available) return;
-    dispatch(updateAmount({ amount: e.target.value || 0 }));
+    dispatch(updateAmount({ amount: Number(e.target.value) || 0 }));
   };
 
   const handleMaxClick = () => {
