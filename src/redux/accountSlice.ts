@@ -125,12 +125,12 @@ export const getNetAPY = createSelector(
           const asset = assets[id];
           const balance = Number(account.portfolio[source][id].balance);
           const apr = Number(account.portfolio[source][id].apr);
-          const toUsd =
+          const balance$ =
             Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
             (asset.price?.usd || 0);
-          return [toUsd, apr];
+          return [balance$, apr];
         })
-        .reduce(([gain, sum], [value, apr]) => [gain + value * apr, sum + value], [0, 0]);
+        .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
 
     const [gainCollateral, totalCollateral] = getGains("collateral");
     const [gainSupplied, totalSupplied] = getGains("supplied");
