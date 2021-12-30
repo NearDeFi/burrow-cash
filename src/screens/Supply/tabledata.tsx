@@ -22,7 +22,9 @@ export const columns = [
   {
     label: "Amount Supplied",
     dataKey: "supplied",
-    Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,
+    Cell: ({ rowData }) => (
+      <Cell value={rowData.supplied + rowData.collateral} rowData={rowData} format="amount" />
+    ),
     align: "right",
   },
 ];
