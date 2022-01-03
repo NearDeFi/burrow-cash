@@ -1,7 +1,14 @@
 import { omit, clone } from "ramda";
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 
-import { shrinkToken, expandToken, USD_FORMAT, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
+import {
+  shrinkToken,
+  expandToken,
+  USD_FORMAT,
+  APY_FORMAT,
+  PERCENT_DIGITS,
+  NEAR_DECIMALS,
+} from "../store";
 import { IAccountDetailed } from "../interfaces";
 import type { RootState } from "./store";
 import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer } from "./utils";
@@ -105,6 +112,35 @@ export const getAccountBalance = createSelector(
   (state: RootState) => state.account.balances,
   (balances) => {
     return balances?.near ? shrinkToken(balances?.near, NEAR_DECIMALS, PERCENT_DIGITS) : "...";
+  },
+);
+
+export const getNetAPY = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    const getGains = (source: "supplied" | "collateral" | "borrowed") =>
+      Object.keys(account.portfolio[source])
+        .map((id) => {
+          const asset = assets[id];
+          const balance = Number(account.portfolio[source][id].balance);
+          const apr = Number(account.portfolio[source][id].apr);
+          const balance$ =
+            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+            (asset.price?.usd || 0);
+          return [balance$, apr];
+        })
+        .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+
+    const [gainCollateral, totalCollateral] = getGains("collateral");
+    const [gainSupplied, totalSupplied] = getGains("supplied");
+    const [gainBorrowed, totalBorrowed] = getGains("borrowed");
+
+    const netAPY =
+      ((gainCollateral + gainSupplied - gainBorrowed) * 100) /
+      (totalCollateral + totalSupplied - totalBorrowed);
+
+    return `${(netAPY || 0).toLocaleString(undefined, APY_FORMAT)}%`;
   },
 );
 

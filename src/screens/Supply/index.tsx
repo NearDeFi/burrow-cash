@@ -6,7 +6,7 @@ import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
-import { getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
+import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSlice";
 import { showModal } from "../../redux/appSlice";
 
 const Supply = () => {
@@ -15,6 +15,7 @@ const Supply = () => {
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("supply"));
+  const netAPY = useAppSelector(getNetAPY);
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => col.dataKey !== "supplied")]
@@ -26,10 +27,13 @@ const Supply = () => {
 
   return (
     <Box pb="2.5rem">
-      <InfoWrapper>
+      <InfoWrapper sx={{ gridTemplateColumns: accountId ? "auto auto auto" : "auto auto" }}>
         {rows.length > 0 && <InfoBox title="Total Supply" value={totalSupplyBalance} />}
         {accountId && (
-          <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
+          <>
+            <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
+            <InfoBox title="Net APY" value={netAPY} />
+          </>
         )}
       </InfoWrapper>
       <PageTitle first="Supply" second="Assets" />
