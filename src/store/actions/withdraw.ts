@@ -1,10 +1,13 @@
+import BN from "bn.js";
+
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic, ChangeMethodsOracle } from "../../interfaces";
+import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { getAccountDetailed } from "../accounts";
-import { Transaction } from "../wallet";
+import { Transaction, isRegistered } from "../wallet";
+import { NEAR_DECIMALS } from "../constants";
 
 export async function withdraw({
   tokenId,
@@ -23,6 +26,18 @@ export async function withdraw({
   const accountDetailed = await getAccountDetailed(account.accountId);
 
   const transactions: Transaction[] = [];
+
+  if (!(await isRegistered(account.accountId, tokenContract))) {
+    transactions.push({
+      receiverId: tokenContract.contractId,
+      functionCalls: [
+        {
+          methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+        },
+      ],
+    });
+  }
 
   if (collateralAmount) {
     const asset_ids = accountDetailed

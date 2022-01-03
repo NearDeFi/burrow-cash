@@ -1,9 +1,12 @@
+import BN from "bn.js";
+
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle } from "../../interfaces";
-import { Transaction } from "../wallet";
+import { ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
+import { Transaction, isRegistered } from "../wallet";
 import { getAccountDetailed } from "../accounts";
-import { prepareAndExecuteTransactions, getMetadata } from "../tokens";
+import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
+import { NEAR_DECIMALS } from "../constants";
 
 export async function borrow({
   tokenId,
@@ -16,6 +19,21 @@ export async function borrow({
 }) {
   const { oracleContract, logicContract, account } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
+  const tokenContract = await getTokenContract(tokenId);
+
+  const transactions: Transaction[] = [];
+
+  if (!(await isRegistered(account.accountId, tokenContract))) {
+    transactions.push({
+      receiverId: tokenContract.contractId,
+      functionCalls: [
+        {
+          methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+        },
+      ],
+    });
+  }
 
   const accountDetailed = await getAccountDetailed(account.accountId);
 
@@ -45,19 +63,19 @@ export async function borrow({
         .filter((t) => t !== tokenId)
     : [];
 
-  await prepareAndExecuteTransactions([
-    {
-      receiverId: oracleContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
-          args: {
-            receiver_id: logicContract.contractId,
-            asset_ids: [...asset_ids, tokenId],
-            msg: JSON.stringify(borrowTemplate),
-          },
+  transactions.push({
+    receiverId: oracleContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
+        args: {
+          receiver_id: logicContract.contractId,
+          asset_ids: [...asset_ids, tokenId],
+          msg: JSON.stringify(borrowTemplate),
         },
-      ],
-    } as Transaction,
-  ]);
+      },
+    ],
+  });
+
+  await prepareAndExecuteTransactions(transactions);
 }
