@@ -148,9 +148,11 @@ const Modal = () => {
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
-  const actionDisabled = (!amount && action !== "Adjust") || amount === collateral;
-  const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const showHealthFactor = ["Borrow", "Withdraw", "Adjust"].includes(action as string);
+  const actionDisabled =
+    (!amount && action !== "Adjust") ||
+    (healthFactor > 0 && parseFloat(healthFactor?.toFixed(2)) <= 100 && showHealthFactor);
+  const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const healthFactorColor =
     healthFactor === -1
       ? "black"
@@ -246,12 +248,10 @@ const Modal = () => {
               Remaining collateral: {remainingCollateral}
             </Typography>
           )}
-          {action !== "Borrow" && (
-            <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
-              <span>{totalTitle}</span>
-              <span>{total}</span>
-            </Typography>
-          )}
+          <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
+            <span>{totalTitle}</span>
+            <span>{total}</span>
+          </Typography>
           {rates && (
             <Box>
               <Typography fontSize="0.85rem" fontWeight="bold">
