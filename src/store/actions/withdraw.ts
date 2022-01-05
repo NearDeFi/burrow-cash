@@ -1,6 +1,6 @@
 import BN from "bn.js";
 
-import { getBurrow } from "../../utils";
+import { getBurrow, nearTokenId } from "../../utils";
 import { expandToken } from "../helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "../tokens";
@@ -91,7 +91,7 @@ export async function withdraw({
     ],
   });
 
-  if (tokenId === "wrap.testnet") {
+  if (tokenId === nearTokenId) {
     transactions.push({
       receiverId: tokenContract.contractId,
       functionCalls: [

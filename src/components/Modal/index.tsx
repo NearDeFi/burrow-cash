@@ -4,6 +4,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, APY_FORMAT } from "../../store";
+import { nearTokenId } from "../../utils";
 import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -105,7 +106,7 @@ const Modal = () => {
     setLoading(true);
     switch (action) {
       case "Supply":
-        if (tokenId === "wrap.testnet") {
+        if (tokenId === nearTokenId) {
           await deposit({ amount, useAsCollateral });
         } else {
           await supply({ tokenId, extraDecimals, useAsCollateral, amount });

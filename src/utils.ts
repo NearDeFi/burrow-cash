@@ -1,11 +1,4 @@
-import {
-  connect,
-  Contract,
-  keyStores,
-  WalletConnection,
-  transactions,
-  // ConnectedWalletAccount,
-} from "near-api-js";
+import { connect, Contract, keyStores, WalletConnection, transactions } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
@@ -18,9 +11,18 @@ import {
 import { IBurrow } from "./interfaces/burrow";
 import { BatchWallet, getContract, BatchWalletAccount } from "./store";
 
-const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
+const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
+
+const nearConfig = getConfig(defaultNetwork);
 
 let burrow: IBurrow;
+
+const nearTokenIds = {
+  mainnet: "wrap.near",
+  testnet: "wrap.testnet",
+};
+
+export const nearTokenId = nearTokenIds[defaultNetwork] || "wrap.testnet";
 
 export const getBurrow = async (): Promise<IBurrow> => {
   if (burrow) return burrow;

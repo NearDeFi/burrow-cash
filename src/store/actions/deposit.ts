@@ -1,7 +1,7 @@
 import { Contract } from "near-api-js";
 import BN from "bn.js";
 
-import { getBurrow } from "../../utils";
+import { getBurrow, nearTokenId } from "../../utils";
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
@@ -16,9 +16,8 @@ export async function deposit({
   amount: number;
   useAsCollateral: boolean;
 }) {
-  const tokenId = "wrap.testnet";
   const { account, logicContract } = await getBurrow();
-  const tokenContract: Contract = await getTokenContract(tokenId);
+  const tokenContract: Contract = await getTokenContract(nearTokenId);
   const transactions: Transaction[] = [];
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
@@ -33,7 +32,7 @@ export async function deposit({
           actions: [
             {
               IncreaseCollateral: {
-                token_id: tokenId,
+                token_id: nearTokenId,
                 max_amount: expandedAmount,
               },
             },
