@@ -17,9 +17,9 @@ const Portfolio = () => {
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Supplied" value={totalSuppliedBalance} />
+        <InfoBox title="Your Deposits" value={totalSuppliedBalance} />
         <InfoBox title="Net APY" value={netAPY} />
-        <InfoBox title="Total Borrowed" value={totalBorroedBalance} />
+        <InfoBox title="Your Borrows" value={totalBorroedBalance} />
       </InfoWrapper>
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Supplied</span> Assets

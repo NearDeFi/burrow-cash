@@ -29,7 +29,7 @@ export const suppliedColumns = [
     ),
   },
   {
-    label: "Supplied",
+    label: "Deposited",
     dataKey: "balance",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,

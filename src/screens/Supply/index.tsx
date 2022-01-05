@@ -28,15 +28,15 @@ const Supply = () => {
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: accountId ? "auto auto auto" : "auto auto" }}>
-        {rows.length > 0 && <InfoBox title="Total Supply" value={totalSupplyBalance} />}
+        {rows.length > 0 && <InfoBox title="Total Deposited" value={totalSupplyBalance} />}
         {accountId && (
           <>
-            <InfoBox title="Your Supply Balance" value={yourSupplyBalance} subtitle="Portfolio" />
+            <InfoBox title="Your Deposit Balance" value={yourSupplyBalance} subtitle="Portfolio" />
             <InfoBox title="Net APY" value={netAPY} />
           </>
         )}
       </InfoWrapper>
-      <PageTitle first="Supply" second="Assets" />
+      <PageTitle first="Deposit" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>
   );
