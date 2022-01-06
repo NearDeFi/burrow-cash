@@ -1,4 +1,4 @@
-import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS } from "../../store";
+import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, PERCENT_DIGITS } from "../../store";
 import type { UIAsset } from "../../interfaces";
 
 interface Alert {
@@ -56,7 +56,7 @@ export const getModalData = (asset): UIAsset & Props => {
       data.apy = supplyApy;
       data.totalTitle = `Total Supply = `;
       data.rates = [
-        { label: "Deposit APY", value: supplyApy },
+        { label: "Deposit APY", value: `${supplyApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
       ];
       if (symbol === "wNEAR") {
@@ -71,7 +71,7 @@ export const getModalData = (asset): UIAsset & Props => {
       data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity);
       data.available$ = (data.available * price$).toLocaleString(undefined, USD_FORMAT);
       data.rates = [
-        { label: "Borrow APY", value: borrowApy },
+        { label: "Borrow APY", value: `${borrowApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
         {
           label: "Pool Liquidity",
