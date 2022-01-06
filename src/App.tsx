@@ -4,6 +4,7 @@ import { Navigate } from "react-router";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { useIdle, useInterval } from "react-use";
 
 import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
@@ -18,10 +19,20 @@ Sentry.init({
 });
 
 const App = () => {
+  const isIdle = useIdle(30e3);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     fetchData(dispatch);
   }, []);
+
+  useInterval(
+    () => {
+      fetchData(dispatch);
+    },
+    !isIdle ? 60e3 : null,
+  );
+
   return (
     <BrowserRouter>
       <Layout>
