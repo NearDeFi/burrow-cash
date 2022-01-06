@@ -22,12 +22,12 @@ const Portfolio = () => {
         <InfoBox title="Your Borrows" value={totalBorroedBalance} />
       </InfoWrapper>
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
-        <span style={{ color: theme.palette.primary.main }}>Supplied</span> Assets
+        <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>
       {suppliedRows.length ? (
         <Table rows={suppliedRows} columns={suppliedColumns} />
       ) : (
-        <div style={{ textAlign: "center" }}>No supplied assets yet</div>
+        <div style={{ textAlign: "center" }}>No deposited assets yet</div>
       )}
       <Typography sx={{ fontSize: 24, padding: "1rem", marginTop: "2rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Borrowed</span> Assets

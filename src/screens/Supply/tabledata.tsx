@@ -14,14 +14,22 @@ export const columns = [
     Cell: ({ rowData }) => <Cell value={rowData.supplyApy} rowData={rowData} format="apy" />,
   },
   {
-    label: "Total Supply",
-    dataKey: "supply",
+    label: "Total Deposit",
+    dataKey: "deposit",
     Cell: ({ rowData }) => <Cell value={rowData.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
-    label: "Amount Supplied",
-    dataKey: "supplied",
+    label: "Available Liquidity",
+    dataKey: "liquidity",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell value={rowData.availableLiquidity} rowData={rowData} format="amount" />
+    ),
+  },
+  {
+    label: "Your Deposit",
+    dataKey: "yourdeposit",
     Cell: ({ rowData }) => (
       <Cell value={rowData.supplied + rowData.collateral} rowData={rowData} format="amount" />
     ),
