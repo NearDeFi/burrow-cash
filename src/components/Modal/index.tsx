@@ -3,7 +3,7 @@ import { Modal as MUIModal, Typography, Box, Switch, Alert, Stack } from "@mui/m
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, APY_FORMAT } from "../../store";
+import { USD_FORMAT, PERCENT_DIGITS, APY_FORMAT } from "../../store";
 import { nearTokenId } from "../../utils";
 import Input from "../Input";
 import Slider from "../Slider";
@@ -78,6 +78,9 @@ const Modal = () => {
 
   const sliderValue = (amount * 100) / available;
   const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
+  const totalAvailable = Number(
+    Math.max(0, Number((available || 0).toFixed(PERCENT_DIGITS)) - 1 / 1e4).toFixed(PERCENT_DIGITS),
+  );
 
   const handleClose = () => dispatch(hideModal());
 
@@ -87,7 +90,7 @@ const Modal = () => {
   };
 
   const handleMaxClick = () => {
-    dispatch(updateAmount({ amount: Number(available.toFixed(PERCENT_DIGITS)) }));
+    dispatch(updateAmount({ amount: totalAvailable }));
   };
 
   const handleFocus = (e) => {
@@ -211,8 +214,7 @@ const Modal = () => {
           </Typography>
           <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
             <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-              Available: {available?.toLocaleString(undefined, TOKEN_FORMAT)} {displaySymbol} (
-              {available$})
+              Available: {totalAvailable} {displaySymbol} ({available$})
             </Typography>
             <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
               1 {displaySymbol} = ${price}
