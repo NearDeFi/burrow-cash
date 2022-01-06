@@ -418,5 +418,50 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
     },
   );
 
+export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    (state: RootState) => state.app,
+    (assets, account, app) => {
+      if (!account.portfolio || !tokenId) return 0;
+
+      const { metadata, config } = assets[tokenId];
+
+      const clonedAccount = clone(account);
+
+      if (!clonedAccount.portfolio.collateral[tokenId]) {
+        clonedAccount.portfolio.collateral[tokenId] = {
+          balance: "0",
+          shares: "0",
+          apr: "0",
+        };
+      }
+
+      const collateralBalanceInt = Number(
+        shrinkToken(
+          clonedAccount.portfolio.collateral[tokenId].balance,
+          metadata.decimals + config.extra_decimals,
+        ),
+      );
+
+      const newBalance = Number(
+        expandToken(
+          collateralBalanceInt + (app.selected.useAsCollateral ? amount : 0),
+          metadata.decimals + config.extra_decimals,
+          0,
+        ),
+      ).toString();
+
+      clonedAccount.portfolio.collateral[tokenId].balance = newBalance;
+
+      const collateralSum = getCollateralSum(assets, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets, account);
+
+      const healthFactor = (collateralSum / borrowedSum) * 100;
+      return healthFactor < 10000 ? healthFactor : 10000;
+    },
+  );
+
 export const { receivedAccount, logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;

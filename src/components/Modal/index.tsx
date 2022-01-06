@@ -22,6 +22,7 @@ import {
   recomputeHealthFactor,
   recomputeHealthFactorWithdraw,
   recomputeHealthFactorAdjust,
+  recomputeHealthFactorSupply,
 } from "../../redux/accountSlice";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
@@ -49,6 +50,8 @@ const Modal = () => {
       ? recomputeHealthFactorWithdraw(tokenId, amount)
       : action === "Adjust"
       ? recomputeHealthFactorAdjust(tokenId, amount)
+      : action === "Supply"
+      ? recomputeHealthFactorSupply(tokenId, amount)
       : recomputeHealthFactor(tokenId, amount),
   );
 
@@ -148,7 +151,7 @@ const Modal = () => {
   };
 
   const showToggle = action === "Supply" && canUseAsCollateral;
-  const showHealthFactor = ["Borrow", "Withdraw", "Adjust"].includes(action as string);
+  const showHealthFactor = ["Supply", "Borrow", "Withdraw", "Adjust"].includes(action as string);
   const actionDisabled =
     (!amount && action !== "Adjust") ||
     (healthFactor > 0 && parseFloat(healthFactor?.toFixed(2)) <= 100 && showHealthFactor);
