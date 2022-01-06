@@ -84,7 +84,10 @@ export const prepareAndExecuteTokenTransactions = async (
   const functionCalls: FunctionCallOptions[] = [];
 
   // check if account is registered in the token contract
-  if (!(await isRegistered(account.accountId, tokenContract))) {
+  if (
+    !(await isRegistered(account.accountId, tokenContract)) &&
+    tokenContract.contractId !== "aurora"
+  ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
       attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),

@@ -27,7 +27,10 @@ export async function withdraw({
 
   const transactions: Transaction[] = [];
 
-  if (!(await isRegistered(account.accountId, tokenContract))) {
+  if (
+    !(await isRegistered(account.accountId, tokenContract)) &&
+    tokenContract.contractId !== "aurora"
+  ) {
     transactions.push({
       receiverId: tokenContract.contractId,
       functionCalls: [
