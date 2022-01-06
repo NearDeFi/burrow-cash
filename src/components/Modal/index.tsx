@@ -216,8 +216,9 @@ const Modal = () => {
             </Typography>
           </Box>
           <Input
-            value={amount}
+            value={`${amount}`.replace(/^0+/, "")}
             type="number"
+            step="0.01"
             onClickMax={handleMaxClick}
             onChange={handleInputChange}
             onFocus={handleFocus}
