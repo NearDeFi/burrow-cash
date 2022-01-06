@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
-import { Borrow, Portfolio, Supply, Terms, Privacy } from "./screens";
+import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
 import fetchData from "./api/fetch-data";
@@ -27,7 +27,7 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Navigate replace to="/supply" />} />
-          <Route path="/supply" element={<Supply />} />
+          <Route path="/deposit" element={<Deposit />} />
           <Route path="/borrow" element={<Borrow />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/terms" element={<Terms />} />

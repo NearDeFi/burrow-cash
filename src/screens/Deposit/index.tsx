@@ -9,7 +9,7 @@ import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
 import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSlice";
 import { showModal } from "../../redux/appSlice";
 
-const Supply = () => {
+const Deposit = () => {
   const dispatch = useAppDispatch();
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
@@ -42,4 +42,4 @@ const Supply = () => {
   );
 };
 
-export default Supply;
+export default Deposit;
