@@ -47,7 +47,7 @@ const Header = () => {
         <LogoIcon />
       </Logo>
       <Menu>
-        <MenuItem title="Supply" pathname="/supply" />
+        <MenuItem title="Deposit" pathname="/supply" />
         <MenuItem title="Borrow" pathname="/borrow" />
         <MenuItem title="Portfolio" pathname="/portfolio" />
       </Menu>

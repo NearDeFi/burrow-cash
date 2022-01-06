@@ -28,7 +28,7 @@ const Borrow = () => {
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Borrow" value={totalBorrowBalance} />
+        <InfoBox title="Total Borrowed" value={totalBorrowBalance} />
         {accountId && (
           <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
         )}
