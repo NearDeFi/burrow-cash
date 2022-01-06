@@ -13,10 +13,11 @@ export const Wrapper = styled(Box)(({ theme }) => ({
     width: "100%",
   },
   [theme.breakpoints.up("sm")]: {
-    top: "10%",
-    left: "25%",
+    top: "calc(50% - 40vh)",
+    left: "calc(50% - 230px)",
     display: "flex",
     height: "80vh",
+    maxHeight: "660px",
     width: "460px",
   },
 }));
