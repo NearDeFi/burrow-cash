@@ -37,7 +37,7 @@ const App = () => {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<Navigate replace to="/supply" />} />
+          <Route path="/" element={<Navigate replace to="/deposit" />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/borrow" element={<Borrow />} />
           <Route path="/portfolio" element={<Portfolio />} />
