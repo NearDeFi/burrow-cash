@@ -169,6 +169,12 @@ const Modal = () => {
       : "green";
   const healthFactorDisplayValue = healthFactor === -1 ? "N/A" : `${healthFactor?.toFixed(2)}%`;
 
+  const inputAmount = `${amount}`
+    .replace(/[^0-9.-]/g, "")
+    .replace(/(\..*)\./g, "$1")
+    .replace(/(?!^)-/g, "")
+    .replace(/^0+(\d)/gm, "$1");
+
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
@@ -221,7 +227,7 @@ const Modal = () => {
             </Typography>
           </Box>
           <Input
-            value={`${amount}`.replace(/^0+/, "")}
+            value={inputAmount}
             type="number"
             step="0.01"
             onClickMax={handleMaxClick}
