@@ -38,7 +38,11 @@ export const getTotalBalance = (source: "borrowed" | "supplied") =>
     (state: RootState) => state.assets,
     (assets) =>
       Object.keys(assets)
-        .map((tokenId) => toUsd(assets[tokenId][source].balance, assets[tokenId]))
+        .map(
+          (tokenId) =>
+            toUsd(assets[tokenId][source].balance, assets[tokenId]) +
+            (source === "supplied" ? toUsd(assets[tokenId].reserved, assets[tokenId]) : 0),
+        )
         .reduce(sumReducer, 0)
         .toLocaleString(undefined, USD_FORMAT),
   );
