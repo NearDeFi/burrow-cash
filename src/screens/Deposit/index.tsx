@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle } from "../../components";
@@ -37,6 +37,11 @@ const Deposit = () => {
         )}
       </InfoWrapper>
       <PageTitle first="Deposit" second="Assets" />
+      <Box width={["100%", "520px"]} mx="auto" mt="-2rem" mb="2rem">
+        <Alert severity="warning">
+          This is an unaudited product. Please DO NOT deposit more than $500
+        </Alert>
+      </Box>
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>
   );
