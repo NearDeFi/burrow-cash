@@ -42,7 +42,7 @@ function Table({ rows, columns, onRowClick }: TableProps) {
                 cursor: onRowClick && "pointer",
                 "&:hover": { background: onRowClick && theme.palette.background.default },
               }}
-              onClick={() => onRowClick && onRowClick(rowData)}
+              onClick={() => onRowClick && rowData && onRowClick(rowData)}
             >
               {columns?.map(
                 ({ dataKey, align, Cell }) =>
