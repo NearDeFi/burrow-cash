@@ -80,7 +80,7 @@ export const getSelectedValues = createSelector(
 
 export const getAssetData = createSelector(
   (state: RootState) => state.app,
-  (state: RootState) => state.assets,
+  (state: RootState) => state.assets.data,
   (state: RootState) => state.account,
   (app, assets, account) => {
     const asset = assets[app.selected?.tokenId];

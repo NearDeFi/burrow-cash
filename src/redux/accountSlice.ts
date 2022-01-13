@@ -1,5 +1,5 @@
 import { omit, clone } from "ramda";
-import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector, createAsyncThunk } from "@reduxjs/toolkit";
 
 import {
   shrinkToken,
@@ -8,11 +8,13 @@ import {
   APY_FORMAT,
   PERCENT_DIGITS,
   NEAR_DECIMALS,
+  getAssetsDetailed,
 } from "../store";
-import { IAccountDetailed } from "../interfaces";
+import { getBurrow } from "../utils";
+import { getBalance, getPortfolio } from "../api";
 import type { RootState } from "./store";
 import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer } from "./utils";
-import { AssetsState } from "./assetsSlice";
+import { Assets } from "./assetsSlice";
 
 interface Balance {
   [tokenId: string]: string;
@@ -39,6 +41,8 @@ export interface AccountState {
   accountId: string;
   balances: Balance;
   portfolio: Portfolio;
+  status: "pending" | "fulfilled" | "rejected" | undefined;
+  fetchedAt: string | undefined;
 }
 
 const initialState: AccountState = {
@@ -49,6 +53,8 @@ const initialState: AccountState = {
     collateral: {},
     borrowed: {},
   },
+  status: undefined,
+  fetchedAt: undefined,
 };
 
 const listToMap = (list) =>
@@ -56,23 +62,41 @@ const listToMap = (list) =>
     .map((asset) => ({ [asset.token_id]: omit(["token_id"], asset) }))
     .reduce((a, b) => ({ ...a, ...b }), {});
 
+export const fetchAccount = createAsyncThunk("account/fetchAccount", async () => {
+  const { account } = await getBurrow();
+  const { accountId } = account;
+
+  if (accountId) {
+    const assets = await getAssetsDetailed();
+    const tokenIds = assets.map((asset) => asset.token_id);
+    const accountBalance = (await account.getAccountBalance()).available;
+    const balances = await Promise.all(tokenIds.map((id) => getBalance(id, accountId)));
+    const portfolio = await getPortfolio(accountId);
+    return { accountId, accountBalance, balances, portfolio, tokenIds };
+  }
+
+  return undefined;
+});
+
 export const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
     logoutAccount: () => initialState,
-    receivedAccount(
-      state,
-      action: PayloadAction<{
-        accountId: string;
-        accountBalance: string;
-        balances: string[];
-        portfolio: IAccountDetailed;
-        tokenIds: string[];
-      }>,
-    ) {
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAccount.pending, (state, action) => {
+      state.status = action.meta.requestStatus;
+    });
+    builder.addCase(fetchAccount.rejected, (state, action) => {
+      state.status = action.meta.requestStatus;
+    });
+    builder.addCase(fetchAccount.fulfilled, (state, action) => {
+      if (!action.payload?.accountId) return;
       const { accountId, accountBalance, balances, portfolio, tokenIds } = action.payload;
 
+      state.status = action.meta.requestStatus;
+      state.fetchedAt = new Date().toString();
       state.accountId = accountId;
       state.balances = {
         ...balances.map((b, i) => ({ [tokenIds[i]]: b })).reduce((a, b) => ({ ...a, ...b }), {}),
@@ -87,7 +111,7 @@ export const accountSlice = createSlice({
           collateral: listToMap(collateral),
         };
       }
-    },
+    });
   },
 });
 
@@ -98,7 +122,7 @@ export const getAccountId = createSelector(
 
 export const getCollateralAmount = (tokenId: string) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       const collateral = account.portfolio.collateral[tokenId];
@@ -116,7 +140,7 @@ export const getAccountBalance = createSelector(
 );
 
 export const getNetAPY = createSelector(
-  (state: RootState) => state.assets,
+  (state: RootState) => state.assets.data,
   (state: RootState) => state.account,
   (assets, account) => {
     const getGains = (source: "supplied" | "collateral" | "borrowed") =>
@@ -146,7 +170,7 @@ export const getNetAPY = createSelector(
 
 export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       const tokens = account.portfolio[source];
@@ -177,7 +201,7 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
 
 export const getPortfolioAssets = createSelector(
   (state: RootState) => state.app,
-  (state: RootState) => state.assets,
+  (state: RootState) => state.assets.data,
   (state: RootState) => state.account,
   (app, assets, account) => {
     const portfolioAssets = {
@@ -237,7 +261,7 @@ export const getPortfolioAssets = createSelector(
 
 const MAX_RATIO = 10000;
 
-const getCollateralSum = (assets: AssetsState, account: AccountState) =>
+const getCollateralSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
       const asset = assets[id];
@@ -251,7 +275,7 @@ const getCollateralSum = (assets: AssetsState, account: AccountState) =>
     })
     .reduce(sumReducer, 0);
 
-const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
+const getBorrowedSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.borrowed)
     .map((id) => {
       const asset = assets[id];
@@ -266,7 +290,7 @@ const getBorrowedSum = (assets: AssetsState, account: AccountState) =>
 
 export const getMaxBorrowAmount = (tokenId: string) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.accountId || !tokenId) return 0;
@@ -279,7 +303,7 @@ export const getMaxBorrowAmount = (tokenId: string) =>
   );
 
 export const getHealthFactor = createSelector(
-  (state: RootState) => state.assets,
+  (state: RootState) => state.assets.data,
   (state: RootState) => state.account,
   (assets, account) => {
     if (!account.portfolio) return null;
@@ -294,7 +318,7 @@ export const getHealthFactor = createSelector(
 
 export const recomputeHealthFactor = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.portfolio || !tokenId) return 0;
@@ -333,7 +357,7 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
 
 export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.portfolio || !tokenId) return 0;
@@ -369,7 +393,7 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
 
 export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.portfolio || !tokenId) return 0;
@@ -420,7 +444,7 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
 
 export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets,
+    (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (state: RootState) => state.app,
     (assets, account, app) => {
@@ -463,5 +487,5 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
     },
   );
 
-export const { receivedAccount, logoutAccount } = accountSlice.actions;
+export const { logoutAccount } = accountSlice.actions;
 export default accountSlice.reducer;

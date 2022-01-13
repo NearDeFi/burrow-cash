@@ -9,7 +9,8 @@ import { useIdle, useInterval } from "react-use";
 import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
-import fetchData from "./api/fetch-data";
+import { fetchAssets } from "./redux/assetsSlice";
+import { fetchAccount } from "./redux/accountSlice";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -23,12 +24,13 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    fetchData(dispatch);
+    dispatch(fetchAssets());
+    dispatch(fetchAccount());
   }, []);
 
   useInterval(
     () => {
-      fetchData(dispatch);
+      dispatch(fetchAssets());
     },
     !isIdle ? 60e3 : null,
   );
