@@ -5,8 +5,8 @@ import { InfoBox, PageTitle } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
-import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSlice";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
+import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
 
 const Deposit = () => {

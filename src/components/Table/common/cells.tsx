@@ -4,7 +4,7 @@ import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
 import type { UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
-import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSlice";
+import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
 
 export const TokenCell = ({ rowData }) => {
   const { symbol, price } = rowData;

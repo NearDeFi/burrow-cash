@@ -5,13 +5,10 @@ import { IBurrow } from "../../interfaces/burrow";
 import { Burrow } from "../../index";
 import { login, logout } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getAccountBalance, logoutAccount } from "../../redux/accountSlice";
-import {
-  getDisplayAsTokenValue,
-  toggleDisplayValues,
-  getShowDust,
-  toggleShowDust,
-} from "../../redux/appSlice";
+import { logoutAccount } from "../../redux/accountSlice";
+import { getAccountBalance } from "../../redux/accountSelectors";
+import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
+import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();

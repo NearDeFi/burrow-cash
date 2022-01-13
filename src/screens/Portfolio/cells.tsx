@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { getCollateralAmount } from "../../redux/accountSlice";
+import { getCollateralAmount } from "../../redux/accountSelectors";
 
 export const WithdrawCell = ({ rowData: { supplied, tokenId } }) => {
   if (!supplied) return false;

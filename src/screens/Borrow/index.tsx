@@ -1,12 +1,16 @@
 import { Box } from "@mui/material";
 
-import { getHealthFactor, getTotalAccountBalance, getAccountId } from "../../redux/accountSlice";
+import {
+  getHealthFactor,
+  getTotalAccountBalance,
+  getAccountId,
+} from "../../redux/accountSelectors";
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle, HealthFactorBox } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSlice";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
 import { showModal } from "../../redux/appSlice";
 
 const Borrow = () => {

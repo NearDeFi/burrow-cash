@@ -8,14 +8,8 @@ import { nearTokenId } from "../../utils";
 import Input from "../Input";
 import Slider from "../Slider";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import {
-  getModalStatus,
-  getAssetData,
-  hideModal,
-  updateAmount,
-  toggleUseAsCollateral,
-  getSelectedValues,
-} from "../../redux/appSlice";
+import { hideModal, updateAmount, toggleUseAsCollateral } from "../../redux/appSlice";
+import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
 import {
   getMaxBorrowAmount,
   getAccountId,
@@ -23,7 +17,7 @@ import {
   recomputeHealthFactorWithdraw,
   recomputeHealthFactorAdjust,
   recomputeHealthFactorSupply,
-} from "../../redux/accountSlice";
+} from "../../redux/accountSelectors";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";

@@ -5,7 +5,11 @@ import { InfoBox } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalAccountBalance, getPortfolioAssets, getNetAPY } from "../../redux/accountSlice";
+import {
+  getTotalAccountBalance,
+  getPortfolioAssets,
+  getNetAPY,
+} from "../../redux/accountSelectors";
 
 const Portfolio = () => {
   const theme = useTheme();
