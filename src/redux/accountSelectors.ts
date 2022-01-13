@@ -21,12 +21,13 @@ export const getAccountId = createSelector(
 
 export const getCollateralAmount = (tokenId: string) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (assets.status !== "fulfilled") return 0;
       const collateral = account.portfolio.collateral[tokenId];
       if (!collateral) return 0;
-      const { metadata, config } = assets[tokenId];
+      const { metadata, config } = assets.data[tokenId];
       return Number(shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals));
     },
   );
@@ -39,13 +40,14 @@ export const getAccountBalance = createSelector(
 );
 
 export const getNetAPY = createSelector(
-  (state: RootState) => state.assets.data,
+  (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
+    if (assets.status !== "fulfilled") return undefined;
     const getGains = (source: "supplied" | "collateral" | "borrowed") =>
       Object.keys(account.portfolio[source])
         .map((id) => {
-          const asset = assets[id];
+          const asset = assets.data[id];
           const balance = Number(account.portfolio[source][id].balance);
           const apr = Number(account.portfolio[source][id].apr);
           const balance$ =
@@ -69,15 +71,16 @@ export const getNetAPY = createSelector(
 
 export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (assets.status !== "fulfilled") return undefined;
       const tokens = account.portfolio[source];
       const { collateral } = account.portfolio;
 
       return Object.keys(tokens)
         .map((tokenId) => {
-          const { price, metadata, config } = assets[tokenId];
+          const { price, metadata, config } = assets.data[tokenId];
           const total =
             Number(
               shrinkToken(tokens[tokenId].balance, metadata.decimals + config.extra_decimals),
@@ -100,16 +103,17 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
 
 export const getPortfolioAssets = createSelector(
   (state: RootState) => state.app,
-  (state: RootState) => state.assets.data,
+  (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (app, assets, account) => {
+    if (assets.status !== "fulfilled") return [[], []];
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
     };
     const supplied = Object.keys(portfolioAssets)
       .map((tokenId) => {
-        const asset = assets[tokenId];
+        const asset = assets.data[tokenId];
         const collateral = shrinkToken(
           account.portfolio.collateral[tokenId]?.balance || 0,
           asset.metadata.decimals + asset.config.extra_decimals,
@@ -135,7 +139,7 @@ export const getPortfolioAssets = createSelector(
 
     const borrowed = Object.keys(account.portfolio.borrowed)
       .map((tokenId) => {
-        const asset = assets[tokenId];
+        const asset = assets.data[tokenId];
 
         const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
 
@@ -202,13 +206,14 @@ export const getMaxBorrowAmount = (tokenId: string) =>
   );
 
 export const getHealthFactor = createSelector(
-  (state: RootState) => state.assets.data,
+  (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
+    if (assets.status !== "fulfilled") return null;
     if (!account.portfolio) return null;
     if (!Object.keys(account.portfolio.borrowed).length) return -1;
-    const collateralSum = getCollateralSum(assets, account);
-    const borrowedSum = getBorrowedSum(assets, account);
+    const collateralSum = getCollateralSum(assets.data, account);
+    const borrowedSum = getBorrowedSum(assets.data, account);
 
     const healthFactor = (collateralSum / borrowedSum) * 100;
     return healthFactor < 10000 ? healthFactor : 10000;
@@ -217,13 +222,14 @@ export const getHealthFactor = createSelector(
 
 export const recomputeHealthFactor = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (assets.status !== "fulfilled") return 0;
       if (!account.portfolio || !tokenId) return 0;
 
-      const collateralSum = getCollateralSum(assets, account);
-      const { metadata, config } = assets[tokenId];
+      const collateralSum = getCollateralSum(assets.data, account);
+      const { metadata, config } = assets.data[tokenId];
 
       const newBalance = (
         Number(account.portfolio.borrowed[tokenId]?.balance || 0) +
@@ -245,7 +251,7 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
         balance: newBalance,
       };
 
-      const borrowedSum = getBorrowedSum(assets, amount === 0 ? account : clonedAccount);
+      const borrowedSum = getBorrowedSum(assets.data, amount === 0 ? account : clonedAccount);
 
       if (!Object.keys(account.portfolio.borrowed).length && amount === 0) return -1;
 
@@ -256,12 +262,13 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
 
 export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (assets.status !== "fulfilled") return 0;
       if (!account.portfolio || !tokenId) return 0;
 
-      const { metadata, config } = assets[tokenId];
+      const { metadata, config } = assets.data[tokenId];
 
       const newBalance = Number(
         expandToken(amount, metadata.decimals + config.extra_decimals, 0),
@@ -282,8 +289,8 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
         balance: newBalance,
       };
 
-      const collateralSum = getCollateralSum(assets, clonedAccount);
-      const borrowedSum = getBorrowedSum(assets, account);
+      const collateralSum = getCollateralSum(assets.data, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets.data, account);
 
       const healthFactor = (collateralSum / borrowedSum) * 100;
       return healthFactor < 10000 ? healthFactor : 10000;
@@ -292,12 +299,13 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
 
 export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
+      if (assets.status !== "fulfilled") return 0;
       if (!account.portfolio || !tokenId) return 0;
 
-      const { metadata, config } = assets[tokenId];
+      const { metadata, config } = assets.data[tokenId];
 
       const clonedAccount = clone(account);
 
@@ -333,8 +341,8 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
 
       clonedAccount.portfolio.collateral[tokenId].balance = newBalance;
 
-      const collateralSum = getCollateralSum(assets, clonedAccount);
-      const borrowedSum = getBorrowedSum(assets, account);
+      const collateralSum = getCollateralSum(assets.data, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets.data, account);
 
       const healthFactor = (collateralSum / borrowedSum) * 100;
       return healthFactor < 10000 ? healthFactor : 10000;
@@ -343,13 +351,14 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
 
 export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (state: RootState) => state.app,
     (assets, account, app) => {
+      if (assets.status !== "fulfilled") return 0;
       if (!account.portfolio || !tokenId) return 0;
 
-      const { metadata, config } = assets[tokenId];
+      const { metadata, config } = assets.data[tokenId];
 
       const clonedAccount = clone(account);
 
@@ -378,8 +387,8 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
 
       clonedAccount.portfolio.collateral[tokenId].balance = newBalance;
 
-      const collateralSum = getCollateralSum(assets, clonedAccount);
-      const borrowedSum = getBorrowedSum(assets, account);
+      const collateralSum = getCollateralSum(assets.data, clonedAccount);
+      const borrowedSum = getBorrowedSum(assets.data, account);
 
       const healthFactor = (collateralSum / borrowedSum) * 100;
       return healthFactor < 10000 ? healthFactor : 10000;

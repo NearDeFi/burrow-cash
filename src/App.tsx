@@ -24,10 +24,8 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchAssets()).then((res) => {
-      if (res.meta.requestStatus !== "fulfilled") return;
-      dispatch(fetchAccount());
-    });
+    dispatch(fetchAccount());
+    dispatch(fetchAssets());
   }, []);
 
   useInterval(
