@@ -34,9 +34,9 @@ function Table({ rows, columns, onRowClick }: TableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((rowData) => (
+          {rows.map((rowData, idx) => (
             <TableRow
-              key={rowData?.symbol}
+              key={rowData?.symbol || idx}
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
                 cursor: onRowClick && "pointer",

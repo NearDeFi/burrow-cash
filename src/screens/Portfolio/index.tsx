@@ -9,23 +9,23 @@ import {
   getTotalAccountBalance,
   getPortfolioAssets,
   getNetAPY,
-  isAccountLoading,
 } from "../../redux/accountSelectors";
+import { useLoading } from "../../hooks";
 
 const Portfolio = () => {
   const theme = useTheme();
   const totalSuppliedBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const totalBorroedBalance = useAppSelector(getTotalAccountBalance("borrowed"));
-  const isLoading = useAppSelector(isAccountLoading);
+  const isLoading = useLoading();
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
   const netAPY = useAppSelector(getNetAPY);
 
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Your Deposits" value={totalSuppliedBalance} />
-        <InfoBox title="Net APY" value={netAPY} />
-        <InfoBox title="Your Borrows" value={totalBorroedBalance} />
+        <InfoBox title="Your Deposits" value={isLoading ? undefined : totalSuppliedBalance} />
+        <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
+        <InfoBox title="Your Borrows" value={isLoading ? undefined : totalBorroedBalance} />
       </InfoWrapper>
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets

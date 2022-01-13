@@ -5,9 +5,10 @@ import { InfoBox, PageTitle } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getTotalBalance, getAvailableAssets, isAssetsLoading } from "../../redux/assetsSelectors";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
 import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
+import { useLoading } from "../../hooks";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ const Deposit = () => {
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("supply"));
-  const isLoading = useAppSelector(isAssetsLoading);
+  const isLoading = useLoading();
   const netAPY = useAppSelector(getNetAPY);
 
   const columns = !accountId
@@ -28,14 +29,14 @@ const Deposit = () => {
 
   return (
     <Box pb="2.5rem">
-      <InfoWrapper sx={{ gridTemplateColumns: accountId ? "auto auto auto" : "auto auto" }}>
+      <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
         <InfoBox title="Total Deposited" value={isLoading ? undefined : totalSupplyBalance} />
-        {accountId && (
-          <>
-            <InfoBox title="Your Deposit Balance" value={yourSupplyBalance} subtitle="Portfolio" />
-            <InfoBox title="Net APY" value={netAPY} />
-          </>
-        )}
+        <InfoBox
+          title="Your Deposit Balance"
+          value={isLoading ? undefined : yourSupplyBalance}
+          subtitle="Portfolio"
+        />
+        <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
       </InfoWrapper>
       <PageTitle first="Deposit" second="Assets" />
       <Box width={["100%", "520px"]} mx="auto" mt="-2rem" mb="2rem">

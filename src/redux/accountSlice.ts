@@ -76,11 +76,11 @@ export const accountSlice = createSlice({
       state.status = action.meta.requestStatus;
     });
     builder.addCase(fetchAccount.fulfilled, (state, action) => {
+      state.status = action.meta.requestStatus;
+      state.fetchedAt = new Date().toString();
       if (!action.payload?.accountId) return;
       const { accountId, accountBalance, balances, portfolio, tokenIds } = action.payload;
 
-      state.status = action.meta.requestStatus;
-      state.fetchedAt = new Date().toString();
       state.accountId = accountId;
       state.balances = {
         ...balances.map((b, i) => ({ [tokenIds[i]]: b })).reduce((a, b) => ({ ...a, ...b }), {}),
