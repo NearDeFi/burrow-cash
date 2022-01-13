@@ -9,7 +9,7 @@ import { useIdle, useInterval } from "react-use";
 import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
-import { fetchAssets } from "./redux/assetsSlice";
+import { fetchAssetsAndMetadata, fetchAssets } from "./redux/assetsSlice";
 import { fetchAccount } from "./redux/accountSlice";
 
 Sentry.init({
@@ -25,7 +25,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchAccount());
-    dispatch(fetchAssets());
+    dispatch(fetchAssetsAndMetadata());
   }, []);
 
   useInterval(

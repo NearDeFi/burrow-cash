@@ -43,7 +43,7 @@ export const getNetAPY = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
-    if (assets.status !== "fulfilled") return undefined;
+    if (assets.status !== "fulfilled" && assets.status !== "fetching") return undefined;
     const getGains = (source: "supplied" | "collateral" | "borrowed") =>
       Object.keys(account.portfolio[source])
         .map((id) => {
@@ -74,7 +74,7 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
-      if (assets.status !== "fulfilled") return undefined;
+      if (assets.status !== "fulfilled" && assets.status !== "fetching") return undefined;
       const tokens = account.portfolio[source];
       const { collateral } = account.portfolio;
 
@@ -106,7 +106,7 @@ export const getPortfolioAssets = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (app, assets, account) => {
-    if (assets.status !== "fulfilled") return [[], []];
+    if (assets.status !== "fulfilled" && assets.status !== "fetching") return [[], []];
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
@@ -209,7 +209,7 @@ export const getHealthFactor = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
-    if (assets.status !== "fulfilled") return null;
+    if (assets.status !== "fulfilled" && assets.status !== "fetching") return null;
     if (!account.portfolio) return null;
     if (!Object.keys(account.portfolio.borrowed).length) return -1;
     const collateralSum = getCollateralSum(assets.data, account);

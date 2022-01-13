@@ -34,3 +34,8 @@ export const isAssetsLoading = createSelector(
   (state: RootState) => state.assets,
   (assets) => assets.status === "pending",
 );
+
+export const isAssetsFetching = createSelector(
+  (state: RootState) => state.assets,
+  (assets) => assets.status === "fetching",
+);

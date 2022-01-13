@@ -12,7 +12,7 @@ export interface Assets {
 }
 export interface AssetsState {
   data: Assets;
-  status: "pending" | "fulfilled" | "rejected" | null;
+  status: "pending" | "fulfilled" | "rejected" | "fetching" | null;
   fetchedAt: string | undefined;
 }
 
@@ -22,11 +22,19 @@ const initialState: AssetsState = {
   fetchedAt: undefined,
 };
 
+export const fetchAssetsAndMetadata = createAsyncThunk(
+  "assets/fetchAssetsAndMetadata",
+  async () => {
+    const assets = await getAssetsDetailed();
+    const tokenIds = assets.map((asset) => asset.token_id);
+    const metadata = await getAllMetadata(tokenIds);
+    return { assets, metadata };
+  },
+);
+
 export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
   const assets = await getAssetsDetailed();
-  const tokenIds = assets.map((asset) => asset.token_id);
-  const metadata = await getAllMetadata(tokenIds);
-  return { assets, metadata };
+  return { assets };
 });
 
 export const assetSlice = createSlice({
@@ -34,10 +42,10 @@ export const assetSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAssets.pending, (state, action) => {
+    builder.addCase(fetchAssetsAndMetadata.pending, (state, action) => {
       state.status = action.meta.requestStatus;
     });
-    builder.addCase(fetchAssets.fulfilled, (state, action) => {
+    builder.addCase(fetchAssetsAndMetadata.fulfilled, (state, action) => {
       const { assets, metadata } = action.payload;
       assets.forEach((asset) => {
         state.data[asset.token_id] = {
@@ -48,8 +56,23 @@ export const assetSlice = createSlice({
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
     });
-    builder.addCase(fetchAssets.rejected, (state, action) => {
+    builder.addCase(fetchAssetsAndMetadata.rejected, (state, action) => {
       state.status = action.meta.requestStatus;
+    });
+    builder.addCase(fetchAssets.pending, (state) => {
+      state.status = "fetching";
+    });
+    builder.addCase(fetchAssets.fulfilled, (state, action) => {
+      const { assets } = action.payload;
+      assets.forEach((asset) => {
+        const { metadata } = state.data[asset.token_id];
+        state.data[asset.token_id] = {
+          ...asset,
+          metadata,
+        };
+      });
+      state.status = action.meta.requestStatus;
+      state.fetchedAt = new Date().toString();
     });
   },
 });
