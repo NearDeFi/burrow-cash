@@ -394,3 +394,8 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
       return healthFactor < 10000 ? healthFactor : 10000;
     },
   );
+
+export const isAccountLoading = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.status === "pending",
+);
