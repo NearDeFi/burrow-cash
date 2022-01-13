@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, Skeleton } from "@mui/material";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
@@ -7,16 +7,27 @@ import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
 
 export const TokenCell = ({ rowData }) => {
-  const { symbol, price } = rowData;
-  const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   return (
     <Box display="flex">
       <Box>
-        <TokenIcon icon={rowData?.icon} />
+        {rowData ? (
+          <TokenIcon icon={rowData?.icon} />
+        ) : (
+          <Skeleton sx={{ bgcolor: "gray" }} width={35} height={35} variant="circular" />
+        )}
       </Box>
       <Box px="1rem">
-        <Box>{displaySymbol}</Box>
-        <Box>{price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
+        {rowData ? (
+          <>
+            <Box>{rowData.symbol === "wNEAR" ? "NEAR" : rowData.symbol}</Box>
+            <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
+          </>
+        ) : (
+          <>
+            <Skeleton sx={{ bgcolor: "gray" }} width={40} height={20} />
+            <Skeleton sx={{ bgcolor: "gray" }} width={50} height={20} />
+          </>
+        )}
       </Box>
     </Box>
   );
@@ -34,10 +45,12 @@ export const Cell = ({
   tooltip,
 }: {
   value: number | string;
-  rowData: UIAsset;
+  rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
 }) => {
+  if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
+
   const { price$ } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);

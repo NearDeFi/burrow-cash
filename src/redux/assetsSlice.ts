@@ -12,13 +12,13 @@ export interface Assets {
 }
 export interface AssetsState {
   data: Assets;
-  status: "pending" | "fulfilled" | "rejected" | undefined;
+  status: "pending" | "fulfilled" | "rejected" | null;
   fetchedAt: string | undefined;
 }
 
 const initialState: AssetsState = {
   data: {},
-  status: undefined,
+  status: null,
   fetchedAt: undefined,
 };
 

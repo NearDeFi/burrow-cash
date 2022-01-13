@@ -29,3 +29,8 @@ export const getAvailableAssets = (source: "supply" | "borrow") =>
         .map((tokenId) => transformAsset(assets[tokenId], account));
     },
   );
+
+export const isAssetsLoading = createSelector(
+  (state: RootState) => state.assets,
+  (assets) => assets.status === "pending",
+);

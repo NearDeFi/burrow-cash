@@ -11,12 +11,12 @@ export const columns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData.supplyApy} rowData={rowData} format="apy" />,
+    Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Total Deposit",
     dataKey: "deposit",
-    Cell: ({ rowData }) => <Cell value={rowData.totalSupply} rowData={rowData} format="amount" />,
+    Cell: ({ rowData }) => <Cell value={rowData?.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
@@ -24,14 +24,18 @@ export const columns = [
     dataKey: "liquidity",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={rowData.availableLiquidity} rowData={rowData} format="amount" />
+      <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
     ),
   },
   {
     label: "Your Deposit",
     dataKey: "yourdeposit",
     Cell: ({ rowData }) => (
-      <Cell value={rowData.supplied + rowData.collateral} rowData={rowData} format="amount" />
+      <Cell
+        value={rowData ? rowData.supplied + rowData.collateral : undefined}
+        rowData={rowData}
+        format="amount"
+      />
     ),
     align: "right",
   },
