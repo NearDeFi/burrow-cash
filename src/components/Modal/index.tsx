@@ -17,6 +17,7 @@ import {
   recomputeHealthFactorWithdraw,
   recomputeHealthFactorAdjust,
   recomputeHealthFactorSupply,
+  recomputeHealthFactorRepay,
 } from "../../redux/accountSelectors";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
@@ -46,6 +47,8 @@ const Modal = () => {
       ? recomputeHealthFactorAdjust(tokenId, amount)
       : action === "Supply"
       ? recomputeHealthFactorSupply(tokenId, amount)
+      : action === "Repay"
+      ? recomputeHealthFactorRepay(tokenId, amount)
       : recomputeHealthFactor(tokenId, amount),
   );
 
@@ -156,7 +159,6 @@ const Modal = () => {
   }, [amount, healthFactor]);
 
   const showToggle = action === "Supply" && canUseAsCollateral;
-  const showHealthFactor = ["Supply", "Borrow", "Withdraw", "Adjust"].includes(action as string);
 
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const healthFactorColor =
@@ -237,24 +239,22 @@ const Modal = () => {
           <Box mx="1.5rem" my="1rem">
             <Slider value={sliderValue} onChange={handleSliderChange} />
           </Box>
-          {showHealthFactor && (
-            <Box
-              fontSize="1rem"
-              fontWeight="500"
-              border="1px solid black"
-              p="0.5rem"
-              m="0.5rem"
-              width="15rem"
-              margin="0 auto"
-              display="flex"
-              justifyContent="center"
-            >
-              <span>Health Factor:</span>
-              <Box ml={1} color={healthFactorColor}>
-                {healthFactorDisplayValue}
-              </Box>
+          <Box
+            fontSize="1rem"
+            fontWeight="500"
+            border="1px solid black"
+            p="0.5rem"
+            m="0.5rem"
+            width="15rem"
+            margin="0 auto"
+            display="flex"
+            justifyContent="center"
+          >
+            <span>Health Factor:</span>
+            <Box ml={1} color={healthFactorColor}>
+              {healthFactorDisplayValue}
             </Box>
-          )}
+          </Box>
           {action === "Withdraw" && (
             <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
               Remaining collateral: {remainingCollateral}
