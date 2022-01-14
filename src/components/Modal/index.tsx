@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Modal as MUIModal, Typography, Box, Switch, Alert, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -147,11 +147,17 @@ const Modal = () => {
     }
   };
 
+  const actionDisabled = useMemo(() => {
+    if (action === "Supply" && amount > 0) return false;
+    if (action !== "Adjust" && !amount) return true;
+    if (action !== "Repay" && healthFactor > 0 && parseFloat(healthFactor?.toFixed(2)) <= 100)
+      return true;
+    return false;
+  }, [amount, healthFactor]);
+
   const showToggle = action === "Supply" && canUseAsCollateral;
   const showHealthFactor = ["Supply", "Borrow", "Withdraw", "Adjust"].includes(action as string);
-  const actionDisabled =
-    (!amount && action !== "Adjust") ||
-    (healthFactor > 0 && parseFloat(healthFactor?.toFixed(2)) <= 100 && showHealthFactor);
+
   const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
   const healthFactorColor =
     healthFactor === -1

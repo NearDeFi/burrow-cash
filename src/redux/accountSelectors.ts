@@ -193,14 +193,15 @@ const getBorrowedSum = (assets: Assets, account: AccountState) =>
 
 export const getMaxBorrowAmount = (tokenId: string) =>
   createSelector(
-    (state: RootState) => state.assets.data,
+    (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
       if (!account.accountId || !tokenId) return 0;
-      const collateralSum = getCollateralSum(assets, account);
-      const borrowedSum = getBorrowedSum(assets, account);
+      if (assets.status !== "fulfilled" && assets.status !== "fetching") return 0;
+      const collateralSum = getCollateralSum(assets.data, account);
+      const borrowedSum = getBorrowedSum(assets.data, account);
 
-      const volatiliyRatio = assets[tokenId].config.volatility_ratio || 0;
+      const volatiliyRatio = assets.data[tokenId].config.volatility_ratio || 0;
       return (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
     },
   );
@@ -308,6 +309,14 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
       const { metadata, config } = assets.data[tokenId];
 
       const clonedAccount = clone(account);
+
+      if (!clonedAccount.portfolio.supplied[tokenId]) {
+        clonedAccount.portfolio.supplied[tokenId] = {
+          balance: "0",
+          shares: "0",
+          apr: "0",
+        };
+      }
 
       if (!clonedAccount.portfolio.collateral[tokenId]) {
         clonedAccount.portfolio.collateral[tokenId] = {
