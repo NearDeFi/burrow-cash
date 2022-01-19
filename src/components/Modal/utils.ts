@@ -63,6 +63,7 @@ export const getModalData = (asset): UIAsset & Props => {
         data.name = "NEAR";
         data.symbol = "NEAR";
         data.available = availableNEAR;
+        data.available$ = (availableNEAR * price$).toLocaleString(undefined, USD_FORMAT);
       }
       data.alerts = {};
       break;

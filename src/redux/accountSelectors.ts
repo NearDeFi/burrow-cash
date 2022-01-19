@@ -202,7 +202,11 @@ export const getMaxBorrowAmount = (tokenId: string) =>
       const borrowedSum = getBorrowedSum(assets.data, account);
 
       const volatiliyRatio = assets.data[tokenId].config.volatility_ratio || 0;
-      return (collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO);
+      return (
+        (((collateralSum - borrowedSum) * (volatiliyRatio / MAX_RATIO)) /
+          (assets.data[tokenId].price?.usd || Infinity)) *
+        0.95
+      );
     },
   );
 

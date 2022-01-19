@@ -87,7 +87,7 @@ const Modal = () => {
   };
 
   const handleMaxClick = () => {
-    dispatch(updateAmount({ amount: totalAvailable }));
+    dispatch(updateAmount({ amount: available }));
   };
 
   const handleFocus = (e) => {
