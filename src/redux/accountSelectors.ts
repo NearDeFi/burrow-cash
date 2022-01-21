@@ -75,15 +75,24 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (assets.status !== "fulfilled" && assets.status !== "fetching") return undefined;
-      const tokens = account.portfolio[source];
+      const allTokens = {
+        ...account.portfolio.collateral,
+        ...account.portfolio.supplied,
+        ...account.portfolio.borrowed,
+      };
+
+      const sourceTokens = account.portfolio[source];
       const { collateral } = account.portfolio;
 
-      return Object.keys(tokens)
+      return Object.keys(allTokens)
         .map((tokenId) => {
           const { price, metadata, config } = assets.data[tokenId];
           const total =
             Number(
-              shrinkToken(tokens[tokenId].balance, metadata.decimals + config.extra_decimals),
+              shrinkToken(
+                sourceTokens[tokenId]?.balance || 0,
+                metadata.decimals + config.extra_decimals,
+              ),
             ) * (price?.usd || 0);
 
           const totalCollateral =
