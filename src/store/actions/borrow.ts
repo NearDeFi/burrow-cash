@@ -5,7 +5,12 @@ import { expandToken } from "../helper";
 import { ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { Transaction, isRegistered } from "../wallet";
 import { getAccountDetailed } from "../accounts";
-import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
+import {
+  prepareAndExecuteTransactions,
+  getMetadata,
+  getTokenContract,
+  NO_STORAGE_DEPOSIT_CONTRACTS,
+} from "../tokens";
 import { NEAR_DECIMALS } from "../constants";
 
 export async function borrow({
@@ -25,7 +30,7 @@ export async function borrow({
 
   if (
     !(await isRegistered(account.accountId, tokenContract)) &&
-    tokenContract.contractId !== "aurora"
+    !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
     transactions.push({
       receiverId: tokenContract.contractId,

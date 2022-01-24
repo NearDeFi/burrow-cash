@@ -15,6 +15,8 @@ import {
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
+export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
+
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
   const { account } = await getBurrow();
   return getContract(account, tokenContractAddress, ViewMethodsToken, ChangeMethodsToken);
@@ -86,7 +88,7 @@ export const prepareAndExecuteTokenTransactions = async (
   // check if account is registered in the token contract
   if (
     !(await isRegistered(account.accountId, tokenContract)) &&
-    tokenContract.contractId !== "aurora"
+    !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
