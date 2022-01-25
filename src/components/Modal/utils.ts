@@ -18,6 +18,14 @@ interface Props {
   remainingCollateral?: string;
 }
 
+export const actionMapTitle = {
+  Supply: "Deposit",
+  Borrow: "Borrow",
+  Adjust: "Adjust Collateral",
+  Withdraw: "Withdraw",
+  Repay: "Repay",
+};
+
 export const getModalData = (asset): UIAsset & Props => {
   const {
     symbol,

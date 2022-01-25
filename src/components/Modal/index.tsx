@@ -21,7 +21,7 @@ import {
 } from "../../redux/accountSelectors";
 import TokenIcon from "../TokenIcon";
 import { Wrapper } from "./style";
-import { getModalData } from "./utils";
+import { getModalData, actionMapTitle } from "./utils";
 import { repay } from "../../store/actions/repay";
 import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
@@ -38,7 +38,7 @@ const Modal = () => {
   const { amount, useAsCollateral } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
 
-  const { action, tokenId } = asset;
+  const { action = "Deposit", tokenId } = asset;
 
   const healthFactor = useAppSelector(
     action === "Withdraw"
@@ -210,7 +210,7 @@ const Modal = () => {
             <CloseIcon />
           </Box>
           <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
-            {action}
+            {actionMapTitle[action]}
           </Typography>
           <Box display="grid" justifyContent="center" mt="2rem">
             <TokenIcon icon={icon} />
@@ -309,7 +309,7 @@ const Modal = () => {
               onClick={handleActionButtonClick}
               loading={loading}
             >
-              {action} {displaySymbol}
+              {actionMapTitle[action]} {displaySymbol}
             </LoadingButton>
           </Box>
         </Box>
