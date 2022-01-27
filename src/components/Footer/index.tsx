@@ -30,7 +30,7 @@ const Footer = () => (
       <LogoWrapper>
         <Logo />
       </LogoWrapper>
-      <Copyright variant="h6">© 2021 All Rights Reserved.</Copyright>
+      <Copyright variant="h6">© 2022 All Rights Reserved.</Copyright>
     </CopyWrapper>
     <LinksWrapper>
       <Links />
