@@ -28,3 +28,5 @@ export const DUST_FORMAT = {
   minimumFractionDigits: 6,
   maximumFractionDigits: 6,
 };
+
+export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];

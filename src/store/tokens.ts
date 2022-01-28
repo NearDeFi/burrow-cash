@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import BN from "bn.js";
 
 import { getBurrow } from "../utils";
-import { DEFAULT_PRECISION, NEAR_DECIMALS } from "./constants";
+import { DEFAULT_PRECISION, NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
 import {
@@ -14,8 +14,6 @@ import {
 } from "./wallet";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
-
-export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
   const { account } = await getBurrow();

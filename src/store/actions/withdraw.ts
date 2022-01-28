@@ -3,16 +3,11 @@ import BN from "bn.js";
 import { getBurrow, nearTokenId } from "../../utils";
 import { expandToken } from "../helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
-import {
-  getMetadata,
-  getTokenContract,
-  prepareAndExecuteTransactions,
-  NO_STORAGE_DEPOSIT_CONTRACTS,
-} from "../tokens";
+import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { getAccountDetailed } from "../accounts";
 import { Transaction, isRegistered } from "../wallet";
-import { NEAR_DECIMALS } from "../constants";
+import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS } from "../constants";
 
 export async function withdraw({
   tokenId,
