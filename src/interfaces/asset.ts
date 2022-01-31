@@ -109,6 +109,5 @@ export interface UIAsset {
   borrowed: number;
   availableNEAR: number;
   available: number;
-  available$: string;
   extraDecimals: number;
 }

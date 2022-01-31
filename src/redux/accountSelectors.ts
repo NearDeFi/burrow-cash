@@ -28,7 +28,9 @@ export const getCollateralAmount = (tokenId: string) =>
       const collateral = account.portfolio.collateral[tokenId];
       if (!collateral) return 0;
       const { metadata, config } = assets.data[tokenId];
-      return Number(shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals));
+      return Number(
+        shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals, PERCENT_DIGITS),
+      );
     },
   );
 

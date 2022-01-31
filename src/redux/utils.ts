@@ -59,7 +59,6 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     borrowed: 0,
     availableNEAR: 0,
     available: 0,
-    available$: "0",
     extraDecimals: 0,
   };
 
@@ -68,25 +67,17 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
     const collateral = account.portfolio.collateral[tokenId]?.balance || 0;
     const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
-    const available = Number(shrinkToken(account.balances[tokenId], asset.metadata.decimals));
-    const availableNEAR = Number(shrinkToken(account.balances["near"], asset.metadata.decimals));
+    const available = account.balances[tokenId] || 0;
+    const availableNEAR = account.balances["near"] || 0;
+
+    const decimals = asset.metadata.decimals + asset.config.extra_decimals;
 
     accountAttrs = {
-      supplied: Number(
-        shrinkToken(supplied, asset.metadata.decimals + asset.config.extra_decimals),
-      ),
-      collateral: Number(
-        shrinkToken(collateral, asset.metadata.decimals + asset.config.extra_decimals),
-      ),
-      borrowed: Number(
-        shrinkToken(borrowed, asset.metadata.decimals + asset.config.extra_decimals),
-      ),
-      availableNEAR,
-      available,
-      available$: (Number(available) * (asset.price?.usd || 0)).toLocaleString(
-        undefined,
-        USD_FORMAT,
-      ),
+      supplied: Number(shrinkToken(supplied, decimals)),
+      collateral: Number(shrinkToken(collateral, decimals)),
+      borrowed: Number(shrinkToken(borrowed, decimals)),
+      available: Number(shrinkToken(available, asset.metadata.decimals)),
+      availableNEAR: Number(shrinkToken(availableNEAR, asset.metadata.decimals)),
       extraDecimals: asset.config.extra_decimals,
     };
   }

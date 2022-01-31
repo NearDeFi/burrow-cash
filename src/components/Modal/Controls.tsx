@@ -15,7 +15,7 @@ export default function Controls({ amount, available }) {
   };
 
   const handleMaxClick = () => {
-    dispatch(updateAmount({ isMax: true, amount: available }));
+    dispatch(updateAmount({ isMax: true, amount: Number(available) }));
   };
 
   const handleFocus = (e) => {
