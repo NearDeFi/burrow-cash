@@ -95,7 +95,6 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
-    price$: asset.price ? asset.price.usd : 0,
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),

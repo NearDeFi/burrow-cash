@@ -96,7 +96,6 @@ export interface UIAsset {
   symbol: string;
   name: string;
   price: number;
-  price$: number;
   supplyApy: number;
   totalSupply: number;
   totalSupply$: string;

@@ -34,7 +34,7 @@ export const getModalData = (asset): UIAsset & Props => {
     borrowApy,
     collateralFactor,
     availableLiquidity,
-    price$,
+    price,
     maxBorrowAmount,
     supplied,
     collateral,
@@ -71,14 +71,14 @@ export const getModalData = (asset): UIAsset & Props => {
         data.name = "NEAR";
         data.symbol = "NEAR";
         data.available = availableNEAR;
-        data.available$ = (availableNEAR * price$).toLocaleString(undefined, USD_FORMAT);
+        data.available$ = (availableNEAR * price).toLocaleString(undefined, USD_FORMAT);
       }
       data.alerts = {};
       break;
     case "Borrow":
       data.totalTitle = `Total Borrow = `;
       data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity);
-      data.available$ = (data.available * price$).toLocaleString(undefined, USD_FORMAT);
+      data.available$ = (data.available * price).toLocaleString(undefined, USD_FORMAT);
       data.rates = [
         { label: "Borrow APY", value: `${borrowApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },

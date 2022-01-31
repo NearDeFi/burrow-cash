@@ -132,8 +132,7 @@ export const getPortfolioAssets = createSelector(
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
-          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          price$: asset.price?.usd ?? 1,
+          price: asset.price?.usd ?? 1,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
           supplied:
@@ -156,8 +155,7 @@ export const getPortfolioAssets = createSelector(
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
-          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          price$: asset.price?.usd ?? 0,
+          price: asset.price?.usd ?? 0,
           supplyApy: Number(asset.supply_apr) * 100,
           borrowApy: Number(asset.borrow_apr) * 100,
           borrowed: Number(

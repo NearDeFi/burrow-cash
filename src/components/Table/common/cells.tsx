@@ -51,7 +51,7 @@ export const Cell = ({
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
-  const { price$ } = rowData;
+  const { price } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
 
@@ -60,7 +60,7 @@ export const Cell = ({
     amount: (v) =>
       displayAsTokenValue
         ? Number(v).toLocaleString(undefined, showDust ? DUST_FORMAT : TOKEN_FORMAT)
-        : (Number(v) * price$).toLocaleString(undefined, USD_FORMAT),
+        : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
   };
 

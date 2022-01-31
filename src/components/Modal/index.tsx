@@ -56,7 +56,6 @@ const Modal = () => {
     icon,
     apy,
     price,
-    price$,
     available,
     available$,
     totalTitle,
@@ -65,7 +64,7 @@ const Modal = () => {
     remainingCollateral,
   } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
 
-  const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
+  const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
   const totalAvailable = Number(
     Math.max(0, Number((available || 0).toFixed(PERCENT_DIGITS)) - 1 / 1e4).toFixed(PERCENT_DIGITS),
   );
