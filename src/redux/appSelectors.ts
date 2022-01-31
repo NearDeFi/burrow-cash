@@ -52,6 +52,6 @@ export const getRepayMaxAmount = (tokenId: string) =>
         new Decimal(10).pow(asset.metadata.decimals + asset.config.extra_decimals),
       );
 
-      return Decimal.min(borrowed, accountBalance).toNumber();
+      return Decimal.min(borrowed, accountBalance).toString();
     },
   );

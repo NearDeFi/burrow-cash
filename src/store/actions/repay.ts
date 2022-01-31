@@ -12,7 +12,7 @@ export async function repay({
   tokenId: string;
   amount: number;
   extraDecimals: number;
-  maxAmount?: number;
+  maxAmount?: string;
 }) {
   const { logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
