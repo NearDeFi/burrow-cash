@@ -14,11 +14,13 @@ export async function withdraw({
   extraDecimals,
   amount,
   collateralAmount,
+  maxAmount,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: number;
   collateralAmount?: number;
+  maxAmount?: string;
 }) {
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
@@ -63,7 +65,11 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
-                      amount: expandToken(collateralAmount, decimals + extraDecimals, 0),
+                      amount: expandToken(
+                        maxAmount || collateralAmount,
+                        decimals + extraDecimals,
+                        0,
+                      ),
                     },
                   },
                 ],
@@ -85,7 +91,7 @@ export async function withdraw({
             {
               Withdraw: {
                 token_id: tokenId,
-                amount: expandToken(amount, decimals + extraDecimals, 0),
+                amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
               },
             },
           ],

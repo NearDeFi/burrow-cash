@@ -28,7 +28,7 @@ export default function Controls({ amount, available }) {
     dispatch(updateAmount({ isMax: false, amount: Number(value.toFixed(PERCENT_DIGITS)) }));
   };
 
-  const sliderValue = Math.round((amount * 100) / available);
+  const sliderValue = Math.round((amount * 100) / available) || 0;
 
   const inputAmount = `${amount}`
     .replace(/[^0-9.-]/g, "")

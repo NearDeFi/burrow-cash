@@ -55,3 +55,22 @@ export const getRepayMaxAmount = (tokenId: string) =>
       return Decimal.min(borrowed, accountBalance).toString();
     },
   );
+
+export const getWithdrawMaxAmount = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.assets.data,
+    (state: RootState) => state.account.portfolio,
+    (assets, portfolio) => {
+      const asset = assets[tokenId];
+      const decimals = asset.metadata.decimals + asset.config.extra_decimals;
+
+      const suppliedBalance = new Decimal(portfolio.supplied[tokenId]?.balance || "0").div(
+        new Decimal(10).pow(decimals),
+      );
+      const collateralBalance = new Decimal(portfolio.collateral[tokenId]?.balance || "0").div(
+        new Decimal(10).pow(decimals),
+      );
+
+      return suppliedBalance.plus(collateralBalance).toString();
+    },
+  );

@@ -13,7 +13,12 @@ import { withdraw } from "../../store/actions/withdraw";
 import { removeCollateral } from "../../store/actions/removeCollateral";
 import { addCollateral } from "../../store/actions/addCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getSelectedValues, getAssetData, getRepayMaxAmount } from "../../redux/appSelectors";
+import {
+  getSelectedValues,
+  getAssetData,
+  getRepayMaxAmount,
+  getWithdrawMaxAmount,
+} from "../../redux/appSelectors";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
   const [loading, setLoading] = useState(false);
@@ -22,6 +27,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
   const repayMaxAmount = useAppSelector(getRepayMaxAmount(tokenId));
+  const withdrawMaxAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const { available, canUseAsCollateral, extraDecimals, collateral, supplied } = getModalData({
     ...asset,
@@ -50,7 +56,13 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       }
       case "Withdraw": {
         const collateralAmount = Math.abs(Math.min(0, supplied - amount));
-        await withdraw({ tokenId, extraDecimals, amount, collateralAmount });
+        await withdraw({
+          tokenId,
+          extraDecimals,
+          amount,
+          collateralAmount,
+          maxAmount: isMax ? withdrawMaxAmount : undefined,
+        });
         break;
       }
       case "Adjust":
