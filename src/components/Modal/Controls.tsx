@@ -11,7 +11,7 @@ export default function Controls({ amount, available }) {
 
   const handleInputChange = (e) => {
     if (Number(e.target.value) > available) return;
-    dispatch(updateAmount({ isMax: false, amount: Number(e.target.value) || 0 }));
+    dispatch(updateAmount({ isMax: false, amount: e.target.value || 0 }));
   };
 
   const handleMaxClick = () => {

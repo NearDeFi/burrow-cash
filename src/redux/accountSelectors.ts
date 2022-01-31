@@ -355,7 +355,10 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
 
       const newBalance = Number(
         expandToken(
-          Math.min(collateralBalanceInt, collateralBalanceInt + suppliedBalanceInt - amount),
+          Math.min(
+            collateralBalanceInt,
+            collateralBalanceInt + suppliedBalanceInt - Number(amount),
+          ),
           metadata.decimals + config.extra_decimals,
           0,
         ),
@@ -401,7 +404,7 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
 
       const newBalance = Number(
         expandToken(
-          collateralBalanceInt + (app.selected.useAsCollateral ? amount : 0),
+          collateralBalanceInt + (app.selected.useAsCollateral ? Number(amount) : 0),
           metadata.decimals + config.extra_decimals,
           0,
         ),
