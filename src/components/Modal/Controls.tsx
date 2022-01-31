@@ -11,11 +11,11 @@ export default function Controls({ amount, available }) {
 
   const handleInputChange = (e) => {
     if (Number(e.target.value) > available) return;
-    dispatch(updateAmount({ amount: Number(e.target.value) || 0 }));
+    dispatch(updateAmount({ isMax: false, amount: Number(e.target.value) || 0 }));
   };
 
   const handleMaxClick = () => {
-    dispatch(updateAmount({ amount: available }));
+    dispatch(updateAmount({ isMax: true, amount: available }));
   };
 
   const handleFocus = (e) => {
@@ -25,11 +25,10 @@ export default function Controls({ amount, available }) {
   const handleSliderChange = (e) => {
     const { value: percent } = e.target;
     const value = (Number(available) * percent) / 100;
-    const amountToBorrow = Number(value.toFixed(PERCENT_DIGITS));
-    dispatch(updateAmount({ amount: amountToBorrow }));
+    dispatch(updateAmount({ isMax: false, amount: Number(value.toFixed(PERCENT_DIGITS)) }));
   };
 
-  const sliderValue = (amount * 100) / available;
+  const sliderValue = Math.round((amount * 100) / available);
 
   const inputAmount = `${amount}`
     .replace(/[^0-9.-]/g, "")
