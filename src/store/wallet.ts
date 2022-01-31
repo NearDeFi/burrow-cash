@@ -96,7 +96,6 @@ export const executeMultipleTransactions = async (
 
   const nearTransactions = await Promise.all(
     transactions.map((t, i) => {
-      // @ts-ignore
       return walletConnection.createTransaction({
         receiverId: t.receiverId,
         nonceOffset: i + 1,

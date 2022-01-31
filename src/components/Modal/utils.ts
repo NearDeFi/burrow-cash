@@ -1,4 +1,10 @@
-import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, PERCENT_DIGITS } from "../../store";
+import {
+  USD_FORMAT,
+  TOKEN_FORMAT,
+  APY_FORMAT,
+  PERCENT_DIGITS,
+  NEAR_STORAGE_DEPOSIT,
+} from "../../store";
 import type { UIAsset } from "../../interfaces";
 
 interface Alert {
@@ -73,7 +79,9 @@ export const getModalData = (asset): UIAsset & Props => {
       if (symbol === "wNEAR") {
         data.name = "NEAR";
         data.symbol = "NEAR";
-        data.available = availableNEAR;
+        data.available = Number(Math.max(0, availableNEAR - NEAR_STORAGE_DEPOSIT)).toFixed(
+          PERCENT_DIGITS,
+        );
         data.available$ = (availableNEAR * price).toLocaleString(undefined, USD_FORMAT);
       }
       data.alerts = {};

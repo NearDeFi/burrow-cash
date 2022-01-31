@@ -49,7 +49,7 @@ export async function deposit({
       {
         methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
         gas: new BN("5000000000000"),
-        attachedDeposit: expandedAmount,
+        attachedDeposit: new BN(expandedAmount),
       },
       {
         methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
@@ -57,7 +57,6 @@ export async function deposit({
         args: {
           receiver_id: logicContract.contractId,
           amount: expandedAmount,
-          // msg: useAsCollateral ? JSON.stringify(collateralTemplate) : "",
           msg: "",
         },
       },
@@ -80,7 +79,7 @@ const registerNearFnCall = async (accountId: string, contract: Contract) =>
     ? [
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: expandToken(0.00125, NEAR_DECIMALS),
+          attachedDeposit: new BN(expandToken(0.00125, NEAR_DECIMALS)),
           gas: new BN("5000000000000"),
         },
       ]

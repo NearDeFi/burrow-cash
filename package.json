@@ -55,6 +55,7 @@
     "@sentry/react": "^6.15.0",
     "@sentry/tracing": "^6.15.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
+    "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.9",
     "@types/ramda": "^0.27.59",

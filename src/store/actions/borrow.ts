@@ -6,7 +6,7 @@ import { ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { Transaction, isRegistered } from "../wallet";
 import { getAccountDetailed } from "../accounts";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
-import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS } from "../constants";
+import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
 
 export async function borrow({
   tokenId,
@@ -32,7 +32,7 @@ export async function borrow({
       functionCalls: [
         {
           methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
         },
       ],
     });
