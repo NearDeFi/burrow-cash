@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import Decimal from "decimal.js";
 
 import type { RootState } from "./store";
 import { transformAsset } from "./utils";
@@ -36,3 +37,21 @@ export const getAssetData = createSelector(
     };
   },
 );
+
+export const getRepayMaxAmount = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.assets.data,
+    (state: RootState) => state.account,
+    (assets, account) => {
+      const asset = assets[tokenId];
+
+      const accountBalance = new Decimal(account.balances[tokenId] || "0").div(
+        new Decimal(10).pow(asset.metadata.decimals),
+      );
+      const borrowed = new Decimal(account.portfolio.borrowed[tokenId]?.balance || "0").div(
+        new Decimal(10).pow(asset.metadata.decimals + asset.config.extra_decimals),
+      );
+
+      return Decimal.min(borrowed, accountBalance).toNumber();
+    },
+  );
