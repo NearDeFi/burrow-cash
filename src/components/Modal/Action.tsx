@@ -13,16 +13,21 @@ import { withdraw } from "../../store/actions/withdraw";
 import { removeCollateral } from "../../store/actions/removeCollateral";
 import { addCollateral } from "../../store/actions/addCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
-import { PERCENT_DIGITS } from "../../store";
+import {
+  getSelectedValues,
+  getAssetData,
+  getRepayMaxAmount,
+  getWithdrawMaxAmount,
+} from "../../redux/appSelectors";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
   const [loading, setLoading] = useState(false);
-  const { amount, useAsCollateral } = useAppSelector(getSelectedValues);
+  const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
-
   const { action = "Deposit", tokenId } = asset;
+  const repayMaxAmount = useAppSelector(getRepayMaxAmount(tokenId));
+  const withdrawMaxAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const { available, canUseAsCollateral, extraDecimals, collateral, supplied } = getModalData({
     ...asset,
@@ -46,14 +51,18 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
         }
         break;
       case "Borrow": {
-        const amountToBorrow =
-          amount === Number(available.toFixed(PERCENT_DIGITS)) ? amount * 0.99 : amount;
-        await borrow({ tokenId, extraDecimals, amount: amountToBorrow });
+        await borrow({ tokenId, extraDecimals, amount });
         break;
       }
       case "Withdraw": {
         const collateralAmount = Math.abs(Math.min(0, supplied - amount));
-        await withdraw({ tokenId, extraDecimals, amount, collateralAmount });
+        await withdraw({
+          tokenId,
+          extraDecimals,
+          amount,
+          collateralAmount,
+          maxAmount: isMax ? withdrawMaxAmount : undefined,
+        });
         break;
       }
       case "Adjust":
@@ -73,7 +82,12 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
         }
         break;
       case "Repay":
-        await repay({ tokenId, amount, extraDecimals });
+        await repay({
+          tokenId,
+          amount,
+          extraDecimals,
+          maxAmount: isMax ? repayMaxAmount : undefined,
+        });
         break;
       default:
         break;

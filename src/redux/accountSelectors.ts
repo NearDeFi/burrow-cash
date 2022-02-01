@@ -28,7 +28,9 @@ export const getCollateralAmount = (tokenId: string) =>
       const collateral = account.portfolio.collateral[tokenId];
       if (!collateral) return 0;
       const { metadata, config } = assets.data[tokenId];
-      return Number(shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals));
+      return Number(
+        shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals, PERCENT_DIGITS),
+      );
     },
   );
 
@@ -132,8 +134,7 @@ export const getPortfolioAssets = createSelector(
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
-          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          price$: asset.price?.usd ?? 1,
+          price: asset.price?.usd ?? 1,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
           supplied:
@@ -156,8 +157,7 @@ export const getPortfolioAssets = createSelector(
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
-          price: asset.price ? asset.price.usd.toLocaleString(undefined, USD_FORMAT) : "$-.-",
-          price$: asset.price?.usd ?? 0,
+          price: asset.price?.usd ?? 0,
           supplyApy: Number(asset.supply_apr) * 100,
           borrowApy: Number(asset.borrow_apr) * 100,
           borrowed: Number(
@@ -173,7 +173,7 @@ export const getPortfolioAssets = createSelector(
 
 const MAX_RATIO = 10000;
 
-const getCollateralSum = (assets: Assets, account: AccountState) =>
+export const getCollateralSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
       const asset = assets[id];
@@ -187,7 +187,7 @@ const getCollateralSum = (assets: Assets, account: AccountState) =>
     })
     .reduce(sumReducer, 0);
 
-const getBorrowedSum = (assets: Assets, account: AccountState) =>
+export const getBorrowedSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.borrowed)
     .map((id) => {
       const asset = assets[id];
@@ -355,7 +355,10 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
 
       const newBalance = Number(
         expandToken(
-          Math.min(collateralBalanceInt, collateralBalanceInt + suppliedBalanceInt - amount),
+          Math.min(
+            collateralBalanceInt,
+            collateralBalanceInt + suppliedBalanceInt - Number(amount),
+          ),
           metadata.decimals + config.extra_decimals,
           0,
         ),
@@ -401,7 +404,7 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
 
       const newBalance = Number(
         expandToken(
-          collateralBalanceInt + (app.selected.useAsCollateral ? amount : 0),
+          collateralBalanceInt + (app.selected.useAsCollateral ? Number(amount) : 0),
           metadata.decimals + config.extra_decimals,
           0,
         ),

@@ -1,9 +1,14 @@
 import { Modal as MUIModal, Typography, Box } from "@mui/material";
 
-import { USD_FORMAT, PERCENT_DIGITS } from "../../store";
+import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal } from "../../redux/appSlice";
-import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
+import {
+  getModalStatus,
+  getAssetData,
+  getSelectedValues,
+  getWithdrawMaxNEARAmount,
+} from "../../redux/appSelectors";
 import {
   getMaxBorrowAmount,
   getAccountId,
@@ -49,6 +54,7 @@ const Modal = () => {
   );
 
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
+  const maxWithdrawNEARAmount = useAppSelector(getWithdrawMaxNEARAmount);
 
   const {
     name,
@@ -56,19 +62,15 @@ const Modal = () => {
     icon,
     apy,
     price,
-    price$,
     available,
     available$,
     totalTitle,
     rates,
     alerts,
     remainingCollateral,
-  } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
+  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawNEARAmount, healthFactor, amount });
 
-  const total = (price$ * amount).toLocaleString(undefined, USD_FORMAT);
-  const totalAvailable = Number(
-    Math.max(0, Number((available || 0).toFixed(PERCENT_DIGITS)) - 1 / 1e4).toFixed(PERCENT_DIGITS),
-  );
+  const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
 
   const handleClose = () => dispatch(hideModal());
 
@@ -82,7 +84,7 @@ const Modal = () => {
           <CloseButton onClose={handleClose} />
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
           <Available
-            totalAvailable={totalAvailable}
+            totalAvailable={available}
             displaySymbol={displaySymbol}
             available$={available$}
             price={price}

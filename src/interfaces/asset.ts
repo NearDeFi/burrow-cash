@@ -96,7 +96,6 @@ export interface UIAsset {
   symbol: string;
   name: string;
   price: number;
-  price$: number;
   supplyApy: number;
   totalSupply: number;
   totalSupply$: string;
@@ -110,6 +109,5 @@ export interface UIAsset {
   borrowed: number;
   availableNEAR: number;
   available: number;
-  available$: string;
   extraDecimals: number;
 }

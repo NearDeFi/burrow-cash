@@ -7,18 +7,20 @@ import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "..
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { getAccountDetailed } from "../accounts";
 import { Transaction, isRegistered } from "../wallet";
-import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS } from "../constants";
+import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
 
 export async function withdraw({
   tokenId,
   extraDecimals,
   amount,
   collateralAmount,
+  maxAmount,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: number;
   collateralAmount?: number;
+  maxAmount?: string;
 }) {
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
@@ -36,7 +38,7 @@ export async function withdraw({
       functionCalls: [
         {
           methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
         },
       ],
     });
@@ -63,7 +65,11 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
-                      amount: expandToken(collateralAmount, decimals + extraDecimals, 0),
+                      amount: expandToken(
+                        maxAmount || collateralAmount,
+                        decimals + extraDecimals,
+                        0,
+                      ),
                     },
                   },
                 ],
@@ -85,7 +91,7 @@ export async function withdraw({
             {
               Withdraw: {
                 token_id: tokenId,
-                amount: expandToken(amount, decimals + extraDecimals, 0),
+                amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
               },
             },
           ],

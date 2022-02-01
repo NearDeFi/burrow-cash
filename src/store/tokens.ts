@@ -3,7 +3,12 @@ import Decimal from "decimal.js";
 import BN from "bn.js";
 
 import { getBurrow } from "../utils";
-import { DEFAULT_PRECISION, NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS } from "./constants";
+import {
+  DEFAULT_PRECISION,
+  NEAR_DECIMALS,
+  NO_STORAGE_DEPOSIT_CONTRACTS,
+  STORAGE_DEPOSIT_FEE,
+} from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
 import {
@@ -90,7 +95,7 @@ export const prepareAndExecuteTokenTransactions = async (
   ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+      attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
     });
   }
 
@@ -120,7 +125,7 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
       functionCalls: [
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
         },
       ],
     });

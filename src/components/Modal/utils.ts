@@ -1,5 +1,12 @@
-import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, PERCENT_DIGITS } from "../../store";
+import {
+  USD_FORMAT,
+  TOKEN_FORMAT,
+  APY_FORMAT,
+  PERCENT_DIGITS,
+  NEAR_STORAGE_DEPOSIT,
+} from "../../store";
 import type { UIAsset } from "../../interfaces";
+import { nearTokenId } from "../../utils";
 
 interface Alert {
   [key: string]: {
@@ -11,6 +18,7 @@ interface Alert {
 interface Props {
   rates: Array<{ label: string; value: string }>;
   apy: number;
+  available$: string;
   action: string;
   totalTitle: string;
   healthFactor: number;
@@ -34,8 +42,9 @@ export const getModalData = (asset): UIAsset & Props => {
     borrowApy,
     collateralFactor,
     availableLiquidity,
-    price$,
+    price,
     maxBorrowAmount,
+    maxWithdrawNEARAmount,
     supplied,
     collateral,
     borrowed,
@@ -43,10 +52,12 @@ export const getModalData = (asset): UIAsset & Props => {
     availableNEAR,
     healthFactor,
     amount,
+    tokenId,
   } = asset;
 
   const data: any = {
     apy: borrowApy,
+    available$: (available * price).toLocaleString(undefined, USD_FORMAT),
     alerts: {},
   };
 
@@ -59,6 +70,11 @@ export const getModalData = (asset): UIAsset & Props => {
     delete data.alerts["liquidation"];
   }
 
+  const getAvailableWithdrawOrAdjust =
+    tokenId === nearTokenId
+      ? maxWithdrawNEARAmount?.toFixed(PERCENT_DIGITS)
+      : (supplied + collateral).toFixed(PERCENT_DIGITS);
+
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
@@ -67,18 +83,22 @@ export const getModalData = (asset): UIAsset & Props => {
         { label: "Deposit APY", value: `${supplyApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
       ];
+      data.available = available.toFixed(PERCENT_DIGITS);
       if (symbol === "wNEAR") {
         data.name = "NEAR";
         data.symbol = "NEAR";
-        data.available = availableNEAR;
-        data.available$ = (availableNEAR * price$).toLocaleString(undefined, USD_FORMAT);
+        data.available = Number(Math.max(0, availableNEAR - NEAR_STORAGE_DEPOSIT)).toFixed(
+          PERCENT_DIGITS,
+        );
+        data.available$ = (availableNEAR * price).toLocaleString(undefined, USD_FORMAT);
       }
       data.alerts = {};
       break;
     case "Borrow":
       data.totalTitle = `Total Borrow = `;
-      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity);
-      data.available$ = (data.available * price$).toLocaleString(undefined, USD_FORMAT);
+      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity).toFixed(
+        PERCENT_DIGITS,
+      );
       data.rates = [
         { label: "Borrow APY", value: `${borrowApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
@@ -100,18 +120,18 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = supplied + collateral;
+      data.available = getAvailableWithdrawOrAdjust;
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
       break;
     case "Adjust":
       data.totalTitle = `Amount designated as collateral = `;
-      data.available = supplied + collateral;
+      data.available = getAvailableWithdrawOrAdjust;
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount = `;
-      data.available = Math.min(available, borrowed);
+      data.available = Math.min(available, borrowed).toFixed(PERCENT_DIGITS);
       data.alerts = {};
       break;
 

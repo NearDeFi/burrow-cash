@@ -7,10 +7,12 @@ export async function repay({
   tokenId,
   amount,
   extraDecimals,
+  maxAmount,
 }: {
   tokenId: string;
   amount: number;
   extraDecimals: number;
+  maxAmount?: string;
 }) {
   const { logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
@@ -21,7 +23,7 @@ export async function repay({
       actions: [
         {
           Repay: {
-            max_amount: expandToken(amount, decimals + extraDecimals, 0),
+            max_amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
             token_id: tokenId,
           },
         },
@@ -33,7 +35,7 @@ export async function repay({
     methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
     args: {
       receiver_id: logicContract.contractId,
-      amount: expandToken(amount, decimals, 0),
+      amount: expandToken(maxAmount || amount, decimals, 0),
       msg: JSON.stringify(msg),
     },
   });

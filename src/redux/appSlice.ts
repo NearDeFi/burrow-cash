@@ -11,6 +11,7 @@ export interface AppState {
     tokenId: string;
     useAsCollateral: boolean;
     amount: number;
+    isMax: boolean;
   };
 }
 
@@ -23,6 +24,7 @@ const initialState: AppState = {
     tokenId: "",
     useAsCollateral: false,
     amount: 0,
+    isMax: false,
   },
 };
 
@@ -37,11 +39,12 @@ export const appSlice = createSlice({
       state,
       action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
     ) {
-      state.selected = { useAsCollateral: false, ...action.payload };
+      state.selected = { useAsCollateral: false, isMax: false, ...action.payload };
       state.showModal = true;
     },
-    updateAmount(state, action: PayloadAction<{ amount: number }>) {
+    updateAmount(state, action: PayloadAction<{ amount: number; isMax: boolean }>) {
       state.selected.amount = action.payload.amount;
+      state.selected.isMax = action.payload.isMax;
     },
     toggleUseAsCollateral(state, action: PayloadAction<{ useAsCollateral: boolean }>) {
       state.selected.useAsCollateral = action.payload.useAsCollateral;

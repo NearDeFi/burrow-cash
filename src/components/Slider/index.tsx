@@ -39,7 +39,7 @@ const Slider = ({ value = 0, onChange }: Props) => {
       value={value}
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"
-      step={1}
+      step={0.01}
       valueLabelFormat={(v) => `${Math.round(v || 0)}%`}
       marks={marks}
       onChange={onChange}
