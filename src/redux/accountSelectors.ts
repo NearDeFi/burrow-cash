@@ -173,7 +173,7 @@ export const getPortfolioAssets = createSelector(
 
 const MAX_RATIO = 10000;
 
-const getCollateralSum = (assets: Assets, account: AccountState) =>
+export const getCollateralSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.collateral)
     .map((id) => {
       const asset = assets[id];
@@ -187,7 +187,7 @@ const getCollateralSum = (assets: Assets, account: AccountState) =>
     })
     .reduce(sumReducer, 0);
 
-const getBorrowedSum = (assets: Assets, account: AccountState) =>
+export const getBorrowedSum = (assets: Assets, account: AccountState) =>
   Object.keys(account.portfolio.borrowed)
     .map((id) => {
       const asset = assets[id];

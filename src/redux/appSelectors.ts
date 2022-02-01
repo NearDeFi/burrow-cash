@@ -1,8 +1,12 @@
 import { createSelector } from "@reduxjs/toolkit";
 import Decimal from "decimal.js";
+import { clone } from "ramda";
 
 import type { RootState } from "./store";
 import { transformAsset } from "./utils";
+import { nearTokenId } from "../utils";
+import { getBorrowedSum, getCollateralSum } from "./accountSelectors";
+import { shrinkToken, expandToken } from "../store";
 
 export const getModalStatus = createSelector(
   (state: RootState) => state.app,
@@ -74,3 +78,48 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
       return suppliedBalance.plus(collateralBalance).toString();
     },
   );
+
+export const getWithdrawMaxNEARAmount = createSelector(
+  (state: RootState) => state.assets.data,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    const asset = assets[nearTokenId];
+    if (!asset) return 0;
+    const { metadata, config } = asset;
+    const decimals = metadata.decimals + config.extra_decimals;
+
+    const clonedAccount = clone(account);
+    const empty = {
+      balance: "0",
+      shares: "0",
+      apr: "0",
+    };
+
+    const { supplied, collateral } = clonedAccount.portfolio;
+
+    if (!supplied[nearTokenId]) {
+      supplied[nearTokenId] = empty;
+    }
+
+    if (!collateral[nearTokenId]) {
+      collateral[nearTokenId] = empty;
+    }
+
+    const collateralBalance = Number(shrinkToken(collateral[nearTokenId].balance, decimals));
+    const suppliedBalance = Number(shrinkToken(supplied[nearTokenId].balance, decimals));
+
+    let amount = 0;
+    let healthFactor = 10_000;
+
+    while (healthFactor >= 110) {
+      const newBalance = expandToken(collateralBalance + suppliedBalance - amount, decimals);
+      clonedAccount.portfolio.collateral[nearTokenId].balance = newBalance;
+      const borrowedSum = getBorrowedSum(assets, account);
+      const collateralSum = getCollateralSum(assets, clonedAccount);
+      healthFactor = (collateralSum / borrowedSum) * 100;
+      amount += 1e-4;
+    }
+
+    return amount;
+  },
+);

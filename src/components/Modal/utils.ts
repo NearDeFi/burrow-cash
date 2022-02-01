@@ -6,6 +6,7 @@ import {
   NEAR_STORAGE_DEPOSIT,
 } from "../../store";
 import type { UIAsset } from "../../interfaces";
+import { nearTokenId } from "../../utils";
 
 interface Alert {
   [key: string]: {
@@ -43,6 +44,7 @@ export const getModalData = (asset): UIAsset & Props => {
     availableLiquidity,
     price,
     maxBorrowAmount,
+    maxWithdrawNEARAmount,
     supplied,
     collateral,
     borrowed,
@@ -50,6 +52,7 @@ export const getModalData = (asset): UIAsset & Props => {
     availableNEAR,
     healthFactor,
     amount,
+    tokenId,
   } = asset;
 
   const data: any = {
@@ -66,6 +69,11 @@ export const getModalData = (asset): UIAsset & Props => {
   } else {
     delete data.alerts["liquidation"];
   }
+
+  const getAvailableWithdrawOrAdjust =
+    tokenId === nearTokenId
+      ? maxWithdrawNEARAmount?.toFixed(PERCENT_DIGITS)
+      : (supplied + collateral).toFixed(PERCENT_DIGITS);
 
   switch (action) {
     case "Supply":
@@ -112,14 +120,14 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = (supplied + collateral).toFixed(PERCENT_DIGITS);
+      data.available = getAvailableWithdrawOrAdjust;
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
       break;
     case "Adjust":
       data.totalTitle = `Amount designated as collateral = `;
-      data.available = (supplied + collateral).toFixed(PERCENT_DIGITS);
+      data.available = getAvailableWithdrawOrAdjust;
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount = `;

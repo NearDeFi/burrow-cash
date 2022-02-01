@@ -3,7 +3,12 @@ import { Modal as MUIModal, Typography, Box } from "@mui/material";
 import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal } from "../../redux/appSlice";
-import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
+import {
+  getModalStatus,
+  getAssetData,
+  getSelectedValues,
+  getWithdrawMaxNEARAmount,
+} from "../../redux/appSelectors";
 import {
   getMaxBorrowAmount,
   getAccountId,
@@ -49,6 +54,7 @@ const Modal = () => {
   );
 
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
+  const maxWithdrawNEARAmount = useAppSelector(getWithdrawMaxNEARAmount);
 
   const {
     name,
@@ -62,7 +68,7 @@ const Modal = () => {
     rates,
     alerts,
     remainingCollateral,
-  } = getModalData({ ...asset, maxBorrowAmount, healthFactor, amount });
+  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawNEARAmount, healthFactor, amount });
 
   const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
 
