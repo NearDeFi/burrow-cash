@@ -34,14 +34,6 @@ const Footer = () => (
     </CopyWrapper>
     <LinksWrapper>
       <Links />
-      <Divider orientation="vertical" flexItem color="secondary" />
-      <Link href="/terms" underline="none" color="secondary.main">
-        Terms of Service
-      </Link>
-      <Divider orientation="vertical" flexItem color="secondary" />
-      <Link href="/privacy" underline="none" color="secondary.main">
-        Privacy Policy
-      </Link>
     </LinksWrapper>
   </Wrapper>
 );
@@ -75,6 +67,19 @@ const Links = () => (
       <Gitbook />
     </Link>
   </Box>
+);
+
+export const Terms = () => (
+  <>
+    <Divider orientation="vertical" flexItem color="secondary" />
+    <Link href="/terms" underline="none" color="secondary.main">
+      Terms of Service
+    </Link>
+    <Divider orientation="vertical" flexItem color="secondary" />
+    <Link href="/privacy" underline="none" color="secondary.main">
+      Privacy Policy
+    </Link>
+  </>
 );
 
 export default Footer;
