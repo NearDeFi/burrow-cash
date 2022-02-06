@@ -18,6 +18,7 @@ import {
   getAssetData,
   getRepayMaxAmount,
   getWithdrawMaxAmount,
+  getSupplyMaxAmount,
 } from "../../redux/appSelectors";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
@@ -28,6 +29,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   const { action = "Deposit", tokenId } = asset;
   const repayMaxAmount = useAppSelector(getRepayMaxAmount(tokenId));
   const withdrawMaxAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
+  const supplyMaxAmount = useAppSelector(getSupplyMaxAmount(tokenId));
 
   const { available, canUseAsCollateral, extraDecimals, collateral, supplied } = getModalData({
     ...asset,
@@ -47,7 +49,13 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
         if (tokenId === nearTokenId) {
           await deposit({ amount, useAsCollateral });
         } else {
-          await supply({ tokenId, extraDecimals, useAsCollateral, amount });
+          await supply({
+            tokenId,
+            extraDecimals,
+            useAsCollateral,
+            amount,
+            maxAmount: isMax ? supplyMaxAmount : undefined,
+          });
         }
         break;
       case "Borrow": {

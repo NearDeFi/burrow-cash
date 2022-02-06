@@ -123,3 +123,19 @@ export const getWithdrawMaxNEARAmount = createSelector(
     return amount;
   },
 );
+
+export const getSupplyMaxAmount = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.assets.data,
+    (state: RootState) => state.account.balances,
+    (assets, balances) => {
+      const asset = assets[tokenId];
+      const { decimals } = asset.metadata;
+
+      const suppliedBalance = new Decimal(balances[tokenId] || "0").div(
+        new Decimal(10).pow(decimals),
+      );
+
+      return suppliedBalance.toString();
+    },
+  );
