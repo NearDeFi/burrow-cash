@@ -15,18 +15,21 @@ export async function withdraw({
   amount,
   collateralAmount,
   maxAmount,
+  collateral,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: number;
   collateralAmount?: number;
-  maxAmount?: string;
+  maxAmount?: string | number;
+  collateral: number;
 }) {
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
   const { decimals } = (await getMetadata(tokenId))!;
   const accountDetailed = await getAccountDetailed(account.accountId);
 
+  const isNEAR = tokenId === nearTokenId;
   const transactions: Transaction[] = [];
 
   if (
@@ -66,7 +69,7 @@ export async function withdraw({
                     DecreaseCollateral: {
                       token_id: tokenId,
                       amount: expandToken(
-                        maxAmount || collateralAmount,
+                        maxAmount ? (isNEAR ? maxAmount : collateral) : collateralAmount,
                         decimals + extraDecimals,
                         0,
                       ),
@@ -100,13 +103,13 @@ export async function withdraw({
     ],
   });
 
-  if (tokenId === nearTokenId) {
+  if (isNEAR) {
     transactions.push({
       receiverId: tokenContract.contractId,
       functionCalls: [
         {
           methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-          args: { amount: expandToken(amount, decimals + extraDecimals, 0) },
+          args: { amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0) },
         },
       ],
     });
