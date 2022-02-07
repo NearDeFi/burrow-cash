@@ -10,8 +10,8 @@ export default function TotalBRRR() {
   return (
     <Box width={["100%", "520px"]} mx="auto" mb="2rem">
       <Alert severity="info">
-        Total <b>BRRR</b> Tokens accrued:{" "}
-        <b>{totalBRRR?.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+        You&apos;ve earned: &nbsp;
+        <b>{totalBRRR?.toLocaleString(undefined, TOKEN_FORMAT)} BRRR</b>
         <span>&nbsp;&nbsp; 🎉 💪 🌒</span>
       </Alert>
     </Box>
