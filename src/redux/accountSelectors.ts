@@ -14,6 +14,11 @@ import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer } from "./utils";
 import { Assets } from "./assetsSlice";
 import { AccountState } from "./accountSlice";
 
+export const getTotalBRRR = createSelector(
+  (state: RootState) => state.account,
+  () => Math.random() * 100000 + 100,
+);
+
 export const getAccountId = createSelector(
   (state: RootState) => state.account,
   (account) => account.accountId,

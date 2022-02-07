@@ -1,7 +1,7 @@
 import { Box, Typography, Skeleton, useTheme } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox } from "../../components";
+import { InfoBox, TotalBRRR } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
@@ -27,6 +27,7 @@ const Portfolio = () => {
         <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
         <InfoBox title="Your Borrows" value={isLoading ? undefined : totalBorroedBalance} />
       </InfoWrapper>
+      <TotalBRRR />
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>

@@ -6,7 +6,7 @@ import {
   getAccountId,
 } from "../../redux/accountSelectors";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle, HealthFactorBox } from "../../components";
+import { InfoBox, PageTitle, HealthFactorBox, TotalBRRR } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -39,6 +39,7 @@ const Borrow = () => {
         <HealthFactorBox value={isLoading ? null : healthFactor} />
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
+      <TotalBRRR />
       <Table
         rows={Array.from(isLoading ? new Array(6) : rows)}
         columns={columns}
