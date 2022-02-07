@@ -45,7 +45,7 @@ const Deposit = () => {
         </Alert>
       </Box>
       <Table
-        rows={Array.from(isLoading ? new Array(5) : rows)}
+        rows={Array.from(isLoading ? new Array(6) : rows)}
         columns={columns}
         onRowClick={handleOnRowClick}
       />

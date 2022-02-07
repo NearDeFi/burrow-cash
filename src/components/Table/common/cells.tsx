@@ -1,4 +1,5 @@
 import { Box, Tooltip, Skeleton } from "@mui/material";
+import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
@@ -73,3 +74,11 @@ export const Cell = ({
     <Box>{displayValue}</Box>
   );
 };
+
+export const BrrLabel = (
+  <Tooltip title="Weekly BRRR Token rewards">
+    <span>
+      BRRR <FcInfo />
+    </span>
+  </Tooltip>
+);

@@ -1,10 +1,16 @@
-import { TokenCell, Cell } from "../../components/Table/common/cells";
+import { TokenCell, Cell, BrrLabel } from "../../components/Table/common/cells";
 
 export const columns = [
   {
     label: "Name",
     dataKey: "name",
     Cell: TokenCell,
+  },
+  {
+    label: BrrLabel,
+    dataKey: "brrr",
+    align: "right",
+    Cell: ({ rowData }) => <Cell value={rowData?.brrrBorrow} rowData={rowData} format="string" />,
   },
   {
     label: "Borrow APY",

@@ -95,5 +95,7 @@ export const transformAsset = (asset: Asset, account: AccountState): UIAsset => 
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
+    brrrDeposit: Math.floor(Math.random() * 1000) + 100,
+    brrrBorrow: Math.floor(Math.random() * 1000) + 100,
   };
 };
