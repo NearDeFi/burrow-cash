@@ -63,7 +63,7 @@ const Links = () => (
     <Link href="https://burrowcash.medium.com/" title="Medium" target="_blank" color="#000">
       <FaMedium />
     </Link>
-    <Link href="https://docs.burrow.cash/" title="Docs" target="_blank" color="#000">
+    <Link width="16px" href="https://docs.burrow.cash/" title="Docs" target="_blank" color="#000">
       <Gitbook />
     </Link>
   </Box>
