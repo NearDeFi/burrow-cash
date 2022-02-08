@@ -19,7 +19,7 @@ export const NotConnected = () => (
     zIndex="1"
   >
     <Typography variant="h5" bgcolor="#fff">
-      Please connect your account
+      Please connect your wallet
     </Typography>
   </Box>
 );
