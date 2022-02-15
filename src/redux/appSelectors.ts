@@ -111,6 +111,8 @@ export const getWithdrawMaxNEARAmount = createSelector(
     let amount = 0;
     let healthFactor = 10_000;
 
+    // TODO: fix this without loop
+
     while (healthFactor >= 110) {
       const newBalance = expandToken(collateralBalance + suppliedBalance - amount, decimals);
       clonedAccount.portfolio.collateral[nearTokenId].balance = newBalance;

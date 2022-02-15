@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
-import { listToMap } from "./utils";
+import { listToMap, transformFarms } from "./utils";
 
 interface Balance {
   [tokenId: string]: string;
@@ -15,6 +15,21 @@ interface PortfolioAsset {
   shares: string;
 }
 
+interface Farm {
+  borrowed: {
+    [reward_token_id: string]: {
+      boosted_shares: string;
+      unclaimed_amount: string;
+      asset_farm_reward: {
+        reward_per_day: string;
+        booster_log_base: string;
+        remaining_rewards: string;
+        boosted_shares: string;
+      };
+    };
+  };
+}
+
 export interface Portfolio {
   supplied: {
     [tokenId: string]: PortfolioAsset;
@@ -24,6 +39,9 @@ export interface Portfolio {
   };
   borrowed: {
     [tokenId: string]: PortfolioAsset;
+  };
+  farms: {
+    [tokenId: string]: Farm;
   };
 }
 export interface AccountState {
@@ -41,6 +59,7 @@ const initialState: AccountState = {
     supplied: {},
     collateral: {},
     borrowed: {},
+    farms: {},
   },
   status: undefined,
   fetchedAt: undefined,
@@ -88,11 +107,12 @@ export const accountSlice = createSlice({
       };
 
       if (portfolio) {
-        const { supplied, borrowed, collateral } = portfolio;
+        const { supplied, borrowed, collateral, farms } = portfolio;
         state.portfolio = {
           supplied: listToMap(supplied),
           borrowed: listToMap(borrowed),
           collateral: listToMap(collateral),
+          farms: transformFarms(farms),
         };
       }
     });

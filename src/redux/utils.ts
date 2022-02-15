@@ -13,6 +13,25 @@ export const listToMap = (list) =>
     .map((asset) => ({ [asset.token_id]: omit(["token_id"], asset) }))
     .reduce((a, b) => ({ ...a, ...b }), {});
 
+export const transformFarms = (list) => {
+  const farms = {};
+  list.forEach((f) => {
+    const tokenId = f.farm_id.Borrowed;
+    f.rewards.forEach((r) => {
+      farms[tokenId] = {
+        borrowed: {
+          [r.reward_token_id]: {
+            boosted_shares: r.boosted_shares,
+            unclaimed_amount: r.unclaimed_amount,
+            asset_farm_reward: r.asset_farm_reward,
+          },
+        },
+      };
+    });
+  });
+  return farms;
+};
+
 export const toUsd = (balance: string, asset: Asset) =>
   asset.price?.usd
     ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
