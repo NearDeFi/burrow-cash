@@ -2,11 +2,13 @@ import Decimal from "decimal.js";
 import { pick, omit } from "ramda";
 
 import { shrinkToken, USD_FORMAT, TOKEN_FORMAT } from "../store";
-import type { Asset } from "./assetsSlice";
+import type { Asset, AssetsState } from "./assetsSlice";
 import type { AccountState } from "./accountSlice";
 import { UIAsset } from "../interfaces";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
+
+export const hasAssets = (assets: AssetsState) => Object.entries(assets.data).length > 0;
 
 export const listToMap = (list) =>
   list

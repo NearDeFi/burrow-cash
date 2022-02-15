@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "rm -rf public && rm -rf dist && rm -rf .parcel-cache && parcel build src/index.html --public-url ./ --no-cache",
+    "build": "parcel build src/index.html --public-url ./ --no-cache",
+    "clean": "rm -rf public && rm -rf dist && rm -rf .parcel-cache",
     "analyze": "BUNDLE_BUDDY=true parcel build src/index.html --reporter @parcel/reporter-bundle-buddy",
     "start": "parcel src/index.html --open",
     "prod": "DEFAULT_NETWORK=mainnet parcel src/index.html",

@@ -80,11 +80,12 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
   );
 
 export const getWithdrawMaxNEARAmount = createSelector(
+  (state: RootState) => state.app,
   (state: RootState) => state.assets.data,
   (state: RootState) => state.account,
-  (assets, account) => {
+  (app, assets, account) => {
     const asset = assets[nearTokenId];
-    if (!asset) return 0;
+    if (!asset || app.selected.tokenId !== nearTokenId) return 0;
     const { metadata, config } = asset;
     const decimals = metadata.decimals + config.extra_decimals;
 
@@ -119,7 +120,7 @@ export const getWithdrawMaxNEARAmount = createSelector(
       const borrowedSum = getBorrowedSum(assets, account);
       const collateralSum = getCollateralSum(assets, clonedAccount);
       healthFactor = (collateralSum / borrowedSum) * 100;
-      amount += 1e-4;
+      amount += 1e-2;
     }
 
     return amount;

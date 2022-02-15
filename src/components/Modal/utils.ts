@@ -57,7 +57,6 @@ export const getModalData = (asset): UIAsset & Props => {
 
   const data: any = {
     apy: borrowApy,
-    available$: (available * price).toLocaleString(undefined, USD_FORMAT),
     alerts: {},
   };
 
@@ -90,7 +89,6 @@ export const getModalData = (asset): UIAsset & Props => {
         data.available = Number(Math.max(0, availableNEAR - NEAR_STORAGE_DEPOSIT)).toFixed(
           PERCENT_DIGITS,
         );
-        data.available$ = (availableNEAR * price).toLocaleString(undefined, USD_FORMAT);
       }
       data.alerts = {};
       break;
@@ -138,5 +136,9 @@ export const getModalData = (asset): UIAsset & Props => {
     default:
   }
 
-  return { ...asset, ...data };
+  return {
+    ...asset,
+    ...data,
+    available$: (data.available * price).toLocaleString(undefined, USD_FORMAT),
+  };
 };
