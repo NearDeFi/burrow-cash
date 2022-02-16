@@ -22,7 +22,13 @@ const nearTokenIds = {
   testnet: "wrap.testnet",
 };
 
-export const nearTokenId = nearTokenIds[defaultNetwork] || "wrap.testnet";
+const brrrTokenIds = {
+  mainnet: "beta_brrr.beta.burrow.near",
+  testnet: "test_brrr.1638481328.burrow.testnet",
+};
+
+export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
+export const brrrTokenId = brrrTokenIds[defaultNetwork] || brrrTokenIds.testnet;
 
 export const getBurrow = async (): Promise<IBurrow> => {
   if (burrow) return burrow;

@@ -9,15 +9,11 @@ import {
   PERCENT_DIGITS,
   NEAR_DECIMALS,
 } from "../store";
+import { brrrTokenId } from "../utils";
 import type { RootState } from "./store";
 import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer, hasAssets } from "./utils";
 import { Assets } from "./assetsSlice";
 import { AccountState } from "./accountSlice";
-
-export const getTotalBRRR = createSelector(
-  (state: RootState) => state.account,
-  () => Math.random() * 100000 + 100,
-);
 
 export const getAccountId = createSelector(
   (state: RootState) => state.account,
@@ -454,4 +450,20 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
 export const isAccountLoading = createSelector(
   (state: RootState) => state.account,
   (account) => account.status === "pending",
+);
+
+export const getTotalBRRR = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    if (!account.accountId || !assets.data[brrrTokenId]) return [0, 0];
+    const { farms } = account.portfolio;
+    const { decimals } = assets.data[brrrTokenId].metadata;
+    const unclaimed = Object.keys(farms)
+      .map((token) => farms[token].borrowed[brrrTokenId].unclaimed_amount)
+      .map((token) => Number(shrinkToken(token, decimals)))
+      .reduce(sumReducer, 0);
+    const totalBrrr = Number(shrinkToken(account.balances[brrrTokenId], decimals));
+    return [totalBrrr, unclaimed];
+  },
 );
