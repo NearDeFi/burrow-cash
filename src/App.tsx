@@ -9,7 +9,7 @@ import { useIdle, useInterval } from "react-use";
 import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
-import { fetchAssetsAndMetadata, fetchAssets } from "./redux/assetsSlice";
+import { fetchAssetsAndMetadata } from "./redux/assetsSlice";
 import { fetchAccount } from "./redux/accountSlice";
 
 Sentry.init({
@@ -26,18 +26,13 @@ const App = () => {
   const isIdle = useIdle(IDLE_INTERVAL);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchAccount());
+  const fetchData = () => {
     dispatch(fetchAssetsAndMetadata());
-  }, []);
+    dispatch(fetchAccount());
+  };
 
-  useInterval(
-    () => {
-      dispatch(fetchAssets());
-      dispatch(fetchAccount());
-    },
-    !isIdle ? REFETCH_INTERVAL : null,
-  );
+  useEffect(fetchData, []);
+  useInterval(fetchData, !isIdle ? REFETCH_INTERVAL : null);
 
   return (
     <BrowserRouter>
