@@ -75,8 +75,8 @@ export const Cell = ({
   );
 };
 
-export const BrrLabel = (
-  <Tooltip title="Weekly BRRR Token rewards">
+export const BRRRLabel = ({ title }) => (
+  <Tooltip title={title}>
     <span>
       BRRR <FcInfo />
     </span>
