@@ -34,6 +34,7 @@ const App = () => {
   useInterval(
     () => {
       dispatch(fetchAssets());
+      dispatch(fetchAccount());
     },
     !isIdle ? REFETCH_INTERVAL : null,
   );

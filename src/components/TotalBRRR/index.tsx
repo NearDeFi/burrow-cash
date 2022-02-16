@@ -1,17 +1,22 @@
-import { Box, Alert, Skeleton, Button } from "@mui/material";
+import { Box, Alert, Skeleton } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import { getTotalBRRR } from "../../redux/accountSelectors";
-import { useAppSelector } from "../../redux/hooks";
+import { getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { useLoading } from "../../hooks";
-import { farmClaimAll } from "../../api/farms";
+import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 
 export default function TotalBRRR({ showAction = false }) {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
   const isLoading = useLoading();
+  const isClaimingLoading = useAppSelector(isClaiming);
+  const dispatch = useAppDispatch();
 
   const handleClaimAll = async () => {
-    await farmClaimAll();
+    dispatch(farmClaimAll()).then(() => {
+      dispatch(fetchAccount());
+    });
   };
 
   return (
@@ -33,9 +38,15 @@ export default function TotalBRRR({ showAction = false }) {
           )}
           <Box mr="1rem">)</Box>
           {showAction && (
-            <Button size="small" color="secondary" variant="outlined" onClick={handleClaimAll}>
+            <LoadingButton
+              size="small"
+              color="secondary"
+              variant="outlined"
+              onClick={handleClaimAll}
+              loading={isClaimingLoading}
+            >
               Claim all
-            </Button>
+            </LoadingButton>
           )}
         </Box>
       </Alert>

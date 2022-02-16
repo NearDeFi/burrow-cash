@@ -153,6 +153,8 @@ export const getPortfolioAssets = createSelector(
         const asset = assets.data[tokenId];
 
         const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
+        const brrrUnclaimedAmount =
+          account.portfolio.farms[tokenId]?.borrowed?.[brrrTokenId].unclaimed_amount || "0";
 
         return {
           tokenId,
@@ -163,6 +165,9 @@ export const getPortfolioAssets = createSelector(
           borrowApy: Number(asset.borrow_apr) * 100,
           borrowed: Number(
             shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+          ),
+          brrrUnclaimedAmount: Number(
+            shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
         };
       })
@@ -463,7 +468,14 @@ export const getTotalBRRR = createSelector(
       .map((token) => farms[token].borrowed[brrrTokenId].unclaimed_amount)
       .map((token) => Number(shrinkToken(token, decimals)))
       .reduce(sumReducer, 0);
-    const totalBrrr = Number(shrinkToken(account.balances[brrrTokenId], decimals));
+    const totalBrrr = Number(
+      shrinkToken(account.portfolio.supplied[brrrTokenId].balance, decimals),
+    );
     return [totalBrrr, unclaimed];
   },
+);
+
+export const isClaiming = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.isClaiming === "pending",
 );

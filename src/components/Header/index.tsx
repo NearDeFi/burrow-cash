@@ -78,7 +78,7 @@ const Header = () => {
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert severity="info">Refreshing assets pricing...</Alert>
+        <Alert severity="info">Refreshing assets data...</Alert>
       </Snackbar>
     </Wrapper>
   );
