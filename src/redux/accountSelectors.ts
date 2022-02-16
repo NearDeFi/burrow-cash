@@ -469,7 +469,7 @@ export const getTotalBRRR = createSelector(
       .map((token) => Number(shrinkToken(token, decimals)))
       .reduce(sumReducer, 0);
     const totalBrrr = Number(
-      shrinkToken(account.portfolio.supplied[brrrTokenId].balance, decimals),
+      shrinkToken(account.portfolio.supplied[brrrTokenId]?.balance || "0", decimals),
     );
     return [totalBrrr, unclaimed];
   },
