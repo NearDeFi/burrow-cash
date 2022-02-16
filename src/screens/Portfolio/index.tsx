@@ -27,7 +27,7 @@ const Portfolio = () => {
         <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
         <InfoBox title="Your Borrows" value={isLoading ? undefined : totalBorroedBalance} />
       </InfoWrapper>
-      <TotalBRRR />
+      <TotalBRRR showAction />
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>
