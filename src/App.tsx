@@ -19,8 +19,8 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-const IDLE_INTERVAL = 10e3;
-const REFETCH_INTERVAL = 15e3;
+const IDLE_INTERVAL = 30e3;
+const REFETCH_INTERVAL = 60e3;
 
 const App = () => {
   const isIdle = useIdle(IDLE_INTERVAL);

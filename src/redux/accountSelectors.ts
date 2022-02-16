@@ -144,6 +144,7 @@ export const getPortfolioAssets = createSelector(
               shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
             ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
+          canWithdraw: asset.config.can_withdraw,
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
