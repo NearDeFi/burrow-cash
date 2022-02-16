@@ -7,7 +7,7 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="Weekly BRRR Token rewards" />,
+    label: <BRRRLabel title="Daily BRRR Token rewards" />,
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData?.brrrBorrow} rowData={rowData} format="string" />,

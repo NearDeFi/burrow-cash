@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getAssetsDetailed, getAllMetadata } from "../store";
 import { IAssetDetailed, IMetadata } from "../interfaces";
+import { transformAssetFarms } from "./utils";
 
 export type Asset = IAssetDetailed & {
   metadata: IMetadata;
@@ -51,6 +52,7 @@ export const assetSlice = createSlice({
         state.data[asset.token_id] = {
           metadata: metadata.find((m) => m.token_id === asset.token_id) as IMetadata,
           ...asset,
+          farms: transformAssetFarms(asset.farms),
         };
       });
       state.status = action.meta.requestStatus;

@@ -37,7 +37,7 @@ export const getAssetData = createSelector(
     return {
       tokenId: asset?.token_id,
       action: app.selected.action,
-      ...(asset ? transformAsset(asset, account) : {}),
+      ...(asset ? transformAsset(asset, account, assets) : {}),
     };
   },
 );

@@ -1,16 +1,10 @@
-import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
+import { TokenCell, Cell } from "../../components/Table/common/cells";
 
 export const columns = [
   {
     label: "Name",
     dataKey: "name",
     Cell: TokenCell,
-  },
-  {
-    label: <BRRRLabel title="Weekly BRRR Token rewards" />,
-    dataKey: "brrr",
-    align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData?.brrrDeposit} rowData={rowData} format="string" />,
   },
   {
     label: "APY",

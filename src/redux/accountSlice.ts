@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
-import { listToMap, transformFarms } from "./utils";
+import { listToMap, transformAccountFarms } from "./utils";
 import { ChangeMethodsLogic } from "../interfaces";
 
 interface Balance {
@@ -133,7 +133,7 @@ export const accountSlice = createSlice({
           supplied: listToMap(supplied),
           borrowed: listToMap(borrowed),
           collateral: listToMap(collateral),
-          farms: transformFarms(farms),
+          farms: transformAccountFarms(farms),
         };
       }
     });
