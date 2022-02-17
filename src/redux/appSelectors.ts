@@ -37,7 +37,7 @@ export const getAssetData = createSelector(
     return {
       tokenId: asset?.token_id,
       action: app.selected.action,
-      ...(asset ? transformAsset(asset, account) : {}),
+      ...(asset ? transformAsset(asset, account, assets) : {}),
     };
   },
 );
@@ -111,6 +111,8 @@ export const getWithdrawMaxNEARAmount = createSelector(
 
     let amount = 0;
     let healthFactor = 10_000;
+
+    // TODO: fix this without loop
 
     while (healthFactor >= 110) {
       const newBalance = expandToken(collateralBalance + suppliedBalance - amount, decimals);

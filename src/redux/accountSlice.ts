@@ -3,7 +3,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
-import { listToMap } from "./utils";
+import { listToMap, transformAccountFarms } from "./utils";
+import { ChangeMethodsLogic } from "../interfaces";
 
 interface Balance {
   [tokenId: string]: string;
@@ -13,6 +14,21 @@ interface PortfolioAsset {
   apr: string;
   balance: string;
   shares: string;
+}
+
+interface Farm {
+  borrowed: {
+    [reward_token_id: string]: {
+      boosted_shares: string;
+      unclaimed_amount: string;
+      asset_farm_reward: {
+        reward_per_day: string;
+        booster_log_base: string;
+        remaining_rewards: string;
+        boosted_shares: string;
+      };
+    };
+  };
 }
 
 export interface Portfolio {
@@ -25,13 +41,19 @@ export interface Portfolio {
   borrowed: {
     [tokenId: string]: PortfolioAsset;
   };
+  farms: {
+    [tokenId: string]: Farm;
+  };
 }
+
+type Status = "pending" | "fulfilled" | "rejected" | undefined;
 export interface AccountState {
   accountId: string;
   balances: Balance;
   portfolio: Portfolio;
-  status: "pending" | "fulfilled" | "rejected" | undefined;
+  status: Status;
   fetchedAt: string | undefined;
+  isClaiming: Status;
 }
 
 const initialState: AccountState = {
@@ -41,10 +63,22 @@ const initialState: AccountState = {
     supplied: {},
     collateral: {},
     borrowed: {},
+    farms: {},
   },
   status: undefined,
+  isClaiming: undefined,
   fetchedAt: undefined,
 };
+
+export const farmClaimAll = createAsyncThunk("account/farmClaimAll", async () => {
+  const { call, logicContract } = await getBurrow();
+  return call(
+    logicContract,
+    ChangeMethodsLogic[ChangeMethodsLogic.account_farm_claim_all],
+    undefined,
+    "0",
+  );
+});
 
 export const fetchAccount = createAsyncThunk("account/fetchAccount", async () => {
   const { account } = await getBurrow();
@@ -69,6 +103,12 @@ export const accountSlice = createSlice({
     logoutAccount: () => initialState,
   },
   extraReducers: (builder) => {
+    builder.addCase(farmClaimAll.pending, (state, action) => {
+      state.isClaiming = action.meta.requestStatus;
+    });
+    builder.addCase(farmClaimAll.fulfilled, (state, action) => {
+      state.isClaiming = action.meta.requestStatus;
+    });
     builder.addCase(fetchAccount.pending, (state, action) => {
       state.status = action.meta.requestStatus;
     });
@@ -88,11 +128,12 @@ export const accountSlice = createSlice({
       };
 
       if (portfolio) {
-        const { supplied, borrowed, collateral } = portfolio;
+        const { supplied, borrowed, collateral, farms } = portfolio;
         state.portfolio = {
           supplied: listToMap(supplied),
           borrowed: listToMap(borrowed),
           collateral: listToMap(collateral),
+          farms: transformAccountFarms(farms),
         };
       }
     });

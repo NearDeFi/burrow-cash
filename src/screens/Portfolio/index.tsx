@@ -1,7 +1,7 @@
 import { Box, Typography, Skeleton, useTheme } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox } from "../../components";
+import { InfoBox, TotalBRRR } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
@@ -9,6 +9,7 @@ import {
   getTotalAccountBalance,
   getPortfolioAssets,
   getNetAPY,
+  getAccountId,
 } from "../../redux/accountSelectors";
 import { useLoading } from "../../hooks";
 
@@ -19,6 +20,7 @@ const Portfolio = () => {
   const isLoading = useLoading();
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
   const netAPY = useAppSelector(getNetAPY);
+  const accountId = useAppSelector(getAccountId);
 
   return (
     <Box pb="2.5rem">
@@ -27,6 +29,7 @@ const Portfolio = () => {
         <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
         <InfoBox title="Your Borrows" value={isLoading ? undefined : totalBorroedBalance} />
       </InfoWrapper>
+      {accountId && <TotalBRRR showAction />}
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>

@@ -26,7 +26,7 @@ export const getAvailableAssets = (source: "supply" | "borrow") =>
       const filterKey = source === "supply" ? "can_deposit" : "can_borrow";
       return Object.keys(assets)
         .filter((tokenId) => assets[tokenId].config[filterKey])
-        .map((tokenId) => transformAsset(assets[tokenId], account));
+        .map((tokenId) => transformAsset(assets[tokenId], account, assets));
     },
   );
 

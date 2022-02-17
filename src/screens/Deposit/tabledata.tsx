@@ -6,7 +6,6 @@ export const columns = [
     dataKey: "name",
     Cell: TokenCell,
   },
-
   {
     label: "APY",
     dataKey: "apy",

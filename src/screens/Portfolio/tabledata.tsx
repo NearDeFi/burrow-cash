@@ -1,4 +1,4 @@
-import { TokenCell, Cell } from "../../components/Table/common/cells";
+import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
 import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 
 export const suppliedColumns = [
@@ -51,6 +51,14 @@ export const borrowedColumns = [
     label: "Name",
     dataKey: "name",
     Cell: TokenCell,
+  },
+  {
+    label: <BRRRLabel title="Unclaimed BRRR rewards" />,
+    dataKey: "brrr",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell value={rowData?.brrrUnclaimedAmount} rowData={rowData} format="amount" />
+    ),
   },
   {
     label: "Borrow APY",

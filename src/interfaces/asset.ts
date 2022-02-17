@@ -110,4 +110,5 @@ export interface UIAsset {
   availableNEAR: number;
   available: number;
   extraDecimals: number;
+  brrrBorrow: number;
 }
