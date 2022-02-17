@@ -43,8 +43,8 @@ export const assetSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAssetsAndMetadata.pending, (state, action) => {
-      state.status = action.meta.requestStatus;
+    builder.addCase(fetchAssetsAndMetadata.pending, (state) => {
+      state.status = "fetching";
     });
     builder.addCase(fetchAssetsAndMetadata.fulfilled, (state, action) => {
       const { assets, metadata } = action.payload;

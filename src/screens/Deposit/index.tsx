@@ -8,7 +8,6 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
 import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
-import { useLoading } from "../../hooks";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +15,6 @@ const Deposit = () => {
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("supply"));
-  const isLoading = useLoading();
   const netAPY = useAppSelector(getNetAPY);
 
   const columns = !accountId
@@ -30,13 +28,9 @@ const Deposit = () => {
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Deposited" value={isLoading ? undefined : totalSupplyBalance} />
-        <InfoBox
-          title="Your Deposit Balance"
-          value={isLoading ? undefined : yourSupplyBalance}
-          subtitle="Portfolio"
-        />
-        <InfoBox title="Net APY" value={isLoading ? undefined : netAPY} />
+        <InfoBox title="Total Deposited" value={totalSupplyBalance} />
+        <InfoBox title="Your Deposit Balance" value={yourSupplyBalance} subtitle="Portfolio" />
+        <InfoBox title="Net APY" value={netAPY} />
       </InfoWrapper>
       <PageTitle first="Deposit" second="Assets" />
       <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
@@ -45,11 +39,7 @@ const Deposit = () => {
         </Alert>
       </Box>
       <TotalBRRR />
-      <Table
-        rows={Array.from(isLoading ? new Array(6) : rows)}
-        columns={columns}
-        onRowClick={handleOnRowClick}
-      />
+      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>
   );
 };

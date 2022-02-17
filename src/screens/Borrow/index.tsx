@@ -12,7 +12,6 @@ import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
 import { showModal } from "../../redux/appSlice";
-import { useLoading } from "../../hooks";
 
 const Borrow = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +20,6 @@ const Borrow = () => {
   const accountId = useAppSelector(getAccountId);
   const healthFactor = useAppSelector(getHealthFactor);
   const rows = useAppSelector(getAvailableAssets("borrow"));
-  const isLoading = useLoading();
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => col.dataKey !== "borrowed")]
@@ -34,17 +32,13 @@ const Borrow = () => {
   return (
     <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Borrowed" value={isLoading ? undefined : totalBorrowBalance} />
+        <InfoBox title="Total Borrowed" value={totalBorrowBalance} />
         <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
-        <HealthFactorBox value={isLoading ? null : healthFactor} />
+        <HealthFactorBox value={healthFactor} />
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <TotalBRRR />
-      <Table
-        rows={Array.from(isLoading ? new Array(6) : rows)}
-        columns={columns}
-        onRowClick={handleOnRowClick}
-      />
+      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>
   );
 };
