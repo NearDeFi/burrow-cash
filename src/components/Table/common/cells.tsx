@@ -78,7 +78,7 @@ export const Cell = ({
 export const BRRRLabel = ({ title }) => (
   <Tooltip title={title}>
     <span>
-      BRRR <FcInfo />
+      BRRR Rewards <FcInfo />
     </span>
   </Tooltip>
 );
