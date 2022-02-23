@@ -46,6 +46,7 @@ export default function TotalBRRR({ showAction = false }) {
           variant="outlined"
           onClick={handleClaimAll}
           loading={isClaimingLoading}
+          disabled={!unclaimed}
         >
           Claim all
         </LoadingButton>
