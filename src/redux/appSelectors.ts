@@ -86,6 +86,7 @@ export const getWithdrawMaxNEARAmount = createSelector(
   (app, assets, account) => {
     const asset = assets[nearTokenId];
     if (!asset || app.selected.tokenId !== nearTokenId) return 0;
+    if (app.selected.action !== "Withdraw") return 0;
     const { metadata, config } = asset;
     const decimals = metadata.decimals + config.extra_decimals;
 
