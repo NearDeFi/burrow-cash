@@ -20,7 +20,7 @@ export const TokenCell = ({ rowData }) => {
       <Box px="1rem">
         {rowData ? (
           <>
-            <Box>{rowData.symbol === "wNEAR" ? "NEAR" : rowData.symbol}</Box>
+            <Box>{rowData.symbol}</Box>
             <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
           </>
         ) : (

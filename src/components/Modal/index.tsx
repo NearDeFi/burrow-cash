@@ -74,8 +74,6 @@ const Modal = () => {
 
   const handleClose = () => dispatch(hideModal());
 
-  const displaySymbol = symbol === "wNEAR" ? "NEAR" : symbol;
-
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
@@ -85,7 +83,7 @@ const Modal = () => {
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
           <Available
             totalAvailable={available}
-            displaySymbol={displaySymbol}
+            displaySymbol={symbol}
             available$={available$}
             price={price}
           />
@@ -105,7 +103,7 @@ const Modal = () => {
           <Action
             maxBorrowAmount={maxBorrowAmount}
             healthFactor={healthFactor}
-            displaySymbol={displaySymbol}
+            displaySymbol={symbol}
           />
         </Box>
       </Wrapper>
