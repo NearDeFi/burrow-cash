@@ -6,7 +6,6 @@ import {
   NEAR_STORAGE_DEPOSIT,
 } from "../../store";
 import type { UIAsset } from "../../interfaces";
-import { nearTokenId } from "../../utils";
 
 interface Alert {
   [key: string]: {
@@ -44,7 +43,6 @@ export const getModalData = (asset): UIAsset & Props => {
     availableLiquidity,
     price,
     maxBorrowAmount,
-    maxWithdrawNEARAmount,
     supplied,
     collateral,
     borrowed,
@@ -52,7 +50,6 @@ export const getModalData = (asset): UIAsset & Props => {
     availableNEAR,
     healthFactor,
     amount,
-    tokenId,
   } = asset;
 
   const data: any = {
@@ -69,10 +66,7 @@ export const getModalData = (asset): UIAsset & Props => {
     delete data.alerts["liquidation"];
   }
 
-  const getAvailableWithdrawOrAdjust =
-    tokenId === nearTokenId
-      ? maxWithdrawNEARAmount?.toFixed(PERCENT_DIGITS)
-      : (supplied + collateral).toFixed(PERCENT_DIGITS);
+  const getAvailableWithdrawOrAdjust = (supplied + collateral).toFixed(PERCENT_DIGITS);
 
   switch (action) {
     case "Supply":

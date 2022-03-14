@@ -124,7 +124,7 @@ export const getWithdrawMaxNEARAmount = createSelector(
       amount += 1e-2;
     }
 
-    return amount;
+    return Math.abs(amount);
   },
 );
 

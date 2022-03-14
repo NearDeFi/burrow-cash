@@ -109,7 +109,11 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   const actionDisabled = useMemo(() => {
     if (action === "Supply" && amount > 0) return false;
     if (action !== "Adjust" && !amount) return true;
-    if (action !== "Repay" && healthFactor > 0 && parseFloat(healthFactor?.toFixed(2)) <= 100)
+    if (
+      action !== "Repay" &&
+      parseFloat(healthFactor?.toFixed(2)) >= 0 &&
+      parseFloat(healthFactor?.toFixed(2)) <= 100
+    )
       return true;
     return false;
   }, [amount, healthFactor]);
