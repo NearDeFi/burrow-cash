@@ -5,6 +5,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useAppSelector } from "../../redux/hooks";
 import { getAccountId, getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
+import { NotConnected } from "../../components/Modal/components";
 import { PERCENT_DIGITS } from "../../store";
 import { stake } from "../../store/actions/stake";
 import Slider from "../../components/Slider/staking";
@@ -52,7 +53,9 @@ const Staking = () => {
         py={["1.5rem", "0.75rem"]}
         borderRadius="0.3rem"
         justifyContent="space-between"
+        position="relative"
       >
+        {!accountId && <NotConnected />}
         <Stack spacing={1}>
           <Typography>Amount of BRRR to stake:</Typography>
           <Input
