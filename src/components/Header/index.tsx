@@ -70,6 +70,7 @@ const Header = () => {
         <MenuItem title="Deposit" pathname="/deposit" />
         <MenuItem title="Borrow" pathname="/borrow" />
         <MenuItem title="Portfolio" pathname="/portfolio" />
+        <MenuItem title="Staking" pathname="/staking" />
       </Menu>
       <WalletButton />
       <Snackbar
