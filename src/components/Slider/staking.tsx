@@ -13,13 +13,14 @@ interface Props {
   onChange?: (e: Event) => void;
 }
 
-const Slider = ({ value = 0, onChange }: Props) => {
+const Slider = ({ value = 1, onChange }: Props) => {
   return (
     <SliderStyled
       aria-label="Amount slider"
-      value={value}
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"
+      value={value}
+      defaultChecked
       step={1}
       min={1}
       max={12}

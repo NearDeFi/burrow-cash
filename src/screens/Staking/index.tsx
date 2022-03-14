@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { DateTime } from "luxon";
 
+import { TOKEN_DECIMALS, TOKEN_FORMAT } from "../../store/constants";
+import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
-import { getAccountId, getTotalBRRR } from "../../redux/accountSelectors";
+import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
 import { PERCENT_DIGITS } from "../../store";
@@ -13,6 +16,7 @@ import Slider from "../../components/Slider/staking";
 const Staking = () => {
   const accountId = useAppSelector(getAccountId);
   const [total] = useAppSelector(getTotalBRRR);
+  const staking = useAppSelector(getStaking);
   const [amount, setAmount] = useState(0);
   const [months, setMonths] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -38,17 +42,61 @@ const Staking = () => {
     e.target.select();
   };
 
-  const actionDisabled = amount === 0 || amount > total;
+  const actionDisabled = amount === 0 || amount > Number(total.toFixed(PERCENT_DIGITS));
+
+  const xBRRR = shrinkToken(staking["staked_booster_amount"], TOKEN_DECIMALS);
+  const booster = Number(shrinkToken(staking["x_booster_amount"], TOKEN_DECIMALS)).toLocaleString(
+    undefined,
+    TOKEN_FORMAT,
+  );
+  const stakingTimestamp = Number(staking["unlock_timestamp"]);
+  const unlockDate = DateTime.fromMillis(stakingTimestamp / 1e6);
+
+  useEffect(() => {
+    setMonths(Math.round(unlockDate.diffNow().as("months")));
+  }, [staking]);
 
   return (
     <Box mt="2rem">
-      {accountId && <TotalBRRR showAction />}
+      {accountId && (
+        <>
+          <TotalBRRR showAction />
+          <Box
+            width={["100%", "580px"]}
+            mx="auto"
+            mt="-1rem"
+            mb="1rem"
+            bgcolor="#d7f0e5"
+            boxShadow="0px 1px 1px rgba(0, 7, 65, 0.1)"
+            px="1rem"
+            py={["1.5rem", "0.75rem"]}
+            borderRadius="0.3rem"
+            justifyContent="space-between"
+          >
+            <Typography component="span" mr="1rem" fontSize="0.875rem">
+              Staked xBRRR: <b>{xBRRR}</b>
+            </Typography>
+            <Typography component="span" mr="1rem" fontSize="0.875rem">
+              Booster: <b>{booster}</b>
+            </Typography>
+            <Typography component="div" fontSize="0.875rem" mt="0.5rem">
+              Unlock date:{" "}
+              <b>
+                {stakingTimestamp
+                  ? unlockDate.toFormat("dd / LLL / yyyy @ HH:mm")
+                  : "-- / -- / ----"}
+              </b>
+            </Typography>
+          </Box>
+        </>
+      )}
       <Stack
         spacing={3}
         width={["100%", "580px"]}
         mx="auto"
         mb="2rem"
         bgcolor="#fff"
+        boxShadow="0px 1px 1px rgba(0, 7, 65, 0.1)"
         px="1rem"
         py={["1.5rem", "0.75rem"]}
         borderRadius="0.3rem"

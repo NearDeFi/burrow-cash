@@ -480,3 +480,8 @@ export const isClaiming = createSelector(
   (state: RootState) => state.account,
   (account) => account.isClaiming === "pending",
 );
+
+export const getStaking = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.portfolio.staking,
+);
