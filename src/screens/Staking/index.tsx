@@ -11,6 +11,7 @@ import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
 import { PERCENT_DIGITS } from "../../store";
 import { stake } from "../../store/actions/stake";
+import { unstake } from "../../store/actions/unstake";
 import Slider from "../../components/Slider/staking";
 
 const Staking = () => {
@@ -19,30 +20,36 @@ const Staking = () => {
   const staking = useAppSelector(getStaking);
   const [amount, setAmount] = useState(0);
   const [months, setMonths] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loadingStake, setLoadingStake] = useState(false);
+  const [loadingUnstake, setLoadingUnstake] = useState(false);
 
   const handleMaxClick = () => {
     setAmount(Number(total.toFixed(PERCENT_DIGITS)));
   };
 
   const handleInputChange = (e) => {
-    setAmount(e.target.value);
+    setAmount(Number(e.target.value));
   };
 
   const handleSliderChange = (e) => {
     setMonths(e.target.value);
   };
 
-  const handleActionButtonClick = () => {
+  const handleStake = () => {
     stake({ amount, months });
-    setLoading(true);
+    setLoadingStake(true);
+  };
+
+  const handleUnstake = () => {
+    unstake();
+    setLoadingUnstake(true);
   };
 
   const handleFocus = (e) => {
     e.target.select();
   };
 
-  const actionDisabled = amount === 0 || amount > Number(total.toFixed(PERCENT_DIGITS));
+  const disabledStake = !amount || amount > Number(total.toFixed(PERCENT_DIGITS));
 
   const xBRRR = shrinkToken(staking["staked_booster_amount"], TOKEN_DECIMALS);
   const booster = Number(shrinkToken(staking["x_booster_amount"], TOKEN_DECIMALS)).toLocaleString(
@@ -50,10 +57,12 @@ const Staking = () => {
     TOKEN_FORMAT,
   );
   const stakingTimestamp = Number(staking["unlock_timestamp"]);
-  const unlockDate = DateTime.fromMillis(stakingTimestamp / 1e6);
+  const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
+
+  const disabledUnstake = DateTime.now() < unstakeDate;
 
   useEffect(() => {
-    setMonths(Math.round(unlockDate.diffNow().as("months")));
+    setMonths(Math.round(unstakeDate.diffNow().as("months")));
   }, [staking]);
 
   return (
@@ -72,21 +81,37 @@ const Staking = () => {
             py={["1.5rem", "0.75rem"]}
             borderRadius="0.3rem"
             justifyContent="space-between"
+            display="flex"
+            flexDirection={["column", "row"]}
+            alignItems="center"
           >
-            <Typography component="span" mr="1rem" fontSize="0.875rem">
-              Staked xBRRR: <b>{xBRRR}</b>
-            </Typography>
-            <Typography component="span" mr="1rem" fontSize="0.875rem">
-              Booster: <b>{booster}</b>
-            </Typography>
-            <Typography component="div" fontSize="0.875rem" mt="0.5rem">
-              Unlock date:{" "}
-              <b>
-                {stakingTimestamp
-                  ? unlockDate.toFormat("dd / LLL / yyyy @ HH:mm")
-                  : "-- / -- / ----"}
-              </b>
-            </Typography>
+            <Box>
+              <Typography component="span" mr="1rem" fontSize="0.875rem">
+                Staked xBRRR: <b>{xBRRR}</b>
+              </Typography>
+              <Typography component="span" mr="1rem" fontSize="0.875rem">
+                Booster: <b>{booster}</b>
+              </Typography>
+              <Typography component="div" fontSize="0.875rem" mt="0.5rem">
+                Unstake date:{" "}
+                <b>
+                  {stakingTimestamp
+                    ? unstakeDate.toFormat("dd / LLL / yyyy @ HH:mm")
+                    : "-- / -- / ----"}
+                </b>
+              </Typography>
+            </Box>
+            <LoadingButton
+              size="small"
+              color="secondary"
+              variant="outlined"
+              onClick={handleUnstake}
+              loading={loadingUnstake}
+              disabled={disabledUnstake}
+              sx={{ height: "30px", px: "0.8rem", mt: ["1rem", 0] }}
+            >
+              Unstake
+            </LoadingButton>
           </Box>
         </>
       )}
@@ -123,10 +148,10 @@ const Staking = () => {
         </Stack>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
-            disabled={actionDisabled}
+            disabled={disabledStake}
             variant="contained"
-            onClick={handleActionButtonClick}
-            loading={loading}
+            onClick={handleStake}
+            loading={loadingStake}
             sx={{ px: "4rem " }}
           >
             Stake
