@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
@@ -49,20 +49,30 @@ const Staking = () => {
     e.target.select();
   };
 
-  const disabledStake = !amount || amount > Number(total.toFixed(PERCENT_DIGITS));
+  const stakingTimestamp = Number(staking["unlock_timestamp"]);
+  const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
+  const selectedMonths = Math.round(unstakeDate.diffNow().as("months"));
+
+  const invalidAmount = amount > Number(total.toFixed(PERCENT_DIGITS));
+  const invalidMonths = months < selectedMonths;
+
+  const disabledStake = !amount || invalidAmount || invalidMonths;
 
   const xBRRR = shrinkToken(staking["staked_booster_amount"], TOKEN_DECIMALS);
   const booster = Number(shrinkToken(staking["x_booster_amount"], TOKEN_DECIMALS)).toLocaleString(
     undefined,
     TOKEN_FORMAT,
   );
-  const stakingTimestamp = Number(staking["unlock_timestamp"]);
-  const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
 
   const disabledUnstake = DateTime.now() < unstakeDate;
 
+  const inputAmount = `${amount}`
+    .replace(/[^0-9.-]/g, "")
+    .replace(/(?!^)-/g, "")
+    .replace(/^0+(\d)/gm, "$1");
+
   useEffect(() => {
-    setMonths(Math.round(unstakeDate.diffNow().as("months")));
+    setMonths(selectedMonths);
   }, [staking]);
 
   return (
@@ -132,19 +142,27 @@ const Staking = () => {
         <Stack spacing={1}>
           <Typography>Amount of BRRR to stake:</Typography>
           <Input
-            value={amount}
+            value={inputAmount}
             type="number"
             step="0.01"
             onClickMax={handleMaxClick}
             onChange={handleInputChange}
             onFocus={handleFocus}
           />
+          {invalidAmount && (
+            <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
+          )}
         </Stack>
         <Stack spacing={1}>
           <Typography>Number of months:</Typography>
           <Box px="0.5rem">
             <Slider value={months} onChange={handleSliderChange} />
           </Box>
+          {invalidMonths && (
+            <Alert severity="error">
+              The new staking duration is shorter than the current remaining staking duration
+            </Alert>
+          )}
         </Stack>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
