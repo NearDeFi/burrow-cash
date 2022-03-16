@@ -6,7 +6,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { useIdle, useInterval } from "react-use";
 
-import { Borrow, Portfolio, Deposit, Terms, Privacy } from "./screens";
+import { Borrow, Portfolio, Deposit, Staking, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
 import { fetchAssetsAndMetadata } from "./redux/assetsSlice";
@@ -42,6 +42,7 @@ const App = () => {
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/borrow" element={<Borrow />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/staking" element={<Staking />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
         </Routes>

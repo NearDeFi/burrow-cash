@@ -4,7 +4,7 @@ import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
 import { listToMap, transformAccountFarms } from "./utils";
-import { ChangeMethodsLogic } from "../interfaces";
+import { ChangeMethodsLogic, IBoosterStaking } from "../interfaces";
 
 interface Balance {
   [tokenId: string]: string;
@@ -44,6 +44,7 @@ export interface Portfolio {
   farms: {
     [tokenId: string]: Farm;
   };
+  staking: IBoosterStaking;
 }
 
 type Status = "pending" | "fulfilled" | "rejected" | undefined;
@@ -56,6 +57,12 @@ export interface AccountState {
   isClaiming: Status;
 }
 
+const initialStaking = {
+  staked_booster_amount: "0",
+  unlock_timestamp: "0",
+  x_booster_amount: "0",
+};
+
 const initialState: AccountState = {
   accountId: "",
   balances: {},
@@ -64,6 +71,7 @@ const initialState: AccountState = {
     collateral: {},
     borrowed: {},
     farms: {},
+    staking: initialStaking,
   },
   status: undefined,
   isClaiming: undefined,
@@ -128,12 +136,13 @@ export const accountSlice = createSlice({
       };
 
       if (portfolio) {
-        const { supplied, borrowed, collateral, farms } = portfolio;
+        const { booster_staking, supplied, borrowed, collateral, farms } = portfolio;
         state.portfolio = {
           supplied: listToMap(supplied),
           borrowed: listToMap(borrowed),
           collateral: listToMap(collateral),
           farms: transformAccountFarms(farms),
+          staking: booster_staking || initialStaking,
         };
       }
     });

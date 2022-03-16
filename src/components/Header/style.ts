@@ -29,7 +29,7 @@ export const Menu = styled("div")(({ theme }) => ({
   display: "grid",
   gridArea: "menu",
   gap: "0.5rem",
-  gridTemplateColumns: "1fr 1fr 1fr",
+  gridTemplateColumns: "1fr 1fr 1fr 1fr",
   marginRight: "auto",
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",
