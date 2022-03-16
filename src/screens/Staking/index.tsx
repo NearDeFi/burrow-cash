@@ -3,13 +3,19 @@ import { Box, Stack, Typography, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
-import { TOKEN_DECIMALS, TOKEN_FORMAT } from "../../store/constants";
+import {
+  TOKEN_DECIMALS,
+  TOKEN_FORMAT,
+  PERCENT_DIGITS,
+  MINIMUM_STAKING_DURATUIN,
+  MAXIMUM_STAKING_DURATUIN,
+  X_BOOSTER_MULTIPLIER_AT_MAXIMUM_STAKING_DURATION,
+} from "../../store/constants";
 import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
 import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
-import { PERCENT_DIGITS } from "../../store";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
 import Slider from "../../components/Slider/staking";
@@ -70,6 +76,14 @@ const Staking = () => {
     .replace(/[^0-9.-]/g, "")
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
+
+  const xBoosterMultiplier =
+    1 +
+    ((months * MINIMUM_STAKING_DURATUIN - MINIMUM_STAKING_DURATUIN) /
+      (MAXIMUM_STAKING_DURATUIN - MINIMUM_STAKING_DURATUIN)) *
+      (X_BOOSTER_MULTIPLIER_AT_MAXIMUM_STAKING_DURATION / 10000 - 1);
+
+  const extraXBoosterAmount = amount * xBoosterMultiplier;
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -164,6 +178,14 @@ const Staking = () => {
             </Alert>
           )}
         </Stack>
+        <Alert severity="info">
+          <div>
+            Booster multiplier: <b>{xBoosterMultiplier.toFixed(PERCENT_DIGITS)}</b>
+          </div>
+          <div>
+            Extra Booster amount: <b>{extraXBoosterAmount.toFixed(PERCENT_DIGITS)}</b>
+          </div>
+        </Alert>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
             disabled={disabledStake}
