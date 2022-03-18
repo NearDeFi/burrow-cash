@@ -52,7 +52,7 @@ const Staking = () => {
 
   const stakingTimestamp = Number(staking["unlock_timestamp"]);
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
-  const selectedMonths = Math.round(unstakeDate.diffNow().as("months"));
+  const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : 1;
 
   const invalidAmount = amount > Number(total.toFixed(PERCENT_DIGITS));
   const invalidMonths = months < selectedMonths;
