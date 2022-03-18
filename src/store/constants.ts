@@ -32,7 +32,3 @@ export const DUST_FORMAT = {
 export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
 export const STORAGE_DEPOSIT_FEE = 0.1;
 export const NEAR_STORAGE_DEPOSIT = 0.25;
-
-export const MINIMUM_STAKING_DURATUIN = 2678400;
-export const MAXIMUM_STAKING_DURATUIN = 31536000;
-export const X_BOOSTER_MULTIPLIER_AT_MAXIMUM_STAKING_DURATION = 40000;

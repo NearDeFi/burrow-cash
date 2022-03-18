@@ -11,6 +11,7 @@ import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
 import { fetchAssetsAndMetadata } from "./redux/assetsSlice";
 import { fetchAccount } from "./redux/accountSlice";
+import { fetchConfig } from "./redux/appSlice";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -31,6 +32,9 @@ const App = () => {
     dispatch(fetchAccount());
   };
 
+  useEffect(() => {
+    dispatch(fetchConfig());
+  }, []);
   useEffect(fetchData, []);
   useInterval(fetchData, !isIdle ? REFETCH_INTERVAL : null);
 

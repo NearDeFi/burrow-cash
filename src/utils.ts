@@ -8,7 +8,7 @@ import {
   ViewMethodsLogic,
   ViewMethodsOracle,
 } from "./interfaces/contract-methods";
-import { IBurrow } from "./interfaces/burrow";
+import { IBurrow, IConfig } from "./interfaces/burrow";
 import { BatchWallet, getContract, BatchWalletAccount } from "./store";
 
 const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
@@ -55,7 +55,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
     methodName: string,
     args: Record<string, unknown> = {},
     json = true,
-  ): Promise<Record<string, unknown> | string> => {
+  ): Promise<Record<string, any> | string> => {
     try {
       return await account.viewFunction(contract.contractId, methodName, args, {
         // always parse to string, JSON parser will fail if its not a json
@@ -105,9 +105,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
   );
 
   // get oracle address from
-  const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
-    oracle_account_id: string;
-  };
+  const config = (await view(
+    logicContract,
+    ViewMethodsLogic[ViewMethodsLogic.get_config],
+  )) as IConfig;
 
   const oracleContract: Contract = await getContract(
     walletConnection.account(),
@@ -123,6 +124,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
     oracleContract,
     view,
     call,
+    config,
   } as IBurrow;
 
   return burrow;

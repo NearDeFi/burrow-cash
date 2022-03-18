@@ -1,4 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+
+import { getConfig } from "../api";
+import { IConfig } from "../interfaces";
 
 type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 
@@ -13,6 +16,7 @@ export interface AppState {
     amount: number;
     isMax: boolean;
   };
+  config: IConfig;
 }
 
 const initialState: AppState = {
@@ -26,7 +30,25 @@ const initialState: AppState = {
     amount: 0,
     isMax: false,
   },
+  config: {
+    booster_decimals: 0,
+    booster_token_id: "",
+    force_closing_enabled: 0,
+    max_num_assets: 0,
+    maximum_recency_duration_sec: 0,
+    maximum_staking_duration_sec: 0,
+    maximum_staleness_duration_sec: 0,
+    minimum_staking_duration_sec: 0,
+    oracle_account_id: "",
+    owner_id: "",
+    x_booster_multiplier_at_maximum_staking_duration: 0,
+  },
 };
+
+export const fetchConfig = createAsyncThunk("account/getConfig", async () => {
+  const config = await getConfig();
+  return config;
+});
 
 export const appSlice = createSlice({
   name: "app",
@@ -55,6 +77,11 @@ export const appSlice = createSlice({
     toggleShowDust(state) {
       state.showDust = !state.showDust;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchConfig.fulfilled, (state, action) => {
+      state.config = action.payload;
+    });
   },
 });
 

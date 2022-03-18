@@ -3,17 +3,11 @@ import { Box, Stack, Typography, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
-import {
-  TOKEN_DECIMALS,
-  TOKEN_FORMAT,
-  PERCENT_DIGITS,
-  MINIMUM_STAKING_DURATUIN,
-  MAXIMUM_STAKING_DURATUIN,
-  X_BOOSTER_MULTIPLIER_AT_MAXIMUM_STAKING_DURATION,
-} from "../../store/constants";
+import { TOKEN_FORMAT, PERCENT_DIGITS } from "../../store/constants";
 import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
 import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
+import { getConfig } from "../../redux/appSelectors";
 import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
@@ -24,6 +18,7 @@ const Staking = () => {
   const accountId = useAppSelector(getAccountId);
   const [total] = useAppSelector(getTotalBRRR);
   const staking = useAppSelector(getStaking);
+  const config = useAppSelector(getConfig);
   const [amount, setAmount] = useState(0);
   const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
@@ -64,11 +59,10 @@ const Staking = () => {
 
   const disabledStake = !amount || invalidAmount || invalidMonths;
 
-  const xBRRR = shrinkToken(staking["staked_booster_amount"], TOKEN_DECIMALS);
-  const booster = Number(shrinkToken(staking["x_booster_amount"], TOKEN_DECIMALS)).toLocaleString(
-    undefined,
-    TOKEN_FORMAT,
-  );
+  const xBRRR = shrinkToken(staking["staked_booster_amount"], config.booster_decimals);
+  const booster = Number(
+    shrinkToken(staking["x_booster_amount"], config.booster_decimals),
+  ).toLocaleString(undefined, TOKEN_FORMAT);
 
   const disabledUnstake = DateTime.now() < unstakeDate;
 
@@ -79,9 +73,9 @@ const Staking = () => {
 
   const xBoosterMultiplier =
     1 +
-    ((months * MINIMUM_STAKING_DURATUIN - MINIMUM_STAKING_DURATUIN) /
-      (MAXIMUM_STAKING_DURATUIN - MINIMUM_STAKING_DURATUIN)) *
-      (X_BOOSTER_MULTIPLIER_AT_MAXIMUM_STAKING_DURATION / 10000 - 1);
+    ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
+      (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
+      (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
   const extraXBoosterAmount = amount * xBoosterMultiplier;
 

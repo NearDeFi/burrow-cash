@@ -8,6 +8,11 @@ import { nearTokenId } from "../utils";
 import { getBorrowedSum, getCollateralSum } from "./accountSelectors";
 import { shrinkToken, expandToken } from "../store";
 
+export const getConfig = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.config,
+);
+
 export const getModalStatus = createSelector(
   (state: RootState) => state.app,
   (app) => app.showModal,
