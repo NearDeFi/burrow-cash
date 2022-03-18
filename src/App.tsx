@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime";
 import { useEffect } from "react";
 import { Navigate } from "react-router";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { useIdle, useInterval } from "react-use";
@@ -39,7 +39,7 @@ const App = () => {
   useInterval(fetchData, !isIdle ? REFETCH_INTERVAL : null);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Layout>
         <Routes>
           <Route path="/" element={<Navigate replace to="/deposit" />} />
@@ -51,7 +51,7 @@ const App = () => {
           <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
