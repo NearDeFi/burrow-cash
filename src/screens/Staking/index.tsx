@@ -54,7 +54,7 @@ const Staking = () => {
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
   const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : 1;
 
-  const invalidAmount = amount > Number(total.toFixed(PERCENT_DIGITS));
+  const invalidAmount = amount > total;
   const invalidMonths = months < selectedMonths;
 
   const disabledStake = !amount || invalidAmount || invalidMonths;
