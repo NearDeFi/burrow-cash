@@ -3,7 +3,7 @@ import { Box, Alert, Link } from "@mui/material";
 import Footer from "../Footer";
 import Header from "../Header";
 
-const Banner = () => (
+export const Banner = () => (
   <Alert severity="success" sx={{ pl: ["20px", "28px"] }}>
     <Link
       href="https://burrowcash.medium.com/printer-goes-betabrrr-b7faa2ae9bd3"
@@ -24,7 +24,6 @@ const Layout = ({ children }) => (
       minHeight: "100%",
     }}
   >
-    <Banner />
     <Header />
     <main>{children}</main>
     <Footer />
