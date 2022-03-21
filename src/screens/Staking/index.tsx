@@ -25,7 +25,7 @@ const Staking = () => {
   const [loadingUnstake, setLoadingUnstake] = useState(false);
 
   const handleMaxClick = () => {
-    setAmount(Number(total.toFixed(PERCENT_DIGITS)));
+    setAmount(total);
   };
 
   const handleInputChange = (e) => {
@@ -59,7 +59,9 @@ const Staking = () => {
 
   const disabledStake = !amount || invalidAmount || invalidMonths;
 
-  const xBRRR = shrinkToken(staking["staked_booster_amount"], config.booster_decimals);
+  const xBRRR = Number(
+    shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
+  ).toLocaleString(undefined, TOKEN_FORMAT);
   const booster = Number(
     shrinkToken(staking["x_booster_amount"], config.booster_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
