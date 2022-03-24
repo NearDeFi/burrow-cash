@@ -121,11 +121,29 @@ export const transformAsset = (asset: Asset, account: AccountState, assets: Asse
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
-    brrrBorrow: Number(
-      shrinkToken(
-        asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
-        assets[brrrTokenId].metadata.decimals,
-      ),
-    ),
+    brrrBorrow: getDailyBRRRewards(asset, account, assets),
   };
+};
+
+export const getDailyBRRRewards = (asset: Asset, account: AccountState, assets: Assets): number => {
+  const totalRewardsPerDay = Number(
+    shrinkToken(
+      asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
+      assets[brrrTokenId].metadata.decimals,
+    ),
+  );
+  const totalBoostedShares = Number(
+    shrinkToken(
+      asset.farms[brrrTokenId]?.["boosted_shares"] || "0",
+      assets[brrrTokenId].metadata.decimals,
+    ),
+  );
+  const boostedShares = Number(
+    shrinkToken(
+      account.portfolio.farms?.[asset.token_id]?.borrowed?.[brrrTokenId].boosted_shares || 0,
+      assets[brrrTokenId].metadata.decimals,
+    ),
+  );
+
+  return (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
 };

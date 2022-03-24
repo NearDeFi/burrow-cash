@@ -11,7 +11,13 @@ import {
 } from "../store";
 import { brrrTokenId } from "../utils";
 import type { RootState } from "./store";
-import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer, hasAssets } from "./utils";
+import {
+  emptySuppliedAsset,
+  emptyBorrowedAsset,
+  sumReducer,
+  hasAssets,
+  getDailyBRRRewards,
+} from "./utils";
 import { Assets } from "./assetsSlice";
 import { AccountState } from "./accountSlice";
 
@@ -484,4 +490,15 @@ export const isClaiming = createSelector(
 export const getStaking = createSelector(
   (state: RootState) => state.account,
   (account) => account.portfolio.staking,
+);
+
+export const getTotalDailyBRRRewards = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    if (!account.accountId || !assets.data[brrrTokenId]) return 0;
+    return Object.entries(assets.data)
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data))
+      .reduce((prev, current) => prev + current, 0);
+  },
 );

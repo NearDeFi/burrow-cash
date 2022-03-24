@@ -1,13 +1,14 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
+import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 
 export default function TotalBRRR({ showAction = false }) {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
+  const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
   const dispatch = useAppDispatch();
 
@@ -33,12 +34,17 @@ export default function TotalBRRR({ showAction = false }) {
       flexDirection={["column", "row"]}
       fontSize="0.87rem"
     >
-      <Box textAlign="center" mb={[showAction ? "1rem" : 0, 0]}>
-        You&apos;ve earned: &nbsp;
-        <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
-        (unclaimed: &nbsp;
-        <span>{unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
-      </Box>
+      <Stack spacing={1} mb={[showAction ? "1rem" : 0, 0]}>
+        <Box textAlign="center">
+          You&apos;ve earned: &nbsp;
+          <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
+          (unclaimed: &nbsp;
+          <span>{unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
+        </Box>
+        <Box>
+          Total daily rewards: <b>{totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+        </Box>
+      </Stack>
       {showAction && (
         <LoadingButton
           size="small"
