@@ -121,7 +121,12 @@ export const transformAsset = (asset: Asset, account: AccountState, assets: Asse
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
-    brrrBorrow: getDailyBRRRewards(asset, account, assets),
+    brrrBorrow: Number(
+      shrinkToken(
+        asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
+        assets[brrrTokenId].metadata.decimals,
+      ),
+    ),
   };
 };
 

@@ -1,5 +1,6 @@
 import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
 import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
+import { TOKEN_FORMAT } from "../../store";
 
 export const suppliedColumns = [
   {
@@ -53,11 +54,15 @@ export const borrowedColumns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="Unclaimed BRRR rewards" />,
+    label: <BRRRLabel title="BRRR rewards / day" />,
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={rowData?.brrrUnclaimedAmount} rowData={rowData} format="amount" />
+      <Cell
+        value={rowData?.dailyBRRRewards?.toLocaleString(undefined, TOKEN_FORMAT)}
+        rowData={rowData}
+        format="amount"
+      />
     ),
   },
   {

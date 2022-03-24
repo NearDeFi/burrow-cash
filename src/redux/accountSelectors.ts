@@ -176,6 +176,7 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);

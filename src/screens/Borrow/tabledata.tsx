@@ -1,5 +1,4 @@
 import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
-import { TOKEN_FORMAT } from "../../store";
 
 export const columns = [
   {
@@ -12,11 +11,7 @@ export const columns = [
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell
-        value={`${rowData?.brrrBorrow?.toLocaleString(undefined, TOKEN_FORMAT)} / Day`}
-        rowData={rowData}
-        format="string"
-      />
+      <Cell value={`${rowData?.brrrBorrow} / Day`} rowData={rowData} format="string" />
     ),
   },
   {
