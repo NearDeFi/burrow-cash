@@ -3,7 +3,7 @@ import { Box, Stack, Typography, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
-import { TOKEN_FORMAT, PERCENT_DIGITS } from "../../store/constants";
+import { TOKEN_FORMAT } from "../../store/constants";
 import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
 import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
@@ -176,10 +176,11 @@ const Staking = () => {
         </Stack>
         <Alert severity="info">
           <div>
-            Booster multiplier: <b>{xBoosterMultiplier.toFixed(PERCENT_DIGITS)}</b>
+            Booster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
           </div>
           <div>
-            Extra Booster amount: <b>{extraXBoosterAmount.toFixed(PERCENT_DIGITS)}</b>
+            Extra Booster amount:{" "}
+            <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
           </div>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
