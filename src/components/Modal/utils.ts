@@ -50,6 +50,7 @@ export const getModalData = (asset): UIAsset & Props => {
     availableNEAR,
     healthFactor,
     amount,
+    maxWithdrawNEARAmount,
   } = asset;
 
   const data: any = {
@@ -68,6 +69,8 @@ export const getModalData = (asset): UIAsset & Props => {
 
   const getAvailableWithdrawOrAdjust = (supplied + collateral).toFixed(PERCENT_DIGITS);
 
+  const isWrappedNear = symbol === "wNEAR";
+
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
@@ -77,7 +80,7 @@ export const getModalData = (asset): UIAsset & Props => {
         { label: "Collateral Factor", value: collateralFactor },
       ];
       data.available = available.toFixed(PERCENT_DIGITS);
-      if (symbol === "wNEAR") {
+      if (isWrappedNear) {
         data.available = Number(Math.max(0, availableNEAR - NEAR_STORAGE_DEPOSIT)).toFixed(
           PERCENT_DIGITS,
         );
@@ -110,7 +113,9 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = getAvailableWithdrawOrAdjust;
+      data.available = isWrappedNear
+        ? Number(maxWithdrawNEARAmount).toFixed(PERCENT_DIGITS)
+        : getAvailableWithdrawOrAdjust;
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
