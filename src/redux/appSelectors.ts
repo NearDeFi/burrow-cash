@@ -115,21 +115,21 @@ export const getWithdrawMaxNEARAmount = createSelector(
     const collateralBalance = Number(shrinkToken(collateral[nearTokenId].balance, decimals));
     const suppliedBalance = Number(shrinkToken(supplied[nearTokenId].balance, decimals));
 
-    let amount = 0;
-    let healthFactor = 10_000;
-
-    // TODO: fix this without loop
-
-    while (healthFactor >= 110) {
+    const computeMaxNearWithdraw = (amount: number) => {
       const newBalance = expandToken(collateralBalance + suppliedBalance - amount, decimals);
       clonedAccount.portfolio.collateral[nearTokenId].balance = newBalance;
       const borrowedSum = getBorrowedSum(assets, account);
       const collateralSum = getCollateralSum(assets, clonedAccount);
-      healthFactor = (collateralSum / borrowedSum) * 100;
-      amount += 1e-2;
-    }
+      const healthFactor = (collateralSum / borrowedSum) * 100;
 
-    return Math.abs(amount);
+      if (healthFactor >= 105) {
+        return amount;
+      }
+
+      return computeMaxNearWithdraw(amount - 1e-2);
+    };
+
+    return computeMaxNearWithdraw(collateralBalance + suppliedBalance);
   },
 );
 
