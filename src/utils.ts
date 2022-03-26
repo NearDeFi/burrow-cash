@@ -15,6 +15,8 @@ const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "d
 
 const nearConfig = getConfig(defaultNetwork);
 
+export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
+
 let burrow: IBurrow;
 
 const nearTokenIds = {
