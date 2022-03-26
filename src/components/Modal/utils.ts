@@ -67,7 +67,7 @@ export const getModalData = (asset): UIAsset & Props => {
     delete data.alerts["liquidation"];
   }
 
-  const getAvailableWithdrawOrAdjust = (supplied + collateral).toFixed(PERCENT_DIGITS);
+  const getAvailableWithdrawOrAdjust = Number((supplied + collateral).toFixed(PERCENT_DIGITS));
 
   const isWrappedNear = symbol === "wNEAR";
 
