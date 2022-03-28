@@ -1,4 +1,4 @@
-import { Box, Alert } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle, TotalBRRR } from "../../components";
@@ -33,11 +33,6 @@ const Deposit = () => {
         <InfoBox title="Net APY" value={netAPY} />
       </InfoWrapper>
       <PageTitle first="Deposit" second="Assets" />
-      <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
-        <Alert severity="warning">
-          This is an unaudited product. Please DO NOT deposit more than $500
-        </Alert>
-      </Box>
       <TotalBRRR />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>
