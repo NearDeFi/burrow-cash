@@ -63,8 +63,15 @@ export interface IAccountDetailed {
   borrowed: IAsset[];
   /// Account farms
   farms: IFarm[];
+  /// Staking
+  booster_staking: IBoosterStaking;
 }
 
+export interface IBoosterStaking {
+  staked_booster_amount: string;
+  unlock_timestamp: string;
+  x_booster_amount: string;
+}
 export interface IBalance {
   token_id: string;
   account_id: string;

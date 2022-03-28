@@ -6,6 +6,7 @@ import BN from "bn.js";
 
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
+import { Balance } from "../interfaces";
 
 export interface FunctionCallOptions {
   methodName: string;
@@ -95,7 +96,6 @@ export const executeMultipleTransactions = async (
 
   const nearTransactions = await Promise.all(
     transactions.map((t, i) => {
-      // @ts-ignore
       return walletConnection.createTransaction({
         receiverId: t.receiverId,
         nonceOffset: i + 1,
@@ -120,7 +120,9 @@ export const executeMultipleTransactions = async (
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
   const { view } = await getBurrow();
 
-  return !!(await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+  const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
     account_id,
-  }));
+  })) as Balance;
+
+  return balance && balance?.total !== "0";
 };

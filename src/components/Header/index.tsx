@@ -1,31 +1,49 @@
-import { useHistory } from "react-router";
-import { useTheme, useMediaQuery, Box } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useTheme, useMediaQuery, Box, Snackbar, Alert } from "@mui/material";
+
 import BackgroundDesktop from "./bg-desktop.svg";
 import BackgroundMobile from "./bg-mobile.svg";
 import LogoIcon from "../../assets/logo.svg";
-import { Wrapper, Logo, Menu, ButtonStyled } from "./style";
+import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import WalletButton from "./WalletButton";
+import { useAppSelector } from "../../redux/hooks";
+import { isAssetsFetching } from "../../redux/assetsSelectors";
+import { isTestnet } from "../../utils";
 
-const MenuItem = ({ title, location }) => {
-  const history = useHistory();
+const MenuItem = ({ title, pathname }) => {
+  const location = useLocation();
   const theme = useTheme();
-  const isSelected = history.location.pathname === location;
-
-  const handleClick = () => {
-    history.push(location);
-  };
+  const isSelected = location.pathname === pathname;
 
   const style = isSelected ? { borderBottomColor: theme.palette.primary.main } : {};
 
   return (
-    <ButtonStyled variant="outlined" size="medium" onClick={handleClick} sx={style}>
+    <LinkStyled to={pathname} sx={style}>
       {title}
-    </ButtonStyled>
+    </LinkStyled>
   );
 };
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
+  const isFetching = useAppSelector(isAssetsFetching);
   const matches = useMediaQuery("(min-width:1200px)");
+
+  useEffect(() => {
+    if (isFetching) {
+      setOpen(true);
+    }
+  }, [isFetching]);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const Background = !matches ? (
     <BackgroundMobile width="100%" />
   ) : (
@@ -50,11 +68,20 @@ const Header = () => {
         <LogoIcon />
       </Logo>
       <Menu>
-        <MenuItem title="Supply" location="/supply" />
-        <MenuItem title="Borrow" location="/borrow" />
-        <MenuItem title="Portfolio" location="/portfolio" />
+        <MenuItem title="Deposit" pathname="/deposit" />
+        <MenuItem title="Borrow" pathname="/borrow" />
+        <MenuItem title="Portfolio" pathname="/portfolio" />
+        {isTestnet && <MenuItem title="Staking" pathname="/staking" />}
       </Menu>
       <WalletButton />
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="info">Refreshing assets data...</Alert>
+      </Snackbar>
     </Wrapper>
   );
 };

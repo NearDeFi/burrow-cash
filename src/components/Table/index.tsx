@@ -9,12 +9,10 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { IAssetDetailed, IMetadata } from "../../interfaces/asset";
-
 interface TableProps {
   rows: any;
   columns: any;
-  onRowClick?: (rowData: IAssetDetailed & IMetadata) => void;
+  onRowClick?: (rowData: any) => void;
 }
 
 function Table({ rows, columns, onRowClick }: TableProps) {
@@ -36,15 +34,15 @@ function Table({ rows, columns, onRowClick }: TableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((rowData) => (
+          {rows.map((rowData, idx) => (
             <TableRow
-              key={rowData.token_id}
+              key={rowData?.symbol || idx}
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
                 cursor: onRowClick && "pointer",
                 "&:hover": { background: onRowClick && theme.palette.background.default },
               }}
-              onClick={() => onRowClick && onRowClick(rowData)}
+              onClick={() => onRowClick && rowData && onRowClick(rowData)}
             >
               {columns?.map(
                 ({ dataKey, align, Cell }) =>
