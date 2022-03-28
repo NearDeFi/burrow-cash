@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 
-export default function TotalBRRR({ showAction = false }) {
+export default function TotalBRRR() {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
   const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
@@ -30,11 +30,11 @@ export default function TotalBRRR({ showAction = false }) {
       borderRadius="0.3rem"
       display="flex"
       alignItems="center"
-      justifyContent={showAction ? "space-between" : "center"}
+      justifyContent="space-between"
       flexDirection={["column", "row"]}
       fontSize="0.87rem"
     >
-      <Stack spacing={1} mb={[showAction ? "1rem" : 0, 0]}>
+      <Stack spacing={1} mb={["1rem", 0]}>
         <Box textAlign="center">
           You&apos;ve earned: &nbsp;
           <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
@@ -45,18 +45,16 @@ export default function TotalBRRR({ showAction = false }) {
           Total daily rewards: <b>{totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}</b>
         </Box>
       </Stack>
-      {showAction && (
-        <LoadingButton
-          size="small"
-          color="secondary"
-          variant="outlined"
-          onClick={handleClaimAll}
-          loading={isClaimingLoading}
-          disabled={!unclaimed}
-        >
-          Claim all
-        </LoadingButton>
-      )}
+      <LoadingButton
+        size="small"
+        color="secondary"
+        variant="outlined"
+        onClick={handleClaimAll}
+        loading={isClaimingLoading}
+        disabled={!unclaimed}
+      >
+        Claim all
+      </LoadingButton>
     </Box>
   );
 }

@@ -89,7 +89,7 @@ const Staking = () => {
     <Box mt="2rem">
       {accountId && (
         <>
-          <TotalBRRR showAction />
+          <TotalBRRR />
           <Box
             width={["100%", "580px"]}
             mx="auto"

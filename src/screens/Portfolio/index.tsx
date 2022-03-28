@@ -27,7 +27,7 @@ const Portfolio = () => {
         <InfoBox title="Net APY" value={netAPY} />
         <InfoBox title="Your Borrows" value={totalBorroedBalance} />
       </InfoWrapper>
-      {accountId && <TotalBRRR showAction />}
+      {accountId && <TotalBRRR />}
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>
