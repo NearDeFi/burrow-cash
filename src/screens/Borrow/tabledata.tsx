@@ -1,5 +1,7 @@
 import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
 
+const formatBRRRAmount = (amount: number) => (amount < 0.001 ? "<0.001" : amount);
+
 export const columns = [
   {
     label: "Name",
@@ -11,7 +13,11 @@ export const columns = [
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={`${rowData?.brrrBorrow} / Day`} rowData={rowData} format="string" />
+      <Cell
+        value={`${formatBRRRAmount(rowData?.brrrBorrow)} / Day`}
+        rowData={rowData}
+        format="string"
+      />
     ),
   },
   {
