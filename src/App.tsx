@@ -12,14 +12,16 @@ import { useAppDispatch } from "./redux/hooks";
 import { fetchAssetsAndMetadata } from "./redux/assetsSlice";
 import { fetchAccount } from "./redux/accountSlice";
 import { fetchConfig } from "./redux/appSlice";
+import { isMain } from "./store/constants";
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.DEFAULT_NETWORK,
-  integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: 1.0,
-  allowUrls: ["testnet.burrow.cash", "beta.burrow.cash"],
-});
+if (!isMain) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.DEFAULT_NETWORK,
+    integrations: [new Integrations.BrowserTracing()],
+    tracesSampleRate: 1.0,
+  });
+}
 
 const IDLE_INTERVAL = 30e3;
 const REFETCH_INTERVAL = 60e3;
