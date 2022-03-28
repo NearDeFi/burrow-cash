@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
 import { InfoBox, PageTitle, TotalBRRR } from "../../components";
@@ -8,6 +8,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
 import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
+import { isBeta } from "../../store";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,11 @@ const Deposit = () => {
         <InfoBox title="Net APY" value={netAPY} />
       </InfoWrapper>
       <PageTitle first="Deposit" second="Assets" />
+      <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
+        {isBeta && (
+          <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
+        )}
+      </Box>
       <TotalBRRR />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </Box>

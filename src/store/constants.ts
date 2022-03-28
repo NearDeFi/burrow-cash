@@ -32,3 +32,5 @@ export const DUST_FORMAT = {
 export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
 export const STORAGE_DEPOSIT_FEE = process.env.STORAGE_DEPOSIT_FEE || 0.15;
 export const NEAR_STORAGE_DEPOSIT = 0.25;
+
+export const isBeta = process.env.CONTRACT_NAME === "contract.beta.burrow.near";
