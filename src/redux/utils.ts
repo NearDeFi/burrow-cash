@@ -4,8 +4,8 @@ import { pick, omit } from "ramda";
 import { shrinkToken, USD_FORMAT, TOKEN_FORMAT } from "../store";
 import type { Asset, Assets, AssetsState } from "./assetsSlice";
 import type { AccountState } from "./accountSlice";
+import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";
-import { brrrTokenId } from "../utils";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
 
@@ -59,8 +59,14 @@ export const emptyBorrowedAsset = (asset: { borrowed: number }): boolean =>
     (0).toLocaleString(undefined, TOKEN_FORMAT)
   );
 
-export const transformAsset = (asset: Asset, account: AccountState, assets: Assets): UIAsset => {
+export const transformAsset = (
+  asset: Asset,
+  account: AccountState,
+  assets: Assets,
+  app: AppState,
+): UIAsset => {
   const tokenId = asset.token_id;
+  const brrrTokenId = app.config.booster_token_id;
   const totalSupplyD = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
     .toFixed();
@@ -130,7 +136,12 @@ export const transformAsset = (asset: Asset, account: AccountState, assets: Asse
   };
 };
 
-export const getDailyBRRRewards = (asset: Asset, account: AccountState, assets: Assets): number => {
+export const getDailyBRRRewards = (
+  asset: Asset,
+  account: AccountState,
+  assets: Assets,
+  brrrTokenId: string,
+): number => {
   const totalRewardsPerDay = Number(
     shrinkToken(
       asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
