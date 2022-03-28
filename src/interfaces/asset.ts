@@ -1,6 +1,6 @@
 import { IPrice } from "./oracle";
 
-interface IAssetConfig {
+export interface IAssetConfig {
   reserve_ratio: number;
   target_utilization: number;
   target_utilization_rate: string;
@@ -83,4 +83,32 @@ export interface AssetFarm {
   block_timestamp: string;
   /// Rewards for the given farm
   rewards: IAssetFarmReward;
+}
+
+export interface Balance {
+  available: string;
+  total: string;
+}
+
+export interface UIAsset {
+  tokenId: string;
+  icon: string;
+  symbol: string;
+  name: string;
+  price: number;
+  supplyApy: number;
+  totalSupply: number;
+  totalSupply$: string;
+  borrowApy: number;
+  availableLiquidity: number;
+  availableLiquidity$: string;
+  collateralFactor: string;
+  canUseAsCollateral: boolean;
+  supplied: number;
+  collateral: number;
+  borrowed: number;
+  availableNEAR: number;
+  available: number;
+  extraDecimals: number;
+  brrrBorrow: number;
 }

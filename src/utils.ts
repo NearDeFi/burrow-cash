@@ -1,11 +1,4 @@
-import {
-  connect,
-  Contract,
-  keyStores,
-  WalletConnection,
-  transactions,
-  // ConnectedWalletAccount,
-} from "near-api-js";
+import { connect, Contract, keyStores, WalletConnection, transactions } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
@@ -15,14 +8,29 @@ import {
   ViewMethodsLogic,
   ViewMethodsOracle,
 } from "./interfaces/contract-methods";
-import { IBurrow } from "./interfaces/burrow";
+import { IBurrow, IConfig } from "./interfaces/burrow";
 import { BatchWallet, getContract, BatchWalletAccount } from "./store";
 
-const nearConfig = getConfig(process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development");
+const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
-console.log(`Using network ${nearConfig.networkId}!`);
+const nearConfig = getConfig(defaultNetwork);
+
+export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
 let burrow: IBurrow;
+
+const nearTokenIds = {
+  mainnet: "wrap.near",
+  testnet: "wrap.testnet",
+};
+
+const brrrTokenIds = {
+  mainnet: "beta_brrr.beta.burrow.near",
+  testnet: "test_brrr.1638481328.burrow.testnet",
+};
+
+export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
+export const brrrTokenId = brrrTokenIds[defaultNetwork] || brrrTokenIds.testnet;
 
 export const getBurrow = async (): Promise<IBurrow> => {
   if (burrow) return burrow;
@@ -44,16 +52,12 @@ export const getBurrow = async (): Promise<IBurrow> => {
     walletConnection.account().accountId,
   );
 
-  if (walletConnection?.isSignedIn()) {
-    console.log("access keys", await account.getAccessKeys());
-  }
-
   const view = async (
     contract: Contract,
     methodName: string,
     args: Record<string, unknown> = {},
     json = true,
-  ): Promise<Record<string, unknown> | string> => {
+  ): Promise<Record<string, any> | string> => {
     try {
       return await account.viewFunction(contract.contractId, methodName, args, {
         // always parse to string, JSON parser will fail if its not a json
@@ -79,15 +83,6 @@ export const getBurrow = async (): Promise<IBurrow> => {
     const gas = new BN(150000000000000);
     const attachedDeposit = new BN(deposit);
 
-    console.log(
-      "transaction",
-      contract.contractId,
-      methodName,
-      args,
-      attachedDeposit.toString(),
-      gas.toString(),
-    );
-
     const actions = [
       transactions.functionCall(
         methodName,
@@ -112,11 +107,10 @@ export const getBurrow = async (): Promise<IBurrow> => {
   );
 
   // get oracle address from
-  const config = (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_config])) as {
-    oracle_account_id: string;
-  };
-
-  console.log("oracle address", config.oracle_account_id);
+  const config = (await view(
+    logicContract,
+    ViewMethodsLogic[ViewMethodsLogic.get_config],
+  )) as IConfig;
 
   const oracleContract: Contract = await getContract(
     walletConnection.account(),
@@ -132,6 +126,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
     oracleContract,
     view,
     call,
+    config,
   } as IBurrow;
 
   return burrow;

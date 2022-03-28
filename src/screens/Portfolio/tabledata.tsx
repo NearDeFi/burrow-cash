@@ -1,15 +1,6 @@
-import {
-  TokenCell,
-  SupplyAPYCell,
-  CollateralCell,
-  SuppliedCell,
-  WithdrawCell,
-  BorrowSuppplyAPYCell,
-  BorrowAPYCell,
-  BorrowedCell,
-  RepayCell,
-  AdjustCell,
-} from "./cells";
+import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
+import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
+import { TOKEN_FORMAT } from "../../store";
 
 export const suppliedColumns = [
   {
@@ -21,19 +12,28 @@ export const suppliedColumns = [
     label: "APY",
     dataKey: "apy",
     align: "right",
-    Cell: SupplyAPYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.apy} rowData={rowData} format="apy" />,
   },
   {
     label: "Collateral",
     dataKey: "collateralSum",
     align: "right",
-    Cell: CollateralCell,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData.collateral}
+        rowData={rowData}
+        format="amount"
+        tooltip={`${((rowData.collateral / rowData.supplied) * 100).toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+        })}%`}
+      />
+    ),
   },
   {
-    label: "Supplied",
+    label: "Deposited",
     dataKey: "balance",
     align: "right",
-    Cell: SuppliedCell,
+    Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,
   },
   {
     dataKey: "withdraw",
@@ -47,29 +47,35 @@ export const suppliedColumns = [
   },
 ];
 
-export const borrowColumns = [
+export const borrowedColumns = [
   {
     label: "Name",
     dataKey: "name",
     Cell: TokenCell,
   },
   {
-    label: "APY",
-    dataKey: "apy",
+    label: <BRRRLabel title="BRRR rewards / day" />,
+    dataKey: "brrr",
     align: "right",
-    Cell: BorrowSuppplyAPYCell,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData?.dailyBRRRewards?.toLocaleString(undefined, TOKEN_FORMAT)}
+        rowData={rowData}
+        format="amount"
+      />
+    ),
   },
   {
     label: "Borrow APY",
     dataKey: "borrowAPY",
     align: "right",
-    Cell: BorrowAPYCell,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Borrowed",
     dataKey: "shares",
     align: "right",
-    Cell: BorrowedCell,
+    Cell: ({ rowData }) => <Cell value={rowData.borrowed} rowData={rowData} format="amount" />,
   },
   {
     dataKey: "repay",

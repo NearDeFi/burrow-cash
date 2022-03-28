@@ -1,127 +1,44 @@
-import { useContext } from "react";
 import { Box } from "@mui/material";
 
 import {
-  USD_FORMAT,
-  DECIMAL_OVERRIDES,
-  PERCENT_DIGITS,
-  TOKEN_DECIMALS,
-} from "../../store/constants";
-import { ContractContext } from "../../context/contracts";
-import { toUsd, shrinkToken, getAvailableAmount, computeMaxDiscount } from "../../store";
-import { Burrow } from "../../index";
-import { IBurrow } from "../../interfaces";
-
+  getHealthFactor,
+  getTotalAccountBalance,
+  getAccountId,
+} from "../../redux/accountSelectors";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle } from "../../components";
+import { InfoBox, PageTitle, HealthFactorBox, TotalBRRR } from "../../components";
 import Table from "../../components/Table";
-import { ModalContext, ModalState } from "../../components/Modal";
-import { columns as defaultColumns, amountBorrowedColumn } from "./tabledata";
+import { columns as defaultColumns } from "./tabledata";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
+import { showModal } from "../../redux/appSlice";
 
 const Borrow = () => {
-  const { walletConnection } = useContext<IBurrow>(Burrow);
-  const { assets, metadata, portfolio } = useContext(ContractContext);
-  const modal: ModalState = useContext(ModalContext);
+  const dispatch = useAppDispatch();
+  const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
+  const yourBorrowBalance = useAppSelector(getTotalAccountBalance("borrowed"));
+  const accountId = useAppSelector(getAccountId);
+  const healthFactor = useAppSelector(getHealthFactor);
+  const rows = useAppSelector(getAvailableAssets("borrow"));
 
-  const yourBorrowBalance = portfolio?.borrowed
-    .map(
-      (borrowed) =>
-        Number(borrowed.balance) *
-        (assets.find((a) => a.token_id === borrowed.token_id)?.price?.usd || 0),
-    )
-    .reduce((sum, a) => sum + a, 0)
-    .toLocaleString(undefined, USD_FORMAT);
-
-  const totalBorrow = assets
-    .map((asset) => {
-      return toUsd(asset.borrowed.balance, {
-        ...asset,
-        ...metadata.find((m) => m.token_id === asset.token_id)!,
-      });
-    })
-    .reduce((sum, a) => sum + a, 0)
-    .toLocaleString(undefined, USD_FORMAT);
-
-  const columns = walletConnection?.isSignedIn()
-    ? [...defaultColumns, amountBorrowedColumn(portfolio)]
+  const columns = !accountId
+    ? [...defaultColumns.filter((col) => col.dataKey !== "borrowed")]
     : defaultColumns;
 
-  const rows = assets
-    .filter((asset) => asset.config.can_borrow)
-    .map((asset) => ({
-      ...asset,
-      ...metadata.find((m) => m.token_id === asset.token_id),
-    }));
-
-  const handleOnRowClick = (rowData) => {
-    modal.setModalData({
-      type: "Borrow",
-      title: "Borrow",
-      totalAmountTitle: "Total Borrow",
-      asset: {
-        token_id: rowData.token_id,
-        amount: Number(
-          shrinkToken(
-            getAvailableAmount(rowData),
-            DECIMAL_OVERRIDES[rowData.symbol] || TOKEN_DECIMALS,
-          ),
-        ),
-        name: rowData?.name || "Unknown",
-        symbol: rowData?.symbol || "???",
-        icon: rowData?.icon,
-        valueInUSD: rowData.price?.usd || 0,
-        apy: rowData.borrow_apr,
-        canBeUsedAsCollateral: rowData.config.can_use_as_collateral,
-      },
-      buttonText: "Borrow",
-      rates: [
-        {
-          title: "Borrow APY",
-          value: `${Number(rowData.borrow_apr).toFixed(PERCENT_DIGITS)}%`,
-        },
-        {
-          title: "Extra Rewards APY",
-          value: "0.00%",
-          hidden: true,
-        },
-        {
-          title: "Risk Factor",
-          value: `${(Number(rowData.config.volatility_ratio) / 100).toFixed(2)}%`,
-        },
-        {
-          title: "Limit Used",
-          value: "0.00%",
-          hidden: true,
-        },
-        {
-          title: "Pool Liquidity",
-          value: toUsd(getAvailableAmount(rowData), rowData).toLocaleString(undefined, USD_FORMAT),
-        },
-      ],
-      ratesTitle: "Rates",
-    });
-    modal.handleOpen();
+  const handleOnRowClick = ({ tokenId }) => {
+    dispatch(showModal({ action: "Borrow", tokenId, amount: 0 }));
   };
 
   return (
-    <Box sx={{ paddingBottom: 10 }}>
+    <Box pb="2.5rem">
       <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        {walletConnection?.isSignedIn() && (
-          <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
-        )}
-        {false && <InfoBox title="Borrow Limit" value="0%" />}
-        {walletConnection?.isSignedIn() && (
-          <InfoBox
-            title="Risk Factor"
-            value={`${(computeMaxDiscount(assets, portfolio!) * 100).toFixed(PERCENT_DIGITS)}%`}
-          />
-        )}
+        <InfoBox title="Total Borrowed" value={totalBorrowBalance} />
+        <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
+        <HealthFactorBox value={healthFactor} />
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
+      <TotalBRRR />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
-      <InfoWrapper>
-        <InfoBox title="Total Borrow" value={totalBorrow} />
-      </InfoWrapper>
     </Box>
   );
 };

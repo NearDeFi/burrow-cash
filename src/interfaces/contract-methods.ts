@@ -32,6 +32,9 @@ export enum ChangeMethodsLogic {
   // farms
   account_farm_claim_all,
   add_asset_farm_reward,
+  // stake
+  account_stake_booster,
+  account_unstake_booster,
 }
 
 export enum ViewMethodsOracle {

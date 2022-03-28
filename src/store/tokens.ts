@@ -3,22 +3,20 @@ import Decimal from "decimal.js";
 import BN from "bn.js";
 
 import { getBurrow } from "../utils";
-import { DECIMAL_OVERRIDES, DEFAULT_PRECISION, NEAR_DECIMALS, TOKEN_DECIMALS } from "./constants";
-import { expandToken, getContract, shrinkToken } from "./helper";
 import {
-  ChangeMethodsLogic,
-  ChangeMethodsOracle,
-  ChangeMethodsToken,
-  ViewMethodsToken,
-  IMetadata,
-} from "../interfaces";
+  DEFAULT_PRECISION,
+  NEAR_DECIMALS,
+  NO_STORAGE_DEPOSIT_CONTRACTS,
+  STORAGE_DEPOSIT_FEE,
+} from "./constants";
+import { expandToken, getContract, shrinkToken } from "./helper";
+import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
 import {
   executeMultipleTransactions,
   FunctionCallOptions,
   isRegistered,
   Transaction,
 } from "./wallet";
-import { getAccountDetailed } from "./accounts";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -77,13 +75,12 @@ export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> 
     await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
   ).filter((m): m is IMetadata => !!m);
 
-  console.log("metadata", metadata);
   return metadata;
 };
 
-const prepareAndExecuteTokenTransactions = async (
+export const prepareAndExecuteTokenTransactions = async (
   tokenContract: Contract,
-  functionCall: FunctionCallOptions,
+  functionCall?: FunctionCallOptions,
   additionalOperations: Transaction[] = [],
 ) => {
   const { account } = await getBurrow();
@@ -92,15 +89,20 @@ const prepareAndExecuteTokenTransactions = async (
   const functionCalls: FunctionCallOptions[] = [];
 
   // check if account is registered in the token contract
-  if (!(await isRegistered(account.accountId, tokenContract))) {
+  if (
+    !(await isRegistered(account.accountId, tokenContract)) &&
+    !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
+  ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+      attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
     });
   }
 
-  // add the actual transaction to be executed
-  functionCalls.push(functionCall);
+  if (functionCall) {
+    // add the actual transaction to be executed
+    functionCalls.push(functionCall);
+  }
 
   transactions.push({
     receiverId: tokenContract.contractId,
@@ -112,7 +114,7 @@ const prepareAndExecuteTokenTransactions = async (
   await prepareAndExecuteTransactions(transactions);
 };
 
-const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
+export const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
   const { account, logicContract } = await getBurrow();
   const transactions: Transaction[] = [];
 
@@ -123,234 +125,12 @@ const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => 
       functionCalls: [
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(0.1, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
         },
       ],
     });
   }
 
   transactions.push(...operations);
-
-  console.log("transactions being dispatched", JSON.stringify(transactions, null, 2));
-
   await executeMultipleTransactions(transactions);
-};
-
-export const supply = async (
-  token_id: string,
-  amount: number,
-  useAsCollateral: boolean,
-): Promise<void> => {
-  console.log(`Supplying ${amount} to ${token_id}`);
-
-  const { logicContract } = await getBurrow();
-
-  const tokenContract = await getTokenContract(token_id);
-  const metadata = await getMetadata(token_id);
-  const expandedAmount = expandToken(amount, metadata?.decimals! || NEAR_DECIMALS);
-
-  console.log("transaction fixed amount", expandedAmount);
-
-  const args = {
-    actions: [
-      {
-        IncreaseCollateral: {
-          token_id,
-          amount: undefined as unknown as string,
-        },
-      },
-    ],
-  };
-
-  if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(
-      amount,
-      metadata?.decimals || NEAR_DECIMALS,
-    );
-  }
-
-  const addCollateralTx = {
-    receiverId: logicContract.contractId,
-    functionCalls: [
-      {
-        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-        args,
-      },
-    ],
-  };
-
-  await prepareAndExecuteTokenTransactions(
-    tokenContract,
-    {
-      methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-      args: {
-        receiver_id: logicContract.contractId,
-        amount: expandedAmount,
-        msg: "",
-      },
-    },
-    useAsCollateral ? [addCollateralTx] : undefined,
-  );
-};
-
-export const borrow = async (token_id: string, amount: number) => {
-  console.log(`Borrowing ${amount} of ${token_id}`);
-
-  const { oracleContract, logicContract, account } = await getBurrow();
-
-  const metadata = await getMetadata(token_id);
-  const accountDetailed = await getAccountDetailed(account.accountId);
-
-  const borrowTemplate = {
-    Execute: {
-      actions: [
-        {
-          Borrow: {
-            token_id,
-            amount: expandToken(
-              amount,
-              DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
-            ),
-          },
-        },
-        {
-          Withdraw: {
-            token_id,
-            amount: expandToken(amount, TOKEN_DECIMALS),
-          },
-        },
-      ],
-    },
-  };
-
-  const collateral = accountDetailed
-    ? accountDetailed.collateral.map((c) => c.token_id).filter((t) => t !== token_id)
-    : [];
-
-  await prepareAndExecuteTransactions([
-    {
-      receiverId: oracleContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
-          args: {
-            receiver_id: logicContract.contractId,
-            asset_ids: [...collateral, token_id],
-            msg: JSON.stringify(borrowTemplate),
-          },
-        },
-      ],
-    } as Transaction,
-  ]);
-};
-
-export const addCollateral = async (token_id: string, amount?: number) => {
-  console.log(`Adding collateral ${amount} of ${token_id}`);
-
-  const { logicContract, call } = await getBurrow();
-  const metadata = await getMetadata(token_id);
-
-  const args = {
-    actions: [
-      {
-        IncreaseCollateral: {
-          token_id,
-          amount: "",
-        },
-      },
-    ],
-  };
-
-  if (amount) {
-    args.actions[0].IncreaseCollateral.amount = expandToken(
-      amount,
-      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
-    );
-  }
-
-  await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
-};
-
-export const removeCollateral = async (token_id: string, amount?: number) => {
-  console.log(`Removing collateral ${amount} of ${token_id}`);
-
-  const { logicContract, call } = await getBurrow();
-  const metadata = await getMetadata(token_id);
-
-  const args = {
-    actions: [
-      {
-        DecreaseCollateral: {
-          token_id,
-          amount: undefined as unknown as string,
-        },
-      },
-    ],
-  };
-
-  if (amount) {
-    args.actions[0].DecreaseCollateral.amount = expandToken(
-      amount,
-      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || TOKEN_DECIMALS,
-    );
-  }
-
-  await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
-};
-
-export const withdraw = async (token_id: string, amount?: number) => {
-  console.log(`Withdrawing ${amount} of ${token_id}`);
-
-  const { call, logicContract } = await getBurrow();
-  const metadata = await getMetadata(token_id);
-
-  const args = {
-    actions: [
-      {
-        Withdraw: {
-          token_id,
-          amount: undefined as unknown as string,
-        },
-      },
-    ],
-  };
-
-  if (amount) {
-    const expandedAmount = expandToken(amount, TOKEN_DECIMALS);
-    args.actions[0].Withdraw.amount = expandedAmount;
-    console.log("withdraw", metadata?.decimals, token_id, amount, expandedAmount);
-  }
-
-  await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], args);
-};
-
-export const repay = async (token_id: string, amount: number) => {
-  console.log(`Repaying ${amount} of ${token_id}`);
-
-  const { logicContract, call } = await getBurrow();
-  const tokenContract = await getTokenContract(token_id);
-  const metadata = await getMetadata(token_id);
-
-  const msg = {
-    Execute: {
-      actions: [
-        {
-          Repay: {
-            token_id,
-          },
-        },
-      ],
-    },
-  };
-
-  const args = {
-    receiver_id: logicContract.contractId,
-    amount: expandToken(
-      amount,
-      DECIMAL_OVERRIDES[metadata?.symbol ? metadata.symbol : ""] || metadata?.decimals,
-    ),
-    msg: JSON.stringify(msg),
-  };
-
-  await call(tokenContract, ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call], args);
 };

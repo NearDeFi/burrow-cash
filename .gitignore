@@ -34,4 +34,4 @@ yarn-error.log*
 .vscode
 .vercel
 public
-.env
+.env*

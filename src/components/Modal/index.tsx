@@ -1,79 +1,116 @@
-import { Box } from "@mui/material";
-import Modal from "@mui/material/Modal";
-import * as React from "react";
-// @ts-ignore
-import useMobileDetect from "use-mobile-detect-hook";
-import { CloseModalIcon } from "./components";
-import { BorrowData, TokenActionsTemplate } from "./templates";
-import { Templates, TokenActionsInput } from "./types";
+import { Modal as MUIModal, Typography, Box } from "@mui/material";
 
-export interface ModalState {
-  handleOpen: () => void;
-  setTemplate: (i: Templates) => void;
-  setModalData: (i: TokenActionsInput) => void;
-}
+import { USD_FORMAT } from "../../store";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { hideModal } from "../../redux/appSlice";
+import {
+  getModalStatus,
+  getAssetData,
+  getSelectedValues,
+  getWithdrawMaxNEARAmount,
+} from "../../redux/appSelectors";
+import {
+  getMaxBorrowAmount,
+  getAccountId,
+  recomputeHealthFactor,
+  recomputeHealthFactorWithdraw,
+  recomputeHealthFactorAdjust,
+  recomputeHealthFactorSupply,
+  recomputeHealthFactorRepay,
+} from "../../redux/accountSelectors";
+import { Wrapper } from "./style";
+import { getModalData } from "./utils";
+import {
+  NotConnected,
+  CloseButton,
+  TokenInfo,
+  Available,
+  HealthFactor,
+  Rates,
+  Alerts,
+  RepayInfo,
+} from "./components";
+import Controls from "./Controls";
+import Action from "./Action";
 
-export const ModalContext = React.createContext<ModalState>({} as ModalState);
+const Modal = () => {
+  const isOpen = useAppSelector(getModalStatus);
+  const accountId = useAppSelector(getAccountId);
+  const asset = useAppSelector(getAssetData);
+  const { amount } = useAppSelector(getSelectedValues);
+  const dispatch = useAppDispatch();
 
-const ModalContainer = ({ children }: { children: React.ReactElement }) => {
-  const detectMobile = useMobileDetect();
-  const style = detectMobile.isMobile() ? mobileStyle : desktopStyle;
-  const [template, setTemplate] = React.useState<Templates>(Templates.TokenActions);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [modalData, setModalData] = React.useState<TokenActionsInput>(BorrowData);
+  const { action = "Deposit", tokenId } = asset;
 
-  const state: ModalState = {
-    handleOpen,
-    setTemplate,
-    setModalData,
-  };
+  const healthFactor = useAppSelector(
+    action === "Withdraw"
+      ? recomputeHealthFactorWithdraw(tokenId, amount)
+      : action === "Adjust"
+      ? recomputeHealthFactorAdjust(tokenId, amount)
+      : action === "Supply"
+      ? recomputeHealthFactorSupply(tokenId, amount)
+      : action === "Repay"
+      ? recomputeHealthFactorRepay(tokenId, amount)
+      : recomputeHealthFactor(tokenId, amount),
+  );
+
+  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
+  const maxWithdrawNEARAmount = useAppSelector(getWithdrawMaxNEARAmount);
+
+  const {
+    name,
+    symbol,
+    icon,
+    apy,
+    price,
+    available,
+    available$,
+    totalTitle,
+    rates,
+    alerts,
+    remainingCollateral,
+  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawNEARAmount, healthFactor, amount });
+
+  const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
+
+  const handleClose = () => dispatch(hideModal());
 
   return (
-    <ModalContext.Provider value={state}>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <CloseModalIcon closeModal={handleClose} />
-          {template === Templates.TokenActions && (
-            <TokenActionsTemplate
-              title={modalData.title}
-              type={modalData.type}
-              asset={modalData.asset}
-              totalAmountTitle={modalData.totalAmountTitle}
-              buttonText={`${modalData.type} ${
-                modalData.type === "Adjust" ? "" : modalData.asset.symbol
-              }`}
-              rates={modalData.rates}
-              ratesTitle={`${modalData.type} ${modalData.ratesTitle}`}
-            />
+    <MUIModal open={isOpen} onClose={handleClose}>
+      <Wrapper>
+        <Box sx={{ overflowY: "auto" }} p="1rem">
+          {!accountId && <NotConnected />}
+          <CloseButton onClose={handleClose} />
+          <TokenInfo action={action} apy={apy} icon={icon} name={name} />
+          {action === "Repay" && symbol === "wNEAR" && <RepayInfo />}
+          <Available
+            totalAvailable={available}
+            displaySymbol={symbol}
+            available$={available$}
+            price={price}
+          />
+          <Controls amount={amount} available={available} />
+          <HealthFactor value={healthFactor} />
+          {action === "Withdraw" && (
+            <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
+              Remaining collateral: {remainingCollateral}
+            </Typography>
           )}
+          <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
+            <span>{totalTitle}</span>
+            <span>{total}</span>
+          </Typography>
+          <Rates action={action} rates={rates} />
+          <Alerts data={alerts} />
+          <Action
+            maxBorrowAmount={maxBorrowAmount}
+            healthFactor={healthFactor}
+            displaySymbol={symbol}
+          />
         </Box>
-      </Modal>
-      {children}
-    </ModalContext.Provider>
+      </Wrapper>
+    </MUIModal>
   );
 };
 
-const mobileStyle = {
-  height: "100%",
-  padding: "0.6em",
-  paddingLeft: 0,
-  width: "100%",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-};
-
-const desktopStyle = {
-  position: "absolute" as const,
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  padding: "0.6em",
-  paddingLeft: 0,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  width: "448px",
-};
-
-export default ModalContainer;
+export default Modal;
