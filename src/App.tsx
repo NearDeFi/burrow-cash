@@ -18,6 +18,7 @@ Sentry.init({
   environment: process.env.DEFAULT_NETWORK,
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 1.0,
+  allowUrls: ["testnet.burrow.cash", "beta.burrow.cash"],
 });
 
 const IDLE_INTERVAL = 30e3;
