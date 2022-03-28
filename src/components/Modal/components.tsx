@@ -1,9 +1,25 @@
-import { Box, Typography, Stack, Alert } from "@mui/material";
+import { Box, Typography, Stack, Alert, Link } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
 import { APY_FORMAT } from "../../store";
+
+export const RepayInfo = () => (
+  <Box mt="1rem">
+    <Alert severity="info">
+      <Stack>
+        <Box>You repay NEAR loans using wNEAR.</Box>
+        <Box>
+          To aquire it, use &nbsp;
+          <Link href="https://app.ref.finance" title="REF Finance" target="blank">
+            REF Finance
+          </Link>
+        </Box>
+      </Stack>
+    </Alert>
+  </Box>
+);
 
 export const NotConnected = () => (
   <Box

@@ -28,6 +28,7 @@ import {
   HealthFactor,
   Rates,
   Alerts,
+  RepayInfo,
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
@@ -81,6 +82,7 @@ const Modal = () => {
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
+          {action === "Repay" && symbol === "wNEAR" && <RepayInfo />}
           <Available
             totalAvailable={available}
             displaySymbol={symbol}
