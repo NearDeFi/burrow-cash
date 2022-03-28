@@ -9,7 +9,6 @@ import {
   PERCENT_DIGITS,
   NEAR_DECIMALS,
 } from "../store";
-import { brrrTokenId } from "../utils";
 import type { RootState } from "./store";
 import {
   emptySuppliedAsset,
@@ -125,6 +124,7 @@ export const getPortfolioAssets = createSelector(
   (state: RootState) => state.account,
   (app, assets, account) => {
     if (!hasAssets(assets)) return [[], []];
+    const brrrTokenId = app.config.booster_token_id;
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
@@ -176,7 +176,7 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data),
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
@@ -468,7 +468,9 @@ export const isAccountLoading = createSelector(
 export const getTotalBRRR = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
-  (assets, account) => {
+  (state: RootState) => state.app,
+  (assets, account, app) => {
+    const brrrTokenId = app.config.booster_token_id;
     if (!account.accountId || !assets.data[brrrTokenId]) return [0, 0];
     const { farms } = account.portfolio;
     const { decimals } = assets.data[brrrTokenId].metadata;
@@ -496,10 +498,12 @@ export const getStaking = createSelector(
 export const getTotalDailyBRRRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
-  (assets, account) => {
+  (state: RootState) => state.app,
+  (assets, account, app) => {
+    const brrrTokenId = app.config.booster_token_id;
     if (!account.accountId || !assets.data[brrrTokenId]) return 0;
     return Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data))
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId))
       .reduce((prev, current) => prev + current, 0);
   },
 );
