@@ -22,11 +22,12 @@ export const getAvailableAssets = (source: "supply" | "borrow") =>
   createSelector(
     (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
-    (assets, account) => {
+    (state: RootState) => state.app,
+    (assets, account, app) => {
       const filterKey = source === "supply" ? "can_deposit" : "can_borrow";
       return Object.keys(assets)
         .filter((tokenId) => assets[tokenId].config[filterKey])
-        .map((tokenId) => transformAsset(assets[tokenId], account, assets));
+        .map((tokenId) => transformAsset(assets[tokenId], account, assets, app));
     },
   );
 
