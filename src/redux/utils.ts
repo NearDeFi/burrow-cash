@@ -166,6 +166,7 @@ export const getDailyBRRRewards = (
   account: AccountState,
   assets: Assets,
   brrrTokenId: string,
+  type: "supplied" | "borrowed",
 ): number => {
   const totalRewardsPerDay = Number(
     shrinkToken(
@@ -175,13 +176,13 @@ export const getDailyBRRRewards = (
   );
   const totalBoostedShares = Number(
     shrinkToken(
-      asset.farms.borrowed[brrrTokenId]?.["boosted_shares"] || "0",
+      asset.farms[type][brrrTokenId]?.["boosted_shares"] || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );
   const boostedShares = Number(
     shrinkToken(
-      account.portfolio.farms.borrowed?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
+      account.portfolio.farms[type]?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );

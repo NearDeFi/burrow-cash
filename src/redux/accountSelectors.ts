@@ -151,6 +151,7 @@ export const getPortfolioAssets = createSelector(
             ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -176,7 +177,7 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId),
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
@@ -502,8 +503,13 @@ export const getTotalDailyBRRRewards = createSelector(
   (assets, account, app) => {
     const brrrTokenId = app.config.booster_token_id;
     if (!account.accountId || !assets.data[brrrTokenId]) return 0;
-    return Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId))
+    const suppliedRewards = Object.entries(assets.data)
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"))
       .reduce((prev, current) => prev + current, 0);
+    const borrowedRewards = Object.entries(assets.data)
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"))
+      .reduce((prev, current) => prev + current, 0);
+
+    return suppliedRewards + borrowedRewards;
   },
 );

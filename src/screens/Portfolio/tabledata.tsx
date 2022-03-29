@@ -9,6 +9,18 @@ export const suppliedColumns = [
     Cell: TokenCell,
   },
   {
+    label: <BRRRLabel title="BRRR rewards / day" />,
+    dataKey: "brrr",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData?.dailyBRRRewards?.toLocaleString(undefined, TOKEN_FORMAT)}
+        rowData={rowData}
+        format="amount"
+      />
+    ),
+  },
+  {
     label: "APY",
     dataKey: "apy",
     align: "right",
