@@ -17,16 +17,14 @@ interface PortfolioAsset {
 }
 
 interface Farm {
-  borrowed: {
-    [reward_token_id: string]: {
+  [reward_token_id: string]: {
+    boosted_shares: string;
+    unclaimed_amount: string;
+    asset_farm_reward: {
+      reward_per_day: string;
+      booster_log_base: string;
+      remaining_rewards: string;
       boosted_shares: string;
-      unclaimed_amount: string;
-      asset_farm_reward: {
-        reward_per_day: string;
-        booster_log_base: string;
-        remaining_rewards: string;
-        boosted_shares: string;
-      };
     };
   };
 }
@@ -42,7 +40,12 @@ export interface Portfolio {
     [tokenId: string]: PortfolioAsset;
   };
   farms: {
-    [tokenId: string]: Farm;
+    supplied: {
+      [tokenId: string]: Farm;
+    };
+    borrowed: {
+      [tokenId: string]: Farm;
+    };
   };
   staking: IBoosterStaking;
 }
@@ -70,7 +73,10 @@ const initialState: AccountState = {
     supplied: {},
     collateral: {},
     borrowed: {},
-    farms: {},
+    farms: {
+      supplied: {},
+      borrowed: {},
+    },
     staking: initialStaking,
   },
   status: undefined,

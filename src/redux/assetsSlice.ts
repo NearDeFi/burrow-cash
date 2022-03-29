@@ -1,11 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getAssetsDetailed, getAllMetadata } from "../store";
-import { IAssetDetailed, IMetadata } from "../interfaces";
+import { IAssetDetailed, IMetadata, IAssetFarmReward } from "../interfaces";
 import { transformAssetFarms } from "./utils";
 
-export type Asset = IAssetDetailed & {
+export type Asset = Omit<IAssetDetailed, "farms"> & {
   metadata: IMetadata;
+  farms: {
+    supplied: {
+      [token: string]: IAssetFarmReward;
+    };
+    borrowed: {
+      [token: string]: IAssetFarmReward;
+    };
+  };
 };
 
 export interface Assets {
@@ -71,6 +79,7 @@ export const assetSlice = createSlice({
         state.data[asset.token_id] = {
           ...asset,
           metadata,
+          farms: transformAssetFarms(asset.farms),
         };
       });
       state.status = action.meta.requestStatus;

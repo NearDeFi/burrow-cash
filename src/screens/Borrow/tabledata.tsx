@@ -1,6 +1,4 @@
-import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
-
-const formatBRRRAmount = (amount: number) => (amount < 0.001 ? "<0.001" : amount);
+import { TokenCell, Cell, BRRRLabel, formatBRRRAmount } from "../../components/Table/common/cells";
 
 export const columns = [
   {

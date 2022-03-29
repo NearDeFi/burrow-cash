@@ -161,7 +161,7 @@ export const getPortfolioAssets = createSelector(
 
         const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
         const brrrUnclaimedAmount =
-          account.portfolio.farms[tokenId]?.borrowed?.[brrrTokenId].unclaimed_amount || "0";
+          account.portfolio.farms.borrowed[tokenId]?.[brrrTokenId].unclaimed_amount || "0";
 
         return {
           tokenId,
@@ -474,8 +474,8 @@ export const getTotalBRRR = createSelector(
     if (!account.accountId || !assets.data[brrrTokenId]) return [0, 0];
     const { farms } = account.portfolio;
     const { decimals } = assets.data[brrrTokenId].metadata;
-    const unclaimed = Object.keys(farms)
-      .map((token) => farms[token].borrowed[brrrTokenId].unclaimed_amount)
+    const unclaimed = Object.keys(farms.borrowed)
+      .map((token) => farms.borrowed[token][brrrTokenId].unclaimed_amount)
       .map((token) => Number(shrinkToken(token, decimals)))
       .reduce(sumReducer, 0);
     const totalBrrr = Number(

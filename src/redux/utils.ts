@@ -17,26 +17,45 @@ export const listToMap = (list) =>
     .reduce((a, b) => ({ ...a, ...b }), {});
 
 export const transformAccountFarms = (list) => {
-  const farms = {};
-  list.forEach((f) => {
-    const tokenId = f.farm_id.Borrowed;
-    f.rewards.forEach((r) => {
-      farms[tokenId] = {
-        borrowed: {
-          [r.reward_token_id]: {
-            boosted_shares: r.boosted_shares,
-            unclaimed_amount: r.unclaimed_amount,
-            asset_farm_reward: r.asset_farm_reward,
+  const farms = {
+    supplied: {},
+    borrowed: {},
+  };
+
+  list.forEach((farm) => {
+    const [action, token] = Object.entries(farm["farm_id"])
+      .flat()
+      .map((s: any) => s.toLowerCase());
+
+    farms[action] = {
+      ...farms[action],
+      [token]: farm.rewards.reduce(
+        (o, item) => ({
+          ...o,
+          [item["reward_token_id"]]: {
+            ...pick(["boosted_shares", "unclaimed_amount", "asset_farm_reward"], item),
           },
-        },
-      };
-    });
+        }),
+        {},
+      ),
+    };
   });
+
   return farms;
 };
 
 export const transformAssetFarms = (list) => {
-  return list.reduce((a, b) => ({ ...a.rewards, ...b.rewards }), {});
+  const farms = {
+    supplied: {},
+    borrowed: {},
+  };
+  list.forEach((farm) => {
+    const [action] = Object.entries(farm["farm_id"])
+      .flat()
+      .map((s: any) => s.toLowerCase());
+    farms[action] = { ...farms[action], ...farm.rewards };
+  });
+  return farms;
 };
 
 export const toUsd = (balance: string, asset: Asset) =>
@@ -129,7 +148,13 @@ export const transformAsset = (
     ...accountAttrs,
     brrrBorrow: Number(
       shrinkToken(
-        asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
+        asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
+        assets[brrrTokenId].metadata.decimals,
+      ),
+    ),
+    brrrSupply: Number(
+      shrinkToken(
+        asset.farms.supplied[brrrTokenId]?.["reward_per_day"] || "0",
         assets[brrrTokenId].metadata.decimals,
       ),
     ),
@@ -144,19 +169,19 @@ export const getDailyBRRRewards = (
 ): number => {
   const totalRewardsPerDay = Number(
     shrinkToken(
-      asset.farms[brrrTokenId]?.["reward_per_day"] || "0",
+      asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );
   const totalBoostedShares = Number(
     shrinkToken(
-      asset.farms[brrrTokenId]?.["boosted_shares"] || "0",
+      asset.farms.borrowed[brrrTokenId]?.["boosted_shares"] || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );
   const boostedShares = Number(
     shrinkToken(
-      account.portfolio.farms?.[asset.token_id]?.borrowed?.[brrrTokenId].boosted_shares || 0,
+      account.portfolio.farms.borrowed?.[asset.token_id]?.[brrrTokenId].boosted_shares || 0,
       assets[brrrTokenId].metadata.decimals,
     ),
   );
