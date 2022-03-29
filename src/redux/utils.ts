@@ -181,7 +181,7 @@ export const getDailyBRRRewards = (
   );
   const boostedShares = Number(
     shrinkToken(
-      account.portfolio.farms.borrowed?.[asset.token_id]?.[brrrTokenId].boosted_shares || 0,
+      account.portfolio.farms.borrowed?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );
