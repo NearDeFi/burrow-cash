@@ -82,3 +82,5 @@ export const BRRRLabel = ({ title }) => (
     </span>
   </Tooltip>
 );
+
+export const formatBRRRAmount = (amount: number) => (amount < 0.001 ? "<0.001" : amount);
