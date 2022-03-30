@@ -151,6 +151,7 @@ export const getPortfolioAssets = createSelector(
             ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -161,7 +162,7 @@ export const getPortfolioAssets = createSelector(
 
         const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
         const brrrUnclaimedAmount =
-          account.portfolio.farms[tokenId]?.borrowed?.[brrrTokenId].unclaimed_amount || "0";
+          account.portfolio.farms.borrowed[tokenId]?.[brrrTokenId]?.unclaimed_amount || "0";
 
         return {
           tokenId,
@@ -176,7 +177,7 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId),
+          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
@@ -474,14 +475,19 @@ export const getTotalBRRR = createSelector(
     if (!account.accountId || !assets.data[brrrTokenId]) return [0, 0];
     const { farms } = account.portfolio;
     const { decimals } = assets.data[brrrTokenId].metadata;
-    const unclaimed = Object.keys(farms)
-      .map((token) => farms[token].borrowed[brrrTokenId].unclaimed_amount)
+    const unclaimedSupplied = Object.keys(farms.borrowed)
+      .map((token) => farms.supplied[token]?.[brrrTokenId]?.unclaimed_amount || "0")
       .map((token) => Number(shrinkToken(token, decimals)))
       .reduce(sumReducer, 0);
+    const unclaimedBorrowed = Object.keys(farms.borrowed)
+      .map((token) => farms.borrowed[token]?.[brrrTokenId]?.unclaimed_amount || "0")
+      .map((token) => Number(shrinkToken(token, decimals)))
+      .reduce(sumReducer, 0);
+
     const totalBrrr = Number(
       shrinkToken(account.portfolio.supplied[brrrTokenId]?.balance || "0", decimals),
     );
-    return [totalBrrr, unclaimed];
+    return [totalBrrr, unclaimedSupplied + unclaimedBorrowed];
   },
 );
 
@@ -502,8 +508,13 @@ export const getTotalDailyBRRRewards = createSelector(
   (assets, account, app) => {
     const brrrTokenId = app.config.booster_token_id;
     if (!account.accountId || !assets.data[brrrTokenId]) return 0;
-    return Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId))
+    const suppliedRewards = Object.entries(assets.data)
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"))
       .reduce((prev, current) => prev + current, 0);
+    const borrowedRewards = Object.entries(assets.data)
+      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"))
+      .reduce((prev, current) => prev + current, 0);
+
+    return suppliedRewards + borrowedRewards;
   },
 );

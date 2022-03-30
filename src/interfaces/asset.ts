@@ -37,7 +37,7 @@ export interface IMetadata {
   decimals: number;
 }
 
-interface IAssetFarmReward {
+export interface IAssetFarmReward {
   /// The reward token ID.
   token_id: string;
   /// The amount of reward distributed per day.
@@ -111,4 +111,5 @@ export interface UIAsset {
   available: number;
   extraDecimals: number;
   brrrBorrow: number;
+  brrrSupply: number;
 }
