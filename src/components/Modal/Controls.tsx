@@ -25,7 +25,13 @@ export default function Controls({ amount, available }) {
   const handleSliderChange = (e) => {
     const { value: percent } = e.target;
     const value = (Number(available) * percent) / 100;
-    dispatch(updateAmount({ isMax: false, amount: Number(value.toFixed(PERCENT_DIGITS)) }));
+
+    dispatch(
+      updateAmount({
+        isMax: value === Number(available),
+        amount: Number(value.toFixed(PERCENT_DIGITS)),
+      }),
+    );
   };
 
   const sliderValue = Math.round((amount * 100) / available) || 0;
