@@ -2,7 +2,7 @@ import { Box, Tooltip, Skeleton } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 
 import TokenIcon from "../../TokenIcon";
-import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT } from "../../../store";
+import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
 import type { UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
@@ -83,4 +83,5 @@ export const BRRRLabel = ({ title }) => (
   </Tooltip>
 );
 
-export const formatBRRRAmount = (amount: number) => (amount < 0.001 ? "<0.001" : amount);
+export const formatBRRRAmount = (amount: number) =>
+  amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);

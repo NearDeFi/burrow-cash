@@ -17,6 +17,12 @@ export const TOKEN_FORMAT = {
   maximumFractionDigits: PERCENT_DIGITS,
 };
 
+export const NUMBER_FORMAT = {
+  style: "decimal",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+};
+
 export const APY_FORMAT = {
   style: "decimal",
   minimumFractionDigits: 2,
