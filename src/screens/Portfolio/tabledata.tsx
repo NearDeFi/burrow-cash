@@ -71,7 +71,7 @@ export const borrowedColumns = [
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
-        value={rowData?.dailyBRRRewards?.toLocaleString(undefined, TOKEN_FORMAT)}
+        value={Number(rowData?.dailyBRRRewards || 0).toLocaleString(undefined, TOKEN_FORMAT)}
         rowData={rowData}
         format="amount"
       />

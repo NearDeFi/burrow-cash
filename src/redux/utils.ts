@@ -187,5 +187,5 @@ export const getDailyBRRRewards = (
     ),
   );
 
-  return (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
+  return (boostedShares / totalBoostedShares) * totalRewardsPerDay;
 };
