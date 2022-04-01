@@ -23,16 +23,13 @@ export const rateToApr = (rate: string): string => {
   return apr.toFixed(2);
 };
 
-export const getPrices = async (tokenIds: string[]): Promise<IPrices | undefined> => {
+export const getPrices = async (): Promise<IPrices | undefined> => {
   const { view, oracleContract } = await getBurrow();
 
   try {
     const priceResponse: IPrices = (await view(
       oracleContract,
       ViewMethodsOracle[ViewMethodsOracle.get_price_data],
-      {
-        asset_ids: tokenIds,
-      },
     )) as IPrices;
 
     if (priceResponse) {

@@ -35,7 +35,7 @@ export const getAssetDetailed = async (token_id: string): Promise<IAssetDetailed
 export const getAssetsDetailed = async (): Promise<IAssetDetailed[]> => {
   const assets: IAssetEntry[] = await getAssets();
 
-  const priceResponse = await getPrices(assets.map((asset) => asset.token_id));
+  const priceResponse = await getPrices();
   let detailedAssets = await Promise.all(assets.map((asset) => getAssetDetailed(asset.token_id)));
 
   detailedAssets = detailedAssets?.map((detailedAsset) => ({
