@@ -34,7 +34,7 @@ export const TokenCell = ({ rowData }) => {
   );
 };
 
-type FormatType = "apy" | "amount" | "string";
+type FormatType = "apy" | "amount" | "string" | "reward";
 type FormatMap = {
   [t in FormatType]: (v: number | string) => string;
 };
@@ -63,6 +63,7 @@ export const Cell = ({
         ? Number(v).toLocaleString(undefined, showDust ? DUST_FORMAT : TOKEN_FORMAT)
         : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
+    reward: (v) => v.toLocaleString(undefined, TOKEN_FORMAT),
   };
 
   const displayValue = formatMap[format](value);
