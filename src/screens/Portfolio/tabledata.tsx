@@ -12,7 +12,7 @@ export const suppliedColumns = [
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="amount" />
+      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
     ),
   },
   {
@@ -65,7 +65,7 @@ export const borrowedColumns = [
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="amount" />
+      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
     ),
   },
   {
