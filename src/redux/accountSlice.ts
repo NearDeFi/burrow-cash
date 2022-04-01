@@ -123,6 +123,9 @@ export const accountSlice = createSlice({
     builder.addCase(farmClaimAll.fulfilled, (state, action) => {
       state.isClaiming = action.meta.requestStatus;
     });
+    builder.addCase(farmClaimAll.rejected, (state, action) => {
+      state.status = action.meta.requestStatus;
+    });
     builder.addCase(fetchAccount.pending, (state, action) => {
       state.status = action.meta.requestStatus;
     });
