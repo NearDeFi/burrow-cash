@@ -150,11 +150,9 @@ export const transformAsset = (
   );
 
   const brrrBorrowEfficiency = borrowedLiquidityMoney
-    ? ((brrrBorrow / borrowedLiquidityMoney) * 1000)
+    ? (brrrBorrow / borrowedLiquidityMoney) * 1000
     : 0;
-  const brrrSupplyEfficiency = totalLiquidityMoney
-    ? ((brrrSupply / totalLiquidityMoney) * 1000)
-    : 0;
+  const brrrSupplyEfficiency = totalLiquidityMoney ? (brrrSupply / totalLiquidityMoney) * 1000 : 0;
 
   return {
     tokenId,
@@ -176,7 +174,7 @@ export const transformAsset = (
     brrrEfficiency: (brrrBorrowEfficiency + brrrSupplyEfficiency).toFixed(2),
     brrrEfficiencyWithAPY: Number(asset.borrow_apr)
       ? (
-          (brrrBorrowEfficiency * brrrSupplyEfficiency) /
+          (brrrBorrowEfficiency + brrrSupplyEfficiency) /
           (Number(asset.borrow_apr) * 100 - Number(asset.supply_apr) * 100)
         ).toFixed(2)
       : "0",
