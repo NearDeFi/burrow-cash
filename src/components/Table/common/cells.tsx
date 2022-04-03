@@ -44,11 +44,13 @@ export const Cell = ({
   rowData,
   format,
   tooltip,
+  bgcolor,
 }: {
   value: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
+  bgcolor?: string;
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -72,7 +74,7 @@ export const Cell = ({
       <Box>{displayValue}</Box>
     </Tooltip>
   ) : (
-    <Box>{displayValue}</Box>
+    <Box bgcolor={bgcolor}>{displayValue}</Box>
   );
 };
 

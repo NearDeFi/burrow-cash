@@ -103,6 +103,8 @@ export const transformAsset = (
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
+  const borrowedLiquidityMoney = toUsd(new Decimal(asset.borrowed.balance).toFixed(), asset);
+  const totalLiquidityMoney = toUsd(totalSupplyD, asset);
 
   let accountAttrs = {
     supplied: 0,
@@ -133,6 +135,27 @@ export const transformAsset = (
     };
   }
 
+  const brrrBorrow = Number(
+    shrinkToken(
+      asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
+      assets[brrrTokenId].metadata.decimals,
+    ),
+  );
+
+  const brrrSupply = Number(
+    shrinkToken(
+      asset.farms.supplied[brrrTokenId]?.["reward_per_day"] || "0",
+      assets[brrrTokenId].metadata.decimals,
+    ),
+  );
+
+  const brrrBorrowEfficiency = borrowedLiquidityMoney
+    ? ((brrrBorrow / borrowedLiquidityMoney) * 1000)
+    : 0;
+  const brrrSupplyEfficiency = totalLiquidityMoney
+    ? ((brrrSupply / totalLiquidityMoney) * 1000)
+    : 0;
+
   return {
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
@@ -146,18 +169,19 @@ export const transformAsset = (
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
-    brrrBorrow: Number(
-      shrinkToken(
-        asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
-        assets[brrrTokenId].metadata.decimals,
-      ),
-    ),
-    brrrSupply: Number(
-      shrinkToken(
-        asset.farms.supplied[brrrTokenId]?.["reward_per_day"] || "0",
-        assets[brrrTokenId].metadata.decimals,
-      ),
-    ),
+    brrrBorrow,
+    brrrSupply,
+    brrrBorrowEfficiency: brrrBorrowEfficiency.toFixed(2),
+    brrrSupplyEfficiency: brrrSupplyEfficiency.toFixed(2),
+    brrrEfficiency: (brrrBorrowEfficiency + brrrSupplyEfficiency).toFixed(2),
+    brrrEfficiencyWithAPY: Number(asset.borrow_apr)
+      ? (
+          (brrrBorrowEfficiency * brrrSupplyEfficiency) /
+          (Number(asset.borrow_apr) * 100 - Number(asset.supply_apr) * 100)
+        ).toFixed(2)
+      : "0",
+    totalLiquidityMoney,
+    borrowedLiquidityMoney,
   };
 };
 

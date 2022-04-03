@@ -15,7 +15,9 @@ const Deposit = () => {
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableAssets("supply"));
+  const rows = useAppSelector(getAvailableAssets("supply")).sort(function (a, b) {
+    return Number(b.brrrEfficiencyWithAPY) - Number(a.brrrEfficiencyWithAPY);
+  });
   const netAPY = useAppSelector(getNetAPY);
 
   const columns = !accountId

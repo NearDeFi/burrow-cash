@@ -112,4 +112,10 @@ export interface UIAsset {
   extraDecimals: number;
   brrrBorrow: number;
   brrrSupply: number;
+  brrrBorrowEfficiency: string;
+  brrrSupplyEfficiency: string;
+  brrrEfficiency: string;
+  brrrEfficiencyWithAPY: string;
+  totalLiquidityMoney: number;
+  borrowedLiquidityMoney: number;
 }

@@ -18,7 +18,7 @@ interface TableProps {
 function Table({ rows, columns, onRowClick }: TableProps) {
   const theme = useTheme();
   return (
-    <TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto" }}>
+    <TableContainer component={Box} sx={{ maxWidth: "100%", m: "0 auto" }}>
       <MUITable aria-label="table">
         <TableHead>
           <TableRow>
