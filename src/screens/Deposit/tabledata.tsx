@@ -11,11 +11,7 @@ export const columns = [
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell
-        value={`${formatBRRRAmount(rowData?.brrrSupply)}`}
-        rowData={rowData}
-        format="string"
-      />
+      <Cell value={`${formatBRRRAmount(rowData?.brrrSupply)}`} rowData={rowData} format="string" />
     ),
   },
   {
@@ -37,11 +33,7 @@ export const columns = [
     dataKey: "brrr-borrow",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell
-        value={`${formatBRRRAmount(rowData?.brrrBorrow)}`}
-        rowData={rowData}
-        format="string"
-      />
+      <Cell value={`${formatBRRRAmount(rowData?.brrrBorrow)}`} rowData={rowData} format="string" />
     ),
   },
   {

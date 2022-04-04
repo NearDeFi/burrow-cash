@@ -174,8 +174,8 @@ export const transformAsset = (
     brrrEfficiency: (brrrBorrowEfficiency + brrrSupplyEfficiency).toFixed(2),
     brrrEfficiencyWithAPY: Number(asset.borrow_apr)
       ? (
-          (brrrBorrowEfficiency + brrrSupplyEfficiency) /
-          (Number(asset.borrow_apr) * 100 - Number(asset.supply_apr) * 100)
+          (brrrBorrowEfficiency + brrrSupplyEfficiency) *
+          ((100 - Number(asset.borrow_apr) * 100 + Number(asset.supply_apr) * 100) / 100)
         ).toFixed(2)
       : "0",
     totalLiquidityMoney,
