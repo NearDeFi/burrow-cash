@@ -154,7 +154,19 @@ export const transformAsset = (
     : 0;
   const brrrSupplyEfficiency = totalLiquidityMoney ? (brrrSupply / totalLiquidityMoney) * 1000 : 0;
 
+  const getMaxFold = (col) => {
+    return (
+      {
+        9500: 10.25605074188462,
+        7500: 2.285714285714285,
+        7000: 1.9607843137254894,
+      }[col] || 1
+    );
+  };
+
   return {
+    reward: 0,
+    brrApy: "0",
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
@@ -165,6 +177,8 @@ export const transformAsset = (
     availableLiquidity,
     availableLiquidity$,
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
+    maxFarmApy: 0,
+    maxFold: getMaxFold(asset.config.volatility_ratio),
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
     brrrBorrow,

@@ -86,5 +86,13 @@ export const BRRRLabel = ({ title }) => (
   </Tooltip>
 );
 
+export const LabelWithHint = ({ title, hint }) => (
+  <Tooltip title={hint}>
+    <span>
+      {title} <FcInfo />
+    </span>
+  </Tooltip>
+);
+
 export const formatBRRRAmount = (amount: number) =>
   amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);

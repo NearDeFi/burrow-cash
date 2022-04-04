@@ -1,4 +1,10 @@
-import { TokenCell, Cell, BRRRLabel, formatBRRRAmount } from "../../components/Table/common/cells";
+import {
+  TokenCell,
+  Cell,
+  BRRRLabel,
+  formatBRRRAmount,
+  LabelWithHint,
+} from "../../components/Table/common/cells";
 
 export const columns = [
   {
@@ -7,11 +13,15 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="BRRR Supply Rewards / Day" />,
+    label: <BRRRLabel title="BRRR Rewards Daily : Supply / Burrow" />,
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
-      <Cell value={`${formatBRRRAmount(rowData?.brrrSupply)}`} rowData={rowData} format="string" />
+      <Cell
+        value={`${formatBRRRAmount(rowData?.brrrSupply)}/${formatBRRRAmount(rowData?.brrrBorrow)}`}
+        rowData={rowData}
+        format="string"
+      />
     ),
   },
   {
@@ -21,19 +31,11 @@ export const columns = [
     Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
   },
   {
-    label: "BRR per 1K on Supply",
+    label: "BRRR per $1000 on Supply",
     dataKey: "supply-apy-efficiency",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData?.brrrSupplyEfficiency} rowData={rowData} format="string" />
-    ),
-  },
-  {
-    label: <BRRRLabel title="BRRR Burrow Rewards / Day" />,
-    dataKey: "brrr-borrow",
-    align: "right",
-    Cell: ({ rowData }) => (
-      <Cell value={`${formatBRRRAmount(rowData?.brrrBorrow)}`} rowData={rowData} format="string" />
     ),
   },
   {
@@ -43,7 +45,7 @@ export const columns = [
     Cell: ({ rowData }) => <Cell value={rowData?.borrowApy} rowData={rowData} format="apy" />,
   },
   {
-    label: "BRR per 1K on Borrow",
+    label: "BRRR per $1000 on Borrow",
     dataKey: "borrow-apy-efficiency",
     align: "right",
     Cell: ({ rowData }) => (
@@ -51,7 +53,7 @@ export const columns = [
     ),
   },
   {
-    label: "BRR per 1K on Supply + Borrow",
+    label: "BRRR per $1000 on Supply + Borrow",
     dataKey: "borrow-supply-apy-efficiency",
     align: "right",
     Cell: ({ rowData }) => (
@@ -59,13 +61,39 @@ export const columns = [
     ),
   },
   {
-    label: "BRR per 1K on Supply + Borrow / APY Diff",
-    dataKey: "borrow-apy-diff-efficiency",
+    label: (
+      <LabelWithHint
+        hint="BRRR Farming APY + Deposit APY - Borrow APY"
+        title="Farming APY per loop"
+      />
+    ),
+    dataKey: "brrr-apy",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell bgcolor="white" value={`${rowData?.brrApy}%`} rowData={rowData} format="string" />
+    ),
+  },
+  {
+    label: (
+      <LabelWithHint
+        hint="Max single asset folds available based on collateral factor"
+        title="Max Folds"
+      />
+    ),
+    dataKey: "brrr-max-fold-apy",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell bgcolor="white" value={rowData?.maxFold.toFixed(2)} rowData={rowData} format="string" />
+    ),
+  },
+  {
+    label: <LabelWithHint hint="Farming APY with max folds" title="Max Folds APY" />,
+    dataKey: "max-fold-apy",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
         bgcolor="lightgreen"
-        value={rowData?.brrrEfficiencyWithAPY}
+        value={`${rowData?.maxFarmApy.toFixed(2)}%`}
         rowData={rowData}
         format="string"
       />

@@ -91,6 +91,9 @@ export interface Balance {
 }
 
 export interface UIAsset {
+  brrApy: string;
+  reward: number;
+  maxFarmApy: number;
   tokenId: string;
   icon: string;
   symbol: string;
@@ -118,4 +121,5 @@ export interface UIAsset {
   brrrEfficiencyWithAPY: string;
   totalLiquidityMoney: number;
   borrowedLiquidityMoney: number;
+  maxFold: number;
 }
