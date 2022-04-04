@@ -11,7 +11,7 @@ const TokenIcon = (props: TokenIconProps) => {
     <Avatar src={icon} sx={{ width: 35, height: 35 }} />
   ) : (
     <Avatar sx={{ bgcolor: "#000", width: 35, height: 35 }}>
-      <NearLogo style={{ padding: "6px", filter: "invert(100%)" }} />
+      <NearLogo style={{ filter: "invert(100%)" }} />
     </Avatar>
   );
 };
