@@ -7,12 +7,12 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="BRRR Rewards / Day" />,
+    label: <BRRRLabel title="BRRR Supply Rewards / Day" />,
     dataKey: "brrr",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
-        value={`${formatBRRRAmount(rowData?.brrrSupply)} / Day`}
+        value={`${formatBRRRAmount(rowData?.brrrSupply)}`}
         rowData={rowData}
         format="string"
       />
@@ -30,6 +30,18 @@ export const columns = [
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData?.brrrSupplyEfficiency} rowData={rowData} format="string" />
+    ),
+  },
+  {
+    label: <BRRRLabel title="BRRR Burrow Rewards / Day" />,
+    dataKey: "brrr-borrow",
+    align: "right",
+    Cell: ({ rowData }) => (
+      <Cell
+        value={`${formatBRRRAmount(rowData?.brrrBorrow)}`}
+        rowData={rowData}
+        format="string"
+      />
     ),
   },
   {
