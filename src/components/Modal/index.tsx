@@ -7,7 +7,7 @@ import {
   getModalStatus,
   getAssetData,
   getSelectedValues,
-  getWithdrawMaxNEARAmount,
+  getWithdrawMaxAmount,
 } from "../../redux/appSelectors";
 import {
   getMaxBorrowAmount,
@@ -55,7 +55,7 @@ const Modal = () => {
   );
 
   const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
-  const maxWithdrawNEARAmount = useAppSelector(getWithdrawMaxNEARAmount);
+  const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const {
     name,
@@ -69,7 +69,7 @@ const Modal = () => {
     rates,
     alerts,
     remainingCollateral,
-  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawNEARAmount, healthFactor, amount });
+  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawAmount, healthFactor, amount });
 
   const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
 
