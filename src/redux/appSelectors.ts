@@ -115,8 +115,6 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
 
         iterations++;
 
-        console.log(iterations, healthFactor, amount);
-
         if (
           (healthFactor >= MIN_SAFE_HEALTH_FACTOR && healthFactor <= MAX_SAFE_HEALTH_FACTOR) ||
           iterations > MAX_ITERATIONS
