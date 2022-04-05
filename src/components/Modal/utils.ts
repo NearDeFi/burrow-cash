@@ -50,7 +50,7 @@ export const getModalData = (asset): UIAsset & Props => {
     availableNEAR,
     healthFactor,
     amount,
-    maxWithdrawNEARAmount,
+    maxWithdrawAmount,
   } = asset;
 
   const data: any = {
@@ -113,9 +113,7 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = isWrappedNear
-        ? Number(maxWithdrawNEARAmount).toFixed(PERCENT_DIGITS)
-        : getAvailableWithdrawOrAdjust;
+      data.available = Math.min(supplied + collateral, maxWithdrawAmount).toFixed(PERCENT_DIGITS);
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
