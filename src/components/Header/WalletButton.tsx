@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@mui/material";
+import NearWalletSelector from "@near-wallet-selector/core";
 
-import { login, logout, getBurrow } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+
+import { fetchAssetsAndMetadata } from "../../redux/assetsSlice";
+import { fetchAccount } from "../../redux/accountSlice";
+import { hideModal as _hideModal } from "../../redux/appSlice";
+
 import { logoutAccount } from "../../redux/accountSlice";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
+
+import { getBurrow } from "../../utils";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();
@@ -19,13 +26,54 @@ const WalletButton = () => {
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
 
+  const selectorRef = useRef<NearWalletSelector>();
+  const [selector, setSelector] = useState<NearWalletSelector | null>(null);
+
+  const hideModal = () => {
+    dispatch(_hideModal());
+  };
+
+  const fetchData = () => {
+    dispatch(fetchAssetsAndMetadata());
+    dispatch(fetchAccount());
+  };
+
+  const onMount = async () => {
+    if (selector) return;
+
+    const { selector: s } = await getBurrow({ fetchData, hideModal });
+
+    selectorRef.current = s;
+    setSelector(s);
+  };
+  useEffect(() => {
+    onMount();
+  }, []);
+
   const onWalletButtonClick = async (event) => {
     if (!accountId) {
-      const { walletConnection } = await getBurrow();
-      login(walletConnection);
+      handleSignIn();
     } else {
       setAnchorEl(event.currentTarget);
     }
+  };
+
+  const handleSwitchWallet = async () => {
+    await handleSignOut();
+    selector?.show();
+  };
+
+  const handleSignIn = () => {
+    selector?.show();
+  };
+
+  const handleSignOut = async () => {
+    await selector?.signOut().catch((err) => {
+      console.log("Failed to sign out");
+      console.error(err);
+    });
+    dispatch(logoutAccount());
+    handleClose();
   };
 
   const handleClose = () => {
@@ -38,12 +86,6 @@ const WalletButton = () => {
 
   const handleToggleShowDust = () => {
     dispatch(toggleShowDust());
-  };
-
-  const handleLogout = async () => {
-    const { walletConnection } = await getBurrow();
-    dispatch(logoutAccount());
-    logout(walletConnection);
   };
 
   return (
@@ -89,7 +131,10 @@ const WalletButton = () => {
           {showDust ? "Hide" : "Show"} dust
         </MenuItem>
         <Divider />
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
+          Switch Wallet
+        </MenuItem>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut}>
           Log Out
         </MenuItem>
       </Menu>

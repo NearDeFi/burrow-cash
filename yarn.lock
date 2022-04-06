@@ -1925,6 +1925,35 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@near-wallet-selector/core@3.0.0-alpha.2", "@near-wallet-selector/core@^3.0.0-alpha.2":
+  version "3.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-3.0.0-alpha.2.tgz#d9410127054553c6749bc743fc8e709a6323504e"
+  integrity sha512-XcRw5wquHYojv8f3FB6z1BdUa+ZevYVMjVZZkMXFDThnf1HRjroLXcJUF9Hy5mGoC8O//10Mk0ic+/+j92IoFg==
+  dependencies:
+    bn.js "^5.2.0"
+    near-api-js "0.44.2"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+
+"@near-wallet-selector/near-wallet@^3.0.0-alpha.0":
+  version "3.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/near-wallet/-/near-wallet-3.0.0-alpha.0.tgz#9aaefa45c33b4f9e4bd9f446afeccc6ad4801390"
+  integrity sha512-qZ9k30KnRk1pg96P49E6/pQpIVpL6JM2Falixe9E59abEucouJIIO1WzUN4Cr3L+89HEIlybzjCOUqnnPQKVGA==
+  dependencies:
+    "@near-wallet-selector/core" "3.0.0-alpha.2"
+    bn.js "^5.2.0"
+    near-api-js "0.44.2"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+
+"@near-wallet-selector/sender@^3.0.0-alpha.0":
+  version "3.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/sender/-/sender-3.0.0-alpha.0.tgz#f64dcc6d7fc221fb987886b8bb579d0b38acdee3"
+  integrity sha512-a3XY+ZT9Z/PFA6bX06zpBo8Gd4BDawXCNuK1aKT0K2zvpcEgjEagescC58JX8eh454yDNGYZLz+LVJVEvqKP2g==
+  dependencies:
+    is-mobile "^3.0.0"
+    near-api-js "0.44.2"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -6086,6 +6115,11 @@ is-json@^2.0.1:
   resolved "https://registry.npmjs.org/is-json/-/is-json-2.0.1.tgz"
   integrity sha1-a+Fm0USCihMdaGiRuYPfYsOUkf8=
 
+is-mobile@^3.0.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-3.1.1.tgz#3b9e48f40068e4ea2da411f5009779844ce8d6aa"
+  integrity sha512-RRoXXR2HNFxNkUnxtaBdGBXtFlUMFa06S0NUKf/LCF+MuGLu13gi9iBCkoEmc6+rpXuwi5Mso5V8Zf7mNynMBQ==
+
 is-nan@^1.2.1:
   version "1.3.2"
   resolved "https://registry.npmjs.org/is-nan/-/is-nan-1.3.2.tgz"
@@ -7285,7 +7319,24 @@ ncp@^2.0.0:
   resolved "https://registry.npmjs.org/ncp/-/ncp-2.0.0.tgz"
   integrity sha1-GVoh1sRuNh0vsSgbo4uR6d9727M=
 
-near-api-js@^0.43.1, near-api-js@~0.43.1:
+near-api-js@0.44.2, near-api-js@~0.44.2:
+  version "0.44.2"
+  resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-0.44.2.tgz#e451f68f2c56bd885c7b918db5818a3e6e9423d0"
+  integrity sha512-eMnc4V+geggapEUa3nU2p8HSHn/njtloI4P2mceHQWO8vDE1NGpnAw8FuTBrLmXSgIv9m6oocgFc9t3VNf5zwg==
+  dependencies:
+    bn.js "5.2.0"
+    borsh "^0.6.0"
+    bs58 "^4.0.0"
+    depd "^2.0.0"
+    error-polyfill "^0.1.3"
+    http-errors "^1.7.2"
+    js-sha256 "^0.9.0"
+    mustache "^4.0.0"
+    node-fetch "^2.6.1"
+    text-encoding-utf-8 "^1.0.2"
+    tweetnacl "^1.0.1"
+
+near-api-js@^0.43.1:
   version "0.43.1"
   resolved "https://registry.npmjs.org/near-api-js/-/near-api-js-0.43.1.tgz"
   integrity sha512-bgFuboD/a3eintaWqWMN9oWcGHkxbrKiJhxkJwHmwJrYx49y9QvWwEtoxeHSjKskJHUVXGKvaYRsc9XirrJ5JQ==

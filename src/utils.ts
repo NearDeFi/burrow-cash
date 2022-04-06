@@ -1,4 +1,4 @@
-import { connect, Contract, keyStores, WalletConnection, transactions } from "near-api-js";
+import { Contract, transactions } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
@@ -9,15 +9,27 @@ import {
   ViewMethodsOracle,
 } from "./interfaces/contract-methods";
 import { IBurrow, IConfig } from "./interfaces/burrow";
-import { BatchWallet, getContract, BatchWalletAccount } from "./store";
+import { getContract } from "./store";
+
+import { getWalletSelector, getAccount } from "./utils/wallet-selector-compat";
 
 const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
-const nearConfig = getConfig(defaultNetwork);
-
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
+// interface AccountChangeFunction {
+//   accountId: string;
+// }
+
+interface GetBurrowArgs {
+  fetchData?: () => void | null;
+  hideModal?: () => void | null;
+}
+
 let burrow: IBurrow;
+let resetBurrow = true;
+let fetchDataCached;
+let hideModalCached;
 
 const nearTokenIds = {
   mainnet: "wrap.near",
@@ -26,25 +38,25 @@ const nearTokenIds = {
 
 export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
 
-export const getBurrow = async (): Promise<IBurrow> => {
-  if (burrow) return burrow;
+export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): Promise<IBurrow> => {
+  if (burrow && !resetBurrow) return burrow;
+  resetBurrow = false;
 
-  // Initialize connection to the NEAR testnet
-  const near = await connect({
-    deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
-    ...nearConfig,
+  if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
+  if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
+
+  const changeAccount = async (accountId) => {
+    console.log("account changed", accountId);
+    resetBurrow = true;
+    await getBurrow();
+    if (fetchData) fetchData();
+  };
+
+  const selector = await getWalletSelector({
+    onAccountChange: changeAccount,
   });
 
-  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
-  // is hosted at https://wallet.testnet.near.org
-  const walletConnection = new BatchWallet(near, null);
-
-  // Getting the Account ID. If still unauthorized, it's just empty string
-  const account: BatchWalletAccount = new BatchWalletAccount(
-    walletConnection,
-    near.connection,
-    walletConnection.account().accountId,
-  );
+  const account = await getAccount();
 
   const view = async (
     contract: Contract,
@@ -94,7 +106,7 @@ export const getBurrow = async (): Promise<IBurrow> => {
   };
 
   const logicContract: Contract = await getContract(
-    walletConnection.account(),
+    account,
     LOGIC_CONTRACT_NAME,
     ViewMethodsLogic,
     ChangeMethodsLogic,
@@ -107,14 +119,17 @@ export const getBurrow = async (): Promise<IBurrow> => {
   )) as IConfig;
 
   const oracleContract: Contract = await getContract(
-    walletConnection.account(),
+    account,
     config.oracle_account_id,
     ViewMethodsOracle,
     ChangeMethodsOracle,
   );
 
   burrow = {
-    walletConnection,
+    selector,
+    changeAccount,
+    fetchData: fetchDataCached,
+    hideModal: hideModalCached,
     account,
     logicContract,
     oracleContract,
@@ -129,20 +144,4 @@ export const getBurrow = async (): Promise<IBurrow> => {
 // Initialize contract & set global variables
 export async function initContract(): Promise<IBurrow> {
   return getBurrow();
-}
-
-export function logout(walletConnection: WalletConnection) {
-  walletConnection.signOut();
-  // reload page
-  window.location.replace(window.location.origin + window.location.pathname);
-}
-
-export async function login(walletConnection: WalletConnection) {
-  // Allow the current app to make calls to the specified contract on the
-  // user's behalf.
-  // This works by creating a new access key for the user's account and storing
-  // the private key in localStorage.
-  await walletConnection.requestSignIn({
-    contractId: LOGIC_CONTRACT_NAME,
-  });
 }
