@@ -6,8 +6,12 @@ import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from
 import type { UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
+import { BRRRPrice } from "../../index";
+import { useIsBurrowToken } from "../../../hooks";
 
 export const TokenCell = ({ rowData }) => {
+  const isBurrowToken = useIsBurrowToken(rowData.tokenId);
+
   return (
     <Box display="flex">
       <Box>
@@ -21,7 +25,11 @@ export const TokenCell = ({ rowData }) => {
         {rowData ? (
           <>
             <Box>{rowData.symbol}</Box>
-            <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
+            {isBurrowToken ? (
+              <BRRRPrice />
+            ) : (
+              <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
+            )}
           </>
         ) : (
           <>

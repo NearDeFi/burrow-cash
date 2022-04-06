@@ -70,7 +70,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           extraDecimals,
           amount,
           collateralAmount,
-          maxAmount: isMax ? withdrawMaxAmount : undefined,
+          maxAmount: isMax ? Math.min(withdrawMaxAmount, collateralAmount) : undefined,
           collateral,
         });
         break;
