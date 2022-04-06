@@ -31,7 +31,6 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   const fetchData = () => {
-    console.log("fetching data");
     dispatch(fetchAssetsAndMetadata());
     dispatch(fetchAccount());
   };

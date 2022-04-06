@@ -6,6 +6,7 @@ import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "../config";
+import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
 
 const defaultNetwork = process.env.DEFAULT_NETWORK === "development" ? "testnet" : "mainnet";
 export const SENDER_ACCOUNT_ID = "near-wallet-selector:senderAccountId";
@@ -30,7 +31,14 @@ export const getWalletSelector = async ({ onAccountChange }) => {
   init = true;
 
   selector = await NearWalletSelector.init({
-    wallets: [setupNearWallet(), setupSender()],
+    wallets: [
+      setupNearWallet({
+        iconPath: nearWalletIcon,
+      }),
+      setupSender({
+        iconPath: senderWalletIcon,
+      }),
+    ],
     network: defaultNetwork,
     contractId: LOGIC_CONTRACT_NAME,
   });
