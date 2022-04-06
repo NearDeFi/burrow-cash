@@ -1,4 +1,4 @@
-import { Contract, transactions } from "near-api-js";
+import { Contract } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
@@ -11,7 +11,7 @@ import {
 import { IBurrow, IConfig } from "./interfaces/burrow";
 import { getContract } from "./store";
 
-import { getWalletSelector, getAccount } from "./utils/wallet-selector-compat";
+import { getWalletSelector, getAccount, functionCall } from "./utils/wallet-selector-compat";
 
 const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
@@ -88,23 +88,17 @@ export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): P
     args: Record<string, unknown> = {},
     deposit = "1",
   ) => {
+    const { contractId } = contract;
     const gas = new BN(150000000000000);
     const attachedDeposit = new BN(deposit);
 
-    const actions = [
-      transactions.functionCall(
-        methodName,
-        Buffer.from(JSON.stringify(args)),
-        gas,
-        attachedDeposit,
-      ),
-    ];
-
-    // @ts-ignore
-    return account.signAndSendTransaction({
-      receiverId: contract.contractId,
-      actions,
-    });
+    return functionCall({
+      contractId,
+      methodName,
+      args,
+      gas,
+      attachedDeposit,
+    }).catch((e) => console.log(e));
   };
 
   const logicContract: Contract = await getContract(
