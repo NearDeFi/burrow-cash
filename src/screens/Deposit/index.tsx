@@ -6,6 +6,7 @@ import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
+import { getConfig } from "../../redux/appSelectors";
 import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
 import { isBeta } from "../../store";
@@ -14,6 +15,7 @@ const Deposit = () => {
   const dispatch = useAppDispatch();
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
+  const config = useAppSelector(getConfig);
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("supply"));
   const netAPY = useAppSelector(getNetAPY);
@@ -23,6 +25,7 @@ const Deposit = () => {
     : defaultColumns;
 
   const handleOnRowClick = ({ tokenId }) => {
+    if (config.booster_token_id === tokenId) return;
     dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
   };
 
