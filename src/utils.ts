@@ -58,6 +58,8 @@ export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): P
 
   const account = await getAccount();
 
+  console.log(account.accountId);
+
   const view = async (
     contract: Contract,
     methodName: string,

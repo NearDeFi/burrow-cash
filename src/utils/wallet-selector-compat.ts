@@ -10,7 +10,6 @@ import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
 
 const defaultNetwork =
   process.env.DEFAULT_NETWORK === "development" || "testnet" ? "testnet" : "mainnet";
-export const SENDER_ACCOUNT_ID = "near-wallet-selector:senderAccountId";
 
 // caches in module so we don't re-init every time we need it
 let near: Near;
@@ -53,6 +52,8 @@ export const getWalletSelector = async ({ onAccountChange }) => {
       onAccountChange(accountId);
     }
   });
+
+  onAccountChange(accountId);
 
   return selector;
 };
