@@ -8,7 +8,7 @@ export const columns = [
   },
   {
     label: <BRRRLabel title="BRRR Rewards / Day" />,
-    dataKey: "brrr",
+    dataKey: "brrrBorrow",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
@@ -20,13 +20,13 @@ export const columns = [
   },
   {
     label: "Borrow APY",
-    dataKey: "borrowAPY",
+    dataKey: "borrowApy",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData?.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Available Liquidity",
-    dataKey: "liquidity",
+    dataKey: "availableLiquidity",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />

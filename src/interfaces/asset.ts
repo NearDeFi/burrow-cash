@@ -106,6 +106,7 @@ export interface UIAsset {
   canUseAsCollateral: boolean;
   supplied: number;
   collateral: number;
+  deposited: number;
   borrowed: number;
   availableNEAR: number;
   available: number;

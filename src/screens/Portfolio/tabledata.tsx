@@ -4,12 +4,12 @@ import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 export const suppliedColumns = [
   {
     label: "Name",
-    dataKey: "name",
+    dataKey: "symbol",
     Cell: TokenCell,
   },
   {
     label: <BRRRLabel title="BRRR rewards / day" />,
-    dataKey: "brrr",
+    dataKey: "dailyBRRRewards",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
@@ -23,7 +23,7 @@ export const suppliedColumns = [
   },
   {
     label: "Collateral",
-    dataKey: "collateralSum",
+    dataKey: "collateral",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
@@ -38,7 +38,7 @@ export const suppliedColumns = [
   },
   {
     label: "Deposited",
-    dataKey: "balance",
+    dataKey: "supplied",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData.supplied} rowData={rowData} format="amount" />,
   },
@@ -57,12 +57,12 @@ export const suppliedColumns = [
 export const borrowedColumns = [
   {
     label: "Name",
-    dataKey: "name",
+    dataKey: "symbol",
     Cell: TokenCell,
   },
   {
     label: <BRRRLabel title="BRRR rewards / day" />,
-    dataKey: "brrr",
+    dataKey: "dailyBRRRewards",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
@@ -70,13 +70,13 @@ export const borrowedColumns = [
   },
   {
     label: "Borrow APY",
-    dataKey: "borrowAPY",
+    dataKey: "borrowApy",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Borrowed",
-    dataKey: "shares",
+    dataKey: "borrowed",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData.borrowed} rowData={rowData} format="amount" />,
   },
