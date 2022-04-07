@@ -20,6 +20,7 @@ import {
   getWithdrawMaxAmount,
   getSupplyMaxAmount,
 } from "../../redux/appSelectors";
+import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
   const [loading, setLoading] = useState(false);
@@ -39,11 +40,13 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   });
 
   const handleSwitchToggle = (event) => {
+    trackUseAsCollateral({ useAsCollateral: event.target.checked, action, tokenId });
     dispatch(toggleUseAsCollateral({ useAsCollateral: event.target.checked }));
   };
 
   const handleActionButtonClick = async () => {
     setLoading(true);
+    trackActionButton(action, { tokenId, amount, useAsCollateral });
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {

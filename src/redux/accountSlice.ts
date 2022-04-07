@@ -5,6 +5,7 @@ import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
 import { listToMap, transformAccountFarms } from "./utils";
 import { ChangeMethodsLogic, IBoosterStaking } from "../interfaces";
+import { identifyUser } from "../telemetry";
 
 interface Balance {
   [tokenId: string]: string;
@@ -99,6 +100,7 @@ export const fetchAccount = createAsyncThunk("account/fetchAccount", async () =>
   const { accountId } = account;
 
   if (accountId) {
+    identifyUser(accountId);
     const assets = await getAssetsDetailed();
     const tokenIds = assets.map((asset) => asset.token_id);
     const accountBalance = (await account.getAccountBalance()).available;
