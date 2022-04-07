@@ -37,13 +37,20 @@ export const executeMultipleTransactions = async (transactions) => {
     ),
   }));
 
-  const res = await selector.signAndSendTransactions({
-    transactions: selectorTransactions,
-  })!;
+  const res = await selector
+    .signAndSendTransactions({
+      transactions: selectorTransactions,
+    })
+    .catch((e) => {
+      if (!/reject/.test(e)) {
+        throw e;
+      }
+      console.warn(e);
+      hideModal();
+    });
 
   /// will refresh for injected wallets (near wallet would have redirected by now)
   await fetchData();
-  hideModal();
 
   return res;
 };
