@@ -38,7 +38,7 @@ const Borrow = () => {
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
       <TotalBRRR />
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
+      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />
     </Box>
   );
 };

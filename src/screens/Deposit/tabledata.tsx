@@ -8,7 +8,7 @@ export const columns = [
   },
   {
     label: <BRRRLabel title="BRRR Rewards / Day" />,
-    dataKey: "brrr",
+    dataKey: "brrrSupply",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
@@ -20,19 +20,19 @@ export const columns = [
   },
   {
     label: "APY",
-    dataKey: "apy",
+    dataKey: "supplyApy",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
   },
   {
     label: "Total Deposit",
-    dataKey: "deposit",
+    dataKey: "totalSupply",
     Cell: ({ rowData }) => <Cell value={rowData?.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
     label: "Available Liquidity",
-    dataKey: "liquidity",
+    dataKey: "availableLiquidity",
     align: "right",
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
@@ -40,14 +40,8 @@ export const columns = [
   },
   {
     label: "Your Deposit",
-    dataKey: "yourdeposit",
-    Cell: ({ rowData }) => (
-      <Cell
-        value={rowData ? rowData.supplied + rowData.collateral : undefined}
-        rowData={rowData}
-        format="amount"
-      />
-    ),
+    dataKey: "deposited",
+    Cell: ({ rowData }) => <Cell value={rowData.deposited} rowData={rowData} format="amount" />,
     align: "right",
   },
 ];

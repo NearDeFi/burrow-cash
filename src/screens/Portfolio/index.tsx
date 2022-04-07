@@ -32,7 +32,7 @@ const Portfolio = () => {
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets
       </Typography>
       {suppliedRows.length ? (
-        <Table rows={suppliedRows} columns={suppliedColumns} />
+        <Table rows={suppliedRows} columns={suppliedColumns} sortColumn="supplied" />
       ) : (
         <div style={{ textAlign: "center" }}>No deposited assets yet</div>
       )}
@@ -40,7 +40,7 @@ const Portfolio = () => {
         <span style={{ color: theme.palette.primary.main }}>Borrowed</span> Assets
       </Typography>
       {borrowedRows.length ? (
-        <Table rows={borrowedRows} columns={borrowedColumns} />
+        <Table rows={borrowedRows} columns={borrowedColumns} sortColumn="borrowed" />
       ) : (
         <div style={{ textAlign: "center" }}>No borrowed assets yet</div>
       )}
