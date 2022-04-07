@@ -51,6 +51,7 @@ export const executeMultipleTransactions = async (transactions) => {
 
   /// will refresh for injected wallets (near wallet would have redirected by now)
   await fetchData();
+  hideModal();
 
   return res;
 };
