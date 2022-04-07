@@ -43,7 +43,7 @@ const Deposit = () => {
         )}
       </Box>
       <TotalBRRR />
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
+      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
     </Box>
   );
 };
