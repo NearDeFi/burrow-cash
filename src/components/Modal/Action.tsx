@@ -46,7 +46,15 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
 
   const handleActionButtonClick = async () => {
     setLoading(true);
-    trackActionButton(action, { tokenId, amount, useAsCollateral });
+    trackActionButton(action, {
+      tokenId,
+      amount,
+      isMax,
+      useAsCollateral,
+      available,
+      collateral,
+      sliderValue: Math.round((amount * 100) / available) || 0,
+    });
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {
