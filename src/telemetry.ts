@@ -59,3 +59,15 @@ export const trackDisplayAsUsd = () => {
 export const trackShowDust = () => {
   track("Show dust menu clicked");
 };
+
+export const trackMaxStaking = (props) => {
+  track("Max staking clicked", props);
+};
+
+export const trackStaking = (props) => {
+  track("Staking button clicked", props);
+};
+
+export const trackUnstake = () => {
+  track("Unstake button clicked");
+};
