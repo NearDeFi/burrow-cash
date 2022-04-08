@@ -89,7 +89,7 @@ const Modal = () => {
             available$={available$}
             price={price}
           />
-          <Controls amount={amount} available={available} />
+          <Controls amount={amount} available={available} action={action} tokenId={tokenId} />
           <HealthFactor value={healthFactor} />
           {action === "Withdraw" && (
             <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
