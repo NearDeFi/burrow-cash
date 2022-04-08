@@ -5,6 +5,7 @@ import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/a
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
+import { trackClaimButton } from "../../telemetry";
 
 export default function TotalBRRR() {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
@@ -13,6 +14,7 @@ export default function TotalBRRR() {
   const dispatch = useAppDispatch();
 
   const handleClaimAll = async () => {
+    trackClaimButton();
     dispatch(farmClaimAll()).then(() => {
       dispatch(fetchAccount());
     });
