@@ -1,7 +1,7 @@
 import { ConnectConfig } from "near-api-js";
 
 export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME as string;
-export const DUST_THRESHOLD = 0.0001;
+export const DUST_THRESHOLD = 0.001;
 
 const getConfig = (env: string) => {
   switch (env) {
