@@ -68,12 +68,11 @@ export const getNetAPY = createSelector(
 
     const [gainCollateral, totalCollateral] = getGains("collateral");
     const [gainSupplied, totalSupplied] = getGains("supplied");
-    const [gainBorrowed, totalBorrowed] = getGains("borrowed");
+    const [gainBorrowed] = getGains("borrowed");
 
-    const netSupplyAndCollateralAPY =
-      ((gainCollateral + gainSupplied) * 100) / (totalCollateral + totalSupplied);
-    const netBorrowedAPY = (gainBorrowed * 100) / totalBorrowed;
-    const netAPY = netSupplyAndCollateralAPY - (netBorrowedAPY || 0);
+    const netGains = gainCollateral + gainSupplied - gainBorrowed;
+    const netTotals = totalCollateral + totalSupplied;
+    const netAPY = (netGains * 100) / netTotals;
 
     return `${(netAPY || 0).toLocaleString(undefined, APY_FORMAT)}%`;
   },
