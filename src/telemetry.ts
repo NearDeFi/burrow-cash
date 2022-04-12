@@ -71,3 +71,7 @@ export const trackStaking = (props) => {
 export const trackUnstake = () => {
   track("Unstake button clicked");
 };
+
+export const trackSlimStats = (props) => {
+  track("Slim stats button clicked", props);
+};
