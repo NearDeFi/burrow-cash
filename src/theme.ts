@@ -7,6 +7,7 @@ export const themeOptions = {
     type: "light",
     primary: {
       main: "#47C880",
+      light: "#D5EFE6",
     },
     secondary: {
       main: "#000741",

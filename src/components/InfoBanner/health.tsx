@@ -33,7 +33,7 @@ export const HealthFactor = ({ value }: Props) => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" justifyContent="flex-end">
         <Box
           bgcolor={healthFactorColor}
           width={dotSize}
@@ -42,7 +42,7 @@ export const HealthFactor = ({ value }: Props) => {
           borderRadius={dotSize}
           component="div"
         />
-        <Typography fontSize="1.5rem" fontWeight="bold">
+        <Typography fontSize="1.5rem" fontWeight="bold" align="right">
           {healthFactorDisplayValue}
         </Typography>
       </Box>

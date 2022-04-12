@@ -1,12 +1,19 @@
 import millify from "millify";
 import { Box, Typography, useTheme } from "@mui/material";
 
-import { APY_FORMAT } from "../../store";
-import { getTotalAccountBalance, getNetAPY, getHealthFactor } from "../../redux/accountSelectors";
+import { APY_FORMAT, TOKEN_FORMAT } from "../../store";
+import {
+  getTotalAccountBalance,
+  getNetAPY,
+  getHealthFactor,
+  getTotalBRRR,
+  getTotalDailyBRRRewards,
+} from "../../redux/accountSelectors";
 import { getTotalBalance } from "../../redux/assetsSelectors";
 import { useAppSelector } from "../../redux/hooks";
 import { HealthFactor } from "./health";
 import { Wrapper } from "./style";
+import Hog from "./hog.svg";
 
 const m = (a) => millify(a, { precision: 2 });
 
@@ -16,7 +23,7 @@ const Totals = () => {
   const theme = useTheme();
 
   return (
-    <Wrapper>
+    <Wrapper gridArea="totals">
       <Box p="0.5rem" px="1rem">
         <Typography fontWeight="bold" fontSize="1.5rem">
           ${m(borrowed)}
@@ -53,7 +60,7 @@ const UserTotals = () => {
   const theme = useTheme();
 
   return (
-    <Wrapper>
+    <Wrapper gridArea="user">
       <Box p="0.5rem" px="1rem">
         <Typography fontWeight="bold" fontSize="1.5rem">
           ${m(borrowed)}
@@ -89,7 +96,7 @@ const UserHealth = () => {
   const healthFactor = useAppSelector(getHealthFactor);
 
   return (
-    <Wrapper>
+    <Wrapper gridArea="health">
       <Box p="0.5rem" px="1rem">
         <Typography fontWeight="bold" fontSize="1.5rem" color={netAPY < 0 ? "red" : "white"}>
           {netAPY.toLocaleString(undefined, APY_FORMAT)}%
@@ -105,13 +112,62 @@ const UserHealth = () => {
   );
 };
 
-const InfoBanner = () => {
-  const cols = ["1fr", "1fr 1fr 1fr"];
+const Rewards = () => {
+  const [total, unclaimed] = useAppSelector(getTotalBRRR);
+  const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const theme = useTheme();
+
   return (
-    <Box display="grid" gridTemplateColumns={cols} gap={2} mx="2rem" my="1rem">
+    <Wrapper
+      gridArea="rewards"
+      sx={{
+        backgroundColor: theme.palette.primary.light,
+        color: theme.palette.secondary.main,
+        overflow: "hidden",
+      }}
+    >
+      <Box top="0.5rem" left="0.5rem" position="relative">
+        <Hog />
+      </Box>
+      <Box p="0.5rem" px="1rem">
+        <Typography fontSize="0.85rem">Daily rewards:</Typography>
+        <Typography fontWeight="bold" fontSize="0.85rem">
+          Total Rewards:
+        </Typography>
+      </Box>
+      <Box p="0.5rem" px="1rem">
+        <Typography fontSize="0.85rem" align="right" fontWeight="bold">
+          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)} BRRR
+        </Typography>
+        <Typography
+          fontWeight="bold"
+          fontSize="0.85rem"
+          color={theme.palette.primary.main}
+          align="right"
+        >
+          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)} BRRR
+        </Typography>
+      </Box>
+    </Wrapper>
+  );
+};
+
+const InfoBanner = () => {
+  const areas = [`"totals" "user" "health" "rewards"`, `"totals user health" ". rewards ."`];
+  const columns = ["1fr", "minmax(0, 1fr) minmax(320px, 1fr) minmax(0, 1fr)"];
+  return (
+    <Box
+      display="grid"
+      gridTemplateAreas={areas}
+      gridTemplateColumns={columns}
+      gap={2}
+      mx="2rem"
+      my="1rem"
+    >
       <Totals />
       <UserTotals />
       <UserHealth />
+      <Rewards />
     </Box>
   );
 };

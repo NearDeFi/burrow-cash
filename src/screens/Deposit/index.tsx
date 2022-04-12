@@ -1,6 +1,6 @@
 import { Box, Alert } from "@mui/material";
 
-import { PageTitle, TotalBRRR, InfoBanner } from "../../components";
+import { PageTitle, InfoBanner } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -34,7 +34,6 @@ const Deposit = () => {
           <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
         )}
       </Box>
-      <TotalBRRR />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
     </Box>
   );
