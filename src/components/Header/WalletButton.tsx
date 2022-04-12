@@ -38,10 +38,14 @@ const WalletButton = () => {
     dispatch(fetchAccount());
   };
 
+  const signOut = () => {
+    dispatch(logoutAccount());
+  };
+
   const onMount = async () => {
     if (selector) return;
 
-    const { selector: s } = await getBurrow({ fetchData, hideModal });
+    const { selector: s } = await getBurrow({ fetchData, hideModal, signOut });
 
     selectorRef.current = s;
     setSelector(s);
@@ -72,7 +76,7 @@ const WalletButton = () => {
       console.log("Failed to sign out");
       console.error(err);
     });
-    dispatch(logoutAccount());
+    signOut();
     handleClose();
   };
 

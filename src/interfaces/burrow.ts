@@ -25,6 +25,7 @@ export interface IBurrow {
   changeAccount: (accountId: string) => void;
   fetchData: () => void;
   hideModal: () => void;
+  signOut: () => void;
   logicContract: Contract;
   oracleContract: Contract;
   config: IConfig;

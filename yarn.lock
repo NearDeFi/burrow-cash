@@ -1925,31 +1925,31 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
-"@near-wallet-selector/core@3.0.0-alpha.2", "@near-wallet-selector/core@^3.0.0-alpha.2":
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-3.0.0-alpha.2.tgz#d9410127054553c6749bc743fc8e709a6323504e"
-  integrity sha512-XcRw5wquHYojv8f3FB6z1BdUa+ZevYVMjVZZkMXFDThnf1HRjroLXcJUF9Hy5mGoC8O//10Mk0ic+/+j92IoFg==
+"@near-wallet-selector/core@3.0.0", "@near-wallet-selector/core@v3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-3.0.0.tgz#0aec1245bddf4978c3d8b2cee34aba806afe3c88"
+  integrity sha512-jy4+DB9c44Cfn13m3cL29WgdAOl4aQxET1H8C4fDiM7lTxeF+uDd2/hPpwuYDP6ANctFd4TuLhRj6nVq6Tc31A==
   dependencies:
     bn.js "^5.2.0"
     near-api-js "0.44.2"
     react "^17.0.2"
     react-dom "^17.0.2"
 
-"@near-wallet-selector/near-wallet@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/near-wallet/-/near-wallet-3.0.0-alpha.0.tgz#9aaefa45c33b4f9e4bd9f446afeccc6ad4801390"
-  integrity sha512-qZ9k30KnRk1pg96P49E6/pQpIVpL6JM2Falixe9E59abEucouJIIO1WzUN4Cr3L+89HEIlybzjCOUqnnPQKVGA==
+"@near-wallet-selector/near-wallet@v3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/near-wallet/-/near-wallet-3.0.0.tgz#8fca02eef10e7e7a55ee6366d984586912009fa2"
+  integrity sha512-Vmmu6AR8/iiao84drkC4Sv0EdvfL108nWWzM0Q0QGYSURggXa8xYfxDa8enjVsjUXcssF5O/j9NcUl7zjxJtiA==
   dependencies:
-    "@near-wallet-selector/core" "3.0.0-alpha.2"
+    "@near-wallet-selector/core" "3.0.0"
     bn.js "^5.2.0"
     near-api-js "0.44.2"
     react "^17.0.2"
     react-dom "^17.0.2"
 
-"@near-wallet-selector/sender@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/sender/-/sender-3.0.0-alpha.0.tgz#f64dcc6d7fc221fb987886b8bb579d0b38acdee3"
-  integrity sha512-a3XY+ZT9Z/PFA6bX06zpBo8Gd4BDawXCNuK1aKT0K2zvpcEgjEagescC58JX8eh454yDNGYZLz+LVJVEvqKP2g==
+"@near-wallet-selector/sender@v3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/sender/-/sender-3.0.0.tgz#39a0ea977fc22296a900ff21c7bf151bfc2c6294"
+  integrity sha512-oBSHZDWa7+FEZEjyEyI24YJ2VAHcup4pCnR1oJm6ovPNDB2fZ9kJH9h4HFQ07vyyhH1bOvZ/Gn4oLDx0+/VTXA==
   dependencies:
     is-mobile "^3.0.0"
     near-api-js "0.44.2"

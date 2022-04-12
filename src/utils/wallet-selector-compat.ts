@@ -33,10 +33,10 @@ export const getWalletSelector = async ({ onAccountChange }) => {
   selector = await NearWalletSelector.init({
     wallets: [
       setupNearWallet({
-        iconPath: nearWalletIcon,
+        iconUrl: nearWalletIcon,
       }),
       setupSender({
-        iconPath: senderWalletIcon,
+        iconUrl: senderWalletIcon,
       }),
     ],
     network: defaultNetwork,

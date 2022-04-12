@@ -19,7 +19,7 @@ export interface FunctionCallOptions {
 }
 
 export const executeMultipleTransactions = async (transactions) => {
-  const { account, selector, fetchData, hideModal } = await getBurrow();
+  const { account, selector, fetchData, hideModal, signOut } = await getBurrow();
 
   const selectorTransactions: Array<SelectorTransaction> = transactions.map((t) => ({
     signerId: account.accountId,
@@ -37,23 +37,33 @@ export const executeMultipleTransactions = async (transactions) => {
     ),
   }));
 
-  const res = await selector
-    .signAndSendTransactions({
+  /// for debugging injected wallets can log res
+  // let res;
+  try {
+    await selector.signAndSendTransactions({
       transactions: selectorTransactions,
-    })
-    .catch((e) => {
-      if (!/reject/.test(e)) {
-        throw e;
-      }
-      console.warn(e);
-      hideModal();
     });
+  } catch (e: any) {
+    if (/reject/.test(e)) {
+      alert("Transaction was rejected in wallet. Please try again!");
+      hideModal();
+      return;
+    }
+    if (!/No accounts available/.test(e)) {
+      throw e;
+    }
+    console.warn(e);
+    signOut();
+    alert(
+      "No accounts available. Your wallet may be locked. You have been signed out. Please sign in again!",
+    );
+    return;
+  }
 
+  // console.log(res)
   /// will refresh for injected wallets (near wallet would have redirected by now)
   await fetchData();
   hideModal();
-
-  return res;
 };
 
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {

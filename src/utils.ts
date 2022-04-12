@@ -24,12 +24,14 @@ export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 interface GetBurrowArgs {
   fetchData?: () => void | null;
   hideModal?: () => void | null;
+  signOut?: () => void | null;
 }
 
 let burrow: IBurrow;
 let resetBurrow = true;
 let fetchDataCached;
 let hideModalCached;
+let signOutCached;
 
 const nearTokenIds = {
   mainnet: "wrap.near",
@@ -38,12 +40,13 @@ const nearTokenIds = {
 
 export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
 
-export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): Promise<IBurrow> => {
+export const getBurrow = async ({
+  fetchData,
+  hideModal,
+  signOut,
+}: GetBurrowArgs = {}): Promise<IBurrow> => {
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
-
-  if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
-  if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
 
   const changeAccount = async (accountId) => {
     console.log("account changed", accountId);
@@ -56,9 +59,19 @@ export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): P
     onAccountChange: changeAccount,
   });
 
-  const account = await getAccount();
+  if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
+  if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
+  if (!signOutCached && !!signOut)
+    signOutCached = async () => {
+      await selector?.signOut().catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
+      if (hideModal) hideModal();
+      signOut();
+    };
 
-  console.log(account.accountId);
+  const account = await getAccount();
 
   const view = async (
     contract: Contract,
@@ -126,6 +139,7 @@ export const getBurrow = async ({ fetchData, hideModal }: GetBurrowArgs = {}): P
     changeAccount,
     fetchData: fetchDataCached,
     hideModal: hideModalCached,
+    signOut: signOutCached,
     account,
     logicContract,
     oracleContract,
