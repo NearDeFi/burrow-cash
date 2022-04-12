@@ -1,5 +1,5 @@
 import millify from "millify";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 import { APY_FORMAT, TOKEN_FORMAT } from "../../store";
 import {
@@ -60,7 +60,7 @@ const UserTotals = () => {
   const theme = useTheme();
 
   return (
-    <Wrapper gridArea="user">
+    <>
       <Box p="0.5rem" px="1rem">
         <Typography fontWeight="bold" fontSize="1.5rem">
           ${m(borrowed)}
@@ -87,7 +87,7 @@ const UserTotals = () => {
           Your deposits
         </Typography>
       </Box>
-    </Wrapper>
+    </>
   );
 };
 
@@ -96,7 +96,7 @@ const UserHealth = () => {
   const healthFactor = useAppSelector(getHealthFactor);
 
   return (
-    <Wrapper gridArea="health">
+    <>
       <Box p="0.5rem" px="1rem">
         <Typography fontWeight="bold" fontSize="1.5rem" color={netAPY < 0 ? "red" : "white"}>
           {netAPY.toLocaleString(undefined, APY_FORMAT)}%
@@ -108,7 +108,7 @@ const UserHealth = () => {
       <Box p="0.5rem" px="1rem">
         <HealthFactor value={healthFactor} />
       </Box>
-    </Wrapper>
+    </>
   );
 };
 
@@ -154,9 +154,12 @@ const Rewards = () => {
 };
 
 const InfoBanner = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const areas = [
-    `"totals" "user" "health" "rewards"`,
-    `"totals" "user" "health" "rewards"`,
+    `"totals" "user" "rewards"`,
+    `"totals" "user" "rewards"`,
     `"totals user" "health rewards"`,
     `"totals user health" ". rewards ."`,
     `"totals user health rewards"`,
@@ -178,8 +181,25 @@ const InfoBanner = () => {
       my="1rem"
     >
       <Totals />
-      <UserTotals />
-      <UserHealth />
+      {isMobile ? (
+        <Wrapper gridArea="user" sx={{ flexDirection: "column" }}>
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <UserTotals />
+          </Box>
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <UserHealth />
+          </Box>
+        </Wrapper>
+      ) : (
+        <>
+          <Wrapper gridArea="user">
+            <UserTotals />
+          </Wrapper>
+          <Wrapper gridArea="health">
+            <UserHealth />
+          </Wrapper>
+        </>
+      )}
       <Rewards />
     </Box>
   );
