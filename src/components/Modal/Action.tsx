@@ -46,7 +46,6 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
 
   const handleActionButtonClick = async () => {
     setLoading(true);
-    dispatch(hideModal());
     trackActionButton(action, {
       tokenId,
       amount,
@@ -114,6 +113,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       default:
         break;
     }
+    dispatch(hideModal());
   };
 
   const actionDisabled = useMemo(() => {
