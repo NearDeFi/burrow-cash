@@ -1,32 +1,19 @@
 import { Box, Typography, useTheme } from "@mui/material";
 
-import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, TotalBRRR } from "../../components";
+import { InfoBanner, TotalBRRR } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
-import {
-  getTotalAccountBalance,
-  getPortfolioAssets,
-  getNetAPY,
-  getAccountId,
-} from "../../redux/accountSelectors";
+import { getPortfolioAssets, getAccountId } from "../../redux/accountSelectors";
 
 const Portfolio = () => {
   const theme = useTheme();
-  const totalSuppliedBalance = useAppSelector(getTotalAccountBalance("supplied"));
-  const totalBorroedBalance = useAppSelector(getTotalAccountBalance("borrowed"));
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
-  const netAPY = useAppSelector(getNetAPY);
   const accountId = useAppSelector(getAccountId);
 
   return (
     <Box pb="2.5rem">
-      <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Your Deposits" value={totalSuppliedBalance} />
-        <InfoBox title="Net APY" value={netAPY} />
-        <InfoBox title="Your Borrows" value={totalBorroedBalance} />
-      </InfoWrapper>
+      <InfoBanner />
       {accountId && <TotalBRRR />}
       <Typography sx={{ fontSize: 24, padding: "1rem", textAlign: "center" }}>
         <span style={{ color: theme.palette.primary.main }}>Deposited</span> Assets

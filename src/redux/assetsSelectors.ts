@@ -1,6 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import { USD_FORMAT } from "../store";
 import type { RootState } from "./store";
 import { toUsd, transformAsset, sumReducer, hasAssets } from "./utils";
 
@@ -8,7 +7,7 @@ export const getTotalBalance = (source: "borrowed" | "supplied") =>
   createSelector(
     (state: RootState) => state.assets,
     (assets) => {
-      if (!hasAssets(assets)) return undefined;
+      if (!hasAssets(assets)) return 0;
       const { data } = assets;
       return Object.keys(data)
         .map(
@@ -16,8 +15,7 @@ export const getTotalBalance = (source: "borrowed" | "supplied") =>
             toUsd(data[tokenId][source].balance, data[tokenId]) +
             (source === "supplied" ? toUsd(data[tokenId].reserved, data[tokenId]) : 0),
         )
-        .reduce(sumReducer, 0)
-        .toLocaleString(undefined, USD_FORMAT);
+        .reduce(sumReducer, 0);
     },
   );
 

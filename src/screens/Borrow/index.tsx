@@ -1,24 +1,16 @@
 import { Box } from "@mui/material";
 
-import {
-  getHealthFactor,
-  getTotalAccountBalance,
-  getAccountId,
-} from "../../redux/accountSelectors";
-import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle, HealthFactorBox, TotalBRRR } from "../../components";
+import { getAccountId } from "../../redux/accountSelectors";
+import { PageTitle, TotalBRRR, InfoBanner } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
+import { getAvailableAssets } from "../../redux/assetsSelectors";
 import { showModal } from "../../redux/appSlice";
 
 const Borrow = () => {
   const dispatch = useAppDispatch();
-  const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
-  const yourBorrowBalance = useAppSelector(getTotalAccountBalance("borrowed"));
   const accountId = useAppSelector(getAccountId);
-  const healthFactor = useAppSelector(getHealthFactor);
   const rows = useAppSelector(getAvailableAssets("borrow"));
 
   const columns = !accountId
@@ -31,11 +23,7 @@ const Borrow = () => {
 
   return (
     <Box pb="2.5rem">
-      <InfoWrapper sx={{ gridTemplateColumns: "auto auto auto" }}>
-        <InfoBox title="Total Borrowed" value={totalBorrowBalance} />
-        <InfoBox title="Your Borrow Balance" value={yourBorrowBalance} subtitle="Portfolio" />
-        <HealthFactorBox value={healthFactor} />
-      </InfoWrapper>
+      <InfoBanner />
       <PageTitle first="Borrow" second="Assets" />
       <TotalBRRR />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />
