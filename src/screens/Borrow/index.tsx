@@ -22,7 +22,7 @@ const Borrow = () => {
   };
 
   return (
-    <Box pb="2.5rem">
+    <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBanner />
       <PageTitle first="Borrow" second="Assets" />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />

@@ -26,14 +26,14 @@ const Deposit = () => {
   };
 
   return (
-    <Box pb="2.5rem">
+    <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBanner />
       <PageTitle first="Deposit" second="Assets" />
-      <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
-        {isBeta && (
+      {isBeta && (
+        <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
           <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
-        )}
-      </Box>
+        </Box>
+      )}
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
     </Box>
   );

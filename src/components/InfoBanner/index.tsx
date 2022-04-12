@@ -124,9 +124,10 @@ const Rewards = () => {
         backgroundColor: theme.palette.primary.light,
         color: theme.palette.secondary.main,
         overflow: "hidden",
+        justifyContent: "flex-start",
       }}
     >
-      <Box top="0.5rem" left="0.5rem" position="relative">
+      <Box top="1rem" left="0.5rem" position="relative">
         <Hog />
       </Box>
       <Box p="0.5rem" px="1rem">
@@ -135,7 +136,7 @@ const Rewards = () => {
           Total Rewards:
         </Typography>
       </Box>
-      <Box p="0.5rem" px="1rem">
+      <Box p="0.5rem" px="1rem" justifySelf="flex-end" flex="1">
         <Typography fontSize="0.85rem" align="right" fontWeight="bold">
           {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)} BRRR
         </Typography>
@@ -153,8 +154,20 @@ const Rewards = () => {
 };
 
 const InfoBanner = () => {
-  const areas = [`"totals" "user" "health" "rewards"`, `"totals user health" ". rewards ."`];
-  const columns = ["1fr", "minmax(0, 1fr) minmax(320px, 1fr) minmax(0, 1fr)"];
+  const areas = [
+    `"totals" "user" "health" "rewards"`,
+    `"totals" "user" "health" "rewards"`,
+    `"totals user" "health rewards"`,
+    `"totals user health" ". rewards ."`,
+    `"totals user health rewards"`,
+  ];
+  const columns = [
+    "1fr",
+    "1fr",
+    "repeat(2, minmax(320px, 320px))",
+    "repeat(3, minmax(320px, 320px))",
+    "repeat(4, minmax(320px, 320px))",
+  ];
   return (
     <Box
       display="grid"

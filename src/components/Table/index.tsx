@@ -50,7 +50,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
   };
 
   return (
-    <TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto" }}>
+    <TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto", mb: "1.5rem" }}>
       <MUITable aria-label="table">
         <TableHead>
           <TableRow>
