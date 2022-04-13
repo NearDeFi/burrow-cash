@@ -61,7 +61,7 @@ export const appSlice = createSlice({
       state,
       action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
     ) {
-      state.selected = { useAsCollateral: false, isMax: false, ...action.payload };
+      state.selected = { ...state.selected, isMax: false, ...action.payload };
       state.showModal = true;
     },
     updateAmount(state, action: PayloadAction<{ amount: number; isMax: boolean }>) {

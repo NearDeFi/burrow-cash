@@ -3,7 +3,7 @@ import { Box, Typography, Switch } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { nearTokenId } from "../../utils";
-import { toggleUseAsCollateral } from "../../redux/appSlice";
+import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
 import { actionMapTitle, getModalData } from "./utils";
 import { repay } from "../../store/actions/repay";
 import { supply } from "../../store/actions/supply";
@@ -113,6 +113,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       default:
         break;
     }
+    dispatch(hideModal());
   };
 
   const actionDisabled = useMemo(() => {
@@ -136,7 +137,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           <Typography variant="body1" fontSize="0.85rem">
             Use as Collateral
           </Typography>
-          <Switch onChange={handleSwitchToggle} />
+          <Switch onChange={handleSwitchToggle} checked={useAsCollateral} />
         </Box>
       )}
       <Box display="flex" justifyContent="center">
