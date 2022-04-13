@@ -1,10 +1,14 @@
 import { Box, Typography } from "@mui/material";
 
+import { useSlimStats } from "../../hooks";
+
 interface Props {
   value: number | null;
 }
 
 export const HealthFactor = ({ value }: Props) => {
+  const slimStats = useSlimStats();
+
   const healthFactorDisplayValue =
     value === -1 || value === null
       ? "N/A"
@@ -46,9 +50,11 @@ export const HealthFactor = ({ value }: Props) => {
           {healthFactorDisplayValue}
         </Typography>
       </Box>
-      <Typography fontWeight="light" fontSize="0.85rem" align="center">
-        Health Factor {subtitle}
-      </Typography>
+      {!slimStats && (
+        <Typography fontWeight="light" fontSize="0.85rem" align="center">
+          Health Factor {subtitle}
+        </Typography>
+      )}
     </Box>
   );
 };

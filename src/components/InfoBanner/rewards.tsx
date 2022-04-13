@@ -3,12 +3,14 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { TOKEN_FORMAT } from "../../store";
 import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
 import { useAppSelector } from "../../redux/hooks";
+import { useSlimStats } from "../../hooks";
 import { Wrapper } from "./style";
 import Hog from "./hog.svg";
 
 export const Rewards = () => {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
   const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const slimStats = useSlimStats();
   const theme = useTheme();
 
   return (
@@ -24,23 +26,37 @@ export const Rewards = () => {
       <Box top="1rem" left="0.5rem" position="relative">
         <Hog />
       </Box>
-      <Box p="0.5rem" px="1rem">
-        <Typography fontSize="0.85rem">Daily rewards:</Typography>
-        <Typography fontWeight="bold" fontSize="0.85rem">
-          Total Rewards:
-        </Typography>
-      </Box>
-      <Box p="0.5rem" px="1rem" justifySelf="flex-end" flex="1">
-        <Typography fontSize="0.85rem" align="right" fontWeight="bold">
-          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)} BRRR
+      {!slimStats && (
+        <Box p="0.5rem" px="1rem">
+          <Typography fontSize="0.85rem">Daily rewards:</Typography>
+          <Typography fontWeight="bold" fontSize="0.85rem">
+            Total Rewards:
+          </Typography>
+        </Box>
+      )}
+      <Box
+        p="0.5rem"
+        px="1rem"
+        justifySelf="flex-end"
+        display="flex"
+        flex="1"
+        flexDirection={slimStats ? "row-reverse" : "column"}
+      >
+        <Typography
+          fontSize={slimStats ? "1.1rem" : "0.85rem"}
+          align="right"
+          fontWeight="bold"
+          ml="1rem"
+        >
+          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)} {!slimStats && "BRRR"}
         </Typography>
         <Typography
           fontWeight="bold"
-          fontSize="0.85rem"
+          fontSize={slimStats ? "1.1rem" : "0.85rem"}
           color={theme.palette.primary.main}
           align="right"
         >
-          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)} BRRR
+          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)} {!slimStats && "BRRR"}
         </Typography>
       </Box>
     </Wrapper>

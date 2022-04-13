@@ -5,25 +5,38 @@ import { UserTotals, UserHealth } from "./user";
 import { Totals } from "./totals";
 import { ToggleSlimBanner } from "./toggle";
 import { Wrapper } from "./style";
+import { useSlimStats } from "../../hooks";
 
 const InfoBanner = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const slimStats = useSlimStats();
 
-  const areas = [
-    `"totals" "user" "rewards"`,
-    `"totals" "user" "rewards"`,
-    `"totals user" "health rewards"`,
-    `"totals user health" ". rewards ."`,
-    `"totals user health rewards"`,
-  ];
-  const columns = [
-    "1fr",
-    "1fr",
-    "repeat(2, minmax(320px, 320px))",
-    "repeat(3, minmax(320px, 320px))",
-    "repeat(4, minmax(320px, 320px))",
-  ];
+  const areas = slimStats
+    ? [
+        `"totals" "user" "rewards"`,
+        `"totals" "user" "rewards"`,
+        `"totals user user" ". rewards ."`,
+        `"totals user rewards"`,
+      ]
+    : [
+        `"totals" "user" "rewards"`,
+        `"totals" "user" "rewards"`,
+        `"totals user" "health rewards"`,
+        `"totals user health" ". rewards ."`,
+        `"totals user health rewards"`,
+      ];
+
+  const columns = slimStats
+    ? ["1fr", "1fr", "1f 1fr 1fr", "300px 540px 300px"]
+    : [
+        "1fr",
+        "1fr",
+        "repeat(2, minmax(320px, 320px))",
+        "repeat(3, minmax(320px, 320px))",
+        "repeat(4, minmax(320px, 320px))",
+      ];
+
   return (
     <Box>
       <ToggleSlimBanner />
@@ -31,13 +44,15 @@ const InfoBanner = () => {
         display="grid"
         gridTemplateAreas={areas}
         gridTemplateColumns={columns}
-        gap={2}
+        gap={isMobile ? (slimStats ? 0 : 2) : 2}
         mx="2rem"
         my="1rem"
       >
-        <Totals />
         {isMobile ? (
           <Wrapper gridArea="user" sx={{ flexDirection: "column" }}>
+            <Box display="flex" justifyContent="space-between" width="100%">
+              <Totals />
+            </Box>
             <Box display="flex" justifyContent="space-between" width="100%">
               <UserTotals />
             </Box>
@@ -47,12 +62,24 @@ const InfoBanner = () => {
           </Wrapper>
         ) : (
           <>
-            <Wrapper gridArea="user">
-              <UserTotals />
+            <Wrapper gridArea="totals">
+              <Totals />
             </Wrapper>
-            <Wrapper gridArea="health">
-              <UserHealth />
-            </Wrapper>
+            {slimStats ? (
+              <Wrapper gridArea="user">
+                <UserTotals />
+                <UserHealth />
+              </Wrapper>
+            ) : (
+              <>
+                <Wrapper gridArea="user">
+                  <UserTotals />
+                </Wrapper>
+                <Wrapper gridArea="health">
+                  <UserHealth />
+                </Wrapper>
+              </>
+            )}
           </>
         )}
         <Rewards />

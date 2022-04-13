@@ -17,8 +17,11 @@ export const ToggleSlimBanner = () => {
     dispatch(toggleSlimStats());
   };
 
+  const ml = ["1.5rem", "1.5rem", "-1.5rem"];
+  const mt = ["-2.5rem", "-1.2rem", "1.5rem"];
+
   return (
-    <Box position="absolute" ml={["1.5rem", "-1.5rem"]} mt={["-2.5rem", "1.5rem"]}>
+    <Box position="absolute" ml={ml} mt={mt}>
       <IconButton onClick={handleToggle}>
         {slimStats ? (
           <AiFillCaretDown size={32} color={theme.palette.primary.main} />

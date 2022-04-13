@@ -479,6 +479,7 @@ export const getTotalBRRR = createSelector(
     const totalBrrr = Number(
       shrinkToken(account.portfolio.supplied[brrrTokenId]?.balance || "0", decimals),
     );
+
     return [totalBrrr, unclaimedSupplied + unclaimedBorrowed];
   },
 );
