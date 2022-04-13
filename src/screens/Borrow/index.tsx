@@ -4,9 +4,10 @@ import {
   getHealthFactor,
   getTotalAccountBalance,
   getAccountId,
+  isAccountLoading,
 } from "../../redux/accountSelectors";
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle, HealthFactorBox, TotalBRRR } from "../../components";
+import { InfoBox, PageTitle, HealthFactorBox, TotalBRRR, OnboardingBRRR } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -18,6 +19,7 @@ const Borrow = () => {
   const totalBorrowBalance = useAppSelector(getTotalBalance("borrowed"));
   const yourBorrowBalance = useAppSelector(getTotalAccountBalance("borrowed"));
   const accountId = useAppSelector(getAccountId);
+  const isLoadingAccount = useAppSelector(isAccountLoading);
   const healthFactor = useAppSelector(getHealthFactor);
   const rows = useAppSelector(getAvailableAssets("borrow"));
 
@@ -37,7 +39,7 @@ const Borrow = () => {
         <HealthFactorBox value={healthFactor} />
       </InfoWrapper>
       <PageTitle first="Borrow" second="Assets" />
-      <TotalBRRR />
+      {!isLoadingAccount && (accountId ? <TotalBRRR /> : <OnboardingBRRR />)}
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />
     </Box>
   );

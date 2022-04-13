@@ -7,7 +7,7 @@
     "clean": "rm -rf public && rm -rf dist && rm -rf .parcel-cache",
     "analyze": "BUNDLE_BUDDY=true parcel build src/index.html --reporter @parcel/reporter-bundle-buddy",
     "start": "parcel src/index.html --open",
-    "prod": "DEFAULT_NETWORK=mainnet parcel src/index.html",
+    "prod": "CONTRACT_NAME=contract.main.burrow.near NEAR_ENV=mainnet DEFAULT_NETWORK=mainnet parcel src/index.html",
     "deploy:pages": "gh-pages -d dist/",
     "deploy": "npm run build && npm run deploy:pages",
     "prettier": "prettier ./src --write",
