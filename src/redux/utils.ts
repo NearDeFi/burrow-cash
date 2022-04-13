@@ -108,6 +108,7 @@ export const transformAsset = (
     supplied: 0,
     collateral: 0,
     borrowed: 0,
+    deposited: 0,
     availableNEAR: 0,
     available: 0,
     extraDecimals: 0,
@@ -115,17 +116,22 @@ export const transformAsset = (
 
   // TODO: refactor this without conditional
   if (account.accountId) {
-    const supplied = account.portfolio.supplied[tokenId]?.balance || 0;
-    const collateral = account.portfolio.collateral[tokenId]?.balance || 0;
+    const decimals = asset.metadata.decimals + asset.config.extra_decimals;
+
+    const supplied = Number(
+      shrinkToken(account.portfolio.supplied[tokenId]?.balance || 0, decimals),
+    );
+    const collateral = Number(
+      shrinkToken(account.portfolio.collateral[tokenId]?.balance || 0, decimals),
+    );
     const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
     const available = account.balances[tokenId] || 0;
     const availableNEAR = account.balances["near"] || 0;
 
-    const decimals = asset.metadata.decimals + asset.config.extra_decimals;
-
     accountAttrs = {
-      supplied: Number(shrinkToken(supplied, decimals)),
-      collateral: Number(shrinkToken(collateral, decimals)),
+      supplied,
+      collateral,
+      deposited: supplied + collateral,
       borrowed: Number(shrinkToken(borrowed, decimals)),
       available: Number(shrinkToken(available, asset.metadata.decimals)),
       availableNEAR: Number(shrinkToken(availableNEAR, asset.metadata.decimals)),

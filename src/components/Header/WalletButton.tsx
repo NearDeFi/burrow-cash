@@ -12,6 +12,7 @@ import { logoutAccount } from "../../redux/accountSlice";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
+import { trackConnectWallet, trackDisplayAsUsd, trackShowDust } from "../../telemetry";
 
 import { getBurrow } from "../../utils";
 
@@ -57,6 +58,7 @@ const WalletButton = () => {
   const onWalletButtonClick = async (event) => {
     if (!accountId) {
       handleSignIn();
+      trackConnectWallet();
     } else {
       setAnchorEl(event.currentTarget);
     }
@@ -85,10 +87,12 @@ const WalletButton = () => {
   };
 
   const handleToggleDisplayValues = () => {
+    trackDisplayAsUsd();
     dispatch(toggleDisplayValues());
   };
 
   const handleToggleShowDust = () => {
+    trackShowDust();
     dispatch(toggleShowDust());
   };
 

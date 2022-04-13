@@ -61,17 +61,18 @@ export const getNetAPY = createSelector(
           const balance$ =
             Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
             (asset.price?.usd || 0);
+
           return [balance$, apr];
         })
         .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
 
     const [gainCollateral, totalCollateral] = getGains("collateral");
     const [gainSupplied, totalSupplied] = getGains("supplied");
-    const [gainBorrowed, totalBorrowed] = getGains("borrowed");
+    const [gainBorrowed] = getGains("borrowed");
 
-    const netAPY =
-      ((gainCollateral + gainSupplied - gainBorrowed) * 100) /
-      (totalCollateral + totalSupplied - totalBorrowed);
+    const netGains = gainCollateral + gainSupplied - gainBorrowed;
+    const netTotals = totalCollateral + totalSupplied;
+    const netAPY = (netGains * 100) / netTotals;
 
     return `${(netAPY || 0).toLocaleString(undefined, APY_FORMAT)}%`;
   },

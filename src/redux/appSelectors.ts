@@ -6,6 +6,7 @@ import type { RootState } from "./store";
 import { transformAsset } from "./utils";
 import { getBorrowedSum, getCollateralSum } from "./accountSelectors";
 import { shrinkToken, expandToken } from "../store";
+import { DUST_THRESHOLD } from "../config";
 
 export const getConfig = createSelector(
   (state: RootState) => state.app,
@@ -98,7 +99,7 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
 
       const borrowedSum = getBorrowedSum(assets, account);
 
-      if (borrowedSum === 0) {
+      if (borrowedSum <= DUST_THRESHOLD) {
         return collateralBalance + suppliedBalance;
       }
 

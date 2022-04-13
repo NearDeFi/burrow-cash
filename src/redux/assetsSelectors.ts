@@ -2,20 +2,23 @@ import { createSelector } from "@reduxjs/toolkit";
 
 import { USD_FORMAT } from "../store";
 import type { RootState } from "./store";
-import { toUsd, transformAsset, sumReducer } from "./utils";
+import { toUsd, transformAsset, sumReducer, hasAssets } from "./utils";
 
 export const getTotalBalance = (source: "borrowed" | "supplied") =>
   createSelector(
-    (state: RootState) => state.assets.data,
-    (assets) =>
-      Object.keys(assets)
+    (state: RootState) => state.assets,
+    (assets) => {
+      if (!hasAssets(assets)) return undefined;
+      const { data } = assets;
+      return Object.keys(data)
         .map(
           (tokenId) =>
-            toUsd(assets[tokenId][source].balance, assets[tokenId]) +
-            (source === "supplied" ? toUsd(assets[tokenId].reserved, assets[tokenId]) : 0),
+            toUsd(data[tokenId][source].balance, data[tokenId]) +
+            (source === "supplied" ? toUsd(data[tokenId].reserved, data[tokenId]) : 0),
         )
         .reduce(sumReducer, 0)
-        .toLocaleString(undefined, USD_FORMAT),
+        .toLocaleString(undefined, USD_FORMAT);
+    },
   );
 
 export const getAvailableAssets = (source: "supply" | "borrow") =>

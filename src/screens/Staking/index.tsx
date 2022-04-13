@@ -13,6 +13,7 @@ import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
 import Slider from "../../components/Slider/staking";
+import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
 
 const Staking = () => {
   const accountId = useAppSelector(getAccountId);
@@ -25,6 +26,7 @@ const Staking = () => {
   const [loadingUnstake, setLoadingUnstake] = useState(false);
 
   const handleMaxClick = () => {
+    trackMaxStaking({ total });
     setAmount(total);
   };
 
@@ -37,11 +39,13 @@ const Staking = () => {
   };
 
   const handleStake = () => {
+    trackStaking({ amount, months });
     stake({ amount, months });
     setLoadingStake(true);
   };
 
   const handleUnstake = () => {
+    trackUnstake();
     unstake();
     setLoadingUnstake(true);
   };

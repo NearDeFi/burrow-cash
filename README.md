@@ -1,8 +1,7 @@
 Burrow.cash
 ==================
 
-This [React] app was initialized with [create-near-app]
-
+Update for deployment.
 
 Quick Start
 ===========
