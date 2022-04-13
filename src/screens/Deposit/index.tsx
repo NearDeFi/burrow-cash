@@ -13,7 +13,7 @@ import { isBeta } from "../../store";
 import Input from "../../components/Input";
 
 const Deposit = () => {
-  const [brrPrice, setBrrPrice] = useState(0.3);
+  const [brrPrice, setBrrPrice] = useState(2);
   const dispatch = useAppDispatch();
   const totalSupplyBalance = useAppSelector(getTotalBalance("supplied"));
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
@@ -50,7 +50,7 @@ const Deposit = () => {
       <PageTitle first="BRRR" second="Farming Rewards" />
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontSize: "24px", display: "inline-block" }}>
+        <div style={{ fontSize: "24px", display: "inline-block", textAlign: "center" }}>
           <span>BRRR Price: $</span>
           <input
             style={{ fontSize: "24px", width: "80px" }}
@@ -59,6 +59,9 @@ const Deposit = () => {
             step="0.01"
             onChange={brrPriceInputChange}
           />
+          <div style={{ fontSize: "small" }}>
+            ($1, $1.5, $2 per $BRRR on <a href="https://mars.bocachica.io/29">Boca Chica sale</a>)
+          </div>
         </div>
       </div>
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} />
