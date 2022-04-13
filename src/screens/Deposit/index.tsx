@@ -1,13 +1,19 @@
 import { Box, Alert } from "@mui/material";
 
 import { InfoWrapper } from "../../components/InfoBox/style";
-import { InfoBox, PageTitle, TotalBRRR } from "../../components";
+import { InfoBox, OnboardingBRRR, PageTitle, TotalBRRR } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getTotalBalance, getAvailableAssets } from "../../redux/assetsSelectors";
+
 import { getConfig } from "../../redux/appSelectors";
-import { getTotalAccountBalance, getAccountId, getNetAPY } from "../../redux/accountSelectors";
+import {
+  getTotalAccountBalance,
+  getAccountId,
+  isAccountLoading,
+  getNetAPY,
+} from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
 import { isBeta } from "../../store";
 
@@ -17,6 +23,7 @@ const Deposit = () => {
   const yourSupplyBalance = useAppSelector(getTotalAccountBalance("supplied"));
   const config = useAppSelector(getConfig);
   const accountId = useAppSelector(getAccountId);
+  const isLoadingAccount = useAppSelector(isAccountLoading);
   const rows = useAppSelector(getAvailableAssets("supply"));
   const netAPY = useAppSelector(getNetAPY);
 
@@ -42,7 +49,7 @@ const Deposit = () => {
           <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
         )}
       </Box>
-      <TotalBRRR />
+      {!isLoadingAccount && (accountId ? <TotalBRRR /> : <OnboardingBRRR />)}
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
     </Box>
   );

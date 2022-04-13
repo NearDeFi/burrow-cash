@@ -7,6 +7,7 @@ import InfoBox from "./InfoBox";
 import HealthFactorBox from "./HealthFactorBox";
 import PageTitle from "./PageTitle";
 import TotalBRRR from "./TotalBRRR";
+import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 
 export {
@@ -19,5 +20,6 @@ export {
   PageTitle,
   HealthFactorBox,
   TotalBRRR,
+  OnboardingBRRR,
   BRRRPrice,
 };
