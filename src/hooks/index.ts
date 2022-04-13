@@ -1,7 +1,8 @@
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { isAssetsLoading } from "../redux/assetsSelectors";
 import { isAccountLoading } from "../redux/accountSelectors";
-import { getConfig, getSlimStats } from "../redux/appSelectors";
+import { getConfig, getSlimStats, getFullDigits } from "../redux/appSelectors";
+import { setFullDigits } from "../redux/appSlice";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -16,4 +17,13 @@ export function useIsBurrowToken(tokenId) {
 
 export function useSlimStats() {
   return useAppSelector(getSlimStats);
+}
+
+export function useFullDigits() {
+  const dispatch = useAppDispatch();
+  const fullDigits = useAppSelector(getFullDigits);
+
+  const setDigits = (value) => dispatch(setFullDigits(value));
+
+  return { fullDigits, setDigits };
 }

@@ -48,7 +48,7 @@ export const Rewards = () => {
           fontWeight="bold"
           ml="1rem"
         >
-          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)} {!slimStats && "BRRR"}
+          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}
         </Typography>
         <Typography
           fontWeight="bold"
@@ -56,7 +56,7 @@ export const Rewards = () => {
           color={theme.palette.primary.main}
           align="right"
         >
-          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)} {!slimStats && "BRRR"}
+          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)}
         </Typography>
       </Box>
     </Wrapper>

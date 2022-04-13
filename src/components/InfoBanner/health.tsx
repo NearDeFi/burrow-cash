@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { useSlimStats } from "../../hooks";
+import { useFullDigits, useSlimStats } from "../../hooks";
 
 interface Props {
   value: number | null;
@@ -8,6 +8,7 @@ interface Props {
 
 export const HealthFactor = ({ value }: Props) => {
   const slimStats = useSlimStats();
+  const { fullDigits } = useFullDigits();
 
   const healthFactorDisplayValue =
     value === -1 || value === null
@@ -34,6 +35,7 @@ export const HealthFactor = ({ value }: Props) => {
     );
 
   const dotSize = "0.7rem";
+  const fontSize = slimStats && fullDigits.user ? "1.2rem" : "1.5rem";
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -46,7 +48,7 @@ export const HealthFactor = ({ value }: Props) => {
           borderRadius={dotSize}
           component="div"
         />
-        <Typography fontSize="1.5rem" fontWeight="bold" align="right">
+        <Typography fontSize={fontSize} fontWeight="bold" align="right">
           {healthFactorDisplayValue}
         </Typography>
       </Box>
