@@ -25,8 +25,6 @@ export const ToggleSlimBanner = () => {
     mt[2] = "0.5rem";
   }
 
-  console.log(ml);
-
   return (
     <Box position="absolute" ml={ml} mt={mt}>
       <IconButton onClick={handleToggle}>

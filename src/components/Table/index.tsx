@@ -56,7 +56,6 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
     columns[1].label = "BRRR";
     columns[3].label = "Deposits";
     columns[4].label = "Liquidity";
-    // columns[5].label = 'My Deposit'
   }
 
   return (
