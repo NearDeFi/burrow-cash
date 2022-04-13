@@ -41,6 +41,7 @@ const InfoBanner = () => {
     <Box>
       <ToggleSlimBanner />
       <Box
+        sx={{ margin: 0, borderRadius: 0 }}
         display="grid"
         gridTemplateAreas={areas}
         gridTemplateColumns={columns}
@@ -49,17 +50,24 @@ const InfoBanner = () => {
         my="1rem"
       >
         {isMobile ? (
-          <Wrapper gridArea="user" sx={{ flexDirection: "column" }}>
-            <Box display="flex" justifyContent="space-between" width="100%">
-              <Totals />
-            </Box>
-            <Box display="flex" justifyContent="space-between" width="100%">
-              <UserTotals />
-            </Box>
-            <Box display="flex" justifyContent="space-between" width="100%">
-              <UserHealth />
-            </Box>
-          </Wrapper>
+          <>
+            <Wrapper gridArea="user" sx={{ flexDirection: "column", borderRadius: 0 }}>
+              {!slimStats && (
+                <>
+                  <Box display="flex" justifyContent="space-between" width="100%">
+                    <Totals />
+                  </Box>
+                  <Box display="flex" justifyContent="space-between" width="100%">
+                    <UserTotals />
+                  </Box>
+                </>
+              )}
+              <Box display="flex" justifyContent="space-between" width="100%">
+                <UserHealth />
+              </Box>
+            </Wrapper>
+            {!slimStats && <Rewards />}
+          </>
         ) : (
           <>
             <Wrapper gridArea="totals">
@@ -80,9 +88,9 @@ const InfoBanner = () => {
                 </Wrapper>
               </>
             )}
+            <Rewards />
           </>
         )}
-        <Rewards />
       </Box>
     </Box>
   );

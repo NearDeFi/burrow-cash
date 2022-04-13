@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 import { TOKEN_FORMAT } from "../../store";
 import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
@@ -12,6 +12,7 @@ export const Rewards = () => {
   const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
   const slimStats = useSlimStats();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Wrapper
@@ -21,6 +22,8 @@ export const Rewards = () => {
         color: theme.palette.secondary.main,
         overflow: "hidden",
         justifyContent: "flex-start",
+        borderRadius: 0,
+        width: slimStats && isMobile ? "100vw" : "auto",
       }}
     >
       <Box top="1rem" left="0.5rem" position="relative">
