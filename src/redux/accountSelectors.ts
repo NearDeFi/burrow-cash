@@ -70,6 +70,60 @@ export const getNetAPY = createSelector(
   },
 );
 
+export const getNetAPY_NEW = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (state: RootState) => state.app,
+  (assets, account, app) => {
+    if (!hasAssets(assets)) return 0;
+    const brrrTokenId = app.config.booster_token_id;
+    const sum = Object.keys(assets.data)
+      .filter((t) => t !== brrrTokenId)
+      .map((tokenId) => {
+        const asset = assets.data[tokenId];
+        const decimals = asset.metadata.decimals + asset.config.extra_decimals;
+
+        const depositBalance = Number(account.portfolio.supplied?.[tokenId]?.balance) || 0;
+        const depositApr = Number(account.portfolio.supplied?.[tokenId]?.apr) || 0;
+        const depositBalanceUSD =
+          Number(shrinkToken(depositBalance, decimals)) * (asset.price?.usd || 0);
+
+        const collateralBalance = Number(account.portfolio.collateral?.[tokenId]?.balance) || 0;
+        const collateralBalanceUSD =
+          Number(shrinkToken(collateralBalance, decimals)) * (asset.price?.usd || 0);
+
+        const borrowBalance = Number(account.portfolio.borrowed?.[tokenId]?.balance) || 0;
+        const borrowApr = Number(account.portfolio.borrowed?.[tokenId]?.apr) || 0;
+        const borrowBalanceUSD =
+          Number(shrinkToken(borrowBalance, decimals)) * (asset.price?.usd || 0);
+
+        const amount =
+          (depositBalanceUSD + collateralBalanceUSD) * depositApr - borrowBalanceUSD * borrowApr;
+        return amount;
+      })
+      .reduce(sumReducer, 0);
+
+    const getTotalValue = (source: "borrowed" | "supplied") =>
+      Object.entries(account.portfolio[source])
+        .map(([tokenId, { balance }]) => {
+          if (tokenId === brrrTokenId) return 0;
+          const asset = assets.data[tokenId];
+          const decimals = asset.metadata.decimals + asset.config.extra_decimals;
+          return Number(shrinkToken(balance, decimals)) * (asset.price?.usd || 0);
+        })
+        .reduce(sumReducer, 0);
+
+    const totalSuppliedValue = getTotalValue("supplied");
+    const totalBorrowedValue = getTotalValue("borrowed");
+
+    const total = sum > 0 ? totalSuppliedValue : totalBorrowedValue;
+
+    if (sum === 0) return 0;
+
+    return 100 * (sum / total);
+  },
+);
+
 export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
   createSelector(
     (state: RootState) => state.assets,

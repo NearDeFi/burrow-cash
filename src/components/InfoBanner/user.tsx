@@ -2,7 +2,11 @@ import millify from "millify";
 import { Box, Typography, useTheme } from "@mui/material";
 
 import { APY_FORMAT, USD_FORMAT } from "../../store";
-import { getTotalAccountBalance, getNetAPY, getHealthFactor } from "../../redux/accountSelectors";
+import {
+  getTotalAccountBalance,
+  getNetAPY_NEW,
+  getHealthFactor,
+} from "../../redux/accountSelectors";
 import { useAppSelector } from "../../redux/hooks";
 import { HealthFactor } from "./health";
 import { useFullDigits, useSlimStats } from "../../hooks";
@@ -60,7 +64,7 @@ export const UserTotals = () => {
 };
 
 export const UserHealth = () => {
-  const netAPY = useAppSelector(getNetAPY);
+  const netAPY = useAppSelector(getNetAPY_NEW);
   const healthFactor = useAppSelector(getHealthFactor);
   const slimStats = useSlimStats();
 
