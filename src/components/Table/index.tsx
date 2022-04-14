@@ -51,7 +51,8 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
     handleRequestSort(event, property);
   };
 
-  const padding = isMobile ? "8px 16px" : "16px";
+  const padding = isMobile ? "0.5rem 1rem" : "1rem";
+
   if (isMobile) {
     columns[1].label = "BRRR";
     columns[3].label = "Deposits";
@@ -59,7 +60,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
   }
 
   return (
-    <TableContainer component={Box} sx={{ maxWidth: 750, m: "0 auto", mb: "1.5rem" }}>
+    <TableContainer component={Box} sx={{ maxWidth: 950, m: "0 auto", mb: "1.5rem" }}>
       <MUITable aria-label="table">
         <TableHead>
           <TableRow sx={{ padding }}>
