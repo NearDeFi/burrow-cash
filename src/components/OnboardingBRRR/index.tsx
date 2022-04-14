@@ -6,8 +6,8 @@ export default function OnboardingBRRR() {
 
   return (
     <Box
-      width={["full", "580px"]}
-      mx={["1rem", "auto"]}
+      width={["full", "full", "720px"]}
+      mx={["1rem", "2rem", "auto"]}
       mb="2rem"
       bgcolor="#e5f6fd"
       px="1rem"
