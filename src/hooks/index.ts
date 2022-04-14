@@ -3,6 +3,7 @@ import { isAssetsLoading } from "../redux/assetsSelectors";
 import { isAccountLoading } from "../redux/accountSelectors";
 import { getConfig, getSlimStats, getFullDigits } from "../redux/appSelectors";
 import { setFullDigits } from "../redux/appSlice";
+import { getViewAs } from "../utils";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -26,4 +27,9 @@ export function useFullDigits() {
   const setDigits = (value) => dispatch(setFullDigits(value));
 
   return { fullDigits, setDigits };
+}
+
+export function useViewAs() {
+  const viewAs = getViewAs();
+  return !!viewAs;
 }

@@ -1,6 +1,6 @@
 import { Box, Alert } from "@mui/material";
 
-import { PageTitle, InfoBanner } from "../../components";
+import { PageTitle, InfoBanner, OnboardingBRRR } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -28,6 +28,7 @@ const Deposit = () => {
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBanner />
+      {!accountId && <OnboardingBRRR />}
       <PageTitle first="Deposit" second="Assets" />
       {isBeta && (
         <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">

@@ -1,17 +1,19 @@
 import { Box } from "@mui/material";
 
-import { InfoBanner, PageTitle } from "../../components";
+import { InfoBanner, PageTitle, OnboardingBRRR } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
-import { getPortfolioAssets } from "../../redux/accountSelectors";
+import { getPortfolioAssets, getAccountId } from "../../redux/accountSelectors";
 
 const Portfolio = () => {
   const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
+  const accountId = useAppSelector(getAccountId);
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBanner />
+      {!accountId && <OnboardingBRRR />}
       <PageTitle first="Deposited" second="Assets" />
       {suppliedRows.length ? (
         <Table rows={suppliedRows} columns={suppliedColumns} sortColumn="supplied" />

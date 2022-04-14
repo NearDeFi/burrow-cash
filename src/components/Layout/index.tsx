@@ -1,5 +1,6 @@
 import { Box, Alert, Link } from "@mui/material";
 
+import { useViewAs } from "../../hooks";
 import Footer from "../Footer";
 import Header from "../Header";
 
@@ -15,19 +16,23 @@ export const Banner = () => (
   </Alert>
 );
 
-const Layout = ({ children }) => (
-  <Box
-    sx={{
-      display: "grid",
-      gridTemplateRows: "auto auto 1fr auto",
-      gridTemplateColumns: "100%",
-      minHeight: "100%",
-    }}
-  >
-    <Header />
-    <main>{children}</main>
-    <Footer />
-  </Box>
-);
+const Layout = ({ children }) => {
+  const isViewingAs = useViewAs();
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateRows: "auto auto 1fr auto",
+        gridTemplateColumns: "100%",
+        minHeight: "100%",
+        border: isViewingAs ? "10px solid #47C880" : "none",
+      }}
+    >
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </Box>
+  );
+};
 
 export default Layout;

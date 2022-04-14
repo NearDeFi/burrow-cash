@@ -5,7 +5,19 @@ import Table from "./Table";
 import Layout from "./Layout";
 import PageTitle from "./PageTitle";
 import TotalBRRR from "./TotalBRRR";
+import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 import InfoBanner from "./InfoBanner";
 
-export { Table, Modal, Input, Slider, Layout, PageTitle, TotalBRRR, BRRRPrice, InfoBanner };
+export {
+  Table,
+  Modal,
+  Input,
+  Slider,
+  Layout,
+  PageTitle,
+  TotalBRRR,
+  OnboardingBRRR,
+  BRRRPrice,
+  InfoBanner,
+};

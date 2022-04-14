@@ -433,7 +433,7 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
-      if (!account.portfolio || !tokenId) return 0;
+      if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
 
       const collateralSum = getCollateralSum(assets.data, account);
       const { metadata, config } = assets.data[tokenId];

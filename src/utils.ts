@@ -24,6 +24,12 @@ const nearTokenIds = {
   testnet: "wrap.testnet",
 };
 
+export const getViewAs = () => {
+  const url = new URL(window.location.href.replace("/#", ""));
+  const searchParams = new URLSearchParams(url.search);
+  return searchParams.get("viewAs");
+};
+
 export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
 
 export const getBurrow = async (): Promise<IBurrow> => {
@@ -39,11 +45,12 @@ export const getBurrow = async (): Promise<IBurrow> => {
   // is hosted at https://wallet.testnet.near.org
   const walletConnection = new BatchWallet(near, null);
 
+  const viewAs = getViewAs();
   // Getting the Account ID. If still unauthorized, it's just empty string
   const account: BatchWalletAccount = new BatchWalletAccount(
     walletConnection,
     near.connection,
-    walletConnection.account().accountId,
+    viewAs || walletConnection.account().accountId,
   );
 
   const view = async (
