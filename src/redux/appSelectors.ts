@@ -23,6 +23,16 @@ export const getDisplayAsTokenValue = createSelector(
   (app) => app.displayAsTokenValue,
 );
 
+export const getSlimStats = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.slimStats,
+);
+
+export const getFullDigits = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.fullDigits,
+);
+
 export const getShowDust = createSelector(
   (state: RootState) => state.app,
   (app) => app.showDust,

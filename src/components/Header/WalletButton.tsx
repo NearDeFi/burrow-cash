@@ -56,6 +56,7 @@ const WalletButton = () => {
       sx={{
         gridArea: "wallet",
         marginLeft: "auto",
+        marginRight: "0.5rem",
         display: "flex",
         alignItems: "center",
         flexDirection: isMobile ? "column-reverse" : "row",

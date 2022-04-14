@@ -15,7 +15,7 @@ export const Wrapper = styled(Toolbar)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     gridTemplateAreas: `"logo menu wallet"`,
     gridTemplateColumns: "auto auto 1fr",
-    gap: "3rem",
+    gap: "2rem",
   },
 }));
 

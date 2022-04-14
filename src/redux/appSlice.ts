@@ -9,6 +9,11 @@ export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
   showDust: boolean;
+  slimStats: boolean;
+  fullDigits: {
+    totals: boolean;
+    user: boolean;
+  };
   selected: {
     action?: TokenAction;
     tokenId: string;
@@ -23,6 +28,11 @@ const initialState: AppState = {
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
+  slimStats: false,
+  fullDigits: {
+    totals: false,
+    user: false,
+  },
   selected: {
     action: undefined,
     tokenId: "",
@@ -77,6 +87,12 @@ export const appSlice = createSlice({
     toggleShowDust(state) {
       state.showDust = !state.showDust;
     },
+    toggleSlimStats(state) {
+      state.slimStats = !state.slimStats;
+    },
+    setFullDigits(state, action) {
+      state.fullDigits = { ...state.fullDigits, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -92,5 +108,7 @@ export const {
   toggleUseAsCollateral,
   toggleDisplayValues,
   toggleShowDust,
+  toggleSlimStats,
+  setFullDigits,
 } = appSlice.actions;
 export default appSlice.reducer;
