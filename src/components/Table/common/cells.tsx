@@ -1,12 +1,12 @@
-import { Box, Tooltip, Skeleton } from "@mui/material";
+import { Box, Tooltip, Skeleton, Stack } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
-import type { UIAsset } from "../../../interfaces";
+import type { ExtraReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
-import { BRRRPrice } from "../../index";
+import { BRRRPrice, ExtraRewards } from "../../index";
 import { useIsBurrowToken } from "../../../hooks";
 
 export const TokenCell = ({ rowData }) => {
@@ -52,14 +52,16 @@ export const Cell = ({
   rowData,
   format,
   tooltip,
+  extraRewards,
 }: {
   value: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
+  extraRewards?: ExtraReward[];
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
-  console.log(rowData);
+
   const { price } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
@@ -79,6 +81,11 @@ export const Cell = ({
     <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
       <Box>{displayValue}</Box>
     </Tooltip>
+  ) : extraRewards?.length ? (
+    <Stack spacing={1}>
+      <Box>{displayValue}</Box>
+      <ExtraRewards rewards={extraRewards} />
+    </Stack>
   ) : (
     <Box>{displayValue}</Box>
   );
