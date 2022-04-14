@@ -38,7 +38,7 @@ const InfoBanner = () => {
       ];
 
   return (
-    <Box mb="1.5rem">
+    <Box mt={[0, "1rem", 0]} mb="1.5rem" mx={["1rem", "2rem"]}>
       <ToggleSlimBanner />
       <Box
         sx={{ margin: 0, borderRadius: 0 }}
@@ -48,6 +48,7 @@ const InfoBanner = () => {
         gap={isMobile ? (slimStats ? 0 : 2) : 2}
         mx="2rem"
         my="1rem"
+        pt={[0, slimStats ? "1rem" : "0.5rem", 0]}
       >
         {isMobile ? (
           <>
