@@ -13,12 +13,7 @@ const InfoBanner = () => {
   const slimStats = useSlimStats();
 
   const areas = slimStats
-    ? [
-        `"totals" "user" "rewards"`,
-        `"totals" "user" "rewards"`,
-        `"totals user" "rewards rewards"`,
-        `"totals user rewards"`,
-      ]
+    ? [`"user"`, `"user"`, `"totals user" "rewards rewards"`, `"totals user rewards"`]
     : [
         `"totals" "user" "rewards"`,
         `"totals" "user" "rewards"`,
@@ -29,10 +24,16 @@ const InfoBanner = () => {
 
   const columns = slimStats
     ? ["1fr", "1fr", "1fr 1fr", "300px 540px 300px"]
-    : ["1fr", "1fr", "repeat(2, minmax(320px, 1fr))", "repeat(3, 320px)", "repeat(4, 320px)"];
+    : ["1fr", "1fr", "repeat(2, minmax(320px, 320px))", "repeat(3, 320px)", "repeat(4, 320px)"];
 
   return (
-    <Box mt={[0, "1rem", 0]} mb="1.5rem" mx={["1rem", "2rem"]}>
+    <Box
+      mt={[0, "1rem", 0]}
+      mb="1.5rem"
+      mx={["1rem", "2rem"]}
+      display="grid"
+      width={["auto", "auto", "800px", "auto"]}
+    >
       <ToggleSlimBanner />
       <Box
         sx={{ margin: 0, borderRadius: 0 }}
@@ -43,6 +44,8 @@ const InfoBanner = () => {
         mx="2rem"
         my="1rem"
         pt={[0, slimStats ? "1rem" : "0.5rem", 0]}
+        justifySelf="center"
+        width={["100%", "100%", "auto"]}
       >
         {isMobile ? (
           <>
