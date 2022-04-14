@@ -36,32 +36,22 @@ export const UserTotals = () => {
   return (
     <>
       <Box p={slimStats ? 0 : "0.5rem"} px="1rem" onClick={handleToggle} sx={{ cursor: "pointer" }}>
-        <Typography fontWeight="bold" fontSize={fontSize}>
-          {borrowedValue}
+        <Typography fontWeight="bold" fontSize={fontSize} color={theme.palette.primary.main}>
+          {depositedValue}
         </Typography>
         {!slimStats && (
-          <Typography fontWeight="light" fontSize="0.85rem">
-            Your Borrows
+          <Typography fontWeight="light" fontSize="0.85rem" color={theme.palette.primary.main}>
+            Your deposits
           </Typography>
         )}
       </Box>
       <Box p={slimStats ? 0 : "0.5rem"} px="1rem" onClick={handleToggle} sx={{ cursor: "pointer" }}>
-        <Typography
-          fontWeight="bold"
-          fontSize={fontSize}
-          color={theme.palette.primary.main}
-          align="right"
-        >
-          {depositedValue}
+        <Typography fontWeight="bold" fontSize={fontSize} align="right">
+          {borrowedValue}
         </Typography>
         {!slimStats && (
-          <Typography
-            fontWeight="light"
-            fontSize="0.85rem"
-            color={theme.palette.primary.main}
-            align="right"
-          >
-            Your deposits
+          <Typography fontWeight="light" fontSize="0.85rem" align="right">
+            Your Borrows
           </Typography>
         )}
       </Box>

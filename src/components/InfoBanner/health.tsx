@@ -37,7 +37,7 @@ export const HealthFactor = ({ value }: Props) => {
   const fontSize = "1.2rem";
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box display="flex" flexDirection="column" alignItems="flex-end">
       <Box display="flex" alignItems="center" justifyContent="flex-end">
         <Box
           bgcolor={healthFactorColor}
