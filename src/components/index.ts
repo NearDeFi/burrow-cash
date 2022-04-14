@@ -8,6 +8,7 @@ import TotalBRRR from "./TotalBRRR";
 import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 import InfoBanner from "./InfoBanner";
+import BetaInfo from "./BetaInfo";
 
 export {
   Table,
@@ -20,4 +21,5 @@ export {
   OnboardingBRRR,
   BRRRPrice,
   InfoBanner,
+  BetaInfo,
 };

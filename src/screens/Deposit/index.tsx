@@ -1,6 +1,6 @@
-import { Box, Alert } from "@mui/material";
+import { Box } from "@mui/material";
 
-import { PageTitle, InfoBanner, OnboardingBRRR } from "../../components";
+import { PageTitle, InfoBanner, OnboardingBRRR, BetaInfo } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -8,7 +8,6 @@ import { getAvailableAssets } from "../../redux/assetsSelectors";
 import { getConfig } from "../../redux/appSelectors";
 import { getAccountId } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
-import { isBeta } from "../../store";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
@@ -30,11 +29,7 @@ const Deposit = () => {
       <InfoBanner />
       {!accountId && <OnboardingBRRR />}
       <PageTitle first="Deposit" second="Assets" />
-      {isBeta && (
-        <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
-          <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
-        </Box>
-      )}
+      <BetaInfo />
       <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
     </Box>
   );
