@@ -34,7 +34,7 @@ export const Totals = () => {
     ? deposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(deposited)}`;
 
-  const fontSize = fullDigits?.totals ? "1.2rem" : "1.5rem";
+  const fontSize = "1.2rem";
 
   return (
     <>

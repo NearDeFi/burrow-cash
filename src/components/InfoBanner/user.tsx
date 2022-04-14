@@ -31,7 +31,7 @@ export const UserTotals = () => {
     ? deposited.toLocaleString(undefined, USD_FORMAT)
     : `$${m(deposited)}`;
 
-  const fontSize = fullDigits?.user ? "1.2rem" : "1.5rem";
+  const fontSize = "1.2rem";
 
   return (
     <>
@@ -73,9 +73,8 @@ export const UserHealth = () => {
   const netAPY = useAppSelector(getNetAPY);
   const healthFactor = useAppSelector(getHealthFactor);
   const slimStats = useSlimStats();
-  const { fullDigits } = useFullDigits();
 
-  const fontSize = slimStats && fullDigits.user ? "1.2rem" : "1.5rem";
+  const fontSize = "1.2rem";
 
   return (
     <>
