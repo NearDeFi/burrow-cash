@@ -59,7 +59,7 @@ export const Cell = ({
   tooltip?: string;
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
-
+  console.log(rowData);
   const { price } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
