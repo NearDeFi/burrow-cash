@@ -21,20 +21,20 @@ export const Totals = () => {
   const { fullDigits, setDigits } = useFullDigits();
 
   const handleToggle = () => {
-    const totals = !fullDigits.totals;
+    const totals = !fullDigits?.totals;
     trackFullDigits({ totals });
     setDigits({ totals });
   };
 
-  const borrowedValue = fullDigits.totals
+  const borrowedValue = fullDigits?.totals
     ? borrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(borrowed)}`;
 
-  const depositedValue = fullDigits.totals
+  const depositedValue = fullDigits?.totals
     ? deposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(deposited)}`;
 
-  const fontSize = fullDigits.totals ? "1.2rem" : "1.5rem";
+  const fontSize = fullDigits?.totals ? "1.2rem" : "1.5rem";
 
   return (
     <>

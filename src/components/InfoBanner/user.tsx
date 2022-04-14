@@ -18,20 +18,20 @@ export const UserTotals = () => {
   const { fullDigits, setDigits } = useFullDigits();
 
   const handleToggle = () => {
-    const user = !fullDigits.user;
+    const user = !fullDigits?.user;
     trackFullDigits({ user });
     setDigits({ user });
   };
 
-  const borrowedValue = fullDigits.user
+  const borrowedValue = fullDigits?.user
     ? borrowed.toLocaleString(undefined, USD_FORMAT)
     : `$${m(borrowed)}`;
 
-  const depositedValue = fullDigits.user
+  const depositedValue = fullDigits?.user
     ? deposited.toLocaleString(undefined, USD_FORMAT)
     : `$${m(deposited)}`;
 
-  const fontSize = fullDigits.user ? "1.2rem" : "1.5rem";
+  const fontSize = fullDigits?.user ? "1.2rem" : "1.5rem";
 
   return (
     <>
