@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-import { InfoBanner, PageTitle, OnboardingBRRR, BetaInfo } from "../../components";
+import { InfoBox, PageTitle, OnboardingBRRR, BetaInfo } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAppSelector } from "../../redux/hooks";
@@ -12,7 +12,7 @@ const Portfolio = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
       <BetaInfo />
       <PageTitle first="Deposited" second="Assets" />

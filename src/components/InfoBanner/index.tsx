@@ -7,6 +7,14 @@ import { ToggleSlimBanner } from "./toggle";
 import { Wrapper } from "./style";
 import { useSlimStats } from "../../hooks";
 
+interface Props {
+  accountId?: string;
+}
+
+const InfoBox = ({ accountId }: Props) => {
+  return accountId ? <InfoBanner /> : <InfoBannerAnonymous />;
+};
+
 const InfoBanner = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -94,4 +102,39 @@ const InfoBanner = () => {
   );
 };
 
-export default InfoBanner;
+const InfoBannerAnonymous = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  return (
+    <Box
+      display="grid"
+      gridTemplateAreas={`"totals"`}
+      gridTemplateColumns="1fr"
+      gap={2}
+      px={["1rem", "2rem", 0]}
+      mt="1rem"
+      mb="0.5rem"
+      pt={[0, "0.5rem", 0]}
+      justifySelf="center"
+      width="100%"
+      maxWidth={["100%", "100%", "600px"]}
+    >
+      {isMobile ? (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      ) : (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      )}
+    </Box>
+  );
+};
+
+export default InfoBox;
