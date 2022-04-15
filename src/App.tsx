@@ -10,7 +10,7 @@ import { Borrow, Portfolio, Deposit, Staking, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
 import { fetchAssetsAndMetadata } from "./redux/assetsSlice";
-import { farmClaimAll, fetchAccount } from "./redux/accountSlice";
+import { fetchAccount } from "./redux/accountSlice";
 import { fetchConfig } from "./redux/appSlice";
 import { isMain } from "./store/constants";
 
@@ -31,7 +31,6 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   const fetchData = () => {
-    dispatch(farmClaimAll());
     dispatch(fetchAssetsAndMetadata());
     dispatch(fetchAccount());
   };
