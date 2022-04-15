@@ -110,13 +110,7 @@ const InfoBannerAnonymous = () => {
   const columns = ["1fr"];
 
   return (
-    <Box
-      mt={["1rem", "1rem"]}
-      mb="0.5rem"
-      mx={["1rem", "2rem"]}
-      display="grid"
-      width={["auto", "auto", "800px", "auto"]}
-    >
+    <Box mt={["1rem", "1rem"]} mb="0.5rem" mx={["1rem", "2rem"]} display="grid">
       <Box
         sx={{ margin: 0, borderRadius: 0 }}
         display="grid"
@@ -127,7 +121,8 @@ const InfoBannerAnonymous = () => {
         my="1rem"
         pt={[0, "0.5rem", 0]}
         justifySelf="center"
-        width={["100%", "auto"]}
+        width="100%"
+        maxWidth={["100%", "100%", "600px"]}
       >
         {isMobile ? (
           <Wrapper gridArea="totals">

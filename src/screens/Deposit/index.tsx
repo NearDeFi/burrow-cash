@@ -16,11 +16,7 @@ const Deposit = () => {
   const rows = useAppSelector(getAvailableAssets("supply"));
 
   const columns = !accountId
-    ? [
-        ...defaultColumns.filter(
-          (col) => !["totalSupplyMoney", "supplied", "deposited"].includes(col.dataKey),
-        ),
-      ]
+    ? [...defaultColumns.filter((col) => !["supplied", "deposited"].includes(col.dataKey))]
     : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
 
   const sortedColumn = accountId ? "deposited" : "totalSupplyMoney";

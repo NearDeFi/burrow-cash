@@ -45,11 +45,9 @@ export const columns = [
     align: "right",
   },
   {
-    label: "totalSupplyMoney",
+    label: "USD Value",
     dataKey: "totalSupplyMoney",
-    Cell: ({ rowData }) => (
-      <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="amount" />
-    ),
+    Cell: ({ rowData }) => <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="usd" />,
     align: "right",
   },
 ];
