@@ -44,4 +44,12 @@ export const columns = [
     Cell: ({ rowData }) => <Cell value={rowData.deposited} rowData={rowData} format="amount" />,
     align: "right",
   },
+  {
+    label: "totalSupplyMoney",
+    dataKey: "totalSupplyMoney",
+    Cell: ({ rowData }) => (
+      <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="amount" />
+    ),
+    align: "right",
+  },
 ];

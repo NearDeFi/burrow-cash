@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 import { getAccountId } from "../../redux/accountSelectors";
-import { PageTitle, InfoBanner, OnboardingBRRR, BetaInfo } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -23,7 +23,7 @@ const Borrow = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
       <PageTitle first="Borrow" second="Assets" />
       <BetaInfo />

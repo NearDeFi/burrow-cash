@@ -103,6 +103,7 @@ export const transformAsset = (
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
+  const availableLiquidityMoney = toUsd(temp2, asset);
 
   let accountAttrs = {
     supplied: 0,
@@ -146,6 +147,7 @@ export const transformAsset = (
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
+    totalSupplyMoney: toUsd(totalSupplyD, asset),
     borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,

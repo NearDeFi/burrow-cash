@@ -7,6 +7,14 @@ import { ToggleSlimBanner } from "./toggle";
 import { Wrapper } from "./style";
 import { useSlimStats } from "../../hooks";
 
+interface Props {
+  accountId?: string;
+}
+
+const InfoBox = ({ accountId }: Props) => {
+  return accountId ? <InfoBanner /> : <InfoBannerAnonymous />;
+};
+
 const InfoBanner = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -94,4 +102,49 @@ const InfoBanner = () => {
   );
 };
 
-export default InfoBanner;
+const InfoBannerAnonymous = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const areas = [`"totals"`];
+  const columns = ["1fr"];
+
+  return (
+    <Box
+      mt={["1rem", "1rem"]}
+      mb="0.5rem"
+      mx={["1rem", "2rem"]}
+      display="grid"
+      width={["auto", "auto", "800px", "auto"]}
+    >
+      <Box
+        sx={{ margin: 0, borderRadius: 0 }}
+        display="grid"
+        gridTemplateAreas={areas}
+        gridTemplateColumns={columns}
+        gap={2}
+        mx="2rem"
+        my="1rem"
+        pt={[0, "0.5rem", 0]}
+        justifySelf="center"
+        width={["100%", "auto"]}
+      >
+        {isMobile ? (
+          <Wrapper gridArea="totals">
+            <Box display="flex" justifyContent="space-between" width="100%">
+              <Totals />
+            </Box>
+          </Wrapper>
+        ) : (
+          <Wrapper gridArea="totals">
+            <Box display="flex" justifyContent="space-between" width="100%">
+              <Totals />
+            </Box>
+          </Wrapper>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export default InfoBox;

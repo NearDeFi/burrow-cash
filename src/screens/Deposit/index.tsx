@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-import { PageTitle, InfoBanner, OnboardingBRRR, BetaInfo } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -16,8 +16,14 @@ const Deposit = () => {
   const rows = useAppSelector(getAvailableAssets("supply"));
 
   const columns = !accountId
-    ? [...defaultColumns.filter((col) => col.dataKey !== "supplied")]
-    : defaultColumns;
+    ? [
+        ...defaultColumns.filter(
+          (col) => !["totalSupplyMoney", "supplied", "deposited"].includes(col.dataKey),
+        ),
+      ]
+    : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
+
+  const sortedColumn = accountId ? "deposited" : "totalSupplyMoney";
 
   const handleOnRowClick = ({ tokenId }) => {
     if (config.booster_token_id === tokenId) return;
@@ -26,11 +32,16 @@ const Deposit = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
       <PageTitle first="Deposit" second="Assets" />
       <BetaInfo />
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
+      <Table
+        rows={rows}
+        columns={columns}
+        onRowClick={handleOnRowClick}
+        sortColumn={sortedColumn}
+      />
     </Box>
   );
 };
