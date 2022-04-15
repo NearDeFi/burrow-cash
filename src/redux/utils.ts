@@ -103,7 +103,6 @@ export const transformAsset = (
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
-  const availableLiquidityMoney = toUsd(temp2, asset);
 
   let accountAttrs = {
     supplied: 0,
