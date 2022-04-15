@@ -106,38 +106,33 @@ const InfoBannerAnonymous = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const areas = [`"totals"`];
-  const columns = ["1fr"];
-
   return (
-    <Box mt={["1rem", "1rem"]} mb="0.5rem" mx={["1rem", "2rem"]} display="grid">
-      <Box
-        sx={{ margin: 0, borderRadius: 0 }}
-        display="grid"
-        gridTemplateAreas={areas}
-        gridTemplateColumns={columns}
-        gap={2}
-        mx="2rem"
-        my="1rem"
-        pt={[0, "0.5rem", 0]}
-        justifySelf="center"
-        width="100%"
-        maxWidth={["100%", "100%", "600px"]}
-      >
-        {isMobile ? (
-          <Wrapper gridArea="totals">
-            <Box display="flex" justifyContent="space-between" width="100%">
-              <Totals />
-            </Box>
-          </Wrapper>
-        ) : (
-          <Wrapper gridArea="totals">
-            <Box display="flex" justifyContent="space-between" width="100%">
-              <Totals />
-            </Box>
-          </Wrapper>
-        )}
-      </Box>
+    <Box
+      display="grid"
+      gridTemplateAreas={`"totals"`}
+      gridTemplateColumns="1fr"
+      gap={2}
+      px={["1rem", "2rem", 0]}
+      mt="1rem"
+      mb="0.5rem"
+      pt={[0, "0.5rem", 0]}
+      justifySelf="center"
+      width="100%"
+      maxWidth={["100%", "100%", "600px"]}
+    >
+      {isMobile ? (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      ) : (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      )}
     </Box>
   );
 };
