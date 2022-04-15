@@ -35,14 +35,7 @@ const InfoBanner = () => {
     : ["1fr", "1fr", "repeat(2, minmax(320px, 320px))", "repeat(3, 320px)", "repeat(4, 320px)"];
 
   return (
-    <Box
-      mt={[0, "1rem", 0]}
-      mb="1.5rem"
-      mx={["1rem", "2rem"]}
-      display="grid"
-      width={["auto", "auto", "800px", "auto"]}
-    >
-      <ToggleSlimBanner />
+    <Box mt={[0, "1rem", 0]} mb="1.5rem" mx={["1rem", "2rem"]} display="grid">
       <Box
         sx={{ margin: 0, borderRadius: 0 }}
         display="grid"
@@ -55,6 +48,7 @@ const InfoBanner = () => {
         justifySelf="center"
         width={["100%", "100%", "auto"]}
       >
+        <ToggleSlimBanner />
         {isMobile ? (
           <>
             <Wrapper gridArea="user" sx={{ flexDirection: "column", borderRadius: 0 }}>
