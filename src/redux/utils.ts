@@ -146,6 +146,7 @@ export const transformAsset = (
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
+    totalSupplyMoney: toUsd(totalSupplyD, asset),
     borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,

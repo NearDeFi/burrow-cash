@@ -7,6 +7,14 @@ import { ToggleSlimBanner } from "./toggle";
 import { Wrapper } from "./style";
 import { useSlimStats } from "../../hooks";
 
+interface Props {
+  accountId?: string;
+}
+
+const InfoBox = ({ accountId }: Props) => {
+  return accountId ? <InfoBanner /> : <InfoBannerAnonymous />;
+};
+
 const InfoBanner = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -27,14 +35,7 @@ const InfoBanner = () => {
     : ["1fr", "1fr", "repeat(2, minmax(320px, 320px))", "repeat(3, 320px)", "repeat(4, 320px)"];
 
   return (
-    <Box
-      mt={[0, "1rem", 0]}
-      mb="1.5rem"
-      mx={["1rem", "2rem"]}
-      display="grid"
-      width={["auto", "auto", "800px", "auto"]}
-    >
-      <ToggleSlimBanner />
+    <Box mt={[0, "1rem", 0]} mb="1.5rem" mx={["1rem", "2rem"]} display="grid">
       <Box
         sx={{ margin: 0, borderRadius: 0 }}
         display="grid"
@@ -47,6 +48,7 @@ const InfoBanner = () => {
         justifySelf="center"
         width={["100%", "100%", "auto"]}
       >
+        <ToggleSlimBanner />
         {isMobile ? (
           <>
             <Wrapper gridArea="user" sx={{ flexDirection: "column", borderRadius: 0 }}>
@@ -94,4 +96,39 @@ const InfoBanner = () => {
   );
 };
 
-export default InfoBanner;
+const InfoBannerAnonymous = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  return (
+    <Box
+      display="grid"
+      gridTemplateAreas={`"totals"`}
+      gridTemplateColumns="1fr"
+      gap={2}
+      px={["1rem", "2rem", 0]}
+      mt="1rem"
+      mb="0.5rem"
+      pt={[0, "0.5rem", 0]}
+      justifySelf="center"
+      width="100%"
+      maxWidth={["100%", "100%", "600px"]}
+    >
+      {isMobile ? (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      ) : (
+        <Wrapper gridArea="totals">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Totals />
+          </Box>
+        </Wrapper>
+      )}
+    </Box>
+  );
+};
+
+export default InfoBox;

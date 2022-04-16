@@ -7,8 +7,9 @@ import PageTitle from "./PageTitle";
 import TotalBRRR from "./TotalBRRR";
 import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
-import InfoBanner from "./InfoBanner";
 import ExtraRewards from "./ExtraRewards";
+import BetaInfo from "./BetaInfo";
+import InfoBox from "./InfoBanner";
 
 export {
   Table,
@@ -20,6 +21,7 @@ export {
   TotalBRRR,
   OnboardingBRRR,
   BRRRPrice,
-  InfoBanner,
   ExtraRewards,
+  BetaInfo,
+  InfoBox,
 };
