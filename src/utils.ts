@@ -156,6 +156,6 @@ export async function login(walletConnection: WalletConnection) {
 
 export function accountTrim(accountId: string) {
   return accountId && accountId.length > 14 + 14 + 1
-    ? `${accountId.slice(0, 14)}…${accountId.slice(-14)}`
+    ? `${accountId.slice(0, 14)}...${accountId.slice(-14)}`
     : accountId;
 }
