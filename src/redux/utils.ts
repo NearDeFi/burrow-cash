@@ -165,7 +165,24 @@ export const transformAsset = (
         assets[brrrTokenId].metadata.decimals,
       ),
     ),
+    extraDepositRewards: getExtraRewards("supplied", asset, assets, brrrTokenId),
+    extraBorrowRewards: getExtraRewards("borrowed", asset, assets, brrrTokenId),
   };
+};
+
+const getExtraRewards = (
+  action: "supplied" | "borrowed",
+  asset: Asset,
+  assets: Assets,
+  brrrTokenId: string,
+) => {
+  return Object.entries(asset.farms[action])
+    .filter(([tokenId]) => tokenId !== brrrTokenId)
+    .map(([tokenId, rewards]) => ({
+      rewards,
+      metadata: assets[tokenId].metadata,
+      config: assets[tokenId].config,
+    }));
 };
 
 export const getDailyBRRRewards = (

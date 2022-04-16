@@ -15,6 +15,7 @@ export const columns = [
         value={`${formatBRRRAmount(rowData?.brrrBorrow)} / Day`}
         rowData={rowData}
         format="string"
+        extraRewards={rowData.extraBorrowRewards}
       />
     ),
   },
