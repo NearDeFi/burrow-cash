@@ -10,14 +10,14 @@
   display: flex;
   flex: 0 0 100%;
   width: 100%;
-  animation: ticker 142s infinite linear;
+  animation: ticker 22s infinite linear;
   position: relative;
   margin-left: 100vw;
   align-items: center;
 }
 
 .time-ago {
-  min-width: 110px;
+  min-width: 120px;
   text-align: right;
 }
 
