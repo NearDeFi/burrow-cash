@@ -26,7 +26,8 @@ const Ticker = () => {
           );
 
           return (
-            <Stack key={e.receiptId} spacing={2} py="0.5rem" direction="row">
+            <Stack key={e.receiptId} spacing={1} py="0.5rem" direction="row">
+              <TimeAgo className="time-ago" datetime={new Date(e.timestamp / 1e6)} />
               <Link
                 href={`https://app.burrow.cash?viewAs=${e.data.accountId}`}
                 target="blank"
@@ -34,7 +35,6 @@ const Ticker = () => {
               >
                 {e.data.accountId}
               </Link>
-              <TimeAgo className="time-ago" datetime={new Date(e.timestamp / 1e6)} />
               <Box>{e.event}</Box>
               <TokenIcon width={18} height={18} icon={asset.metadata.icon} />
               <Box>{amount}</Box>
