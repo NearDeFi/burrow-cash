@@ -15,6 +15,7 @@ export const columns = [
         value={`${formatBRRRAmount(rowData?.brrrSupply)} / Day`}
         rowData={rowData}
         format="string"
+        extraRewards={rowData.extraDepositRewards}
       />
     ),
   },
