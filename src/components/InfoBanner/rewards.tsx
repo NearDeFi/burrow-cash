@@ -3,9 +3,10 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { TOKEN_FORMAT } from "../../store";
 import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
 import { useAppSelector } from "../../redux/hooks";
-import { useSlimStats } from "../../hooks";
+import { useSlimStats, useTicker } from "../../hooks";
 import { Wrapper } from "./style";
 import Hog from "./hog.svg";
+import HogCool from "./hog-cool.svg";
 
 export const Rewards = () => {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
@@ -13,6 +14,7 @@ export const Rewards = () => {
   const slimStats = useSlimStats();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { hasTicker, toggleTicker } = useTicker();
 
   return (
     <Wrapper
@@ -26,8 +28,14 @@ export const Rewards = () => {
         width: slimStats && isMobile ? "100vw" : "auto",
       }}
     >
-      <Box top="1rem" left="0.5rem" position="relative">
-        <Hog />
+      <Box
+        top="0.8rem"
+        left="0.5rem"
+        position="relative"
+        sx={{ cursor: "pointer" }}
+        onClick={toggleTicker}
+      >
+        {hasTicker ? <HogCool /> : <Hog />}
       </Box>
       {!slimStats && (
         <Box p="0.5rem" px="1rem">

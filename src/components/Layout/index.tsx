@@ -1,6 +1,6 @@
 import { Box, Alert, Link } from "@mui/material";
 
-import { useViewAs } from "../../hooks";
+import { useViewAs, useTicker } from "../../hooks";
 import Footer from "../Footer";
 import Header from "../Header";
 import Ticker from "../Ticker";
@@ -19,6 +19,8 @@ export const Banner = () => (
 
 const Layout = ({ children }) => {
   const isViewingAs = useViewAs();
+  const { hasTicker } = useTicker();
+
   return (
     <Box
       sx={{
@@ -29,7 +31,7 @@ const Layout = ({ children }) => {
         border: isViewingAs ? "10px solid #47C880" : "none",
       }}
     >
-      <Ticker />
+      {hasTicker && <Ticker />}
       <Header />
       <main>{children}</main>
       <Footer />
