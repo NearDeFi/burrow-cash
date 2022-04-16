@@ -3,11 +3,17 @@ import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@
 
 import { login, logout, getBurrow } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { logoutAccount } from "../../redux/accountSlice";
+import { logoutAccount, farmClaimAll, fetchAccount } from "../../redux/accountSlice";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
-import { trackConnectWallet, trackDisplayAsUsd, trackLogout, trackShowDust } from "../../telemetry";
+import {
+  trackConnectWallet,
+  trackDisplayAsUsd,
+  trackLogout,
+  trackShowDust,
+  trackClaimButton,
+} from "../../telemetry";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();
@@ -51,6 +57,14 @@ const WalletButton = () => {
     logout(walletConnection);
   };
 
+  const handleClaimAll = async () => {
+    handleClose();
+    trackClaimButton();
+    dispatch(farmClaimAll()).then(() => {
+      dispatch(fetchAccount());
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -88,6 +102,10 @@ const WalletButton = () => {
           "aria-labelledby": "logout-button",
         }}
       >
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll}>
+          Claim All Rewards
+        </MenuItem>
+        <Divider />
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
           Display values as {displayAsTokenValue ? "usd" : "token"}
         </MenuItem>

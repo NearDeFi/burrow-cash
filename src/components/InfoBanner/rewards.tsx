@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 import { TOKEN_FORMAT } from "../../store";
-import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
+import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector } from "../../redux/hooks";
 import { useSlimStats } from "../../hooks";
 import { Wrapper } from "./style";
@@ -13,6 +13,7 @@ export const Rewards = () => {
   const slimStats = useSlimStats();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isClaimingLoading = useAppSelector(isClaiming);
 
   return (
     <Wrapper
@@ -35,6 +36,7 @@ export const Rewards = () => {
           <Typography fontWeight="bold" fontSize="0.85rem">
             Total Rewards:
           </Typography>
+          <Typography fontSize="0.85rem">Unclaimed:</Typography>
         </Box>
       )}
       <Box
@@ -45,22 +47,40 @@ export const Rewards = () => {
         flex="1"
         flexDirection={slimStats ? "row-reverse" : "column"}
       >
-        <Typography
-          fontSize={slimStats ? "1.1rem" : "0.85rem"}
-          align="right"
-          fontWeight="bold"
-          ml="1rem"
-        >
-          {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}
-        </Typography>
-        <Typography
-          fontWeight="bold"
-          fontSize={slimStats ? "1.1rem" : "0.85rem"}
-          color={theme.palette.primary.main}
-          align="right"
-        >
-          {(total + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)}
-        </Typography>
+        {isClaimingLoading ? (
+          <Typography>Claiming...</Typography>
+        ) : (
+          <>
+            <Typography
+              fontSize={slimStats ? "1.1rem" : "0.85rem"}
+              align="right"
+              fontWeight="bold"
+              ml="1rem"
+              title="Daily BRRR rewards"
+            >
+              {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}
+            </Typography>
+            <Typography
+              fontWeight="bold"
+              fontSize={slimStats ? "1.1rem" : "0.85rem"}
+              color={theme.palette.primary.main}
+              align="right"
+              title="Total claimed BRRR rewards"
+            >
+              {total.toLocaleString(undefined, TOKEN_FORMAT)}
+            </Typography>
+            <Typography
+              fontWeight="bold"
+              fontSize={slimStats ? "1.1rem" : "0.85rem"}
+              color={theme.palette.primary.main}
+              align="right"
+              pr={slimStats ? "0.5rem" : 0}
+              title="Unclaimed BRRR rewards"
+            >
+              {unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}
+            </Typography>
+          </>
+        )}
       </Box>
     </Wrapper>
   );
