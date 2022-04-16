@@ -15,16 +15,19 @@ import storage from "redux-persist/lib/storage";
 import assetsReducer from "./assetsSlice";
 import accountReducer from "./accountSlice";
 import appReducer from "./appSlice";
+import feedReducer from "./feedSlice";
 
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["feed"],
 };
 
 const rootReducer = combineReducers({
   assets: assetsReducer,
   account: accountReducer,
   app: appReducer,
+  feed: feedReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

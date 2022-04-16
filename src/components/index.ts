@@ -9,6 +9,7 @@ import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 import BetaInfo from "./BetaInfo";
 import InfoBox from "./InfoBanner";
+import Ticker from "./Ticker";
 
 export {
   Table,
@@ -22,4 +23,5 @@ export {
   BRRRPrice,
   BetaInfo,
   InfoBox,
+  Ticker,
 };

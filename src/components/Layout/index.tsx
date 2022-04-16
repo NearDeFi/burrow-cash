@@ -3,6 +3,7 @@ import { Box, Alert, Link } from "@mui/material";
 import { useViewAs } from "../../hooks";
 import Footer from "../Footer";
 import Header from "../Header";
+import Ticker from "../Ticker";
 
 export const Banner = () => (
   <Alert severity="success" sx={{ pl: ["20px", "28px"] }}>
@@ -28,6 +29,7 @@ const Layout = ({ children }) => {
         border: isViewingAs ? "10px solid #47C880" : "none",
       }}
     >
+      <Ticker />
       <Header />
       <main>{children}</main>
       <Footer />
