@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@mui/material";
 
-import { login, logout, getBurrow } from "../../utils";
+import { login, logout, getBurrow, accountTrim } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { logoutAccount } from "../../redux/accountSlice";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
@@ -77,7 +77,7 @@ const WalletButton = () => {
         variant="contained"
         onClick={onWalletButtonClick}
       >
-        {accountId || "Connect Wallet"}
+        {accountTrim(accountId) || "Connect Wallet"}
       </Button>
       <Menu
         id="profile-menu"

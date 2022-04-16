@@ -9,6 +9,7 @@ import { useAppSelector } from "../../redux/hooks";
 import TokenIcon from "../TokenIcon";
 import FeedData from "./feed";
 import "./styles.css";
+import { accountTrim } from "../../utils";
 
 const Ticker = () => {
   const events = useAppSelector(getFeedEvents);
@@ -33,7 +34,7 @@ const Ticker = () => {
                 target="blank"
                 fontWeight="bold"
               >
-                {e.data.accountId}
+                {accountTrim(e.data.accountId)}
               </Link>
               <Box>{e.event}</Box>
               <TokenIcon width={18} height={18} icon={asset.metadata.icon} />
