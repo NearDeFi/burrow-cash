@@ -1,5 +1,6 @@
-import { Box, Stack, Link } from "@mui/material";
+import { Box, Stack, Link, useTheme } from "@mui/material";
 import TimeAgo from "timeago-react";
+import { motion } from "framer-motion";
 
 import { getFeedEvents } from "../../redux/feedSelectors";
 import { shrinkToken } from "../../store/helper";
@@ -8,16 +9,24 @@ import { getAssets } from "../../redux/assetsSelectors";
 import { useAppSelector } from "../../redux/hooks";
 import TokenIcon from "../TokenIcon";
 import FeedData from "./feed";
-import "./styles.css";
 import { accountTrim } from "../../utils";
 
 const Ticker = () => {
   const events = useAppSelector(getFeedEvents);
   const assets = useAppSelector(getAssets);
+  const theme = useTheme();
 
   return (
-    <Box className="ticker">
-      <Stack className="ticker-list" spacing={2} direction="row">
+    <Box width="100%" overflow="hidden" sx={{ backgroundColor: theme.palette.primary.light }}>
+      <Stack
+        m={0}
+        spacing={2}
+        direction="row"
+        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        initial={{ x: -5000 }}
+        animate={{ x: 1000 }}
+        component={motion.ul}
+      >
         {events.map((e) => {
           const asset = assets[e.data.tokenId];
           const decimals = asset.metadata.decimals + asset.config.extra_decimals;
@@ -28,7 +37,9 @@ const Ticker = () => {
 
           return (
             <Stack key={e.receiptId} spacing={1} py="0.5rem" direction="row">
-              <TimeAgo className="time-ago" datetime={new Date(e.timestamp / 1e6)} />
+              <Box minWidth={120} textAlign="right">
+                <TimeAgo datetime={new Date(e.timestamp / 1e6)} />
+              </Box>
               <Link
                 href={`https://app.burrow.cash?viewAs=${e.data.accountId}`}
                 target="blank"

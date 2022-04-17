@@ -26,8 +26,7 @@ export const feedSlice = createSlice({
   initialState,
   reducers: {
     updateFeed(state, action: PayloadAction<{ events: FeedEvent[] }>) {
-      // console.log("ACT:", action);
-      state.events = uniqBy(state.events.concat(action.payload.events), "blockHash");
+      state.events = uniqBy(state.events.concat(action.payload.events), "receiptId");
     },
   },
 });
