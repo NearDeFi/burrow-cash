@@ -22,10 +22,11 @@ const Ticker = () => {
         m={0}
         spacing={2}
         direction="row"
-        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        initial={{ x: -5000 }}
-        animate={{ x: 1000 }}
+        transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+        initial={{ x: "100vw" }}
+        animate={{ x: -10000 }}
         component={motion.ul}
+        fontSize="0.85rem"
       >
         {events.map((e) => {
           const asset = assets[e.data.tokenId];
