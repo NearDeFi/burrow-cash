@@ -24,7 +24,7 @@ export const Rewards = () => {
       transition: { duration: 0.5 },
     },
     cool: {
-      top: slimStats ? "0.4rem" : "0.8rem",
+      top: slimStats || isMobile ? "0.4rem" : "0.8rem",
       transition: { duration: 0.5 },
     },
   };
@@ -54,7 +54,7 @@ export const Rewards = () => {
         top="0.8rem"
         left="0.5rem"
         position="relative"
-        sx={{ cursor: "pointer" }}
+        sx={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
         onClick={handleClickHog}
         component={motion.div}
         variants={variants}
