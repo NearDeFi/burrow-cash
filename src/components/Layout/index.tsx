@@ -1,4 +1,5 @@
 import { Box, Alert, Link } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useViewAs, useTicker } from "../../hooks";
 import Footer from "../Footer";
@@ -31,7 +32,17 @@ const Layout = ({ children }) => {
         border: isViewingAs ? "10px solid #47C880" : "none",
       }}
     >
-      {hasTicker && <Ticker />}
+      <AnimatePresence>
+        {hasTicker && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 40, transition: { duration: 0.5 } }}
+            exit={{ opacity: 0, height: 0, transition: { duration: 0.5 } }}
+          >
+            <Ticker />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Header />
       <main>{children}</main>
       <Footer />
