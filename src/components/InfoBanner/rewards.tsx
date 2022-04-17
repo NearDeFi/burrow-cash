@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import { TOKEN_FORMAT } from "../../store";
 import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
@@ -15,6 +16,27 @@ export const Rewards = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { hasTicker, toggleTicker } = useTicker();
+  const controls = useAnimation();
+
+  const variants = {
+    small: {
+      top: "1.5rem",
+      transition: { duration: 0.5 },
+    },
+    cool: {
+      top: slimStats ? "0.4rem" : "0.8rem",
+      transition: { duration: 0.5 },
+    },
+  };
+
+  const handleClickHog = () => {
+    toggleTicker();
+    if (!hasTicker) {
+      controls.start("cool");
+    } else {
+      controls.start("small");
+    }
+  };
 
   return (
     <Wrapper
@@ -33,9 +55,13 @@ export const Rewards = () => {
         left="0.5rem"
         position="relative"
         sx={{ cursor: "pointer" }}
-        onClick={toggleTicker}
+        onClick={handleClickHog}
+        component={motion.div}
+        variants={variants}
+        initial={hasTicker ? "cool" : "small"}
+        animate={controls}
       >
-        {hasTicker ? <HogCool /> : <Hog />}
+        <AnimatePresence>{hasTicker ? <HogCool /> : <Hog />}</AnimatePresence>
       </Box>
       {!slimStats && (
         <Box p="0.5rem" px="1rem">
