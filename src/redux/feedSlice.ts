@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { uniqBy } from "lodash";
+import { uniqBy, orderBy } from "lodash";
 
 interface FeedEvent {
   blockHash: number;
@@ -28,9 +28,12 @@ export const feedSlice = createSlice({
     updateFeed(state, action: PayloadAction<{ events: FeedEvent[] }>) {
       state.events = uniqBy(state.events.concat(action.payload.events), "receiptId");
     },
+    orderFeed(state) {
+      state.events = orderBy(state.events, ["timestamp"], ["desc"]);
+    },
   },
 });
 
-export const { updateFeed } = feedSlice.actions;
+export const { updateFeed, orderFeed } = feedSlice.actions;
 
 export default feedSlice.reducer;

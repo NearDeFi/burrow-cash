@@ -3,8 +3,9 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import { TOKEN_FORMAT } from "../../store";
 import { getTotalBRRR, getTotalDailyBRRRewards } from "../../redux/accountSelectors";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSlimStats, useTicker } from "../../hooks";
+import { orderFeed } from "../../redux/feedSlice";
 import { Wrapper } from "./style";
 import Hog from "./hog.svg";
 import HogCool from "./hog-cool.svg";
@@ -17,6 +18,7 @@ export const Rewards = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { hasTicker, toggleTicker } = useTicker();
   const controls = useAnimation();
+  const dispatch = useAppDispatch();
 
   const variants = {
     small: {
@@ -32,6 +34,7 @@ export const Rewards = () => {
   const handleClickHog = () => {
     toggleTicker();
     if (!hasTicker) {
+      dispatch(orderFeed());
       controls.start("cool");
     } else {
       controls.start("small");
