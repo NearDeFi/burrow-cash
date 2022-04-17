@@ -7,7 +7,7 @@ export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
   [theme.breakpoints.down("sm")]: {
     alignItems: "start",
-    marginTop: "1rem",
+    paddingTop: "1rem",
     gridTemplateAreas: `
     "logo wallet"
     "menu menu"`,
