@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
-import { LOGIC_CONTRACT_NAME } from "../../config";
+import { CONTRACT_MAIN } from "../../store/constants";
 import { updateFeed } from "../../redux/feedSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { keysToCamel } from "./utils";
 
 const defaultBurrowFilter = {
   status: "SUCCESS",
-  account_id: LOGIC_CONTRACT_NAME,
+  account_id: CONTRACT_MAIN,
   event: {
     standard: "burrow",
   },

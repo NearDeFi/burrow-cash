@@ -37,7 +37,7 @@ const Ticker = () => {
           );
 
           return (
-            <Stack key={e.receiptId} spacing={1} py="0.5rem" direction="row">
+            <Stack key={e.receiptId} spacing={1} py="0.5rem" direction="row" justifyItems="center">
               <Box minWidth={120} textAlign="right">
                 <TimeAgo datetime={new Date(e.timestamp / 1e6)} />
               </Box>
