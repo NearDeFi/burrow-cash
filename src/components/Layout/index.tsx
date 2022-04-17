@@ -30,6 +30,7 @@ const Layout = ({ children }) => {
         gridTemplateColumns: "100%",
         minHeight: "100%",
         border: isViewingAs ? "10px solid #47C880" : "none",
+        WebkitTapHighlightColor: "transparent",
       }}
     >
       <AnimatePresence>
