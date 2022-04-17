@@ -18,7 +18,7 @@ export const ToggleSlimBanner = () => {
     dispatch(toggleSlimStats());
   };
 
-  const ml = ["0.5rem", "1rem", "-1.5rem"];
+  const ml = ["-0.5rem", "1rem", "-1.5rem"];
   const mt = ["-2.5rem", "-2rem", "1.5rem"];
   if (!isMobile) {
     ml[2] = "-4rem";

@@ -51,12 +51,27 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
     handleRequestSort(event, property);
   };
 
-  const padding = isMobile ? "0.5rem 1rem" : "1rem";
-
+  let padding = "1rem";
+  columns[0].label = "Asset";
+  columns[1].minWidth = 100;
+  columns[4].minWidth = 100;
   if (isMobile) {
+    console.log(isMobile);
+    padding = "0.5rem";
+    columns[5].minWidth = 100;
+
     columns[1].label = "BRRR";
-    columns[3].label = "Deposits";
+    columns[2].label = "APY";
     columns[4].label = "Liquidity";
+    columns[3].label = "Deposits";
+    if (/deposit/i.test(window.location.href)) {
+      columns[5].label = "Deposited";
+    }
+    if (/borrow/i.test(window.location.href)) {
+      columns[2].label = "(APY)";
+      columns[4].label = "C. Factor";
+      columns[5].label = "Borrowed";
+    }
   }
 
   return (
@@ -64,14 +79,14 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
       <MUITable aria-label="table">
         <TableHead>
           <TableRow sx={{ padding }}>
-            {columns?.map(({ dataKey, label, align }, i) => (
+            {columns?.map(({ dataKey, label, align, minWidth }) => (
               <TableCell
                 align={align}
                 sx={{
                   color: theme.palette.secondary.main,
                   fontSize: 12,
                   padding,
-                  minWidth: i === 5 && isMobile ? 130 : 0,
+                  minWidth,
                 }}
                 key={dataKey}
                 sortDirection={orderBy === dataKey ? order : false}
