@@ -26,7 +26,7 @@ export const Rewards = () => {
       transition: { duration: 0.5 },
     },
     cool: {
-      top: slimStats || isMobile ? "0.4rem" : "0.8rem",
+      top: "1rem",
       transition: { duration: 0.5 },
     },
   };
