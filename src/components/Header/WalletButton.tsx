@@ -43,10 +43,11 @@ const WalletButton = () => {
           sx={{
             justifySelf: "end",
             alignItems: "center",
-            backgroundColor: theme.palette.primary.main,
+            cursor: accountId ? "default" : "pointer",
           }}
-          variant="contained"
+          variant={accountId ? "outlined" : "contained"}
           onClick={onWalletButtonClick}
+          disableRipple={!!accountId}
         >
           {accountId || "Connect Wallet"}
         </Button>
