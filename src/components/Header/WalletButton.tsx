@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Box, IconButton, useTheme } from "@mui/material";
+import { Button, Box, IconButton, useTheme, useMediaQuery } from "@mui/material";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
 import NearWalletSelector from "@near-wallet-selector/core";
@@ -18,6 +18,7 @@ import { HamburgerMenu } from "./Menu";
 const WalletButton = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const balance = useAppSelector(getAccountBalance);
@@ -66,18 +67,25 @@ const WalletButton = () => {
       sx={{
         gridArea: "wallet",
         marginLeft: "auto",
-        marginRight: "0.5rem",
+        marginRight: 0,
         display: "flex",
         alignItems: "center",
       }}
     >
       {accountId ? (
-        <Box sx={{ marginTop: 0.6, fontSize: "0.8rem", display: "flex" }}>
-          <div>
-            <span style={{ fontWeight: "bold" }}>{accountId}</span>{" "}
+        <Box
+          sx={{
+            marginTop: 0.6,
+            fontSize: "0.8rem",
+            display: "flex",
+            flexFlow: isMobile ? "column" : "row",
+          }}
+        >
+          <div style={{ fontWeight: "bold" }}>{accountTrim(accountId)}</div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginLeft: 4 }}>
             {balance.substring(0, balance.length - 2)}
+            <NearIcon style={{ marginTop: -5, marginRight: -5, width: "1.5rem" }} />
           </div>
-          <NearIcon style={{ marginTop: -5, width: "1.5rem" }} />
         </Box>
       ) : (
         <Button
@@ -91,11 +99,16 @@ const WalletButton = () => {
           onClick={onWalletButtonClick}
           disableRipple={!!accountId}
         >
-          {accountTrim(accountId) || "Connect Wallet"}
+          Connect Wallet
         </Button>
       )}
       <Box>
-        <IconButton onClick={handleOpenMenu}>
+        <IconButton
+          onClick={handleOpenMenu}
+          sx={{
+            paddingRight: 0,
+          }}
+        >
           <GiHamburgerMenu size={32} color={theme.palette.primary.main} />
         </IconButton>
       </Box>

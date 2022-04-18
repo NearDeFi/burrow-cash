@@ -180,6 +180,6 @@ export async function initContract(): Promise<IBurrow> {
 
 export function accountTrim(accountId: string) {
   return accountId && accountId.length > 14 + 14 + 1
-    ? `${accountId.slice(0, 14)}...${accountId.slice(-14)}`
+    ? `${accountId.slice(0, 8)}...${accountId.slice(-8)}`
     : accountId;
 }
