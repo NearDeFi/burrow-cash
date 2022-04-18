@@ -86,7 +86,6 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
           <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
             Switch Wallet
           </MenuItem>
-
           <Divider />
         </>
       )}
