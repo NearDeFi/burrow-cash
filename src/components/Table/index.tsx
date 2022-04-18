@@ -9,9 +9,9 @@ import {
   TableSortLabel,
   Box,
   useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
+import { useFullDigits } from "../../hooks";
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -33,13 +33,14 @@ interface TableProps {
   rows: any;
   columns: any;
   onRowClick?: (rowData: any) => void;
+  sx?: any;
 }
 
-function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
+function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: TableProps) {
   const theme = useTheme();
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState(sortColumn);
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { fullDigits } = useFullDigits();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -51,27 +52,31 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
     handleRequestSort(event, property);
   };
 
-  const padding = isMobile ? "0.5rem 1rem" : "1rem";
-
-  if (isMobile) {
-    columns[1].label = "BRRR";
-    columns[3].label = "Deposits";
-    columns[4].label = "Liquidity";
-  }
+  const padding = fullDigits.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
 
   return (
-    <TableContainer component={Box} sx={{ maxWidth: 950, m: "0 auto", mb: "1.5rem" }}>
+    <TableContainer
+      component={Box}
+      sx={{
+        maxWidth: 950,
+        m: "0 auto",
+        mb: "1.5rem",
+        px: "1rem",
+        width: ["none", "none", "max-content"],
+        ...sx,
+      }}
+    >
       <MUITable aria-label="table">
         <TableHead>
           <TableRow sx={{ padding }}>
-            {columns?.map(({ dataKey, label, align }, i) => (
+            {columns?.map(({ dataKey, label, align, cellStyle, sortLabelStyle }) => (
               <TableCell
                 align={align}
                 sx={{
                   color: theme.palette.secondary.main,
                   fontSize: 12,
                   padding,
-                  minWidth: i === 5 && isMobile ? 130 : 0,
+                  ...(cellStyle || {}),
                 }}
                 key={dataKey}
                 sortDirection={orderBy === dataKey ? order : false}
@@ -80,6 +85,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
                   active={orderBy === dataKey}
                   direction={orderBy === dataKey ? order : "asc"}
                   onClick={createSortHandler(dataKey)}
+                  sx={{ minWidth: [100, 100, "auto"], ...(sortLabelStyle || {}) }}
                 >
                   {label}
                   {orderBy === dataKey ? (
@@ -105,12 +111,17 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
               onClick={() => onRowClick && rowData && onRowClick(rowData)}
             >
               {columns?.map(
-                ({ dataKey, align, Cell }) =>
+                ({ dataKey, align, Cell, cellStyle }) =>
                   Cell && (
                     <TableCell
                       key={dataKey}
                       align={align}
-                      sx={{ color: theme.palette.secondary.main, fontWeight: "bold", padding }}
+                      sx={{
+                        color: theme.palette.secondary.main,
+                        fontWeight: "bold",
+                        padding,
+                        ...(cellStyle || {}),
+                      }}
                     >
                       <Cell rowData={rowData} />
                     </TableCell>

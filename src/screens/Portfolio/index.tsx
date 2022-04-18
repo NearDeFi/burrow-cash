@@ -17,13 +17,23 @@ const Portfolio = () => {
       <BetaInfo />
       <PageTitle first="Deposited" second="Assets" />
       {suppliedRows.length ? (
-        <Table rows={suppliedRows} columns={suppliedColumns} sortColumn="supplied" />
+        <Table
+          rows={suppliedRows}
+          columns={suppliedColumns}
+          sortColumn="supplied"
+          sx={{ maxWidth: "800px", width: "none" }}
+        />
       ) : (
         <Box textAlign="center">No deposited assets yet</Box>
       )}
       <PageTitle first="Borrowed" second="Assets" />
       {borrowedRows.length ? (
-        <Table rows={borrowedRows} columns={borrowedColumns} sortColumn="borrowed" />
+        <Table
+          rows={borrowedRows}
+          columns={borrowedColumns}
+          sortColumn="borrowed"
+          sx={{ maxWidth: "800px", width: "none" }}
+        />
       ) : (
         <Box textAlign="center">No borrowed assets yet</Box>
       )}

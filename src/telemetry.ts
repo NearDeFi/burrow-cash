@@ -80,6 +80,10 @@ export const trackFullDigits = (props) => {
   track("Full digits clicked", props);
 };
 
+export const trackToggleAmountDigits = (props) => {
+  track("Display compact amounts clicked", props);
+};
+
 export const trackShowTicker = (props) => {
   track("Show ticker clicked", props);
 };

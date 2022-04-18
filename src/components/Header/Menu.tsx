@@ -6,7 +6,14 @@ import { logoutAccount, farmClaimAll, fetchAccount } from "../../redux/accountSl
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
-import { trackDisplayAsUsd, trackLogout, trackShowDust, trackClaimButton } from "../../telemetry";
+import {
+  trackDisplayAsUsd,
+  trackLogout,
+  trackShowDust,
+  trackClaimButton,
+  trackToggleAmountDigits,
+} from "../../telemetry";
+import { useFullDigits } from "../../hooks";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -19,6 +26,8 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const accountId = useAppSelector(getAccountId);
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
+  const { fullDigits, setDigits } = useFullDigits();
+  const isCompact = fullDigits.table;
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -49,6 +58,12 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
     });
   };
 
+  const handleToggleAmountDigits = () => {
+    const digits = { table: !fullDigits.table };
+    trackToggleAmountDigits(digits);
+    setDigits(digits);
+  };
+
   return (
     <Menu
       id="profile-menu"
@@ -67,6 +82,9 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
       <Divider />
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}
+      </MenuItem>
+      <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleAmountDigits}>
+        Display {isCompact ? "Full" : "Compact"} Amounts
       </MenuItem>
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust

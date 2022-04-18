@@ -14,6 +14,7 @@ export interface AppState {
   fullDigits: {
     totals: boolean;
     user: boolean;
+    table: boolean;
   };
   selected: {
     action?: TokenAction;
@@ -34,6 +35,7 @@ const initialState: AppState = {
   fullDigits: {
     totals: false,
     user: false,
+    table: true,
   },
   selected: {
     action: undefined,
