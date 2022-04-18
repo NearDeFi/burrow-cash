@@ -68,13 +68,14 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
       <MUITable aria-label="table">
         <TableHead>
           <TableRow sx={{ padding }}>
-            {columns?.map(({ dataKey, label, align }) => (
+            {columns?.map(({ dataKey, label, align, cellStyle, sortLabelStyle }) => (
               <TableCell
                 align={align}
                 sx={{
                   color: theme.palette.secondary.main,
                   fontSize: 12,
                   padding,
+                  ...(cellStyle || {}),
                 }}
                 key={dataKey}
                 sortDirection={orderBy === dataKey ? order : false}
@@ -83,7 +84,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
                   active={orderBy === dataKey}
                   direction={orderBy === dataKey ? order : "asc"}
                   onClick={createSortHandler(dataKey)}
-                  sx={{ minWidth: [100, 100, "auto"] }}
+                  sx={{ minWidth: [100, 100, "auto"], ...(sortLabelStyle || {}) }}
                 >
                   {label}
                   {orderBy === dataKey ? (
@@ -109,12 +110,17 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
               onClick={() => onRowClick && rowData && onRowClick(rowData)}
             >
               {columns?.map(
-                ({ dataKey, align, Cell }) =>
+                ({ dataKey, align, Cell, cellStyle }) =>
                   Cell && (
                     <TableCell
                       key={dataKey}
                       align={align}
-                      sx={{ color: theme.palette.secondary.main, fontWeight: "bold", padding }}
+                      sx={{
+                        color: theme.palette.secondary.main,
+                        fontWeight: "bold",
+                        padding,
+                        ...(cellStyle || {}),
+                      }}
                     >
                       <Cell rowData={rowData} />
                     </TableCell>
