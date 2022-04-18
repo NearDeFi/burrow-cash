@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, Tooltip, Skeleton, Stack } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import millify from "millify";
@@ -100,13 +101,26 @@ export const Cell = ({
   );
 };
 
-export const Label = ({ name, title }) => (
-  <Tooltip title={title}>
-    <span>
-      {name} <FcInfo />
-    </span>
-  </Tooltip>
-);
+export const Label = ({ name, title }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleOpenTooltip = () => {
+    setShowTooltip(true);
+  };
+
+  return (
+    <Tooltip
+      title={title}
+      open={showTooltip}
+      onOpen={() => setShowTooltip(true)}
+      onClose={() => setShowTooltip(false)}
+    >
+      <Box>
+        {name} <FcInfo onClick={handleOpenTooltip} />
+      </Box>
+    </Tooltip>
+  );
+};
 
 export const formatBRRRAmount = (amount: number) =>
   amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);
