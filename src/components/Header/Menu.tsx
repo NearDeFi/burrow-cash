@@ -66,10 +66,10 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
       )}
       <Divider />
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
-        Display values as {displayAsTokenValue ? "usd" : "token"}
+        Display Values As {displayAsTokenValue ? "USD" : "Token"}
       </MenuItem>
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
-        {showDust ? "Hide" : "Show"} dust
+        {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
       <Divider />
       {accountId && (
