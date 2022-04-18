@@ -25,7 +25,7 @@ const ExtraRewards = ({ rewards: extra }: Props) => {
             justifyContent="flex-end"
             key={metadata.token_id}
           >
-            <Typography fontSize="0.75rem">{dailyRewards} / Day</Typography>
+            <Typography fontSize="0.75rem">{dailyRewards}</Typography>
             <TokenIcon width={14} height={14} icon={metadata.icon} />
           </Stack>
         );
