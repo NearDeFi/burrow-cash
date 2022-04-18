@@ -10,6 +10,7 @@ export const columns = [
     label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrBorrow",
     align: "right",
+    minWidth: 100,
     Cell: ({ rowData }) => (
       <Cell
         value={rowData?.brrrBorrow}

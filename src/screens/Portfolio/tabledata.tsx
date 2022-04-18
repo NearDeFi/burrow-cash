@@ -11,6 +11,7 @@ export const suppliedColumns = [
     label: <Label name="Rewards" title="Rewards / day" />,
     dataKey: "dailyBRRRewards",
     align: "right",
+    minWidth: 100,
     Cell: ({ rowData }) => (
       <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
     ),

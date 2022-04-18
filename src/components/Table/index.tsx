@@ -9,6 +9,7 @@ import {
   TableSortLabel,
   Box,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import { useFullDigits } from "../../hooks";
@@ -40,6 +41,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState(sortColumn);
   const { fullDigits } = useFullDigits();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -51,20 +53,26 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
     handleRequestSort(event, property);
   };
 
-  const padding = fullDigits.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
+  let padding = fullDigits.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
+  let rowPadding = padding;
+  if (isMobile) {
+    padding = "0.5rem 0.5rem 0.5rem 0rem";
+    rowPadding = "1rem 0rem 0rem 0.5rem";
+  }
 
   return (
     <TableContainer component={Box} sx={{ maxWidth: 950, m: "0 auto", mb: "1.5rem" }}>
       <MUITable aria-label="table">
         <TableHead>
-          <TableRow sx={{ padding }}>
-            {columns?.map(({ dataKey, label, align }) => (
+          <TableRow sx={{ padding: rowPadding }}>
+            {columns?.map(({ dataKey, label, align, minWidth }) => (
               <TableCell
                 align={align}
                 sx={{
                   color: theme.palette.secondary.main,
                   fontSize: 12,
                   padding,
+                  minWidth,
                 }}
                 key={dataKey}
                 sortDirection={orderBy === dataKey ? order : false}
