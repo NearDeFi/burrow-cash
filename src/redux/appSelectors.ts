@@ -38,6 +38,11 @@ export const getShowDust = createSelector(
   (app) => app.showDust,
 );
 
+export const getShowTicker = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.showTicker,
+);
+
 export const getSelectedValues = createSelector(
   (state: RootState) => state.app,
   (app) => app.selected,

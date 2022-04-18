@@ -10,6 +10,7 @@ import BRRRPrice from "./BRRRPrice";
 import ExtraRewards from "./ExtraRewards";
 import BetaInfo from "./BetaInfo";
 import InfoBox from "./InfoBanner";
+import Ticker from "./Ticker";
 
 export {
   Table,
@@ -24,4 +25,5 @@ export {
   ExtraRewards,
   BetaInfo,
   InfoBox,
+  Ticker,
 };

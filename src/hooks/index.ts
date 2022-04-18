@@ -1,9 +1,10 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { isAssetsLoading } from "../redux/assetsSelectors";
 import { isAccountLoading } from "../redux/accountSelectors";
-import { getConfig, getSlimStats, getFullDigits } from "../redux/appSelectors";
-import { setFullDigits } from "../redux/appSlice";
+import { getConfig, getSlimStats, getFullDigits, getShowTicker } from "../redux/appSelectors";
+import { setFullDigits, toggleShowTicker } from "../redux/appSlice";
 import { getViewAs } from "../utils";
+import { trackShowTicker } from "../telemetry";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -32,4 +33,16 @@ export function useFullDigits() {
 export function useViewAs() {
   const viewAs = getViewAs();
   return !!viewAs;
+}
+
+export function useTicker() {
+  const dispatch = useAppDispatch();
+  const hasTicker = useAppSelector(getShowTicker);
+
+  const toggleTicker = () => {
+    trackShowTicker({ hasTicker });
+    dispatch(toggleShowTicker());
+  };
+
+  return { hasTicker, toggleTicker };
 }
