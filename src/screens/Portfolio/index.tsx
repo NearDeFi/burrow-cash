@@ -23,7 +23,12 @@ const Portfolio = () => {
       )}
       <PageTitle first="Borrowed" second="Assets" />
       {borrowedRows.length ? (
-        <Table rows={borrowedRows} columns={borrowedColumns} sortColumn="borrowed" />
+        <Table
+          rows={borrowedRows}
+          columns={borrowedColumns}
+          sortColumn="borrowed"
+          sx={{ width: "none" }}
+        />
       ) : (
         <Box textAlign="center">No borrowed assets yet</Box>
       )}

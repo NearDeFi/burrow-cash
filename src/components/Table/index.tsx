@@ -33,9 +33,10 @@ interface TableProps {
   rows: any;
   columns: any;
   onRowClick?: (rowData: any) => void;
+  sx?: any;
 }
 
-function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
+function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: TableProps) {
   const theme = useTheme();
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState(sortColumn);
@@ -54,7 +55,16 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
   const padding = fullDigits.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
 
   return (
-    <TableContainer component={Box} sx={{ maxWidth: 950, m: "0 auto", mb: "1.5rem" }}>
+    <TableContainer
+      component={Box}
+      sx={{
+        maxWidth: 950,
+        m: "0 auto",
+        mb: "1.5rem",
+        width: ["none", "none", "max-content"],
+        ...sx,
+      }}
+    >
       <MUITable aria-label="table">
         <TableHead>
           <TableRow sx={{ padding }}>
