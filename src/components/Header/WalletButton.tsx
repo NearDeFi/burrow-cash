@@ -8,6 +8,7 @@ import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
 import { trackConnectWallet, trackDisplayAsUsd, trackLogout, trackShowDust } from "../../telemetry";
+import { useFullDigits } from "../../hooks";
 
 const WalletButton = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,8 @@ const WalletButton = () => {
   const accountId = useAppSelector(getAccountId);
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
+  const { fullDigits, setDigits } = useFullDigits();
+  const isCompact = fullDigits.table;
 
   const onWalletButtonClick = async (event) => {
     if (!accountId) {
@@ -49,6 +52,10 @@ const WalletButton = () => {
     dispatch(logoutAccount());
     trackLogout();
     logout(walletConnection);
+  };
+
+  const handleToggleFulldigits = () => {
+    setDigits({ table: !fullDigits.table });
   };
 
   return (
@@ -90,6 +97,9 @@ const WalletButton = () => {
       >
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
           Display values as {displayAsTokenValue ? "usd" : "token"}
+        </MenuItem>
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleFulldigits}>
+          Display {isCompact ? "full" : "compact"} amounts
         </MenuItem>
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
           {showDust ? "Hide" : "Show"} dust

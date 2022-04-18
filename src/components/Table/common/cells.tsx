@@ -8,7 +8,7 @@ import type { ExtraReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
 import { BRRRPrice, ExtraRewards } from "../../index";
-import { useIsBurrowToken } from "../../../hooks";
+import { useIsBurrowToken, useFullDigits } from "../../../hooks";
 
 export const TokenCell = ({ rowData }) => {
   const isBurrowToken = useIsBurrowToken(rowData.tokenId);
@@ -66,7 +66,8 @@ export const Cell = ({
   const { price } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
-  const isCompact = true;
+  const { fullDigits } = useFullDigits();
+  const isCompact = fullDigits.table;
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
