@@ -8,6 +8,7 @@ type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
+  showTicker: boolean;
   showDust: boolean;
   slimStats: boolean;
   fullDigits: {
@@ -28,6 +29,7 @@ const initialState: AppState = {
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
+  showTicker: false,
   slimStats: false,
   fullDigits: {
     totals: false,
@@ -93,6 +95,9 @@ export const appSlice = createSlice({
     setFullDigits(state, action) {
       state.fullDigits = { ...state.fullDigits, ...action.payload };
     },
+    toggleShowTicker(state) {
+      state.showTicker = !state.showTicker;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -110,5 +115,6 @@ export const {
   toggleShowDust,
   toggleSlimStats,
   setFullDigits,
+  toggleShowTicker,
 } = appSlice.actions;
 export default appSlice.reducer;

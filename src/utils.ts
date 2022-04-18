@@ -153,3 +153,9 @@ export async function login(walletConnection: WalletConnection) {
     contractId: LOGIC_CONTRACT_NAME,
   });
 }
+
+export function accountTrim(accountId: string) {
+  return accountId && accountId.length > 14 + 14 + 1
+    ? `${accountId.slice(0, 14)}...${accountId.slice(-14)}`
+    : accountId;
+}

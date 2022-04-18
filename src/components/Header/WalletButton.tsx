@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Box, useTheme, IconButton } from "@mui/material";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
-import { login, getBurrow } from "../../utils";
+import { login, getBurrow, accountTrim } from "../../utils";
 import { useAppSelector } from "../../redux/hooks";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { trackConnectWallet } from "../../telemetry";
@@ -49,7 +49,7 @@ const WalletButton = () => {
           onClick={onWalletButtonClick}
           disableRipple={!!accountId}
         >
-          {accountId || "Connect Wallet"}
+          {accountTrim(accountId) || "Connect Wallet"}
         </Button>
         <IconButton onClick={handleOpenMenu}>
           <GiHamburgerMenu size={32} color={theme.palette.primary.main} />

@@ -41,3 +41,8 @@ export const isAssetsFetching = createSelector(
   (state: RootState) => state.assets,
   (assets) => assets.status === "fetching",
 );
+
+export const getAssets = createSelector(
+  (state: RootState) => state.assets,
+  (assets) => assets.data,
+);

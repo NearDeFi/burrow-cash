@@ -79,3 +79,7 @@ export const trackSlimStats = (props) => {
 export const trackFullDigits = (props) => {
   track("Full digits clicked", props);
 };
+
+export const trackShowTicker = (props) => {
+  track("Show ticker clicked", props);
+};
