@@ -2,7 +2,7 @@ import { TokenCell, Cell, BRRRLabel, formatBRRRAmount } from "../../components/T
 
 export const columns = [
   {
-    label: "Name",
+    label: "Asset",
     dataKey: "name",
     Cell: TokenCell,
   },
@@ -12,7 +12,7 @@ export const columns = [
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
-        value={`${formatBRRRAmount(rowData?.brrrBorrow)} / Day`}
+        value={`${formatBRRRAmount(rowData?.brrrBorrow)}`}
         rowData={rowData}
         format="string"
         extraRewards={rowData.extraBorrowRewards}
@@ -20,13 +20,13 @@ export const columns = [
     ),
   },
   {
-    label: "Borrow APY",
+    label: "(APY)",
     dataKey: "borrowApy",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData?.borrowApy} rowData={rowData} format="apy" />,
   },
   {
-    label: "Available Liquidity",
+    label: "Liquidity",
     dataKey: "availableLiquidity",
     align: "right",
     Cell: ({ rowData }) => (
@@ -34,7 +34,7 @@ export const columns = [
     ),
   },
   {
-    label: "Collateral Factor",
+    label: "LTV",
     dataKey: "collateralFactor",
     Cell: ({ rowData }) => (
       <Cell value={rowData?.collateralFactor} rowData={rowData} format="string" />

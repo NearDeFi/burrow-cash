@@ -3,7 +3,7 @@ import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 
 export const suppliedColumns = [
   {
-    label: "Name",
+    label: "Asset",
     dataKey: "symbol",
     Cell: TokenCell,
   },
@@ -56,7 +56,7 @@ export const suppliedColumns = [
 
 export const borrowedColumns = [
   {
-    label: "Name",
+    label: "Asset",
     dataKey: "symbol",
     Cell: TokenCell,
   },
