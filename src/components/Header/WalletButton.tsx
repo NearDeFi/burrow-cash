@@ -42,9 +42,7 @@ const WalletButton = () => {
 
   const onMount = async () => {
     if (selector) return;
-
     const { selector: s } = await getBurrow({ fetchData, hideModal, signOut });
-
     selectorRef.current = s;
     setSelector(s);
   };

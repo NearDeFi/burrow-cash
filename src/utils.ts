@@ -33,6 +33,7 @@ interface GetBurrowArgs {
   signOut?: () => void | null;
 }
 
+let selector;
 let burrow: IBurrow;
 let resetBurrow = true;
 let fetchDataCached;
@@ -54,16 +55,20 @@ export const getBurrow = async ({
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
 
+  const account = await getAccount(getViewAs());
+
   const changeAccount = async (accountId) => {
-    console.log("account changed", accountId);
+    console.log("account changed from", account.accountId, "to", accountId);
     resetBurrow = true;
     await getBurrow();
     if (fetchData) fetchData();
   };
 
-  const selector = await getWalletSelector({
-    onAccountChange: changeAccount,
-  });
+  if (!selector) {
+    selector = await getWalletSelector({
+      onAccountChange: changeAccount,
+    });
+  }
 
   if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
   if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
@@ -76,8 +81,6 @@ export const getBurrow = async ({
       if (hideModal) hideModal();
       signOut();
     };
-
-  const account = await getAccount(getViewAs());
 
   const view = async (
     contract: Contract,

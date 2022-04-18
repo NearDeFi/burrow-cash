@@ -67,33 +67,27 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
         "aria-labelledby": "logout-button",
       }}
     >
-      {accountId && (
-        <>
-          <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll}>
-            Claim All Rewards
-          </MenuItem>
-          <Divider />
-        </>
-      )}
+      {accountId && [
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll} key={1}>
+          Claim All Rewards
+        </MenuItem>,
+        <Divider key={2} />,
+      ]}
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}
       </MenuItem>
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
-      {accountId && (
-        <>
-          <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
-            Switch Wallet
-          </MenuItem>
-          <Divider />
-        </>
-      )}
-      {accountId && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut}>
+      {accountId && [
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={1}>
+          Switch Wallet
+        </MenuItem>,
+        <Divider key={2} />,
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={3}>
           Log Out
-        </MenuItem>
-      )}
+        </MenuItem>,
+      ]}
     </Menu>
   );
 };
