@@ -100,10 +100,10 @@ export const Cell = ({
   );
 };
 
-export const BRRRLabel = ({ title }) => (
+export const Label = ({ name, title }) => (
   <Tooltip title={title}>
     <span>
-      BRRR Rewards <FcInfo />
+      {name} <FcInfo />
     </span>
   </Tooltip>
 );

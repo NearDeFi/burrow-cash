@@ -1,4 +1,4 @@
-import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
+import { TokenCell, Cell, Label } from "../../components/Table/common/cells";
 
 export const columns = [
   {
@@ -7,7 +7,7 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="BRRR Rewards / Day" />,
+    label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrSupply",
     align: "right",
     Cell: ({ rowData }) => (
@@ -20,19 +20,19 @@ export const columns = [
     ),
   },
   {
-    label: "APY",
+    label: <Label name="APY" title="Deposit APY" />,
     dataKey: "supplyApy",
     align: "right",
     Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
   },
   {
-    label: "Total Deposit",
+    label: <Label name="Deposits" title="Total Deposits" />,
     dataKey: "totalSupply",
     Cell: ({ rowData }) => <Cell value={rowData?.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
-    label: "Available Liquidity",
+    label: <Label name="Liquidity" title="Available Liquidity" />,
     dataKey: "availableLiquidity",
     align: "right",
     Cell: ({ rowData }) => (
@@ -40,13 +40,13 @@ export const columns = [
     ),
   },
   {
-    label: "Your Deposit",
+    label: <Label name="Deposited" title="Your deposits" />,
     dataKey: "deposited",
     Cell: ({ rowData }) => <Cell value={rowData.deposited} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
-    label: "USD Value",
+    label: <Label name="USD Value" title="Token amount as USD Value" />,
     dataKey: "totalSupplyMoney",
     Cell: ({ rowData }) => <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="usd" />,
     align: "right",
