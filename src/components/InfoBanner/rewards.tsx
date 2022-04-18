@@ -9,6 +9,7 @@ import { orderFeed } from "../../redux/feedSlice";
 import { Wrapper } from "./style";
 import Hog from "./hog.svg";
 import HogCool from "./hog-cool.svg";
+import { isTestnet } from "../../utils";
 
 export const Rewards = () => {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
@@ -32,6 +33,7 @@ export const Rewards = () => {
   };
 
   const handleClickHog = () => {
+    if (isTestnet) return;
     toggleTicker();
     if (!hasTicker) {
       dispatch(orderFeed());
