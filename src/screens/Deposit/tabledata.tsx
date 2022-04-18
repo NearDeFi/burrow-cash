@@ -1,4 +1,4 @@
-import { TokenCell, Cell, BRRRLabel, formatBRRRAmount } from "../../components/Table/common/cells";
+import { TokenCell, Cell, BRRRLabel } from "../../components/Table/common/cells";
 
 export const columns = [
   {
@@ -12,9 +12,9 @@ export const columns = [
     align: "right",
     Cell: ({ rowData }) => (
       <Cell
-        value={`${formatBRRRAmount(rowData?.brrrSupply)} / Day`}
+        value={rowData?.brrrSupply}
         rowData={rowData}
-        format="string"
+        format="reward"
         extraRewards={rowData.extraDepositRewards}
       />
     ),

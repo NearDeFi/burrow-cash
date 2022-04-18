@@ -1,5 +1,6 @@
 import { Box, Tooltip, Skeleton, Stack } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
+import millify from "millify";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
@@ -65,19 +66,25 @@ export const Cell = ({
   const { price } = rowData;
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
+  const isCompact = true;
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
     amount: (v) =>
       displayAsTokenValue
-        ? Number(v).toLocaleString(undefined, showDust ? DUST_FORMAT : TOKEN_FORMAT)
+        ? isCompact
+          ? millify(Number(v))
+          : Number(v).toLocaleString(undefined, showDust ? DUST_FORMAT : TOKEN_FORMAT)
+        : isCompact
+        ? `$${millify(Number(v) * price)}`
         : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
-    reward: (v) => v.toLocaleString(undefined, TOKEN_FORMAT),
+    reward: (v) => (isCompact ? millify(Number(v)) : formatBRRRAmount(Number(v))),
     usd: (v) => v.toLocaleString(undefined, USD_FORMAT),
   };
 
   const displayValue = formatMap[format](value);
+
   return tooltip ? (
     <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
       <Box>{displayValue}</Box>
