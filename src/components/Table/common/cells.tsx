@@ -104,8 +104,9 @@ export const Cell = ({
 export const Label = ({ name, title }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const handleOpenTooltip = () => {
+  const handleOpenTooltip = (e) => {
     setShowTooltip(true);
+    e.stopPropagation();
   };
 
   return (
