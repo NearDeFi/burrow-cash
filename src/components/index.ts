@@ -3,11 +3,14 @@ import Modal from "./Modal";
 import Slider from "./Slider";
 import Table from "./Table";
 import Layout from "./Layout";
-import InfoBox from "./InfoBox";
-import HealthFactorBox from "./HealthFactorBox";
 import PageTitle from "./PageTitle";
 import TotalBRRR from "./TotalBRRR";
+import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
+import ExtraRewards from "./ExtraRewards";
+import BetaInfo from "./BetaInfo";
+import InfoBox from "./InfoBanner";
+import Ticker from "./Ticker";
 
 export {
   Table,
@@ -15,9 +18,12 @@ export {
   Input,
   Slider,
   Layout,
-  InfoBox,
   PageTitle,
-  HealthFactorBox,
   TotalBRRR,
+  OnboardingBRRR,
   BRRRPrice,
+  ExtraRewards,
+  BetaInfo,
+  InfoBox,
+  Ticker,
 };

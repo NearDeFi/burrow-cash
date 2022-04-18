@@ -70,9 +70,9 @@ export const getNear = () => {
   return near;
 };
 
-export const getAccount = async () => {
+export const getAccount = async (viewAsAccountId: string | null) => {
   near = getNear();
-  return new Account(near.connection, accountId);
+  return new Account(near.connection, viewAsAccountId || accountId);
 };
 
 // export const viewFunction = async ({ contractId, methodName, args }: WalletMethodArgs) => {

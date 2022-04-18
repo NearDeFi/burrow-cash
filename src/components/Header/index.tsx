@@ -10,6 +10,7 @@ import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { isTestnet } from "../../utils";
+import { useViewAs } from "../../hooks";
 
 const MenuItem = ({ title, pathname }) => {
   const location = useLocation();
@@ -19,7 +20,7 @@ const MenuItem = ({ title, pathname }) => {
   const style = isSelected ? { borderBottomColor: theme.palette.primary.main } : {};
 
   return (
-    <LinkStyled to={pathname} sx={style}>
+    <LinkStyled to={pathname + location.search} sx={style}>
       {title}
     </LinkStyled>
   );
@@ -29,6 +30,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
   const matches = useMediaQuery("(min-width:1200px)");
+  const isViewingAs = useViewAs();
 
   useEffect(() => {
     if (isFetching) {
@@ -52,6 +54,22 @@ const Header = () => {
 
   return (
     <Wrapper style={{ position: "relative" }}>
+      {isViewingAs && (
+        <Box
+          position="absolute"
+          left="calc(50% - 75px)"
+          width="150px"
+          fontWeight="bold"
+          color="#47C880"
+          textAlign="center"
+          top={["0rem", "3.5rem", "1rem"]}
+          zIndex="1"
+          py={1}
+          sx={{ backgroundColor: "#EBFFF4" }}
+        >
+          Read Only Mode
+        </Box>
+      )}
       <Box
         sx={{
           position: "absolute",

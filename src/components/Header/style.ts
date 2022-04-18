@@ -7,7 +7,7 @@ export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
   [theme.breakpoints.down("sm")]: {
     alignItems: "start",
-    marginTop: "1rem",
+    marginTop: "0.5rem",
     gridTemplateAreas: `
     "logo wallet"
     "menu menu"`,
@@ -15,7 +15,7 @@ export const Wrapper = styled(Toolbar)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     gridTemplateAreas: `"logo menu wallet"`,
     gridTemplateColumns: "auto auto 1fr",
-    gap: "3rem",
+    gap: "2rem",
   },
 }));
 
@@ -24,6 +24,7 @@ export const Logo = styled("div")(() => ({
   alignItems: "center",
   gridArea: "logo",
   justifySelf: "start",
+  alignSelf: "center",
 }));
 
 export const Menu = styled("div")(({ theme }) => ({

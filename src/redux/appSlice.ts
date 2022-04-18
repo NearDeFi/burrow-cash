@@ -8,7 +8,13 @@ type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
+  showTicker: boolean;
   showDust: boolean;
+  slimStats: boolean;
+  fullDigits: {
+    totals: boolean;
+    user: boolean;
+  };
   selected: {
     action?: TokenAction;
     tokenId: string;
@@ -23,6 +29,12 @@ const initialState: AppState = {
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
+  showTicker: false,
+  slimStats: false,
+  fullDigits: {
+    totals: false,
+    user: false,
+  },
   selected: {
     action: undefined,
     tokenId: "",
@@ -61,7 +73,7 @@ export const appSlice = createSlice({
       state,
       action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
     ) {
-      state.selected = { useAsCollateral: false, isMax: false, ...action.payload };
+      state.selected = { ...state.selected, isMax: false, ...action.payload };
       state.showModal = true;
     },
     updateAmount(state, action: PayloadAction<{ amount: number; isMax: boolean }>) {
@@ -76,6 +88,15 @@ export const appSlice = createSlice({
     },
     toggleShowDust(state) {
       state.showDust = !state.showDust;
+    },
+    toggleSlimStats(state) {
+      state.slimStats = !state.slimStats;
+    },
+    setFullDigits(state, action) {
+      state.fullDigits = { ...state.fullDigits, ...action.payload };
+    },
+    toggleShowTicker(state) {
+      state.showTicker = !state.showTicker;
     },
   },
   extraReducers: (builder) => {
@@ -92,5 +113,8 @@ export const {
   toggleUseAsCollateral,
   toggleDisplayValues,
   toggleShowDust,
+  toggleSlimStats,
+  setFullDigits,
+  toggleShowTicker,
 } = appSlice.actions;
 export default appSlice.reducer;

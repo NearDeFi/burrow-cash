@@ -1,31 +1,27 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Menu, MenuItem, Box, useTheme, useMediaQuery, Divider } from "@mui/material";
+import { Button, Box, IconButton, useTheme } from "@mui/material";
+import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
+
 import NearWalletSelector from "@near-wallet-selector/core";
-
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-
 import { fetchAssetsAndMetadata } from "../../redux/assetsSlice";
-import { fetchAccount } from "../../redux/accountSlice";
+import { logoutAccount, fetchAccount } from "../../redux/accountSlice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { getBurrow, accountTrim } from "../../utils";
+
 import { hideModal as _hideModal } from "../../redux/appSlice";
 
-import { logoutAccount } from "../../redux/accountSlice";
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
-import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
-import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
-import { trackConnectWallet, trackDisplayAsUsd, trackShowDust } from "../../telemetry";
-
-import { getBurrow } from "../../utils";
+import { trackConnectWallet } from "../../telemetry";
+import NearIcon from "../../assets/near-icon.svg";
+import { HamburgerMenu } from "./Menu";
 
 const WalletButton = () => {
-  const dispatch = useAppDispatch();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+
   const balance = useAppSelector(getAccountBalance);
   const accountId = useAppSelector(getAccountId);
-  const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
-  const showDust = useAppSelector(getShowDust);
 
   const selectorRef = useRef<NearWalletSelector>();
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
@@ -55,45 +51,14 @@ const WalletButton = () => {
     onMount();
   }, []);
 
-  const onWalletButtonClick = async (event) => {
-    if (!accountId) {
-      handleSignIn();
-      trackConnectWallet();
-    } else {
-      setAnchorEl(event.currentTarget);
-    }
-  };
-
-  const handleSwitchWallet = async () => {
-    await handleSignOut();
+  const onWalletButtonClick = async () => {
+    if (accountId) return;
+    trackConnectWallet();
     selector?.show();
   };
 
-  const handleSignIn = () => {
-    selector?.show();
-  };
-
-  const handleSignOut = async () => {
-    await selector?.signOut().catch((err) => {
-      console.log("Failed to sign out");
-      console.error(err);
-    });
-    signOut();
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleToggleDisplayValues = () => {
-    trackDisplayAsUsd();
-    dispatch(toggleDisplayValues());
-  };
-
-  const handleToggleShowDust = () => {
-    trackShowDust();
-    dispatch(toggleShowDust());
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
   return (
@@ -101,51 +66,40 @@ const WalletButton = () => {
       sx={{
         gridArea: "wallet",
         marginLeft: "auto",
+        marginRight: "0.5rem",
         display: "flex",
         alignItems: "center",
-        flexDirection: isMobile ? "column-reverse" : "row",
       }}
     >
-      {accountId && (
-        <Box sx={{ fontSize: "0.85rem", mr: isMobile ? 0 : "1rem", mt: isMobile ? "0.5rem" : 0 }}>
-          NEAR: {balance}
+      {accountId ? (
+        <Box sx={{ marginTop: 0.6, fontSize: "0.8rem", display: "flex" }}>
+          <div>
+            <span style={{ fontWeight: "bold" }}>{accountId}</span>{" "}
+            {balance.substring(0, balance.length - 2)}
+          </div>
+          <NearIcon style={{ marginTop: -5, width: "1.5rem" }} />
         </Box>
+      ) : (
+        <Button
+          size="small"
+          sx={{
+            justifySelf: "end",
+            alignItems: "center",
+            cursor: accountId ? "default" : "pointer",
+          }}
+          variant={accountId ? "outlined" : "contained"}
+          onClick={onWalletButtonClick}
+          disableRipple={!!accountId}
+        >
+          {accountTrim(accountId) || "Connect Wallet"}
+        </Button>
       )}
-      <Button
-        size="small"
-        sx={{
-          justifySelf: "end",
-          alignItems: "center",
-          backgroundColor: theme.palette.primary.main,
-        }}
-        variant="contained"
-        onClick={onWalletButtonClick}
-      >
-        {accountId || "Connect Wallet"}
-      </Button>
-      <Menu
-        id="profile-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "logout-button",
-        }}
-      >
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
-          Display values as {displayAsTokenValue ? "usd" : "token"}
-        </MenuItem>
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
-          {showDust ? "Hide" : "Show"} dust
-        </MenuItem>
-        <Divider />
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
-          Switch Wallet
-        </MenuItem>
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut}>
-          Log Out
-        </MenuItem>
-      </Menu>
+      <Box>
+        <IconButton onClick={handleOpenMenu}>
+          <GiHamburgerMenu size={32} color={theme.palette.primary.main} />
+        </IconButton>
+      </Box>
+      <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} selector={selector} />
     </Box>
   );
 };

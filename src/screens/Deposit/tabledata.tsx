@@ -15,6 +15,7 @@ export const columns = [
         value={`${formatBRRRAmount(rowData?.brrrSupply)} / Day`}
         rowData={rowData}
         format="string"
+        extraRewards={rowData.extraDepositRewards}
       />
     ),
   },
@@ -42,6 +43,12 @@ export const columns = [
     label: "Your Deposit",
     dataKey: "deposited",
     Cell: ({ rowData }) => <Cell value={rowData.deposited} rowData={rowData} format="amount" />,
+    align: "right",
+  },
+  {
+    label: "USD Value",
+    dataKey: "totalSupplyMoney",
+    Cell: ({ rowData }) => <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="usd" />,
     align: "right",
   },
 ];

@@ -1,14 +1,7 @@
 import { clone } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
 
-import {
-  shrinkToken,
-  expandToken,
-  USD_FORMAT,
-  APY_FORMAT,
-  PERCENT_DIGITS,
-  NEAR_DECIMALS,
-} from "../store";
+import { shrinkToken, expandToken, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import type { RootState } from "./store";
 import {
   emptySuppliedAsset,
@@ -51,7 +44,7 @@ export const getNetAPY = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
-    if (!hasAssets(assets)) return undefined;
+    if (!hasAssets(assets)) return 0;
     const getGains = (source: "supplied" | "collateral" | "borrowed") =>
       Object.keys(account.portfolio[source])
         .map((id) => {
@@ -73,8 +66,7 @@ export const getNetAPY = createSelector(
     const netGains = gainCollateral + gainSupplied - gainBorrowed;
     const netTotals = totalCollateral + totalSupplied;
     const netAPY = (netGains * 100) / netTotals;
-
-    return `${(netAPY || 0).toLocaleString(undefined, APY_FORMAT)}%`;
+    return netAPY || 0;
   },
 );
 
@@ -83,7 +75,7 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
-      if (!hasAssets(assets)) return undefined;
+      if (!hasAssets(assets)) return 0;
       const allTokens = {
         ...account.portfolio.collateral,
         ...account.portfolio.supplied,
@@ -114,8 +106,7 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
 
           return source === "supplied" ? total + totalCollateral : total;
         })
-        .reduce(sumReducer, 0)
-        .toLocaleString(undefined, USD_FORMAT);
+        .reduce(sumReducer, 0);
     },
   );
 
@@ -442,7 +433,7 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
-      if (!account.portfolio || !tokenId) return 0;
+      if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
 
       const collateralSum = getCollateralSum(assets.data, account);
       const { metadata, config } = assets.data[tokenId];
@@ -488,6 +479,7 @@ export const getTotalBRRR = createSelector(
     const totalBrrr = Number(
       shrinkToken(account.portfolio.supplied[brrrTokenId]?.balance || "0", decimals),
     );
+
     return [totalBrrr, unclaimedSupplied + unclaimedBorrowed];
   },
 );

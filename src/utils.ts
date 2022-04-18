@@ -21,6 +21,12 @@ export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 //   accountId: string;
 // }
 
+export const getViewAs = () => {
+  const url = new URL(window.location.href.replace("/#", ""));
+  const searchParams = new URLSearchParams(url.search);
+  return searchParams.get("viewAs");
+};
+
 interface GetBurrowArgs {
   fetchData?: () => void | null;
   hideModal?: () => void | null;
@@ -71,7 +77,7 @@ export const getBurrow = async ({
       signOut();
     };
 
-  const account = await getAccount();
+  const account = await getAccount(getViewAs());
 
   const view = async (
     contract: Contract,
@@ -154,4 +160,26 @@ export const getBurrow = async ({
 // Initialize contract & set global variables
 export async function initContract(): Promise<IBurrow> {
   return getBurrow();
+}
+
+// export function logout(walletConnection: WalletConnection) {
+//   walletConnection.signOut();
+//   // reload page
+//   window.location.replace(window.location.origin + window.location.pathname);
+// }
+
+// export async function login(walletConnection: WalletConnection) {
+//   // Allow the current app to make calls to the specified contract on the
+//   // user's behalf.
+//   // This works by creating a new access key for the user's account and storing
+//   // the private key in localStorage.
+//   await walletConnection.requestSignIn({
+//     contractId: LOGIC_CONTRACT_NAME,
+//   });
+// }
+
+export function accountTrim(accountId: string) {
+  return accountId && accountId.length > 14 + 14 + 1
+    ? `${accountId.slice(0, 14)}...${accountId.slice(-14)}`
+    : accountId;
 }
