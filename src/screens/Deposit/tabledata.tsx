@@ -24,11 +24,13 @@ export const columns = [
     label: <Label name="APY" title="Deposit APY" />,
     dataKey: "supplyApy",
     align: "right",
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
   },
   {
     label: <Label name="Deposits" title="Total Deposits" />,
     dataKey: "totalSupply",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData?.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
@@ -36,6 +38,7 @@ export const columns = [
     label: <Label name="Liquidity" title="Available Liquidity" />,
     dataKey: "availableLiquidity",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
     ),

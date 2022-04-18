@@ -61,6 +61,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
         maxWidth: 950,
         m: "0 auto",
         mb: "1.5rem",
+        px: "1rem",
         width: ["none", "none", "max-content"],
         ...sx,
       }}

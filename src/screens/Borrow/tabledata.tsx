@@ -10,6 +10,7 @@ export const columns = [
     label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrBorrow",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell
         value={rowData?.brrrBorrow}
@@ -23,12 +24,14 @@ export const columns = [
     label: <Label name="APY" title="Borrow APY" />,
     dataKey: "borrowApy",
     align: "right",
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData?.borrowApy} rowData={rowData} format="apy" />,
   },
   {
     label: <Label name="Liquidity" title="Available Liquidity" />,
     dataKey: "availableLiquidity",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
     ),
@@ -36,6 +39,7 @@ export const columns = [
   {
     label: <Label name="C.F." title="Collateral Factor" />,
     dataKey: "collateralFactor",
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData?.collateralFactor} rowData={rowData} format="string" />
     ),

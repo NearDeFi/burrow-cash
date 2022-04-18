@@ -17,7 +17,12 @@ const Portfolio = () => {
       <BetaInfo />
       <PageTitle first="Deposited" second="Assets" />
       {suppliedRows.length ? (
-        <Table rows={suppliedRows} columns={suppliedColumns} sortColumn="supplied" />
+        <Table
+          rows={suppliedRows}
+          columns={suppliedColumns}
+          sortColumn="supplied"
+          sx={{ maxWidth: "800px", width: "none" }}
+        />
       ) : (
         <Box textAlign="center">No deposited assets yet</Box>
       )}
@@ -27,7 +32,7 @@ const Portfolio = () => {
           rows={borrowedRows}
           columns={borrowedColumns}
           sortColumn="borrowed"
-          sx={{ width: "none" }}
+          sx={{ maxWidth: "800px", width: "none" }}
         />
       ) : (
         <Box textAlign="center">No borrowed assets yet</Box>

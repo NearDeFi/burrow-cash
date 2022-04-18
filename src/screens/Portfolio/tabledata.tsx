@@ -11,6 +11,7 @@ export const suppliedColumns = [
     label: <Label name="Rewards" title="Rewards / day" />,
     dataKey: "dailyBRRRewards",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
     ),
@@ -19,6 +20,7 @@ export const suppliedColumns = [
     label: <Label name="APY" title="Deposit APY" />,
     dataKey: "apy",
     align: "right",
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData.apy} rowData={rowData} format="apy" />,
   },
   {
@@ -64,6 +66,7 @@ export const borrowedColumns = [
     label: <Label name="Rewards" title="Rewards / day" />,
     dataKey: "dailyBRRRewards",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
     ),
@@ -72,6 +75,7 @@ export const borrowedColumns = [
     label: <Label name="APY" title="Borrow APY" />,
     dataKey: "borrowApy",
     align: "right",
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
   },
   {
