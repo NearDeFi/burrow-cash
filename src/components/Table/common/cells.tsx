@@ -80,7 +80,7 @@ export const Cell = ({
         : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
     reward: (v) => (isCompact ? millify(Number(v)) : formatBRRRAmount(Number(v))),
-    usd: (v) => v.toLocaleString(undefined, USD_FORMAT),
+    usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
   const displayValue = formatMap[format](value);
