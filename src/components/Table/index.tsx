@@ -83,6 +83,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
                   active={orderBy === dataKey}
                   direction={orderBy === dataKey ? order : "asc"}
                   onClick={createSortHandler(dataKey)}
+                  sx={{ minWidth: [100, 100, "auto"] }}
                 >
                   {label}
                   {orderBy === dataKey ? (
