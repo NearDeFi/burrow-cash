@@ -53,12 +53,6 @@ function Table({ rows, columns, onRowClick, sortColumn = "name" }: TableProps) {
 
   const padding = isMobile ? "0.5rem 1rem" : "1rem";
 
-  if (isMobile) {
-    columns[1].label = "BRRR";
-    columns[3].label = "Deposits";
-    columns[4].label = "Liquidity";
-  }
-
   return (
     <TableContainer component={Box} sx={{ maxWidth: 950, m: "0 auto", mb: "1.5rem" }}>
       <MUITable aria-label="table">
