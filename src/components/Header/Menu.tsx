@@ -68,11 +68,13 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
       }}
     >
       {accountId && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll}>
-          Claim All Rewards
-        </MenuItem>
+        <>
+          <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll}>
+            Claim All Rewards
+          </MenuItem>
+          <Divider />
+        </>
       )}
-      <Divider />
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}
       </MenuItem>
@@ -80,11 +82,14 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
       {accountId && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
-          Switch Wallet
-        </MenuItem>
+        <>
+          <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet}>
+            Switch Wallet
+          </MenuItem>
+
+          <Divider />
+        </>
       )}
-      <Divider />
       {accountId && (
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut}>
           Log Out
