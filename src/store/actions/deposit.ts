@@ -20,8 +20,6 @@ export async function deposit({
   const tokenContract: Contract = await getTokenContract(nearTokenId);
   const transactions: Transaction[] = [];
 
-  console.log("deposit account", account.accountId);
-
   const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
 
   const collateralTemplate = {
