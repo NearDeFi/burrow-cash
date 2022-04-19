@@ -55,10 +55,8 @@ export const getBurrow = async ({
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
 
-  const account = await getAccount(getViewAs());
-
   const changeAccount = async (accountId) => {
-    console.log("account changed from", account.accountId, "to", accountId);
+    console.log("account changed", accountId);
     resetBurrow = true;
     await getBurrow();
     if (fetchData) fetchData();
@@ -69,6 +67,8 @@ export const getBurrow = async ({
       onAccountChange: changeAccount,
     });
   }
+
+  const account = await getAccount(getViewAs());
 
   if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
   if (!hideModalCached && !!hideModal) hideModalCached = hideModal;

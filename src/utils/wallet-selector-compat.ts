@@ -43,9 +43,6 @@ export const getWalletSelector = async ({ onAccountChange }) => {
     contractId: LOGIC_CONTRACT_NAME,
   });
 
-  const defaultAccountId = (await selector.getAccounts())?.[0]?.accountId;
-  if (defaultAccountId) accountId = defaultAccountId;
-
   selector.on("accountsChanged", (e) => {
     accountId = e.accounts[0]?.accountId;
     if (accountId) {
@@ -53,7 +50,10 @@ export const getWalletSelector = async ({ onAccountChange }) => {
     }
   });
 
-  onAccountChange(accountId);
+  const defaultAccountId = (await selector.getAccounts())?.[0]?.accountId;
+  if (defaultAccountId) accountId = defaultAccountId;
+
+  await onAccountChange(accountId);
 
   return selector;
 };
