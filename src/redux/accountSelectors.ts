@@ -522,26 +522,35 @@ export const getAccountRewards = createSelector(
 
     const computeRewards = ([tokenId, farm]: [string, Farm]) => {
       return Object.entries(farm).map(([rewardTokenId, farmData]) => {
+        console.log(rewardTokenId, farmData);
         const asset = assets.data[tokenId];
         const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
         const rewardAsset = assets.data[rewardTokenId];
         const rewardAssetDecimals =
           rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
+        const remainingRewards = Number(
+          shrinkToken(farmData.asset_farm_reward.remaining_rewards, assetDecimals),
+        );
+
         const totalRewardsPerDay = Number(
           shrinkToken(farmData.asset_farm_reward.reward_per_day, assetDecimals),
         );
+
         const totalBoostedShares = Number(
           shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
         );
-        const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
 
+        const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
+        const totalAmount = (totalBoostedShares / remainingRewards) * boostedShares;
 
         return {
           tokenId: rewardTokenId,
+          icon: rewardAsset.metadata.icon,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
           dailyAmount,
+          totalAmount,
         };
       });
     };
