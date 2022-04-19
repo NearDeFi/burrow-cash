@@ -1,7 +1,7 @@
 import { Contract } from "near-api-js";
 import BN from "bn.js";
 
-import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
 import {
   ChangeMethodsLogic,
   ChangeMethodsOracle,
@@ -12,6 +12,8 @@ import { IBurrow, IConfig } from "./interfaces/burrow";
 import { getContract } from "./store";
 
 import { getWalletSelector, getAccount, functionCall } from "./utils/wallet-selector-compat";
+
+const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
@@ -82,7 +84,8 @@ export const getBurrow = async ({
     json = true,
   ): Promise<Record<string, any> | string> => {
     try {
-      return await account.viewFunction(contract.contractId, methodName, args, {
+      const viewAccount = await getAccount(getViewAs());
+      return await viewAccount.viewFunction(contract.contractId, methodName, args, {
         // always parse to string, JSON parser will fail if its not a json
         parse: (data: Uint8Array) => {
           const result = Buffer.from(data).toString();
