@@ -1,4 +1,4 @@
-import { connect, Contract, keyStores, WalletConnection, transactions } from "near-api-js";
+import { Contract } from "near-api-js";
 import BN from "bn.js";
 
 import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
@@ -9,20 +9,13 @@ import {
   ViewMethodsOracle,
 } from "./interfaces/contract-methods";
 import { IBurrow, IConfig } from "./interfaces/burrow";
-import { BatchWallet, getContract, BatchWalletAccount } from "./store";
+import { getContract } from "./store";
+
+import { getWalletSelector, getAccount, functionCall } from "./utils/wallet-selector-compat";
 
 const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
-const nearConfig = getConfig(defaultNetwork);
-
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
-
-let burrow: IBurrow;
-
-const nearTokenIds = {
-  mainnet: "wrap.near",
-  testnet: "wrap.testnet",
-};
 
 export const getViewAs = () => {
   const url = new URL(window.location.href.replace("/#", ""));
@@ -30,28 +23,59 @@ export const getViewAs = () => {
   return searchParams.get("viewAs");
 };
 
+interface GetBurrowArgs {
+  fetchData?: () => void | null;
+  hideModal?: () => void | null;
+  signOut?: () => void | null;
+}
+
+let selector;
+let burrow: IBurrow;
+let resetBurrow = true;
+let fetchDataCached;
+let hideModalCached;
+let signOutCached;
+
+const nearTokenIds = {
+  mainnet: "wrap.near",
+  testnet: "wrap.testnet",
+};
+
 export const nearTokenId = nearTokenIds[defaultNetwork] || nearTokenIds.testnet;
 
-export const getBurrow = async (): Promise<IBurrow> => {
-  if (burrow) return burrow;
+export const getBurrow = async ({
+  fetchData,
+  hideModal,
+  signOut,
+}: GetBurrowArgs = {}): Promise<IBurrow> => {
+  if (burrow && !resetBurrow) return burrow;
+  resetBurrow = false;
 
-  // Initialize connection to the NEAR testnet
-  const near = await connect({
-    deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
-    ...nearConfig,
-  });
+  const changeAccount = async () => {
+    resetBurrow = true;
+    await getBurrow();
+    if (fetchData) fetchData();
+  };
 
-  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
-  // is hosted at https://wallet.testnet.near.org
-  const walletConnection = new BatchWallet(near, null);
+  if (!selector) {
+    selector = await getWalletSelector({
+      onAccountChange: changeAccount,
+    });
+  }
 
-  const viewAs = getViewAs();
-  // Getting the Account ID. If still unauthorized, it's just empty string
-  const account: BatchWalletAccount = new BatchWalletAccount(
-    walletConnection,
-    near.connection,
-    viewAs || walletConnection.account().accountId,
-  );
+  const account = await getAccount(getViewAs());
+
+  if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
+  if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
+  if (!signOutCached && !!signOut)
+    signOutCached = async () => {
+      await selector?.signOut().catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
+      if (hideModal) hideModal();
+      signOut();
+    };
 
   const view = async (
     contract: Contract,
@@ -81,27 +105,21 @@ export const getBurrow = async (): Promise<IBurrow> => {
     args: Record<string, unknown> = {},
     deposit = "1",
   ) => {
+    const { contractId } = contract;
     const gas = new BN(150000000000000);
     const attachedDeposit = new BN(deposit);
 
-    const actions = [
-      transactions.functionCall(
-        methodName,
-        Buffer.from(JSON.stringify(args)),
-        gas,
-        attachedDeposit,
-      ),
-    ];
-
-    // @ts-ignore
-    return account.signAndSendTransaction({
-      receiverId: contract.contractId,
-      actions,
-    });
+    return functionCall({
+      contractId,
+      methodName,
+      args,
+      gas,
+      attachedDeposit,
+    }).catch((e) => console.log(e));
   };
 
   const logicContract: Contract = await getContract(
-    walletConnection.account(),
+    account,
     LOGIC_CONTRACT_NAME,
     ViewMethodsLogic,
     ChangeMethodsLogic,
@@ -114,14 +132,18 @@ export const getBurrow = async (): Promise<IBurrow> => {
   )) as IConfig;
 
   const oracleContract: Contract = await getContract(
-    walletConnection.account(),
+    account,
     config.oracle_account_id,
     ViewMethodsOracle,
     ChangeMethodsOracle,
   );
 
   burrow = {
-    walletConnection,
+    selector,
+    changeAccount,
+    fetchData: fetchDataCached,
+    hideModal: hideModalCached,
+    signOut: signOutCached,
     account,
     logicContract,
     oracleContract,
@@ -138,24 +160,8 @@ export async function initContract(): Promise<IBurrow> {
   return getBurrow();
 }
 
-export function logout(walletConnection: WalletConnection) {
-  walletConnection.signOut();
-  // reload page
-  window.location.replace(window.location.origin + window.location.pathname);
-}
-
-export async function login(walletConnection: WalletConnection) {
-  // Allow the current app to make calls to the specified contract on the
-  // user's behalf.
-  // This works by creating a new access key for the user's account and storing
-  // the private key in localStorage.
-  await walletConnection.requestSignIn({
-    contractId: LOGIC_CONTRACT_NAME,
-  });
-}
-
 export function accountTrim(accountId: string) {
   return accountId && accountId.length > 14 + 14 + 1
-    ? `${accountId.slice(0, 14)}...${accountId.slice(-14)}`
+    ? `${accountId.slice(0, 8)}...${accountId.slice(-8)}`
     : accountId;
 }

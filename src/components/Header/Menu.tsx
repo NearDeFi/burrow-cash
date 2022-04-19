@@ -1,8 +1,10 @@
 import { Menu, MenuItem, Divider } from "@mui/material";
 
-import { logout, getBurrow } from "../../utils";
+import NearWalletSelector from "@near-wallet-selector/core";
+
+import { getBurrow } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { logoutAccount, farmClaimAll, fetchAccount } from "../../redux/accountSlice";
+import { farmClaimAll, fetchAccount } from "../../redux/accountSlice";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
@@ -18,9 +20,10 @@ import { useFullDigits } from "../../hooks";
 interface Props {
   anchorEl: null | HTMLElement;
   setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  selector: null | NearWalletSelector;
 }
 
-export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
+export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
   const accountId = useAppSelector(getAccountId);
@@ -43,11 +46,16 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
     dispatch(toggleShowDust());
   };
 
-  const handleLogout = async () => {
-    const { walletConnection } = await getBurrow();
-    dispatch(logoutAccount());
+  const handleSwitchWallet = async () => {
+    await handleSignOut();
+    selector?.show();
+  };
+
+  const handleSignOut = async () => {
+    const { signOut } = await getBurrow();
+    signOut();
     trackLogout();
-    logout(walletConnection);
+    handleClose();
   };
 
   const handleClaimAll = async () => {
@@ -74,12 +82,12 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
         "aria-labelledby": "logout-button",
       }}
     >
-      {accountId && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll}>
+      {accountId && [
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll} key={1}>
           Claim All Rewards
-        </MenuItem>
-      )}
-      <Divider />
+        </MenuItem>,
+        <Divider key={2} />,
+      ]}
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}
       </MenuItem>
@@ -89,12 +97,15 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
-      <Divider />
-      {accountId && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleLogout}>
+      {accountId && [
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={1}>
+          Switch Wallet
+        </MenuItem>,
+        <Divider key={2} />,
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={3}>
           Log Out
-        </MenuItem>
-      )}
+        </MenuItem>,
+      ]}
     </Menu>
   );
 };
