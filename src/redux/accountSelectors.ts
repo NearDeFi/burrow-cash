@@ -11,7 +11,7 @@ import {
   getDailyBRRRewards,
 } from "./utils";
 import { Assets } from "./assetsSlice";
-import { AccountState } from "./accountSlice";
+import { AccountState, Farm } from "./accountSlice";
 
 export const getAccountId = createSelector(
   (state: RootState) => state.account,
@@ -509,5 +509,49 @@ export const getTotalDailyBRRRewards = createSelector(
       .reduce((prev, current) => prev + current, 0);
 
     return suppliedRewards + borrowedRewards;
+  },
+);
+
+export const getAccountRewards = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (state: RootState) => state.app,
+  (assets, account) => {
+    const computeRewards = ([tokenId, farm]: [string, Farm]) => {
+      return Object.entries(farm).map(([rewardTokenId, farmData]) => {
+        const asset = assets.data[tokenId];
+        const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+        const rewardAsset = assets.data[rewardTokenId];
+        const rewardAssetDecimals =
+          rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
+
+        const totalRewardsPerDay = Number(
+          shrinkToken(farmData.asset_farm_reward.reward_per_day, assetDecimals),
+        );
+        const totalBoostedShares = Number(
+          shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
+        );
+        const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
+
+        const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
+
+        return {
+          tokenId: rewardTokenId,
+          unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
+          dailyAmount,
+        };
+      });
+    };
+
+    const { supplied, borrowed } = account.portfolio.farms;
+
+    const suppliedRewards = Object.entries(supplied).map(computeRewards).flat();
+    const borrowedRewards = Object.entries(borrowed).map(computeRewards).flat();
+    return suppliedRewards.concat(borrowedRewards).reduce((rewards, asset) => {
+      if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
+      rewards[asset.tokenId].unclaimedAmount += asset.unclaimedAmount;
+      rewards[asset.tokenId].dailyAmount += asset.dailyAmount;
+      return { ...rewards, [asset.tokenId]: asset };
+    }, {});
   },
 );

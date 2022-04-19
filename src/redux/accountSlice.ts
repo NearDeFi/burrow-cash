@@ -17,7 +17,7 @@ interface PortfolioAsset {
   shares: string;
 }
 
-interface Farm {
+export interface Farm {
   [reward_token_id: string]: {
     boosted_shares: string;
     unclaimed_amount: string;

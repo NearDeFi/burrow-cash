@@ -2,7 +2,12 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import { TOKEN_FORMAT } from "../../store";
-import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/accountSelectors";
+import {
+  getTotalBRRR,
+  getTotalDailyBRRRewards,
+  getAccountRewards,
+  isClaiming,
+} from "../../redux/accountSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSlimStats, useTicker } from "../../hooks";
 import { orderFeed } from "../../redux/feedSlice";
@@ -14,12 +19,15 @@ import { isTestnet } from "../../utils";
 export const Rewards = () => {
   const [total, unclaimed] = useAppSelector(getTotalBRRR);
   const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const rewards = useAppSelector(getAccountRewards);
   const slimStats = useSlimStats();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { hasTicker, toggleTicker } = useTicker();
   const controls = useAnimation();
   const dispatch = useAppDispatch();
+
+  console.log("REW:", rewards);
 
   const variants = {
     small: {
