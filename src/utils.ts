@@ -139,6 +139,12 @@ export const getBurrow = async ({
     ChangeMethodsOracle,
   );
 
+  if (localStorage.getItem("near-wallet-selector:selectedWalletId") == null) {
+    if (localStorage.getItem("near_app_wallet_auth_key") != null) {
+      if (signOutCached) signOutCached();
+    }
+  }
+
   burrow = {
     selector,
     changeAccount,
