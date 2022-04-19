@@ -5,11 +5,9 @@ import { Near } from "near-api-js/lib/near";
 import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
-import getConfig, { LOGIC_CONTRACT_NAME } from "../config";
-import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
 
-const defaultNetwork =
-  process.env.DEFAULT_NETWORK === "development" || "testnet" ? "testnet" : "mainnet";
+import getConfig, { LOGIC_CONTRACT_NAME, defaultNetwork } from "../config";
+import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
 
 interface WalletMethodArgs {
   signerId?: string;

@@ -33,7 +33,7 @@ export const trackConnectWallet = () => {
 };
 
 export const trackLogout = () => {
-  track("Log Out Clicked");
+  track("Sign Out Clicked");
 };
 
 export const trackUseAsCollateral = (props) => {

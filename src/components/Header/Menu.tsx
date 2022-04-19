@@ -103,7 +103,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
         </MenuItem>,
         <Divider key={2} />,
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={3}>
-          Log Out
+          Sign Out
         </MenuItem>,
       ]}
     </Menu>
