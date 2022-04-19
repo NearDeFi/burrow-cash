@@ -1,5 +1,6 @@
 import { clone } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
+import { omit } from "lodash";
 
 import { shrinkToken, expandToken, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import type { RootState } from "./store";
@@ -516,7 +517,9 @@ export const getAccountRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (state: RootState) => state.app,
-  (assets, account) => {
+  (assets, account, app) => {
+    const brrrTokenId = app.config.booster_token_id;
+
     const computeRewards = ([tokenId, farm]: [string, Farm]) => {
       return Object.entries(farm).map(([rewardTokenId, farmData]) => {
         const asset = assets.data[tokenId];
@@ -547,11 +550,17 @@ export const getAccountRewards = createSelector(
 
     const suppliedRewards = Object.entries(supplied).map(computeRewards).flat();
     const borrowedRewards = Object.entries(borrowed).map(computeRewards).flat();
-    return suppliedRewards.concat(borrowedRewards).reduce((rewards, asset) => {
+
+    const sumRewards = suppliedRewards.concat(borrowedRewards).reduce((rewards, asset) => {
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
       rewards[asset.tokenId].unclaimedAmount += asset.unclaimedAmount;
       rewards[asset.tokenId].dailyAmount += asset.dailyAmount;
       return { ...rewards, [asset.tokenId]: asset };
     }, {});
+
+    return {
+      brrr: sumRewards[brrrTokenId],
+      extra: omit(sumRewards, brrrTokenId),
+    };
   },
 );
