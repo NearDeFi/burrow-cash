@@ -135,6 +135,7 @@ export const accountSlice = createSlice({
       state.status = action.meta.requestStatus;
     });
     builder.addCase(fetchAccount.fulfilled, (state, action) => {
+      state.isClaiming = undefined;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
       if (!action.payload?.accountId) return;
