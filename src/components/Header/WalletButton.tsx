@@ -81,7 +81,7 @@ const WalletButton = () => {
         >
           <div style={{ fontWeight: "bold" }}>{accountTrim(accountId)}</div>
           <div style={{ display: "flex", justifyContent: "flex-end", marginLeft: 4 }}>
-            {balance.substring(0, balance.length - 2)}
+            {Number.parseFloat(balance).toFixed(2)}
             <NearIcon style={{ marginTop: -5, marginRight: -5, width: "1.5rem" }} />
           </div>
         </Box>

@@ -37,8 +37,6 @@ export const executeMultipleTransactions = async (transactions) => {
     ),
   }));
 
-  /// for debugging injected wallets can log res
-  // let res;
   try {
     await selector.signAndSendTransactions({
       transactions: selectorTransactions,
@@ -59,8 +57,6 @@ export const executeMultipleTransactions = async (transactions) => {
     );
     return;
   }
-
-  // console.log(res)
   /// will refresh for injected wallets (near wallet would have redirected by now)
   await fetchData();
   hideModal();

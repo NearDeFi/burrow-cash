@@ -17,10 +17,6 @@ const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "d
 
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
-// interface AccountChangeFunction {
-//   accountId: string;
-// }
-
 export const getViewAs = () => {
   const url = new URL(window.location.href.replace("/#", ""));
   const searchParams = new URLSearchParams(url.search);
@@ -55,8 +51,7 @@ export const getBurrow = async ({
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
 
-  const changeAccount = async (accountId) => {
-    console.log("account changed", accountId);
+  const changeAccount = async () => {
     resetBurrow = true;
     await getBurrow();
     if (fetchData) fetchData();
@@ -164,22 +159,6 @@ export const getBurrow = async ({
 export async function initContract(): Promise<IBurrow> {
   return getBurrow();
 }
-
-// export function logout(walletConnection: WalletConnection) {
-//   walletConnection.signOut();
-//   // reload page
-//   window.location.replace(window.location.origin + window.location.pathname);
-// }
-
-// export async function login(walletConnection: WalletConnection) {
-//   // Allow the current app to make calls to the specified contract on the
-//   // user's behalf.
-//   // This works by creating a new access key for the user's account and storing
-//   // the private key in localStorage.
-//   await walletConnection.requestSignIn({
-//     contractId: LOGIC_CONTRACT_NAME,
-//   });
-// }
 
 export function accountTrim(accountId: string) {
   return accountId && accountId.length > 14 + 14 + 1

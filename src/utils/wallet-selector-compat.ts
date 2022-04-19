@@ -11,12 +11,6 @@ import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
 const defaultNetwork =
   process.env.DEFAULT_NETWORK === "development" || "testnet" ? "testnet" : "mainnet";
 
-// caches in module so we don't re-init every time we need it
-let near: Near;
-let accountId;
-let init = false;
-let selector: NearWalletSelector | null = null;
-
 interface WalletMethodArgs {
   signerId?: string;
   contractId?: string;
@@ -26,7 +20,17 @@ interface WalletMethodArgs {
   attachedDeposit?: string | BN;
 }
 
-export const getWalletSelector = async ({ onAccountChange }) => {
+interface GetWalletSelectorArgs {
+  onAccountChange: (accountId: string | null) => void;
+}
+
+// caches in module so we don't re-init every time we need it
+let near: Near;
+let accountId;
+let init = false;
+let selector: NearWalletSelector | null = null;
+
+export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
   if (init) return selector;
   init = true;
 
@@ -74,26 +78,6 @@ export const getAccount = async (viewAsAccountId: string | null) => {
   near = getNear();
   return new Account(near.connection, viewAsAccountId || accountId);
 };
-
-// export const viewFunction = async ({ contractId, methodName, args }: WalletMethodArgs) => {
-//   if (!selector) {
-//     throw new Error("selector not initialized");
-//   }
-//   if (!contractId) {
-//     throw new Error("viewFunction error: contractId undefined");
-//   }
-//   if (!methodName) {
-//     throw new Error("viewFunction error: methodName undefined");
-//   }
-
-//   const account = await getAccount();
-
-//   if (!account) {
-//     throw new Error("not signed in");
-//   }
-
-//   return account.viewFunction(contractId || "", methodName, args);
-// };
 
 export const functionCall = async ({
   contractId,
