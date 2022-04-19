@@ -98,11 +98,12 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
       {accountId && [
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={1}>
+        <Divider key={1} />,
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={2}>
           Switch Wallet
         </MenuItem>,
-        <Divider key={2} />,
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={3}>
+        <Divider key={3} />,
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={4}>
           Sign Out
         </MenuItem>,
       ]}

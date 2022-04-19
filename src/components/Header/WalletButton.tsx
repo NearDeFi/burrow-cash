@@ -101,12 +101,7 @@ const WalletButton = () => {
         </Button>
       )}
       <Box>
-        <IconButton
-          onClick={handleOpenMenu}
-          sx={{
-            paddingRight: 0,
-          }}
-        >
+        <IconButton onClick={handleOpenMenu} sx={{ ml: "0.5rem", mr: "-0.5rem" }}>
           <GiHamburgerMenu size={32} color={theme.palette.primary.main} />
         </IconButton>
       </Box>
