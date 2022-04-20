@@ -93,7 +93,7 @@ export const Cell = ({
       <Box>{displayValue}</Box>
     </Tooltip>
   ) : isReward ? (
-    <Stack spacing={1}>
+    <Stack spacing={1} border="1px solid red">
       <Stack
         direction="row"
         alignItems="center"

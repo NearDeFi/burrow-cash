@@ -145,6 +145,7 @@ export const getPortfolioAssets = createSelector(
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
           dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
+          brrrIcon: assets.data[brrrTokenId].metadata.icon,
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -171,6 +172,7 @@ export const getPortfolioAssets = createSelector(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
           dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
+          brrrIcon: assets.data[brrrTokenId].metadata.icon,
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
