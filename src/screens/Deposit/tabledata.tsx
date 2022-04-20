@@ -16,7 +16,7 @@ export const columns = [
         value={rowData?.brrrSupply}
         rowData={rowData}
         format="reward"
-        extraRewards={rowData.extraDepositRewards}
+        rewards={rowData.depositRewards}
       />
     ),
   },

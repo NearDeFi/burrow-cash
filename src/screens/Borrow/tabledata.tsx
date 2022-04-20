@@ -16,7 +16,7 @@ export const columns = [
         value={rowData?.brrrBorrow}
         rowData={rowData}
         format="reward"
-        extraRewards={rowData.extraBorrowRewards}
+        rewards={rowData.borrowRewards}
       />
     ),
   },

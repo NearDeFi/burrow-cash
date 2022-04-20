@@ -2,16 +2,16 @@ import { Stack, Typography } from "@mui/material";
 import millify from "millify";
 
 import { formatRewardAmount } from "../Table/common/cells";
-import { ExtraReward } from "../../interfaces/asset";
+import { IReward } from "../../interfaces/asset";
 import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks";
 import TokenIcon from "../TokenIcon";
 
 interface Props {
-  rewards?: ExtraReward[];
+  rewards?: IReward[];
 }
 
-const ExtraRewards = ({ rewards: extra }: Props) => {
+const Rewards = ({ rewards: extra }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
 
@@ -45,4 +45,4 @@ const ExtraRewards = ({ rewards: extra }: Props) => {
   );
 };
 
-export default ExtraRewards;
+export default Rewards;

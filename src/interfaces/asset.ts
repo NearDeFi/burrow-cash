@@ -90,7 +90,7 @@ export interface Balance {
   total: string;
 }
 
-export interface ExtraReward {
+export interface IReward {
   rewards: IAssetFarmReward;
   metadata: IMetadata;
   config: IAssetConfig;
@@ -120,7 +120,6 @@ export interface UIAsset {
   extraDecimals: number;
   brrrBorrow: number;
   brrrSupply: number;
-  extraDepositRewards: ExtraReward[];
-  extraBorrowRewards: ExtraReward[];
-  brrrIcon: string;
+  depositRewards: IReward[];
+  borrowRewards: IReward[];
 }

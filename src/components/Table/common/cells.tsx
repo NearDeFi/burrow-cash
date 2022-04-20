@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Box, Tooltip, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Tooltip, Skeleton } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import millify from "millify";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
-import type { ExtraReward, UIAsset } from "../../../interfaces";
+import type { IReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
-import { BRRRPrice, ExtraRewards } from "../../index";
+import { BRRRPrice, Rewards } from "../../index";
 import { useIsBurrowToken, useFullDigits } from "../../../hooks";
 
 export const TokenCell = ({ rowData }) => {
@@ -54,13 +54,13 @@ export const Cell = ({
   rowData,
   format,
   tooltip,
-  extraRewards,
+  rewards,
 }: {
   value: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
-  extraRewards?: ExtraReward[];
+  rewards?: IReward[];
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -93,19 +93,7 @@ export const Cell = ({
       <Box>{displayValue}</Box>
     </Tooltip>
   ) : isReward ? (
-    <Stack spacing={1} border="1px solid red">
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={1}
-        justifyContent="flex-end"
-        key={rowData.tokenId}
-      >
-        <Typography fontSize="0.75rem">{displayValue}</Typography>
-        <TokenIcon width={14} height={14} icon={rowData.brrrIcon} />
-      </Stack>
-      <ExtraRewards rewards={extraRewards} />
-    </Stack>
+    <Rewards rewards={rewards} />
   ) : (
     <Box>{displayValue}</Box>
   );
