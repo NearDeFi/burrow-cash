@@ -122,4 +122,5 @@ export interface UIAsset {
   brrrSupply: number;
   extraDepositRewards: ExtraReward[];
   extraBorrowRewards: ExtraReward[];
+  brrrIcon: string;
 }

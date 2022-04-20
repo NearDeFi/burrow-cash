@@ -8,13 +8,14 @@ import { useFullDigits } from "../../hooks";
 import TokenIcon from "../TokenIcon";
 
 interface Props {
-  rewards: ExtraReward[];
+  rewards?: ExtraReward[];
 }
 
 const ExtraRewards = ({ rewards: extra }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
 
+  if (!extra) return null;
   return (
     <Stack spacing={1}>
       {extra.map(({ metadata, rewards, config }) => {

@@ -167,6 +167,7 @@ export const transformAsset = (
     ),
     extraDepositRewards: getExtraRewards("supplied", asset, assets, brrrTokenId),
     extraBorrowRewards: getExtraRewards("borrowed", asset, assets, brrrTokenId),
+    brrrIcon: assets[brrrTokenId].metadata.icon,
   };
 };
 

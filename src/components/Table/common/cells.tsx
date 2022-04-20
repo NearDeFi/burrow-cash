@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Tooltip, Skeleton, Stack } from "@mui/material";
+import { Box, Tooltip, Skeleton, Stack, Typography } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import millify from "millify";
 
@@ -69,6 +69,7 @@ export const Cell = ({
   const showDust = useAppSelector(getShowDust);
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
+  const isReward = format === "reward";
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
@@ -91,9 +92,18 @@ export const Cell = ({
     <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
       <Box>{displayValue}</Box>
     </Tooltip>
-  ) : extraRewards?.length ? (
+  ) : isReward ? (
     <Stack spacing={1}>
-      <Box>{displayValue}</Box>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        justifyContent="flex-end"
+        key={rowData.tokenId}
+      >
+        <Typography fontSize="0.75rem">{displayValue}</Typography>
+        <TokenIcon width={14} height={14} icon={rowData.brrrIcon} />
+      </Stack>
       <ExtraRewards rewards={extraRewards} />
     </Stack>
   ) : (
