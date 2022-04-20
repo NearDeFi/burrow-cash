@@ -140,7 +140,10 @@ export const getBurrow = async ({
   );
 
   if (localStorage.getItem("near-wallet-selector:selectedWalletId") == null) {
-    if (localStorage.getItem("near_app_wallet_auth_key") != null) {
+    if (
+      localStorage.getItem("near_app_wallet_auth_key") != null ||
+      localStorage.getItem("null_wallet_auth_key") != null
+    ) {
       if (signOutCached) signOutCached();
     }
   }
