@@ -522,16 +522,16 @@ export const getAccountRewards = createSelector(
 
     const computeRewards = ([tokenId, farm]: [string, Farm]) => {
       return Object.entries(farm).map(([rewardTokenId, farmData]) => {
-        console.log(rewardTokenId, farmData);
+        // console.log(rewardTokenId, farmData);
         const asset = assets.data[tokenId];
         const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
         const rewardAsset = assets.data[rewardTokenId];
         const rewardAssetDecimals =
           rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
-        const remainingRewards = Number(
-          shrinkToken(farmData.asset_farm_reward.remaining_rewards, assetDecimals),
-        );
+        // const remainingRewards = Number(
+        //   shrinkToken(farmData.asset_farm_reward.remaining_rewards, assetDecimals),
+        // );
 
         const totalRewardsPerDay = Number(
           shrinkToken(farmData.asset_farm_reward.reward_per_day, assetDecimals),
@@ -543,11 +543,11 @@ export const getAccountRewards = createSelector(
 
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
-        const totalAmount = (totalBoostedShares / remainingRewards) * boostedShares;
+        const totalAmount = 666;
 
         return {
           tokenId: rewardTokenId,
-          icon: rewardAsset.metadata.icon,
+          // icon: rewardAsset.metadata.icon,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
           dailyAmount,
           totalAmount,
@@ -560,11 +560,18 @@ export const getAccountRewards = createSelector(
     const suppliedRewards = Object.entries(supplied).map(computeRewards).flat();
     const borrowedRewards = Object.entries(borrowed).map(computeRewards).flat();
 
-    const sumRewards = suppliedRewards.concat(borrowedRewards).reduce((rewards, asset) => {
+    // console.log(suppliedRewards, borrowedRewards);
+
+    const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
-      rewards[asset.tokenId].unclaimedAmount += asset.unclaimedAmount;
-      rewards[asset.tokenId].dailyAmount += asset.dailyAmount;
-      return { ...rewards, [asset.tokenId]: asset };
+
+      const updatedAsset = rewards[asset.tokenId];
+
+      updatedAsset.unclaimedAmount += asset.unclaimedAmount;
+      updatedAsset.dailyAmount += asset.dailyAmount;
+      updatedAsset.totalAmount += asset.totalAmount;
+
+      return { ...rewards, [asset.tokenId]: updatedAsset };
     }, {});
 
     return {

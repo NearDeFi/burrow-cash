@@ -27,7 +27,7 @@ export const Rewards = () => {
   const controls = useAnimation();
   const dispatch = useAppDispatch();
 
-  console.log("REW:", rewards);
+  console.log("REWARDS:", rewards);
 
   const variants = {
     small: {
