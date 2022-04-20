@@ -1,7 +1,10 @@
 import { Stack, Typography } from "@mui/material";
+import millify from "millify";
 
+import { formatRewardAmount } from "../Table/common/cells";
 import { ExtraReward } from "../../interfaces/asset";
 import { shrinkToken } from "../../store/helper";
+import { useFullDigits } from "../../hooks";
 import TokenIcon from "../TokenIcon";
 
 interface Props {
@@ -9,6 +12,9 @@ interface Props {
 }
 
 const ExtraRewards = ({ rewards: extra }: Props) => {
+  const { fullDigits } = useFullDigits();
+  const isCompact = fullDigits.table;
+
   return (
     <Stack spacing={1}>
       {extra.map(({ metadata, rewards, config }) => {
@@ -16,6 +22,10 @@ const ExtraRewards = ({ rewards: extra }: Props) => {
           rewards.reward_per_day || 0,
           metadata.decimals + config.extra_decimals,
         );
+
+        const amount = isCompact
+          ? millify(Number(dailyRewards))
+          : formatRewardAmount(Number(dailyRewards));
 
         return (
           <Stack
@@ -25,7 +35,7 @@ const ExtraRewards = ({ rewards: extra }: Props) => {
             justifyContent="flex-end"
             key={metadata.token_id}
           >
-            <Typography fontSize="0.75rem">{dailyRewards}</Typography>
+            <Typography fontSize="0.75rem">{amount}</Typography>
             <TokenIcon width={14} height={14} icon={metadata.icon} />
           </Stack>
         );

@@ -81,7 +81,7 @@ export const Cell = ({
         ? `$${millify(Number(v) * price)}`
         : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
-    reward: (v) => (isCompact ? millify(Number(v)) : formatBRRRAmount(Number(v))),
+    reward: (v) => (isCompact ? millify(Number(v)) : formatRewardAmount(Number(v))),
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
@@ -123,5 +123,5 @@ export const Label = ({ name, title }) => {
   );
 };
 
-export const formatBRRRAmount = (amount: number) =>
+export const formatRewardAmount = (amount: number) =>
   amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);
