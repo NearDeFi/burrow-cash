@@ -100,7 +100,10 @@ export const fetchAccount = createAsyncThunk("account/fetchAccount", async () =>
   const { accountId } = account;
 
   if (accountId) {
-    identifyUser(accountId);
+    const wallet = JSON.parse(
+      localStorage.getItem("near-wallet-selector:selectedWalletId") || `"undefined"`,
+    );
+    identifyUser(accountId, { wallet });
     const assets = await getAssetsDetailed();
     const tokenIds = assets.map((asset) => asset.token_id);
     const accountBalance = (await account.getAccountBalance()).available;
