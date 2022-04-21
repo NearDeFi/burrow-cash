@@ -43,11 +43,13 @@ export const Rewards = () => {
   const rewardsVariants = {
     closed: {
       scaleY: 0,
-      transition: { duration: 0.25 },
+      scaleX: 0,
+      transition: { duration: 0.2 },
     },
     open: {
       scaleY: 1,
-      transition: { duration: 0.25 },
+      scaleX: 1,
+      transition: { duration: 0.2 },
     },
   };
 
@@ -87,18 +89,20 @@ export const Rewards = () => {
         position: "relative",
       }}
     >
-      <Box
-        top="0.8rem"
-        left="0.5rem"
-        position="relative"
-        sx={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
-        onClick={handleClickHog}
-        component={motion.div}
-        variants={hogVariants}
-        initial={hasTicker ? "cool" : "small"}
-        animate={hogControls}
-      >
-        <AnimatePresence>{hasTicker ? <HogCool /> : <Hog />}</AnimatePresence>
+      <Box top="0" bottom="0" height="100%" width="70px" overflow="hidden">
+        <Box
+          top="0.8rem"
+          left="0.5rem"
+          position="relative"
+          sx={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
+          onClick={handleClickHog}
+          component={motion.div}
+          variants={hogVariants}
+          initial={hasTicker ? "cool" : "small"}
+          animate={hogControls}
+        >
+          <AnimatePresence>{hasTicker ? <HogCool /> : <Hog />}</AnimatePresence>
+        </Box>
       </Box>
       <Stack ml="1rem" spacing="0.2rem">
         {!slimStats && <Typography fontWeight="bold">Daily Rewards</Typography>}
