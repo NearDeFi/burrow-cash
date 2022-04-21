@@ -94,6 +94,7 @@ export interface IReward {
   rewards: IAssetFarmReward;
   metadata: IMetadata;
   config: IAssetConfig;
+  type?: "portfolio" | "asset";
 }
 
 export interface UIAsset {

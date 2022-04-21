@@ -11,7 +11,7 @@ import {
   hasAssets,
   getDailyBRRRewards,
 } from "./utils";
-import { Assets } from "./assetsSlice";
+import { Asset, Assets } from "./assetsSlice";
 import { AccountState, Farm } from "./accountSlice";
 
 export const getAccountId = createSelector(
@@ -145,7 +145,12 @@ export const getPortfolioAssets = createSelector(
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
           dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
-          brrrIcon: assets.data[brrrTokenId].metadata.icon,
+          rewards: getPortfolioRewards(
+            "supplied",
+            asset,
+            account.portfolio.farms.supplied[tokenId],
+            assets.data,
+          ),
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -172,7 +177,12 @@ export const getPortfolioAssets = createSelector(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
           dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
-          brrrIcon: assets.data[brrrTokenId].metadata.icon,
+          rewards: getPortfolioRewards(
+            "borrowed",
+            asset,
+            account.portfolio.farms.borrowed[tokenId],
+            assets.data,
+          ),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
@@ -180,6 +190,35 @@ export const getPortfolioAssets = createSelector(
     return [supplied, borrowed];
   },
 );
+
+const getPortfolioRewards = (
+  type: "supplied" | "borrowed",
+  asset: Asset,
+  farm: Farm,
+  assets: Assets,
+) => {
+  if (!farm) return [];
+  return Object.entries(farm).map(([tokenId, rewards]) => {
+    const decimals = assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
+
+    const totalRewardsPerDay = Number(
+      shrinkToken(asset.farms.borrowed[tokenId]?.["reward_per_day"] || "0", decimals),
+    );
+    const totalBoostedShares = Number(
+      shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", decimals),
+    );
+    const boostedShares = Number(shrinkToken(farm?.[tokenId]?.boosted_shares || "0", decimals));
+
+    const rewardPerDay = (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
+
+    return {
+      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, decimals) },
+      metadata: assets[tokenId].metadata,
+      config: assets[tokenId].config,
+      type: "portfolio",
+    };
+  });
+};
 
 const MAX_RATIO = 10000;
 

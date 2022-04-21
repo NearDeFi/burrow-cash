@@ -1,7 +1,8 @@
 import { Stack, Typography } from "@mui/material";
 import millify from "millify";
 
-import { formatRewardAmount } from "../Table/common/cells";
+import { PERCENT_DIGITS } from "../../store/constants";
+import { formatRewardAmount, formatPortfolioRewardAmount } from "../Table/common/cells";
 import { IReward } from "../../interfaces/asset";
 import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks";
@@ -11,21 +12,24 @@ interface Props {
   rewards?: IReward[];
 }
 
-const Rewards = ({ rewards: extra }: Props) => {
+const Rewards = ({ rewards: list }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
-
-  if (!extra) return null;
+  // console.log(list);
+  if (!list) return null;
   return (
     <Stack spacing={1}>
-      {extra.map(({ metadata, rewards, config }) => {
+      {list.map(({ metadata, rewards, config, type }) => {
         const dailyRewards = shrinkToken(
           rewards.reward_per_day || 0,
           metadata.decimals + config.extra_decimals,
         );
 
+        const isPortfolio = type === "portfolio";
         const amount = isCompact
-          ? millify(Number(dailyRewards))
+          ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
+          : isPortfolio
+          ? formatPortfolioRewardAmount(Number(dailyRewards))
           : formatRewardAmount(Number(dailyRewards));
 
         return (

@@ -123,3 +123,6 @@ export const Label = ({ name, title }) => {
 
 export const formatRewardAmount = (amount: number) =>
   amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);
+
+export const formatPortfolioRewardAmount = (amount: number) =>
+  amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, TOKEN_FORMAT);

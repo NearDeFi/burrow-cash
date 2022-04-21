@@ -13,7 +13,12 @@ export const suppliedColumns = [
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
-      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
+      <Cell
+        value={rowData.dailyBRRRewards}
+        rowData={rowData}
+        rewards={rowData.rewards}
+        format="reward"
+      />
     ),
   },
   {
@@ -68,7 +73,12 @@ export const borrowedColumns = [
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
-      <Cell value={rowData.dailyBRRRewards} rowData={rowData} format="reward" />
+      <Cell
+        value={rowData.dailyBRRRewards}
+        rewards={rowData.rewards}
+        rowData={rowData}
+        format="reward"
+      />
     ),
   },
   {
