@@ -4,13 +4,7 @@ import { omit } from "lodash";
 
 import { shrinkToken, expandToken, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import type { RootState } from "./store";
-import {
-  emptySuppliedAsset,
-  emptyBorrowedAsset,
-  sumReducer,
-  hasAssets,
-  getDailyBRRRewards,
-} from "./utils";
+import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer, hasAssets } from "./utils";
 import { Asset, Assets } from "./assetsSlice";
 import { AccountState, Farm } from "./accountSlice";
 
@@ -144,7 +138,6 @@ export const getPortfolioAssets = createSelector(
             ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
           rewards: getPortfolioRewards(
             "supplied",
             asset,
@@ -176,7 +169,6 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
           rewards: getPortfolioRewards(
             "borrowed",
             asset,
@@ -534,24 +526,6 @@ export const isClaiming = createSelector(
 export const getStaking = createSelector(
   (state: RootState) => state.account,
   (account) => account.portfolio.staking,
-);
-
-export const getTotalDailyBRRRewards = createSelector(
-  (state: RootState) => state.assets,
-  (state: RootState) => state.account,
-  (state: RootState) => state.app,
-  (assets, account, app) => {
-    const brrrTokenId = app.config.booster_token_id;
-    if (!account.accountId || !assets.data[brrrTokenId]) return 0;
-    const suppliedRewards = Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"))
-      .reduce((prev, current) => prev + current, 0);
-    const borrowedRewards = Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"))
-      .reduce((prev, current) => prev + current, 0);
-
-    return suppliedRewards + borrowedRewards;
-  },
 );
 
 export const getAccountRewards = createSelector(

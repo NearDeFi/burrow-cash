@@ -177,32 +177,3 @@ const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Asset
     config: assets[tokenId].config,
   }));
 };
-
-export const getDailyBRRRewards = (
-  asset: Asset,
-  account: AccountState,
-  assets: Assets,
-  brrrTokenId: string,
-  type: "supplied" | "borrowed",
-): number => {
-  const totalRewardsPerDay = Number(
-    shrinkToken(
-      asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const totalBoostedShares = Number(
-    shrinkToken(
-      asset.farms[type][brrrTokenId]?.["boosted_shares"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const boostedShares = Number(
-    shrinkToken(
-      account.portfolio.farms[type]?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-
-  return (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
-};

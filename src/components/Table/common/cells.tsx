@@ -56,7 +56,7 @@ export const Cell = ({
   tooltip,
   rewards,
 }: {
-  value: number | string;
+  value?: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
@@ -86,14 +86,15 @@ export const Cell = ({
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
+  if (isReward) return <Rewards rewards={rewards} />;
+  if (!value) return null;
+
   const displayValue = formatMap[format](value);
 
   return tooltip ? (
     <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
       <Box>{displayValue}</Box>
     </Tooltip>
-  ) : isReward ? (
-    <Rewards rewards={rewards} />
   ) : (
     <Box>{displayValue}</Box>
   );

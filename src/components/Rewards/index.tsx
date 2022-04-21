@@ -15,7 +15,7 @@ interface Props {
 const Rewards = ({ rewards: list }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
-  // console.log(list);
+
   if (!list) return null;
   return (
     <Stack spacing={1}>

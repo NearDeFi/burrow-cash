@@ -1,15 +1,15 @@
 import { Box, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/accountSelectors";
+import { getAccountRewards, getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 import { trackClaimButton } from "../../telemetry";
 
 export default function TotalBRRR() {
-  const [total, unclaimed] = useAppSelector(getTotalBRRR);
-  const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const [total] = useAppSelector(getTotalBRRR);
+  const rewards = useAppSelector(getAccountRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
   const dispatch = useAppDispatch();
 
@@ -41,10 +41,11 @@ export default function TotalBRRR() {
           You&apos;ve earned: &nbsp;
           <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
           (unclaimed: &nbsp;
-          <span>{unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
+          <span>{rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
         </Box>
         <Box>
-          Total daily rewards: <b>{totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+          Total daily rewards:{" "}
+          <b>{rewards.brrr.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
         </Box>
       </Stack>
       <LoadingButton
@@ -53,7 +54,7 @@ export default function TotalBRRR() {
         variant="outlined"
         onClick={handleClaimAll}
         loading={isClaimingLoading}
-        disabled={!unclaimed}
+        disabled={!rewards.brrr.unclaimedAmount}
       >
         Claim all
       </LoadingButton>

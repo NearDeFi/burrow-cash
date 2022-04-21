@@ -9,17 +9,10 @@ export const suppliedColumns = [
   },
   {
     label: <Label name="Rewards" title="Rewards / day" />,
-    dataKey: "dailyBRRRewards",
+    dataKey: "dailyRewards",
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
-    Cell: ({ rowData }) => (
-      <Cell
-        value={rowData.dailyBRRRewards}
-        rowData={rowData}
-        rewards={rowData.rewards}
-        format="reward"
-      />
-    ),
+    Cell: ({ rowData }) => <Cell rowData={rowData} rewards={rowData.rewards} format="reward" />,
   },
   {
     label: <Label name="APY" title="Deposit APY" />,
@@ -69,17 +62,10 @@ export const borrowedColumns = [
   },
   {
     label: <Label name="Rewards" title="Rewards / day" />,
-    dataKey: "dailyBRRRewards",
+    dataKey: "dailyRewards",
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
-    Cell: ({ rowData }) => (
-      <Cell
-        value={rowData.dailyBRRRewards}
-        rewards={rowData.rewards}
-        rowData={rowData}
-        format="reward"
-      />
-    ),
+    Cell: ({ rowData }) => <Cell rewards={rowData.rewards} rowData={rowData} format="reward" />,
   },
   {
     label: <Label name="APY" title="Borrow APY" />,

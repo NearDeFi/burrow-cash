@@ -2,12 +2,7 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import { TOKEN_FORMAT } from "../../store";
-import {
-  getTotalBRRR,
-  getTotalDailyBRRRewards,
-  getAccountRewards,
-  isClaiming,
-} from "../../redux/accountSelectors";
+import { getTotalBRRR, getAccountRewards, isClaiming } from "../../redux/accountSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSlimStats, useTicker } from "../../hooks";
 import { orderFeed } from "../../redux/feedSlice";
@@ -17,8 +12,7 @@ import HogCool from "./hog-cool.svg";
 import { isTestnet } from "../../utils";
 
 export const Rewards = () => {
-  const [total, unclaimed] = useAppSelector(getTotalBRRR);
-  const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const [total] = useAppSelector(getTotalBRRR);
   const rewards = useAppSelector(getAccountRewards);
   const slimStats = useSlimStats();
   const theme = useTheme();
@@ -105,7 +99,7 @@ export const Rewards = () => {
               ml="1rem"
               title="Daily BRRR rewards"
             >
-              {totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}
+              {rewards.brrr.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
             </Typography>
             <Typography
               fontWeight="bold"
@@ -124,7 +118,7 @@ export const Rewards = () => {
               pr={slimStats ? "0.5rem" : 0}
               title="Unclaimed BRRR rewards"
             >
-              {unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}
+              {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
             </Typography>
           </>
         )}
