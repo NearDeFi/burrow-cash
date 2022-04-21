@@ -41,15 +41,8 @@ export const NotConnected = () => (
 );
 
 export const CloseButton = ({ onClose }) => (
-  <Box
-    onClick={onClose}
-    position="absolute"
-    right="1rem"
-    zIndex="2"
-    sx={{ cursor: "pointer" }}
-    bgcolor="white"
-  >
-    <CloseIcon />
+  <Box onClick={onClose} position="absolute" right="1rem" zIndex="2" sx={{ cursor: "pointer" }}>
+    <CloseIcon fontSize="small" />
   </Box>
 );
 

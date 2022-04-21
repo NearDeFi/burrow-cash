@@ -1,8 +1,10 @@
-import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import { useState } from "react";
+import { Box, Typography, useTheme, useMediaQuery, Stack } from "@mui/material";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { take } from "lodash";
 
 import { TOKEN_FORMAT } from "../../store";
-import { getTotalBRRR, getAccountRewards, isClaiming } from "../../redux/accountSelectors";
+import { getAccountRewards, isClaiming } from "../../redux/accountSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSlimStats, useTicker } from "../../hooks";
 import { orderFeed } from "../../redux/feedSlice";
@@ -10,20 +12,24 @@ import { Wrapper } from "./style";
 import Hog from "./hog.svg";
 import HogCool from "./hog-cool.svg";
 import { isTestnet } from "../../utils";
+import TokenIcon from "../TokenIcon";
+import { CloseButton } from "../Modal/components";
 
 export const Rewards = () => {
-  const [total] = useAppSelector(getTotalBRRR);
+  const [isOpen, setOpen] = useState(false);
   const rewards = useAppSelector(getAccountRewards);
   const slimStats = useSlimStats();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { hasTicker, toggleTicker } = useTicker();
-  const controls = useAnimation();
+  const hogControls = useAnimation();
+  const rewardsControls = useAnimation();
   const dispatch = useAppDispatch();
+  const { brrr } = rewards;
 
   console.log("REWARDS:", rewards);
 
-  const variants = {
+  const hogVariants = {
     small: {
       top: "1.5rem",
       transition: { duration: 0.5 },
@@ -34,17 +40,40 @@ export const Rewards = () => {
     },
   };
 
+  const rewardsVariants = {
+    closed: {
+      scaleY: 0,
+      transition: { duration: 0.25 },
+    },
+    open: {
+      scaleY: 1,
+      transition: { duration: 0.25 },
+    },
+  };
+
   const handleClickHog = () => {
     if (isTestnet) return;
     toggleTicker();
     if (!hasTicker) {
       dispatch(orderFeed());
-      controls.start("cool");
+      hogControls.start("cool");
     } else {
-      controls.start("small");
+      hogControls.start("small");
     }
   };
+
+  const handleClose = () => {
+    rewardsControls.start("closed");
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    rewardsControls.start("open");
+    setOpen(true);
+  };
+
   const isClaimingLoading = useAppSelector(isClaiming);
+  const extra = Object.entries(rewards.extra);
 
   return (
     <Wrapper
@@ -52,10 +81,10 @@ export const Rewards = () => {
       sx={{
         backgroundColor: theme.palette.primary.light,
         color: theme.palette.secondary.main,
-        overflow: "hidden",
+        overflow: isOpen ? "visible" : "hidden",
         justifyContent: "flex-start",
-        borderRadius: 0,
         width: slimStats && isMobile ? "100vw" : "auto",
+        position: "relative",
       }}
     >
       <Box
@@ -65,64 +94,109 @@ export const Rewards = () => {
         sx={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
         onClick={handleClickHog}
         component={motion.div}
-        variants={variants}
+        variants={hogVariants}
         initial={hasTicker ? "cool" : "small"}
-        animate={controls}
+        animate={hogControls}
       >
         <AnimatePresence>{hasTicker ? <HogCool /> : <Hog />}</AnimatePresence>
       </Box>
-      {!slimStats && (
-        <Box p="0.5rem" px="1rem">
-          <Typography fontSize="0.85rem">Daily rewards:</Typography>
-          <Typography fontWeight="bold" fontSize="0.85rem">
-            Total Rewards:
-          </Typography>
-          <Typography fontSize="0.85rem">Unclaimed:</Typography>
-        </Box>
-      )}
-      <Box
-        p="0.5rem"
-        px="1rem"
-        justifySelf="flex-end"
-        display="flex"
-        flex="1"
-        flexDirection={slimStats ? "row-reverse" : "column"}
-      >
+      <Stack ml="1rem" spacing="0.2rem">
+        {!slimStats && <Typography fontWeight="bold">Daily Rewards</Typography>}
         {isClaimingLoading ? (
           <Typography>Claiming...</Typography>
         ) : (
-          <>
+          <Stack direction="row" alignItems="center" spacing="0.5rem">
+            <Reward {...brrr} />
+            {take(extra, slimStats ? extra.length : 1).map(([tokenId, r]) => (
+              <Reward key={tokenId} {...r} />
+            ))}
             <Typography
-              fontSize={slimStats ? "1.1rem" : "0.85rem"}
-              align="right"
-              fontWeight="bold"
-              ml="1rem"
-              title="Daily BRRR rewards"
-            >
-              {rewards.brrr.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-            </Typography>
-            <Typography
-              fontWeight="bold"
-              fontSize={slimStats ? "1.1rem" : "0.85rem"}
+              fontSize="0.85rem"
               color={theme.palette.primary.main}
-              align="right"
-              title="Total claimed BRRR rewards"
+              sx={{ textDecoration: "underline", cursor: "pointer" }}
+              onClick={handleOpen}
             >
-              {total.toLocaleString(undefined, TOKEN_FORMAT)}
+              more...
             </Typography>
-            <Typography
-              fontWeight="bold"
-              fontSize={slimStats ? "1.1rem" : "0.85rem"}
-              color={theme.palette.primary.main}
-              align="right"
-              pr={slimStats ? "0.5rem" : 0}
-              title="Unclaimed BRRR rewards"
-            >
-              {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-            </Typography>
-          </>
+          </Stack>
         )}
+      </Stack>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.primary.light,
+          boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
+          color: theme.palette.secondary.main,
+          alignItems: "center",
+          flexDirection: "column",
+          position: "absolute",
+          width: "100%",
+          borderRadius: "4px",
+          display: "flex",
+          transformOrigin: "top left",
+          zIndex: 1,
+          top: 0,
+          p: "0.5rem",
+          pt: "1rem",
+        }}
+        component={motion.div}
+        variants={rewardsVariants}
+        animate={rewardsControls}
+        initial="closed"
+      >
+        <CloseButton onClose={handleClose} />
+        <Typography fontWeight="bold">Rewards</Typography>
+        <Box
+          display="grid"
+          my="0.5rem"
+          // border="1px solid pink"
+          gridTemplateColumns="14px repeat(3, 1fr)"
+          alignItems="center"
+          gap={1}
+        >
+          <Box />
+          <Typography fontSize="0.85rem" fontWeight="bold">
+            Daily
+          </Typography>
+          <Typography fontSize="0.85rem" fontWeight="bold">
+            Total
+          </Typography>
+          <Typography fontSize="0.85rem" fontWeight="bold">
+            Unclaimed
+          </Typography>
+
+          <RewardGridRow {...brrr} />
+          {extra.map(([tokenId, r]) => (
+            <RewardGridRow key={tokenId} {...r} />
+          ))}
+        </Box>
       </Box>
     </Wrapper>
+  );
+};
+
+const Reward = ({ dailyAmount, icon }) => (
+  <Stack direction="row" alignItems="center" spacing="0.3rem">
+    <TokenIcon width={14} height={14} icon={icon} />
+    <Typography fontSize="0.85rem">
+      {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+    </Typography>
+  </Stack>
+);
+
+const RewardGridRow = ({ icon, dailyAmount, totalAmount, unclaimedAmount }) => {
+  const theme = useTheme();
+  return (
+    <>
+      <TokenIcon width={14} height={14} icon={icon} />
+      <Typography fontSize="0.85rem">
+        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+      <Typography fontSize="0.85rem" color={theme.palette.primary.main}>
+        {totalAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+      <Typography fontSize="0.85rem">
+        {unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+    </>
   );
 };

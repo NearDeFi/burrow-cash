@@ -528,6 +528,21 @@ export const getStaking = createSelector(
   (account) => account.portfolio.staking,
 );
 
+interface IPortfolioReward {
+  icon: string;
+  tokenId: string;
+  totalAmount: number;
+  dailyAmount: number;
+  unclaimedAmount: number;
+}
+
+interface IAccountRewards {
+  brrr: IPortfolioReward;
+  extra: {
+    [tokenId: string]: IPortfolioReward;
+  };
+}
+
 export const getAccountRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
@@ -558,11 +573,11 @@ export const getAccountRewards = createSelector(
 
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
-        const totalAmount = 666;
+        const totalAmount = 0;
 
         return {
           tokenId: rewardTokenId,
-          // icon: rewardAsset.metadata.icon,
+          icon: rewardAsset.metadata.icon,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
           dailyAmount,
           totalAmount,
@@ -592,6 +607,6 @@ export const getAccountRewards = createSelector(
     return {
       brrr: sumRewards[brrrTokenId],
       extra: omit(sumRewards, brrrTokenId),
-    };
+    } as IAccountRewards;
   },
 );
