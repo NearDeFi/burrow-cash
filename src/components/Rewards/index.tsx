@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Tooltip, Stack, Typography } from "@mui/material";
 import millify from "millify";
 
 import { PERCENT_DIGITS } from "../../store/constants";
@@ -20,9 +20,10 @@ const Rewards = ({ rewards: list }: Props) => {
   return (
     <Stack spacing={1}>
       {list.map(({ metadata, rewards, config, type }) => {
+        const { symbol, name, icon, decimals } = metadata;
         const dailyRewards = shrinkToken(
           rewards.reward_per_day || 0,
-          metadata.decimals + config.extra_decimals,
+          decimals + config.extra_decimals,
         );
 
         const isPortfolio = type === "portfolio";
@@ -38,10 +39,14 @@ const Rewards = ({ rewards: list }: Props) => {
             alignItems="center"
             spacing={1}
             justifyContent="flex-end"
-            key={metadata.token_id}
+            key={symbol}
           >
             <Typography fontSize="0.75rem">{amount}</Typography>
-            <TokenIcon width={14} height={14} icon={metadata.icon} />
+            <Tooltip title={`${symbol} - ${name}`}>
+              <Box height={14}>
+                <TokenIcon width={14} height={14} icon={icon} />
+              </Box>
+            </Tooltip>
           </Stack>
         );
       })}

@@ -130,11 +130,12 @@ const RewardsDetailed = ({ onClose, controls }) => {
       <Box
         display="grid"
         my="0.5rem"
-        gridTemplateColumns="14px 1fr 1fr"
+        gridTemplateColumns="1fr 14px 1fr 1fr"
         alignItems="center"
         textAlign="right"
         gap={1}
       >
+        <Box />
         <Box />
         <Typography fontSize="0.85rem" fontWeight="bold">
           Daily
@@ -151,8 +152,9 @@ const RewardsDetailed = ({ onClose, controls }) => {
   );
 };
 
-const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount }) => (
+const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount, symbol }) => (
   <>
+    <Typography fontSize="0.85rem">{symbol}</Typography>
     <TokenIcon width={14} height={14} icon={icon} />
     <Typography fontSize="0.85rem">
       {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}

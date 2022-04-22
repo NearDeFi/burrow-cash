@@ -534,6 +534,8 @@ export const getStaking = createSelector(
 
 interface IPortfolioReward {
   icon: string;
+  name: string;
+  symbol: string;
   tokenId: string;
   totalAmount: number;
   dailyAmount: number;
@@ -571,10 +573,12 @@ export const getAccountRewards = createSelector(
         );
 
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
-
+        const { icon, symbol, name } = rewardAsset.metadata;
         return {
+          icon,
+          name,
+          symbol,
           tokenId: rewardTokenId,
-          icon: rewardAsset.metadata.icon,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
           dailyAmount: (boostedShares / totalBoostedShares) * totalRewardsPerDay,
         };
