@@ -87,7 +87,7 @@ export const Cell = ({
   };
 
   if (isReward) return <Rewards rewards={rewards} />;
-  if (!value) return null;
+  if (!value) return <Box>-</Box>;
 
   const displayValue = formatMap[format](value);
 
