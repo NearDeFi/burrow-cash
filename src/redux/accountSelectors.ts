@@ -191,20 +191,24 @@ const getPortfolioRewards = (
 ) => {
   if (!farm) return [];
   return Object.entries(farm).map(([tokenId, rewards]) => {
-    const decimals = assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
+    const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+    const reardTokendecimals =
+      assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
 
     const totalRewardsPerDay = Number(
-      shrinkToken(asset.farms.borrowed[tokenId]?.["reward_per_day"] || "0", decimals),
+      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", assetDecimals),
     );
     const totalBoostedShares = Number(
-      shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", decimals),
+      shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", assetDecimals),
     );
-    const boostedShares = Number(shrinkToken(farm?.[tokenId]?.boosted_shares || "0", decimals));
+    const boostedShares = Number(
+      shrinkToken(farm?.[tokenId]?.boosted_shares || "0", reardTokendecimals),
+    );
 
     const rewardPerDay = (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
 
     return {
-      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, decimals) },
+      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, reardTokendecimals) },
       metadata: assets[tokenId].metadata,
       config: assets[tokenId].config,
       type: "portfolio",
@@ -567,13 +571,12 @@ export const getAccountRewards = createSelector(
         );
 
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
-        const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
 
         return {
           tokenId: rewardTokenId,
           icon: rewardAsset.metadata.icon,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
-          dailyAmount,
+          dailyAmount: (boostedShares / totalBoostedShares) * totalRewardsPerDay,
         };
       });
     };
