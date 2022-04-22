@@ -194,7 +194,7 @@ export const getDailyBRRRewards = (
 ): number => {
   const totalRewardsPerDay = Number(
     shrinkToken(
-      asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
+      asset.farms[type][brrrTokenId]?.["reward_per_day"] || "0",
       assets[brrrTokenId].metadata.decimals,
     ),
   );
