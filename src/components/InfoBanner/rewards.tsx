@@ -76,6 +76,7 @@ export const Rewards = () => {
         color: theme.palette.secondary.main,
         justifyContent: "flex-start",
         width: slimStats && isMobile ? "100vw" : "auto",
+        height: !slimStats ? "64px" : "auto",
         position: "relative",
       }}
     >
@@ -96,13 +97,9 @@ export const Rewards = () => {
         </Box>
       </Box>
       <Box top={0} left={0} right={0} height={145} overflow="hidden" position="absolute">
-        <Stack
-          ml="4.5rem"
-          spacing="0.2rem"
-          mt={slimStats ? "1.1rem" : isMobile ? "0.4rem" : "0.6rem"}
-        >
+        <Stack ml="4.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
           {!slimStats && (
-            <Typography fontWeight="bold" fontSize={["0.85rem"]}>
+            <Typography fontWeight="bold" fontSize="0.85rem">
               Daily Rewards
             </Typography>
           )}
