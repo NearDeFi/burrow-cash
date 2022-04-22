@@ -40,8 +40,15 @@ export const NotConnected = () => (
   </Box>
 );
 
-export const CloseButton = ({ onClose }) => (
-  <Box onClick={onClose} position="absolute" right="1rem" zIndex="2" sx={{ cursor: "pointer" }}>
+export const CloseButton = ({ onClose, ...props }) => (
+  <Box
+    onClick={onClose}
+    position="absolute"
+    right="1rem"
+    zIndex="2"
+    sx={{ cursor: "pointer" }}
+    {...props}
+  >
     <CloseIcon fontSize="small" />
   </Box>
 );

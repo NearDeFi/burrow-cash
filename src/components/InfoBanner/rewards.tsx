@@ -27,8 +27,6 @@ export const Rewards = () => {
   const dispatch = useAppDispatch();
   const { brrr } = rewards;
 
-  console.log("REWARDS:", rewards);
-
   const hogVariants = {
     small: {
       top: "1.5rem",
@@ -107,7 +105,7 @@ export const Rewards = () => {
       <Stack ml="1rem" spacing="0.2rem">
         {!slimStats && <Typography fontWeight="bold">Daily Rewards</Typography>}
         {isClaimingLoading ? (
-          <Typography>Claiming...</Typography>
+          <Typography fontSize="0.85rem">Claiming...</Typography>
         ) : (
           <Stack direction="row" alignItems="center" spacing="0.5rem">
             <Reward {...brrr} />
@@ -140,21 +138,19 @@ export const Rewards = () => {
           zIndex: 1,
           top: 0,
           p: "0.5rem",
-          pt: "1rem",
         }}
         component={motion.div}
         variants={rewardsVariants}
         animate={rewardsControls}
         initial="closed"
       >
-        <CloseButton onClose={handleClose} />
-        <Typography fontWeight="bold">Rewards</Typography>
+        <CloseButton onClose={handleClose} right="0.5rem" />
         <Box
           display="grid"
           my="0.5rem"
-          // border="1px solid pink"
-          gridTemplateColumns="14px repeat(3, 1fr)"
+          gridTemplateColumns="14px 1fr 1fr"
           alignItems="center"
+          textAlign="right"
           gap={1}
         >
           <Box />
@@ -162,12 +158,8 @@ export const Rewards = () => {
             Daily
           </Typography>
           <Typography fontSize="0.85rem" fontWeight="bold">
-            Total
-          </Typography>
-          <Typography fontSize="0.85rem" fontWeight="bold">
             Unclaimed
           </Typography>
-
           <RewardGridRow {...brrr} />
           {extra.map(([tokenId, r]) => (
             <RewardGridRow key={tokenId} {...r} />
@@ -187,20 +179,14 @@ const Reward = ({ dailyAmount, icon }) => (
   </Stack>
 );
 
-const RewardGridRow = ({ icon, dailyAmount, totalAmount, unclaimedAmount }) => {
-  const theme = useTheme();
-  return (
-    <>
-      <TokenIcon width={14} height={14} icon={icon} />
-      <Typography fontSize="0.85rem">
-        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-      <Typography fontSize="0.85rem" color={theme.palette.primary.main}>
-        {totalAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-      <Typography fontSize="0.85rem">
-        {unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-    </>
-  );
-};
+const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount }) => (
+  <>
+    <TokenIcon width={14} height={14} icon={icon} />
+    <Typography fontSize="0.85rem">
+      {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+    </Typography>
+    <Typography fontSize="0.85rem">
+      {unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+    </Typography>
+  </>
+);
