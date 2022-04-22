@@ -1,29 +1,15 @@
 import { Box, Typography, useTheme, useMediaQuery, Stack } from "@mui/material";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { take } from "lodash";
 
 import { TOKEN_FORMAT } from "../../store";
 import { getAccountRewards, isClaiming } from "../../redux/accountSelectors";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { useSlimStats, useTicker } from "../../hooks";
-import { orderFeed } from "../../redux/feedSlice";
+import { useAppSelector } from "../../redux/hooks";
+import { useSlimStats } from "../../hooks";
 import { Wrapper } from "./style";
-import Hog from "./hog.svg";
-import HogCool from "./hog-cool.svg";
-import { isTestnet } from "../../utils";
 import TokenIcon from "../TokenIcon";
 import { CloseButton } from "../Modal/components";
-
-const hogVariants = {
-  small: {
-    top: "1.5rem",
-    transition: { duration: 0.5 },
-  },
-  cool: {
-    top: "1rem",
-    transition: { duration: 0.5 },
-  },
-};
+import { BurrowHog } from "./hog";
 
 const rewardsVariants = {
   closed: {
@@ -40,22 +26,8 @@ export const Rewards = () => {
   const slimStats = useSlimStats();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { hasTicker, toggleTicker } = useTicker();
-  const hogControls = useAnimation();
   const rewardsControls = useAnimation();
-  const dispatch = useAppDispatch();
   const { brrr } = rewards;
-
-  const handleClickHog = () => {
-    if (isTestnet) return;
-    toggleTicker();
-    if (!hasTicker) {
-      dispatch(orderFeed());
-      hogControls.start("cool");
-    } else {
-      hogControls.start("small");
-    }
-  };
 
   const handleClose = () => {
     rewardsControls.start("closed");
@@ -80,22 +52,7 @@ export const Rewards = () => {
         position: "relative",
       }}
     >
-      <Box top="0" bottom="0" height="100%" width="70px" overflow="hidden">
-        <Box
-          top="0.8rem"
-          left="0.5rem"
-          position="relative"
-          zIndex={2}
-          sx={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
-          onClick={handleClickHog}
-          component={motion.div}
-          variants={hogVariants}
-          initial={hasTicker ? "cool" : "small"}
-          animate={hogControls}
-        >
-          <AnimatePresence>{hasTicker ? <HogCool /> : <Hog />}</AnimatePresence>
-        </Box>
-      </Box>
+      <BurrowHog />
       <Box top={0} left={0} right={0} height={145} overflow="hidden" position="absolute">
         <Stack ml="4.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
           {!slimStats && (
