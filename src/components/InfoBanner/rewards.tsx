@@ -3,31 +3,19 @@ import { motion, useAnimation } from "framer-motion";
 import { take } from "lodash";
 
 import { TOKEN_FORMAT } from "../../store";
-import { getAccountRewards, isClaiming } from "../../redux/accountSelectors";
+import { isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector } from "../../redux/hooks";
-import { useSlimStats } from "../../hooks";
+import { useRewards, useSlimStats } from "../../hooks";
 import { Wrapper } from "./style";
 import TokenIcon from "../TokenIcon";
 import { CloseButton } from "../Modal/components";
 import { BurrowHog } from "./hog";
 
-const rewardsVariants = {
-  closed: {
-    top: "-100%",
-  },
-  open: {
-    top: 0,
-    transition: { duration: 0.5, type: "spring" },
-  },
-};
-
 export const Rewards = () => {
-  const rewards = useAppSelector(getAccountRewards);
-  const slimStats = useSlimStats();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const slimStats = useSlimStats();
   const rewardsControls = useAnimation();
-  const { brrr } = rewards;
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClose = () => {
     rewardsControls.start("closed");
@@ -38,7 +26,6 @@ export const Rewards = () => {
   };
 
   const isClaimingLoading = useAppSelector(isClaiming);
-  const extra = Object.entries(rewards.extra);
 
   return (
     <Wrapper
@@ -63,66 +50,35 @@ export const Rewards = () => {
           {isClaimingLoading ? (
             <Typography fontSize="0.85rem">Claiming...</Typography>
           ) : (
-            <Stack direction="row" alignItems="center" spacing="0.5rem">
-              <Reward {...brrr} />
-              {take(extra, slimStats ? extra.length : 1).map(([tokenId, r]) => (
-                <Reward key={tokenId} {...r} />
-              ))}
-              <Typography
-                fontSize="0.85rem"
-                color={theme.palette.primary.main}
-                sx={{ textDecoration: "underline", cursor: "pointer" }}
-                onClick={handleOpen}
-              >
-                more...
-              </Typography>
-            </Stack>
+            <RewardsDaily onOpen={handleOpen} />
           )}
         </Stack>
-        <Box
-          sx={{
-            backgroundColor: theme.palette.primary.light,
-            boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
-            color: theme.palette.secondary.main,
-            flexDirection: "column",
-            alignItems: "center",
-            position: "absolute",
-            borderRadius: "4px",
-            display: "flex",
-            width: "100%",
-            p: "0.5rem",
-            zIndex: 3,
-            top: 0,
-          }}
-          component={motion.div}
-          variants={rewardsVariants}
-          animate={rewardsControls}
-          initial="closed"
-        >
-          <CloseButton onClose={handleClose} right="0.5rem" />
-          <Box
-            display="grid"
-            my="0.5rem"
-            gridTemplateColumns="14px 1fr 1fr"
-            alignItems="center"
-            textAlign="right"
-            gap={1}
-          >
-            <Box />
-            <Typography fontSize="0.85rem" fontWeight="bold">
-              Daily
-            </Typography>
-            <Typography fontSize="0.85rem" fontWeight="bold">
-              Unclaimed
-            </Typography>
-            <RewardGridRow {...brrr} />
-            {extra.map(([tokenId, r]) => (
-              <RewardGridRow key={tokenId} {...r} />
-            ))}
-          </Box>
-        </Box>
+        <RewardsDetailed onClose={handleClose} controls={rewardsControls} />
       </Box>
     </Wrapper>
+  );
+};
+
+const RewardsDaily = ({ onOpen }) => {
+  const { brrr, extra } = useRewards();
+  const slimStats = useSlimStats();
+  const theme = useTheme();
+
+  return (
+    <Stack direction="row" alignItems="center" spacing="0.5rem">
+      <Reward {...brrr} />
+      {take(extra, slimStats ? extra.length : 1).map(([tokenId, r]) => (
+        <Reward key={tokenId} {...r} />
+      ))}
+      <Typography
+        fontSize="0.85rem"
+        color={theme.palette.primary.main}
+        sx={{ textDecoration: "underline", cursor: "pointer" }}
+        onClick={onOpen}
+      >
+        more...
+      </Typography>
+    </Stack>
   );
 };
 
@@ -134,6 +90,66 @@ const Reward = ({ dailyAmount, icon }) => (
     </Typography>
   </Stack>
 );
+
+const rewardsVariants = {
+  closed: {
+    top: "-100%",
+  },
+  open: {
+    top: 0,
+    transition: { duration: 0.5, type: "spring" },
+  },
+};
+
+const RewardsDetailed = ({ onClose, controls }) => {
+  const { brrr, extra } = useRewards();
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: theme.palette.primary.light,
+        boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
+        color: theme.palette.secondary.main,
+        flexDirection: "column",
+        alignItems: "center",
+        position: "absolute",
+        borderRadius: "4px",
+        display: "flex",
+        width: "100%",
+        p: "0.5rem",
+        zIndex: 3,
+        top: 0,
+      }}
+      component={motion.div}
+      variants={rewardsVariants}
+      animate={controls}
+      initial="closed"
+    >
+      <CloseButton onClose={onClose} right="0.5rem" />
+      <Box
+        display="grid"
+        my="0.5rem"
+        gridTemplateColumns="14px 1fr 1fr"
+        alignItems="center"
+        textAlign="right"
+        gap={1}
+      >
+        <Box />
+        <Typography fontSize="0.85rem" fontWeight="bold">
+          Daily
+        </Typography>
+        <Typography fontSize="0.85rem" fontWeight="bold">
+          Unclaimed
+        </Typography>
+        <RewardGridRow {...brrr} />
+        {extra.map(([tokenId, r]) => (
+          <RewardGridRow key={tokenId} {...r} />
+        ))}
+      </Box>
+    </Box>
+  );
+};
 
 const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount }) => (
   <>
