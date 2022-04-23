@@ -45,6 +45,7 @@ const Ticker = () => {
                 href={`https://app.burrow.cash?viewAs=${e.data.accountId}`}
                 target="blank"
                 fontWeight="bold"
+                whiteSpace="nowrap"
               >
                 {accountTrim(e.data.accountId)}
               </Link>
