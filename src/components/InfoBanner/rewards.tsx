@@ -1,3 +1,4 @@
+import { useLayoutEffect, useState } from "react";
 import { Box, Typography, useTheme, useMediaQuery, Stack } from "@mui/material";
 import { motion, useAnimation } from "framer-motion";
 import { take } from "lodash";
@@ -152,15 +153,27 @@ const RewardsDetailed = ({ onClose, controls }) => {
   );
 };
 
-const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount, symbol }) => (
-  <>
-    <Typography fontSize="0.85rem">{symbol}</Typography>
-    <TokenIcon width={14} height={14} icon={icon} />
-    <Typography fontSize="0.85rem">
-      {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-    </Typography>
-    <Typography fontSize="0.85rem">
-      {unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-    </Typography>
-  </>
-);
+const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount, symbol }) => {
+  const [unclaimed, setUnclaimed] = useState<number>(unclaimedAmount);
+
+  const count = dailyAmount / 24 / 3600 / 10;
+
+  useLayoutEffect(() => {
+    setUnclaimed(unclaimedAmount);
+    const timer = setInterval(() => setUnclaimed((u) => u + count), 100);
+    return () => clearInterval(timer);
+  }, [unclaimedAmount]);
+
+  return (
+    <>
+      <Typography fontSize="0.85rem">{symbol}</Typography>
+      <TokenIcon width={14} height={14} icon={icon} />
+      <Typography fontSize="0.85rem">
+        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+      <Typography fontSize="0.85rem">
+        {unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+    </>
+  );
+};
