@@ -9,6 +9,7 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  createMigrate,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -16,11 +17,14 @@ import assetsReducer from "./assetsSlice";
 import accountReducer from "./accountSlice";
 import appReducer from "./appSlice";
 import feedReducer from "./feedSlice";
+import { migrations } from "./migrations";
 
 const persistConfig = {
   key: "root",
   storage,
   blacklist: ["feed"],
+  version: 1,
+  migrate: createMigrate(migrations, { debug: true }),
 };
 
 const rootReducer = combineReducers({

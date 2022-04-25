@@ -1,8 +1,14 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { isAssetsLoading } from "../redux/assetsSelectors";
 import { isAccountLoading } from "../redux/accountSelectors";
-import { getConfig, getSlimStats, getFullDigits, getShowTicker } from "../redux/appSelectors";
-import { setFullDigits, toggleShowTicker } from "../redux/appSlice";
+import {
+  getConfig,
+  getSlimStats,
+  getFullDigits,
+  getShowTicker,
+  getTableSorting,
+} from "../redux/appSelectors";
+import { setFullDigits, toggleShowTicker, setTableSorting, IOrder } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { trackShowTicker } from "../telemetry";
 
@@ -45,4 +51,18 @@ export function useTicker() {
   };
 
   return { hasTicker, toggleTicker };
+}
+
+export function useTableSorting() {
+  const sorting = useAppSelector(getTableSorting);
+  const dispatch = useAppDispatch();
+
+  const setSorting = (name: string, property: string, order: IOrder) => {
+    dispatch(setTableSorting({ name, property, order }));
+  };
+
+  return {
+    sorting,
+    setSorting,
+  };
 }

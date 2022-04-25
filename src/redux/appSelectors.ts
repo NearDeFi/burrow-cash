@@ -48,6 +48,11 @@ export const getSelectedValues = createSelector(
   (app) => app.selected,
 );
 
+export const getTableSorting = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.tableSorting,
+);
+
 export const getAssetData = createSelector(
   (state: RootState) => state.app,
   (state: RootState) => state.assets.data,
