@@ -5,6 +5,12 @@ import { IConfig } from "../interfaces";
 
 type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 
+export type IOrder = "asc" | "desc";
+
+export interface ITableSorting {
+  property: string;
+  order: IOrder;
+}
 export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
@@ -23,10 +29,16 @@ export interface AppState {
     amount: number;
     isMax: boolean;
   };
+  tableSorting: {
+    deposit: ITableSorting;
+    borrow: ITableSorting;
+    portfolioDeposited: ITableSorting;
+    portfolioBorrowed: ITableSorting;
+  };
   config: IConfig;
 }
 
-const initialState: AppState = {
+export const initialState: AppState = {
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
@@ -43,6 +55,24 @@ const initialState: AppState = {
     useAsCollateral: false,
     amount: 0,
     isMax: false,
+  },
+  tableSorting: {
+    deposit: {
+      property: "totalSupplyMoney",
+      order: "desc" as IOrder,
+    },
+    borrow: {
+      property: "borrowed",
+      order: "desc" as IOrder,
+    },
+    portfolioDeposited: {
+      property: "deposited",
+      order: "desc" as IOrder,
+    },
+    portfolioBorrowed: {
+      property: "borrowed",
+      order: "desc" as IOrder,
+    },
   },
   config: {
     booster_decimals: 0,
@@ -100,6 +130,10 @@ export const appSlice = createSlice({
     toggleShowTicker(state) {
       state.showTicker = !state.showTicker;
     },
+    setTableSorting(state, action) {
+      const { name, property, order } = action.payload;
+      state.tableSorting[name] = { property, order };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -118,5 +152,6 @@ export const {
   toggleSlimStats,
   setFullDigits,
   toggleShowTicker,
+  setTableSorting,
 } = appSlice.actions;
 export default appSlice.reducer;

@@ -30,6 +30,7 @@ const Ticker = () => {
       >
         {events.map((e) => {
           const asset = assets[e.data.tokenId];
+          if (!asset) return null;
           const decimals = asset.metadata.decimals + asset.config.extra_decimals;
           const amount = Number(shrinkToken(e.data.amount, decimals)).toLocaleString(
             undefined,
@@ -45,6 +46,7 @@ const Ticker = () => {
                 href={`https://app.burrow.cash?viewAs=${e.data.accountId}`}
                 target="blank"
                 fontWeight="bold"
+                whiteSpace="nowrap"
               >
                 {accountTrim(e.data.accountId)}
               </Link>

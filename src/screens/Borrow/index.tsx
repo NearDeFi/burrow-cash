@@ -7,11 +7,13 @@ import { columns as defaultColumns } from "./tabledata";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAvailableAssets } from "../../redux/assetsSelectors";
 import { showModal } from "../../redux/appSlice";
+import { useTableSorting } from "../../hooks";
 
 const Borrow = () => {
   const dispatch = useAppDispatch();
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("borrow"));
+  const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => col.dataKey !== "borrowed")]
@@ -27,7 +29,12 @@ const Borrow = () => {
       {!accountId && <OnboardingBRRR />}
       <PageTitle first="Borrow" second="Assets" />
       <BetaInfo />
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />
+      <Table
+        rows={rows}
+        columns={columns}
+        onRowClick={handleOnRowClick}
+        sorting={{ name: "borrow", ...sorting.borrow, setSorting }}
+      />
     </Box>
   );
 };

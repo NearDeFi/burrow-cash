@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Table as MUITable,
   TableBody,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import { useFullDigits } from "../../hooks";
+import { IOrder } from "../../redux/appSlice";
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -29,23 +29,24 @@ const getComparator = (order: "asc" | "desc", orderBy: string) =>
     : (a, b) => -descendingComparator(a, b, orderBy);
 
 interface TableProps {
-  sortColumn: string;
+  sorting: {
+    name: string;
+    property: string;
+    order: IOrder;
+    setSorting: (name: string, property: string, order: IOrder) => void;
+  };
   rows: any;
   columns: any;
   onRowClick?: (rowData: any) => void;
   sx?: any;
 }
 
-function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: TableProps) {
+function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
   const theme = useTheme();
-  const [order, setOrder] = useState<"asc" | "desc">("desc");
-  const [orderBy, setOrderBy] = useState(sortColumn);
   const { fullDigits } = useFullDigits();
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
+    sorting.setSorting(sorting.name, property, sorting.order === "asc" ? "desc" : "asc");
   };
 
   const createSortHandler = (property) => (event) => {
@@ -79,18 +80,18 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
                   ...(cellStyle || {}),
                 }}
                 key={dataKey}
-                sortDirection={orderBy === dataKey ? order : false}
+                sortDirection={sorting.property === dataKey ? sorting.order : false}
               >
                 <TableSortLabel
-                  active={orderBy === dataKey}
-                  direction={orderBy === dataKey ? order : "asc"}
+                  active={sorting.property === dataKey}
+                  direction={sorting.property === dataKey ? sorting.order : "asc"}
                   onClick={createSortHandler(dataKey)}
                   sx={{ minWidth: [100, 100, "auto"], ...(sortLabelStyle || {}) }}
                 >
                   {label}
-                  {orderBy === dataKey ? (
+                  {sorting.property === dataKey ? (
                     <Box component="span" sx={visuallyHidden}>
-                      {order === "desc" ? "sorted descending" : "sorted ascending"}
+                      {sorting.property === "desc" ? "sorted descending" : "sorted ascending"}
                     </Box>
                   ) : null}
                 </TableSortLabel>
@@ -99,7 +100,7 @@ function Table({ rows, columns, onRowClick, sortColumn = "name", sx = {} }: Tabl
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.sort(getComparator(order, orderBy)).map((rowData, idx) => (
+          {rows.sort(getComparator(sorting.order, sorting.property)).map((rowData, idx) => (
             <TableRow
               key={rowData?.symbol || idx}
               sx={{

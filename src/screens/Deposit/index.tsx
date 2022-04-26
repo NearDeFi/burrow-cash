@@ -8,18 +8,18 @@ import { getAvailableAssets } from "../../redux/assetsSelectors";
 import { getConfig } from "../../redux/appSelectors";
 import { getAccountId } from "../../redux/accountSelectors";
 import { showModal } from "../../redux/appSlice";
+import { useTableSorting } from "../../hooks";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
   const config = useAppSelector(getConfig);
   const accountId = useAppSelector(getAccountId);
   const rows = useAppSelector(getAvailableAssets("supply"));
+  const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => !["supplied", "deposited"].includes(col.dataKey))]
     : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
-
-  const sortedColumn = accountId ? "deposited" : "totalSupplyMoney";
 
   const handleOnRowClick = ({ tokenId }) => {
     if (config.booster_token_id === tokenId) return;
@@ -36,7 +36,7 @@ const Deposit = () => {
         rows={rows}
         columns={columns}
         onRowClick={handleOnRowClick}
-        sortColumn={sortedColumn}
+        sorting={{ name: "deposit", ...sorting.deposit, setSorting }}
       />
     </Box>
   );
