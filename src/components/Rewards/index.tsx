@@ -19,8 +19,13 @@ const Rewards = ({ rewards: list, layout }: Props) => {
   const isHorizontalLayout = layout === "horizontal";
 
   if (!list) return null;
+
   return (
-    <Stack spacing={1} direction={isHorizontalLayout ? "row" : "column"} justifyContent="flex-end">
+    <Stack
+      spacing={0.75}
+      direction={isHorizontalLayout ? "row" : "column"}
+      justifyContent="flex-start"
+    >
       {list.map(({ metadata, rewards, config, type }) => {
         const { symbol, name, icon, decimals } = metadata;
         const dailyRewards = shrinkToken(
@@ -35,6 +40,8 @@ const Rewards = ({ rewards: list, layout }: Props) => {
           ? formatPortfolioRewardAmount(Number(dailyRewards))
           : formatRewardAmount(Number(dailyRewards));
 
+        const iconSize = isHorizontalLayout ? 20 : 14;
+
         return (
           <Stack
             direction="row"
@@ -46,7 +53,7 @@ const Rewards = ({ rewards: list, layout }: Props) => {
             {!isHorizontalLayout && <Typography fontSize="0.75rem">{amount}</Typography>}
             <Tooltip title={`${symbol} (${name}) - ${amount} / day`}>
               <Box height={14}>
-                <TokenIcon width={14} height={14} icon={icon} />
+                <TokenIcon width={iconSize} height={iconSize} icon={icon} />
               </Box>
             </Tooltip>
           </Stack>

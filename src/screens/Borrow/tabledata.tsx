@@ -9,7 +9,7 @@ export const columns = [
   {
     label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrBorrow",
-    align: "right",
+    align: "left",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell

@@ -167,7 +167,7 @@ const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount, symbol }) => {
   return (
     <>
       <Typography fontSize="0.85rem">{symbol}</Typography>
-      <TokenIcon width={14} height={14} icon={icon} />
+      <TokenIcon width={18} height={18} icon={icon} />
       <Typography fontSize="0.85rem">
         {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
       </Typography>
