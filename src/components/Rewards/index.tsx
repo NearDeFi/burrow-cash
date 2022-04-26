@@ -10,15 +10,17 @@ import TokenIcon from "../TokenIcon";
 
 interface Props {
   rewards?: IReward[];
+  layout?: "horizontal" | "vertical";
 }
 
-const Rewards = ({ rewards: list }: Props) => {
+const Rewards = ({ rewards: list, layout }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
+  const isHorizontalLayout = layout === "horizontal";
 
   if (!list) return null;
   return (
-    <Stack spacing={1}>
+    <Stack spacing={1} direction={isHorizontalLayout ? "row" : "column"} justifyContent="flex-end">
       {list.map(({ metadata, rewards, config, type }) => {
         const { symbol, name, icon, decimals } = metadata;
         const dailyRewards = shrinkToken(
@@ -41,8 +43,8 @@ const Rewards = ({ rewards: list }: Props) => {
             justifyContent="flex-end"
             key={symbol}
           >
-            <Typography fontSize="0.75rem">{amount}</Typography>
-            <Tooltip title={`${symbol} - ${name}`}>
+            {!isHorizontalLayout && <Typography fontSize="0.75rem">{amount}</Typography>}
+            <Tooltip title={`${symbol} (${name}) - ${amount} / day`}>
               <Box height={14}>
                 <TokenIcon width={14} height={14} icon={icon} />
               </Box>

@@ -16,6 +16,7 @@ export const columns = [
         value={rowData?.brrrBorrow}
         rowData={rowData}
         format="reward"
+        rewardLayout="horizontal"
         rewards={rowData.borrowRewards}
       />
     ),

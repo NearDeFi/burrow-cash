@@ -15,7 +15,7 @@ export const TokenCell = ({ rowData }) => {
   const isBurrowToken = useIsBurrowToken(rowData.tokenId);
 
   return (
-    <Box display="flex">
+    <Box display="flex" alignItems="center">
       <Box>
         {rowData ? (
           <TokenIcon icon={rowData?.icon} />
@@ -55,12 +55,14 @@ export const Cell = ({
   format,
   tooltip,
   rewards,
+  rewardLayout,
 }: {
   value?: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
   rewards?: IReward[];
+  rewardLayout?: "horizontal" | "vertical";
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -86,7 +88,7 @@ export const Cell = ({
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
-  if (isReward) return <Rewards rewards={rewards} />;
+  if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
   if (!value) return <Box>-</Box>;
 
   const displayValue = formatMap[format](value);
