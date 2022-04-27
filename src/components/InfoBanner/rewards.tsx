@@ -45,7 +45,7 @@ export const Rewards = () => {
         <Stack ml="4.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
           {!slimStats && (
             <Typography fontWeight="bold" fontSize="0.85rem">
-              Daily Rewards
+              Total Daily Rewards
             </Typography>
           )}
           {isClaimingLoading ? (
