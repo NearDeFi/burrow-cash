@@ -8,7 +8,7 @@ export const suppliedColumns = [
     Cell: TokenCell,
   },
   {
-    label: <Label name="Rewards" title="Rewards / day" />,
+    label: <Label name="Rewards" title="Projected Rewards / Day" />,
     dataKey: "dailyRewards",
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
@@ -61,7 +61,7 @@ export const borrowedColumns = [
     Cell: TokenCell,
   },
   {
-    label: <Label name="Rewards" title="Rewards / day" />,
+    label: <Label name="Rewards" title="Projected Rewards / Day" />,
     dataKey: "dailyRewards",
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
