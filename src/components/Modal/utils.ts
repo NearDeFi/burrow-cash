@@ -81,9 +81,9 @@ export const getModalData = (asset): UIAsset & Props => {
       ];
       data.available = available.toFixed(PERCENT_DIGITS);
       if (isWrappedNear) {
-        data.available = Number(Math.max(0, availableNEAR - NEAR_STORAGE_DEPOSIT)).toFixed(
-          PERCENT_DIGITS,
-        );
+        data.available = Number(
+          Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT),
+        ).toFixed(PERCENT_DIGITS);
       }
       data.alerts = {};
       break;
