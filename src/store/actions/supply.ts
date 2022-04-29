@@ -1,6 +1,6 @@
 import { getBurrow } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
+import { ChangeMethodsToken } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
 
 export async function supply({
@@ -20,35 +20,23 @@ export async function supply({
   const { decimals } = (await getMetadata(tokenId))!;
   const tokenContract = await getTokenContract(tokenId);
 
-  const addCollateralTx = {
-    receiverId: logicContract.contractId,
-    functionCalls: [
+  const collateralActions = {
+    actions: [
       {
-        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-        args: {
-          actions: [
-            {
-              IncreaseCollateral: {
-                token_id: tokenId,
-                max_amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
-              },
-            },
-          ],
+        IncreaseCollateral: {
+          token_id: tokenId,
+          max_amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
         },
       },
     ],
   };
 
-  await prepareAndExecuteTokenTransactions(
-    tokenContract,
-    {
-      methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-      args: {
-        receiver_id: logicContract.contractId,
-        amount: expandToken(maxAmount || amount, decimals, 0),
-        msg: "",
-      },
+  await prepareAndExecuteTokenTransactions(tokenContract, {
+    methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
+    args: {
+      receiver_id: logicContract.contractId,
+      amount: expandToken(maxAmount || amount, decimals, 0),
+      msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
     },
-    useAsCollateral ? [addCollateralTx] : undefined,
-  );
+  });
 }

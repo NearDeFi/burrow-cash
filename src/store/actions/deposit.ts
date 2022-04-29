@@ -22,21 +22,12 @@ export async function deposit({
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
 
-  const collateralTemplate = {
-    receiverId: logicContract.contractId,
-    functionCalls: [
+  const collateralActions = {
+    actions: [
       {
-        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-        gas: new BN("100000000000000"),
-        args: {
-          actions: [
-            {
-              IncreaseCollateral: {
-                token_id: nearTokenId,
-                max_amount: expandedAmount,
-              },
-            },
-          ],
+        IncreaseCollateral: {
+          token_id: nearTokenId,
+          max_amount: expandedAmount,
         },
       },
     ],
@@ -53,19 +44,15 @@ export async function deposit({
       },
       {
         methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-        gas: new BN("100000000000000"),
+        gas: new BN("150000000000000"),
         args: {
           receiver_id: logicContract.contractId,
           amount: expandedAmount,
-          msg: "",
+          msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
         },
       },
     ],
   });
-
-  if (useAsCollateral) {
-    transactions.push(collateralTemplate);
-  }
 
   try {
     await prepareAndExecuteTransactions(transactions);
