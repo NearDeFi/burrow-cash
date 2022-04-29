@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { getAccountRewards, getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
@@ -12,6 +12,7 @@ export default function TotalBRRR() {
   const rewards = useAppSelector(getAccountRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   const handleClaimAll = async () => {
     trackClaimButton();
@@ -36,18 +37,13 @@ export default function TotalBRRR() {
       flexDirection={["column", "row"]}
       fontSize="0.87rem"
     >
-      <Stack spacing={1} mb={["1rem", 0]}>
-        <Box textAlign="center">
-          You&apos;ve earned: &nbsp;
-          <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
-          (unclaimed: &nbsp;
-          <span>{rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
+      <Box textAlign="center" mb={[2, 0]}>
+        You&apos;ve earned: &nbsp;
+        <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
+        <Box display={["block", "inline"]} mt={[0.5, 0]} color={theme.palette.grey[800]}>
+          (unclaimed: {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
         </Box>
-        <Box>
-          Total daily rewards:{" "}
-          <b>{rewards.brrr.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-        </Box>
-      </Stack>
+      </Box>
       <LoadingButton
         size="small"
         color="secondary"

@@ -66,7 +66,7 @@ const Staking = () => {
   const xBRRR = Number(
     shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
-  const booster = Number(
+  const xBooster = Number(
     shrinkToken(staking["x_booster_amount"], config.booster_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
 
@@ -84,6 +84,9 @@ const Staking = () => {
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
   const extraXBoosterAmount = amount * xBoosterMultiplier;
+
+  const booster_log_base = 100;
+  const rewardsMultiplier = 1 + Math.log(amount || 1) / Math.log(booster_log_base);
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -114,7 +117,7 @@ const Staking = () => {
                 Staked xBRRR: <b>{xBRRR}</b>
               </Typography>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Booster: <b>{booster}</b>
+                xBooster: <b>{xBooster}</b>
               </Typography>
               <Typography component="div" fontSize="0.875rem" mt="0.5rem">
                 Unstake date:{" "}
@@ -179,13 +182,18 @@ const Staking = () => {
           )}
         </Stack>
         <Alert severity="info">
-          <div>
-            Booster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
-          </div>
-          <div>
-            Extra Booster amount:{" "}
-            <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-          </div>
+          <Stack spacing={0.5}>
+            <Box>
+              xBooster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
+            </Box>
+            <Box>
+              Extra Booster amount:{" "}
+              <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+            </Box>
+            <Box>
+              Rewards multiplier: <b>{rewardsMultiplier.toFixed(2)}</b>
+            </Box>
+          </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
