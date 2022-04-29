@@ -85,6 +85,9 @@ const Staking = () => {
 
   const extraXBoosterAmount = amount * xBoosterMultiplier;
 
+  const booster_log_base = 100;
+  const rewardsMultiplier = 1 + Math.log(amount || 1) / Math.log(booster_log_base);
+
   useEffect(() => {
     setMonths(selectedMonths);
   }, [staking]);
@@ -179,13 +182,18 @@ const Staking = () => {
           )}
         </Stack>
         <Alert severity="info">
-          <div>
-            Booster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
-          </div>
-          <div>
-            Extra Booster amount:{" "}
-            <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-          </div>
+          <Stack spacing={0.5}>
+            <Box>
+              xBooster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
+            </Box>
+            <Box>
+              Extra Booster amount:{" "}
+              <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+            </Box>
+            <Box>
+              Rewards multiplier: <b>{rewardsMultiplier.toFixed(2)}</b>
+            </Box>
+          </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
