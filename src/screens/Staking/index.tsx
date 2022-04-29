@@ -66,7 +66,7 @@ const Staking = () => {
   const xBRRR = Number(
     shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
-  const booster = Number(
+  const xBooster = Number(
     shrinkToken(staking["x_booster_amount"], config.booster_decimals),
   ).toLocaleString(undefined, TOKEN_FORMAT);
 
@@ -114,7 +114,7 @@ const Staking = () => {
                 Staked xBRRR: <b>{xBRRR}</b>
               </Typography>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Booster: <b>{booster}</b>
+                xBooster: <b>{xBooster}</b>
               </Typography>
               <Typography component="div" fontSize="0.875rem" mt="0.5rem">
                 Unstake date:{" "}

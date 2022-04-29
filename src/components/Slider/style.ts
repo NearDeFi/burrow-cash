@@ -34,8 +34,5 @@ export const SliderStyled = styled(Slider)(({ theme }) => ({
     '&[data-index="0"]': {
       marginLeft: "5px",
     },
-    '&[data-index="4"]': {
-      marginLeft: "-10px",
-    },
   },
 }));
