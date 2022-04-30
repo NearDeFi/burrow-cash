@@ -1,16 +1,18 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
+import { getAccountRewards, getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 import { trackClaimButton } from "../../telemetry";
 
 export default function TotalBRRR() {
-  const [total, unclaimed] = useAppSelector(getTotalBRRR);
+  const [total] = useAppSelector(getTotalBRRR);
+  const rewards = useAppSelector(getAccountRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   const handleClaimAll = async () => {
     trackClaimButton();
@@ -35,11 +37,12 @@ export default function TotalBRRR() {
       flexDirection={["column", "row"]}
       fontSize="0.87rem"
     >
-      <Box mb={["1rem", 0]}>
-        Total BRRR: &nbsp;
-        <b>{total.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-        &nbsp;(unclaimed: &nbsp;
-        <span>{unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
+      <Box textAlign="center" mb={[2, 0]}>
+        You&apos;ve earned: &nbsp;
+        <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
+        <Box display={["block", "inline"]} mt={[0.5, 0]} color={theme.palette.grey[800]}>
+          (unclaimed: {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
+        </Box>
       </Box>
       <LoadingButton
         size="small"
@@ -47,7 +50,7 @@ export default function TotalBRRR() {
         variant="outlined"
         onClick={handleClaimAll}
         loading={isClaimingLoading}
-        disabled={!unclaimed}
+        disabled={!rewards.brrr.unclaimedAmount}
       >
         Claim all
       </LoadingButton>

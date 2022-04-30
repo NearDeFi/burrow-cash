@@ -165,51 +165,15 @@ export const transformAsset = (
         assets[brrrTokenId].metadata.decimals,
       ),
     ),
-    extraDepositRewards: getExtraRewards("supplied", asset, assets, brrrTokenId),
-    extraBorrowRewards: getExtraRewards("borrowed", asset, assets, brrrTokenId),
+    depositRewards: getRewards("supplied", asset, assets),
+    borrowRewards: getRewards("borrowed", asset, assets),
   };
 };
 
-const getExtraRewards = (
-  action: "supplied" | "borrowed",
-  asset: Asset,
-  assets: Assets,
-  brrrTokenId: string,
-) => {
-  return Object.entries(asset.farms[action])
-    .filter(([tokenId]) => tokenId !== brrrTokenId)
-    .map(([tokenId, rewards]) => ({
-      rewards,
-      metadata: assets[tokenId].metadata,
-      config: assets[tokenId].config,
-    }));
-};
-
-export const getDailyBRRRewards = (
-  asset: Asset,
-  account: AccountState,
-  assets: Assets,
-  brrrTokenId: string,
-  type: "supplied" | "borrowed",
-): number => {
-  const totalRewardsPerDay = Number(
-    shrinkToken(
-      asset.farms[type][brrrTokenId]?.["reward_per_day"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const totalBoostedShares = Number(
-    shrinkToken(
-      asset.farms[type][brrrTokenId]?.["boosted_shares"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const boostedShares = Number(
-    shrinkToken(
-      account.portfolio.farms[type]?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-
-  return (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
+const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {
+  return Object.entries(asset.farms[action]).map(([tokenId, rewards]) => ({
+    rewards,
+    metadata: assets[tokenId].metadata,
+    config: assets[tokenId].config,
+  }));
 };

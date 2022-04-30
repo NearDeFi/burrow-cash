@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Box, Tooltip, Skeleton, Stack } from "@mui/material";
+import { Box, Tooltip, Skeleton } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import millify from "millify";
 
 import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
-import type { ExtraReward, UIAsset } from "../../../interfaces";
+import type { IReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
-import { BRRRPrice, ExtraRewards } from "../../index";
+import { BRRRPrice, Rewards } from "../../index";
 import { useIsBurrowToken, useFullDigits } from "../../../hooks";
 
 export const TokenCell = ({ rowData }) => {
   const isBurrowToken = useIsBurrowToken(rowData.tokenId);
 
   return (
-    <Box display="flex">
+    <Box display="flex" alignItems="center">
       <Box>
         {rowData ? (
           <TokenIcon icon={rowData?.icon} />
@@ -54,13 +54,15 @@ export const Cell = ({
   rowData,
   format,
   tooltip,
-  extraRewards,
+  rewards,
+  rewardLayout,
 }: {
-  value: number | string;
+  value?: number | string;
   rowData: UIAsset | undefined;
   format: FormatType;
   tooltip?: string;
-  extraRewards?: ExtraReward[];
+  rewards?: IReward[];
+  rewardLayout?: "horizontal" | "vertical";
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -69,6 +71,7 @@ export const Cell = ({
   const showDust = useAppSelector(getShowDust);
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
+  const isReward = format === "reward";
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
@@ -81,9 +84,12 @@ export const Cell = ({
         ? `$${millify(Number(v) * price)}`
         : (Number(v) * price).toLocaleString(undefined, USD_FORMAT),
     string: (v) => v.toString(),
-    reward: (v) => (isCompact ? millify(Number(v)) : formatBRRRAmount(Number(v))),
+    reward: (v) => (isCompact ? millify(Number(v)) : formatRewardAmount(Number(v))),
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
+
+  if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
+  if (!value) return <Box>-</Box>;
 
   const displayValue = formatMap[format](value);
 
@@ -91,11 +97,6 @@ export const Cell = ({
     <Tooltip title={tooltip} placement="top" arrow disableFocusListener>
       <Box>{displayValue}</Box>
     </Tooltip>
-  ) : extraRewards?.length ? (
-    <Stack spacing={1}>
-      <Box>{displayValue}</Box>
-      <ExtraRewards rewards={extraRewards} />
-    </Stack>
   ) : (
     <Box>{displayValue}</Box>
   );
@@ -123,5 +124,8 @@ export const Label = ({ name, title }) => {
   );
 };
 
-export const formatBRRRAmount = (amount: number) =>
+export const formatRewardAmount = (amount: number) =>
   amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, NUMBER_FORMAT);
+
+export const formatPortfolioRewardAmount = (amount: number) =>
+  amount < 0.001 ? "<0.001" : amount.toLocaleString(undefined, TOKEN_FORMAT);

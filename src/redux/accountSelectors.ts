@@ -1,17 +1,12 @@
 import { clone } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
+import { omit } from "lodash";
 
 import { shrinkToken, expandToken, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import type { RootState } from "./store";
-import {
-  emptySuppliedAsset,
-  emptyBorrowedAsset,
-  sumReducer,
-  hasAssets,
-  getDailyBRRRewards,
-} from "./utils";
-import { Assets } from "./assetsSlice";
-import { AccountState } from "./accountSlice";
+import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer, hasAssets } from "./utils";
+import { Asset, Assets } from "./assetsSlice";
+import { AccountState, Farm } from "./accountSlice";
 
 export const getAccountId = createSelector(
   (state: RootState) => state.account,
@@ -143,7 +138,12 @@ export const getPortfolioAssets = createSelector(
             ),
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"),
+          rewards: getPortfolioRewards(
+            "supplied",
+            asset,
+            account.portfolio.farms.supplied[tokenId],
+            assets.data,
+          ),
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -169,7 +169,12 @@ export const getPortfolioAssets = createSelector(
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
-          dailyBRRRewards: getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"),
+          rewards: getPortfolioRewards(
+            "borrowed",
+            asset,
+            account.portfolio.farms.borrowed[tokenId],
+            assets.data,
+          ),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
@@ -177,6 +182,39 @@ export const getPortfolioAssets = createSelector(
     return [supplied, borrowed];
   },
 );
+
+const getPortfolioRewards = (
+  type: "supplied" | "borrowed",
+  asset: Asset,
+  farm: Farm,
+  assets: Assets,
+) => {
+  if (!farm) return [];
+  return Object.entries(farm).map(([tokenId, rewards]) => {
+    const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+    const reardTokendecimals =
+      assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
+
+    const totalRewardsPerDay = Number(
+      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", assetDecimals),
+    );
+    const totalBoostedShares = Number(
+      shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", assetDecimals),
+    );
+    const boostedShares = Number(
+      shrinkToken(farm?.[tokenId]?.boosted_shares || "0", reardTokendecimals),
+    );
+
+    const rewardPerDay = (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
+
+    return {
+      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, reardTokendecimals) },
+      metadata: assets[tokenId].metadata,
+      config: assets[tokenId].config,
+      type: "portfolio",
+    };
+  });
+};
 
 const MAX_RATIO = 10000;
 
@@ -494,20 +532,78 @@ export const getStaking = createSelector(
   (account) => account.portfolio.staking,
 );
 
-export const getTotalDailyBRRRewards = createSelector(
+interface IPortfolioReward {
+  icon: string;
+  name: string;
+  symbol: string;
+  tokenId: string;
+  totalAmount: number;
+  dailyAmount: number;
+  unclaimedAmount: number;
+}
+
+interface IAccountRewards {
+  brrr: IPortfolioReward;
+  extra: {
+    [tokenId: string]: IPortfolioReward;
+  };
+}
+
+export const getAccountRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (state: RootState) => state.app,
   (assets, account, app) => {
     const brrrTokenId = app.config.booster_token_id;
-    if (!account.accountId || !assets.data[brrrTokenId]) return 0;
-    const suppliedRewards = Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "supplied"))
-      .reduce((prev, current) => prev + current, 0);
-    const borrowedRewards = Object.entries(assets.data)
-      .map(([, asset]) => getDailyBRRRewards(asset, account, assets.data, brrrTokenId, "borrowed"))
-      .reduce((prev, current) => prev + current, 0);
 
-    return suppliedRewards + borrowedRewards;
+    const computeRewards = ([tokenId, farm]: [string, Farm]) => {
+      return Object.entries(farm).map(([rewardTokenId, farmData]) => {
+        const asset = assets.data[tokenId];
+        const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+        const rewardAsset = assets.data[rewardTokenId];
+        const rewardAssetDecimals =
+          rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
+
+        const totalRewardsPerDay = Number(
+          shrinkToken(farmData.asset_farm_reward.reward_per_day, assetDecimals),
+        );
+
+        const totalBoostedShares = Number(
+          shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
+        );
+
+        const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
+        const { icon, symbol, name } = rewardAsset.metadata;
+        return {
+          icon,
+          name,
+          symbol,
+          tokenId: rewardTokenId,
+          unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
+          dailyAmount: (boostedShares / totalBoostedShares) * totalRewardsPerDay,
+        };
+      });
+    };
+
+    const { supplied, borrowed } = account.portfolio.farms;
+
+    const suppliedRewards = Object.entries(supplied).map(computeRewards).flat();
+    const borrowedRewards = Object.entries(borrowed).map(computeRewards).flat();
+
+    const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
+      if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
+
+      const updatedAsset = rewards[asset.tokenId];
+
+      updatedAsset.unclaimedAmount += asset.unclaimedAmount;
+      updatedAsset.dailyAmount += asset.dailyAmount;
+
+      return { ...rewards, [asset.tokenId]: updatedAsset };
+    }, {});
+
+    return {
+      brrr: sumRewards[brrrTokenId],
+      extra: omit(sumRewards, brrrTokenId),
+    } as IAccountRewards;
   },
 );

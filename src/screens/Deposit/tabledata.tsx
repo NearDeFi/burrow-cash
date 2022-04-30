@@ -9,14 +9,15 @@ export const columns = [
   {
     label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrSupply",
-    align: "right",
+    align: "left",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell
         value={rowData?.brrrSupply}
         rowData={rowData}
         format="reward"
-        extraRewards={rowData.extraDepositRewards}
+        rewardLayout="horizontal"
+        rewards={rowData.depositRewards}
       />
     ),
   },

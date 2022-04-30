@@ -1,7 +1,7 @@
 import { Contract } from "near-api-js";
 import BN from "bn.js";
 
-import getConfig, { LOGIC_CONTRACT_NAME } from "./config";
+import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
 import {
   ChangeMethodsLogic,
   ChangeMethodsOracle,
@@ -12,8 +12,6 @@ import { IBurrow, IConfig } from "./interfaces/burrow";
 import { getContract } from "./store";
 
 import { getWalletSelector, getAccount, functionCall } from "./utils/wallet-selector-compat";
-
-const defaultNetwork = process.env.DEFAULT_NETWORK || process.env.NODE_ENV || "development";
 
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 

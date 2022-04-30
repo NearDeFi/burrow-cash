@@ -3,6 +3,8 @@ import { ConnectConfig } from "near-api-js";
 export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME as string;
 export const DUST_THRESHOLD = 0.001;
 
+export const hiddenAssets = ["ref.fakes.testnet"];
+
 export const defaultNetwork = (process.env.DEFAULT_NETWORK ||
   process.env.NODE_ENV ||
   "development") as any;

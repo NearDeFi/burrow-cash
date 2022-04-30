@@ -1,6 +1,6 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { isAssetsLoading } from "../redux/assetsSelectors";
-import { isAccountLoading } from "../redux/accountSelectors";
+import { getAccountRewards, isAccountLoading } from "../redux/accountSelectors";
 import {
   getConfig,
   getSlimStats,
@@ -8,7 +8,7 @@ import {
   getShowTicker,
   getTableSorting,
 } from "../redux/appSelectors";
-import { setFullDigits, toggleShowTicker, setTableSorting, IOrder } from "../redux/appSlice";
+import { IOrder, setFullDigits, setTableSorting, toggleShowTicker } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { trackShowTicker } from "../telemetry";
 
@@ -51,6 +51,14 @@ export function useTicker() {
   };
 
   return { hasTicker, toggleTicker };
+}
+
+export function useRewards() {
+  const rewards = useAppSelector(getAccountRewards);
+  const { brrr } = rewards;
+  const extra = Object.entries(rewards.extra);
+
+  return { brrr, extra };
 }
 
 export function useTableSorting() {

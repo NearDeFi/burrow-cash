@@ -184,14 +184,13 @@ const Staking = () => {
         <Alert severity="info">
           <Stack spacing={0.5}>
             <Box>
-              xBooster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
+              xBooster multiplier: <b>{xBoosterMultiplier}x</b>
             </Box>
             <Box>
-              Extra Booster amount:{" "}
-              <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+              xBooster amount: <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
             </Box>
             <Box>
-              Rewards multiplier: <b>{rewardsMultiplier.toFixed(2)}</b>
+              Rewards multiplier: <b>{rewardsMultiplier.toFixed(2)}x</b>
             </Box>
           </Stack>
         </Alert>
