@@ -532,6 +532,11 @@ export const getStaking = createSelector(
   (account) => account.portfolio.staking,
 );
 
+export const getHasNonFarmedAssets = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.portfolio.hasNonFarmedAssets,
+);
+
 interface IPortfolioReward {
   icon: string;
   name: string;

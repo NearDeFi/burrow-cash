@@ -1,20 +1,17 @@
 import { Box } from "@mui/material";
 
-import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getAvailableAssets } from "../../redux/assetsSelectors";
-import { getConfig } from "../../redux/appSelectors";
-import { getAccountId } from "../../redux/accountSelectors";
+import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { useTableSorting } from "../../hooks";
+import { useAccountId, useAvailableAssets, useConfig, useTableSorting } from "../../hooks";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
-  const config = useAppSelector(getConfig);
-  const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableAssets("supply"));
+  const accountId = useAccountId();
+  const config = useConfig();
+  const rows = useAvailableAssets("supply");
   const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
@@ -30,6 +27,7 @@ const Deposit = () => {
     <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
+      <NonFarmedAssets />
       <PageTitle first="Deposit" second="Assets" />
       <BetaInfo />
       <Table

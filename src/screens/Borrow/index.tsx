@@ -1,18 +1,16 @@
 import { Box } from "@mui/material";
 
-import { getAccountId } from "../../redux/accountSelectors";
-import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getAvailableAssets } from "../../redux/assetsSelectors";
+import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { useTableSorting } from "../../hooks";
+import { useAccountId, useAvailableAssets, useTableSorting } from "../../hooks";
 
 const Borrow = () => {
   const dispatch = useAppDispatch();
-  const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableAssets("borrow"));
+  const accountId = useAccountId();
+  const rows = useAvailableAssets("borrow");
   const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
@@ -27,6 +25,7 @@ const Borrow = () => {
     <Box pb="2.5rem" display="grid" justifyContent="center">
       <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
+      <NonFarmedAssets />
       <PageTitle first="Borrow" second="Assets" />
       <BetaInfo />
       <Table

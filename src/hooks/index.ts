@@ -1,6 +1,12 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { isAssetsLoading } from "../redux/assetsSelectors";
-import { getAccountRewards, isAccountLoading } from "../redux/accountSelectors";
+import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
+import {
+  getAccountId,
+  getAccountRewards,
+  getHasNonFarmedAssets,
+  getPortfolioAssets,
+  isAccountLoading,
+} from "../redux/accountSelectors";
 import {
   getConfig,
   getSlimStats,
@@ -73,4 +79,24 @@ export function useTableSorting() {
     sorting,
     setSorting,
   };
+}
+
+export function useConfig() {
+  return useAppSelector(getConfig);
+}
+
+export function useAccountId() {
+  return useAppSelector(getAccountId);
+}
+
+export function useNonFarmedAssets() {
+  return useAppSelector(getHasNonFarmedAssets);
+}
+
+export function useAvailableAssets(type: "supply" | "borrow") {
+  return useAppSelector(getAvailableAssets(type));
+}
+
+export function usePortfolioAssets() {
+  return useAppSelector(getPortfolioAssets);
 }

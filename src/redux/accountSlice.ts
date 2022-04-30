@@ -49,6 +49,7 @@ export interface Portfolio {
     };
   };
   staking: IBoosterStaking;
+  hasNonFarmedAssets: boolean;
 }
 
 type Status = "pending" | "fulfilled" | "rejected" | undefined;
@@ -79,6 +80,7 @@ const initialState: AccountState = {
       borrowed: {},
     },
     staking: initialStaking,
+    hasNonFarmedAssets: false,
   },
   status: undefined,
   isClaiming: undefined,
@@ -158,6 +160,7 @@ export const accountSlice = createSlice({
           collateral: listToMap(collateral),
           farms: transformAccountFarms(farms),
           staking: booster_staking || initialStaking,
+          hasNonFarmedAssets: portfolio["has_non_farmed_assets"],
         };
       }
     });

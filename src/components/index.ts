@@ -11,6 +11,7 @@ import Rewards from "./Rewards";
 import BetaInfo from "./BetaInfo";
 import InfoBox from "./InfoBanner";
 import Ticker from "./Ticker";
+import NonFarmedAssets from "./NonFarmedAssets";
 
 export {
   Table,
@@ -26,4 +27,5 @@ export {
   BetaInfo,
   InfoBox,
   Ticker,
+  NonFarmedAssets,
 };
