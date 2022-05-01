@@ -12,6 +12,7 @@ import BetaInfo from "./BetaInfo";
 import InfoBox from "./InfoBanner";
 import Ticker from "./Ticker";
 import NonFarmedAssets from "./NonFarmedAssets";
+import ClaimAllRewards from "./ClaimAllRewards";
 
 export {
   Table,
@@ -28,4 +29,5 @@ export {
   InfoBox,
   Ticker,
   NonFarmedAssets,
+  ClaimAllRewards,
 };

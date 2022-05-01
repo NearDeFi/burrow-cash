@@ -2,9 +2,9 @@ import { Menu, MenuItem, Divider } from "@mui/material";
 
 import NearWalletSelector from "@near-wallet-selector/core";
 
+import ClaimAllRewards from "../ClaimAllRewards";
 import { getBurrow } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { farmClaimAll, fetchAccount } from "../../redux/accountSlice";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
@@ -12,7 +12,6 @@ import {
   trackDisplayAsUsd,
   trackLogout,
   trackShowDust,
-  trackClaimButton,
   trackToggleAmountDigits,
 } from "../../telemetry";
 import { useFullDigits } from "../../hooks";
@@ -58,14 +57,6 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
     handleClose();
   };
 
-  const handleClaimAll = async () => {
-    handleClose();
-    trackClaimButton();
-    dispatch(farmClaimAll()).then(() => {
-      dispatch(fetchAccount());
-    });
-  };
-
   const handleToggleAmountDigits = () => {
     const digits = { table: !fullDigits.table };
     trackToggleAmountDigits(digits);
@@ -83,9 +74,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
       }}
     >
       {accountId && [
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleClaimAll} key={1}>
-          Claim All Rewards
-        </MenuItem>,
+        <ClaimAllRewards location="menu" onDone={handleClose} Button={ClaimMenuItem} key={1} />,
         <Divider key={2} />,
       ]}
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
@@ -110,3 +99,9 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
     </Menu>
   );
 };
+
+const ClaimMenuItem = (props) => (
+  <MenuItem name="menu" sx={{ backgroundColor: "white" }} {...props}>
+    Claim All Rewards
+  </MenuItem>
+);

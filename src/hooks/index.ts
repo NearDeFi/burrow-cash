@@ -6,6 +6,7 @@ import {
   getHasNonFarmedAssets,
   getPortfolioAssets,
   isAccountLoading,
+  isClaiming,
 } from "../redux/accountSelectors";
 import {
   getConfig,
@@ -16,7 +17,8 @@ import {
 } from "../redux/appSelectors";
 import { IOrder, setFullDigits, setTableSorting, toggleShowTicker } from "../redux/appSlice";
 import { getViewAs } from "../utils";
-import { trackShowTicker } from "../telemetry";
+import { trackClaimButton, trackShowTicker } from "../telemetry";
+import { farmClaimAll, fetchAccount } from "../redux/accountSlice";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -99,4 +101,18 @@ export function useAvailableAssets(type: "supply" | "borrow") {
 
 export function usePortfolioAssets() {
   return useAppSelector(getPortfolioAssets);
+}
+
+export function useClaimAllRewards(location: string) {
+  const dispatch = useAppDispatch();
+  const isLoading = useAppSelector(isClaiming);
+
+  const handleClaimAll = () => {
+    trackClaimButton(location);
+    dispatch(farmClaimAll()).then(() => {
+      dispatch(fetchAccount());
+    });
+  };
+
+  return { handleClaimAll, isLoading };
 }

@@ -48,8 +48,8 @@ export const trackActionButton = (action, props) => {
   track(`${action} button clicked`, props);
 };
 
-export const trackClaimButton = () => {
-  track("Claim all button clicked");
+export const trackClaimButton = (location) => {
+  track("Claim all button clicked", { location });
 };
 
 export const trackDisplayAsUsd = () => {
