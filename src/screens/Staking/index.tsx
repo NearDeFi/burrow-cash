@@ -7,7 +7,6 @@ import { TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
-import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
 import MonthSlider from "../../components/Slider/staking";
@@ -152,7 +151,6 @@ const Staking = () => {
         justifyContent="space-between"
         position="relative"
       >
-        {!accountId && <NotConnected />}
         <Stack spacing={1}>
           <Typography>Amount of BRRR to stake:</Typography>
           <Input

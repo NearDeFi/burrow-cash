@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Box, IconButton, useTheme, useMediaQuery } from "@mui/material";
+import { Button, Box, IconButton, useTheme, useMediaQuery, Typography } from "@mui/material";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
 import NearWalletSelector from "@near-wallet-selector/core";
@@ -73,17 +73,29 @@ const WalletButton = () => {
       {accountId ? (
         <Box
           sx={{
-            marginTop: 0.6,
             fontSize: "0.8rem",
             display: "flex",
             flexFlow: isMobile ? "column" : "row",
+            alignItems: ["flex-end", "center"],
           }}
         >
-          <div style={{ fontWeight: "bold" }}>{accountTrim(accountId)}</div>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginLeft: 4 }}>
-            {Number.parseFloat(balance).toFixed(2)}
-            <NearIcon style={{ marginTop: -5, marginRight: -5, width: "1.5rem" }} />
-          </div>
+          <Typography sx={{ fontWeight: "bold", fontSize: "0.85rem" }}>
+            {accountTrim(accountId)}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginLeft: 1,
+              alignItems: "center",
+              mt: ["-0.3rem", 0],
+            }}
+          >
+            <Typography sx={{ lineHeight: 0, fontSize: "0.85rem" }}>
+              {Number.parseFloat(balance).toFixed(2)}
+            </Typography>
+            <NearIcon style={{ width: "1.5rem", height: "1.5rem", marginRight: "-6px" }} />
+          </Box>
         </Box>
       ) : (
         <Button
