@@ -37,7 +37,7 @@ export default function TotalBRRR() {
         You&apos;ve earned: &nbsp;
         <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
         <Box display={["block", "inline"]} mt={[0.5, 0]} color={theme.palette.grey[800]}>
-          (unclaimed: {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
+          (unclaimed: {rewards.brrr?.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
         </Box>
       </Box>
       <ClaimAllRewards location="staking" Button={ClaimButton} />

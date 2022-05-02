@@ -83,7 +83,7 @@ const RewardsDaily = ({ onOpen }) => {
   );
 };
 
-const Reward = ({ dailyAmount, icon }) => (
+const Reward = ({ dailyAmount = 0, icon }) => (
   <Stack direction="row" alignItems="center" spacing="0.3rem">
     <TokenIcon width={14} height={14} icon={icon} />
     <Typography fontSize="0.85rem">
@@ -153,7 +153,7 @@ const RewardsDetailed = ({ onClose, controls }) => {
   );
 };
 
-const RewardGridRow = ({ icon, dailyAmount, unclaimedAmount, symbol }) => {
+const RewardGridRow = ({ icon, dailyAmount = 0, unclaimedAmount = 0, symbol }) => {
   const [unclaimed, setUnclaimed] = useState<number>(unclaimedAmount);
 
   const count = dailyAmount / 24 / 3600 / 10;
