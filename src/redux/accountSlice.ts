@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
-import { listToMap, transformAccountFarms } from "./utils";
+import { hasZeroSharesFarmRewards, listToMap, transformAccountFarms } from "./utils";
 import { ChangeMethodsLogic, IBoosterStaking } from "../interfaces";
 import { identifyUser } from "../telemetry";
 
@@ -160,7 +160,7 @@ export const accountSlice = createSlice({
           collateral: listToMap(collateral),
           farms: transformAccountFarms(farms),
           staking: booster_staking || initialStaking,
-          hasNonFarmedAssets: portfolio["has_non_farmed_assets"],
+          hasNonFarmedAssets: portfolio["has_non_farmed_assets"] || hasZeroSharesFarmRewards(farms),
         };
       }
     });
