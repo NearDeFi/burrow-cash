@@ -13,8 +13,8 @@ import { unstake } from "../../store/actions/unstake";
 import MonthSlider from "../../components/Slider/staking";
 import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
-import { useAccountId, useRewards, useStaking } from "../../hooks";
-import TokenIcon from "../../components/TokenIcon";
+import { useAccountId, useStaking } from "../../hooks";
+import { BoostedRewards } from "./rewards";
 
 const Staking = () => {
   const accountId = useAccountId();
@@ -189,7 +189,7 @@ const Staking = () => {
             <Box>
               xBooster amount: <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
             </Box>
-            <BoostedRewards amount={amount} />
+            <BoostedRewards amount={Number(xBooster) + extraXBoosterAmount} />
           </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
@@ -205,53 +205,6 @@ const Staking = () => {
         </Box>
       </Stack>
     </Box>
-  );
-};
-
-const BoostedRewards = ({ amount }) => {
-  const { extra } = useRewards();
-  return (
-    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1} pt="1rem">
-      <Typography fontSize="0.85rem" textAlign="left" fontWeight="bold">
-        Extra rewards
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
-        Daily
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="center" fontWeight="bold">
-        Multiplier
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
-        Boosted
-      </Typography>
-      {extra.map(([tokenId, r]) => (
-        <Reward key={tokenId} {...r} amount={amount} />
-      ))}
-    </Box>
-  );
-};
-
-const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
-  const multiplier = 1 + Math.log(amount || 1) / Math.log(boosterLogBase || 100);
-
-  return (
-    <>
-      <Stack direction="row" gap={1}>
-        <TokenIcon width={18} height={18} icon={icon} />
-        <Typography fontSize="0.85rem" textAlign="left">
-          {symbol}
-        </Typography>
-      </Stack>
-      <Typography fontSize="0.85rem" textAlign="right">
-        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="center">
-        {multiplier.toFixed(2)}x
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right">
-        {(dailyAmount * multiplier).toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-    </>
   );
 };
 
