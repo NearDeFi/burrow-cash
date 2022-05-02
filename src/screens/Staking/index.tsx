@@ -22,7 +22,7 @@ const Staking = () => {
   const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
-  const { xBRRR, xBooster, staking, config } = useStaking();
+  const { BRRR, xBRRR, staking, config } = useStaking();
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -74,13 +74,13 @@ const Staking = () => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const xBoosterMultiplier =
+  const xBRRRMultiplier =
     1 +
     ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
       (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
-  const extraXBoosterAmount = amount * xBoosterMultiplier;
+  const extraXBRRRAmount = amount * xBRRRMultiplier;
 
   const sliderValue = Math.round((amount * 100) / total) || 0;
 
@@ -110,17 +110,17 @@ const Staking = () => {
           >
             <Box>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Staked xBRRR: <b>{xBRRR}</b>
+                Staked BRRR: <b>{BRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                xBooster: <b>{xBooster}</b>
+                xBRRR: <b>{xBRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="div" fontSize="0.875rem" mt="0.5rem">
                 Unstake date:{" "}
                 <b>
                   {stakingTimestamp
-                    ? unstakeDate.toFormat("dd / LLL / yyyy @ HH:mm")
-                    : "-- / -- / ----"}
+                    ? unstakeDate.toFormat("yyyy-MM-dd @ HH:mm")
+                    : "___-__-__ @ --:--"}
                 </b>
               </Typography>
             </Box>
@@ -169,7 +169,7 @@ const Staking = () => {
           )}
         </Stack>
         <Stack spacing={1}>
-          <Typography>Number of months:</Typography>
+          <Typography>Number of months to stake:</Typography>
           <Box px="0.5rem">
             <MonthSlider value={months} onChange={handleMonthSliderChange} />
           </Box>
@@ -182,12 +182,16 @@ const Staking = () => {
         <Alert severity="info">
           <Stack spacing={0.75}>
             <Box>
-              xBooster multiplier: <b>{xBoosterMultiplier}x</b>
+              xBRRR multiplier: <b>{xBRRRMultiplier}x</b>
             </Box>
             <Box>
-              xBooster amount: <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+              xBRRR to receive: <b>{extraXBRRRAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
             </Box>
-            <BoostedRewards amount={Number(xBooster) + extraXBoosterAmount} />
+            <Box>
+              Total xBRRR after staking:{" "}
+              <b>{(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}</b>
+            </Box>
+            <BoostedRewards amount={xBRRR + extraXBRRRAmount} />
           </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">

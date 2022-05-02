@@ -20,7 +20,6 @@ import { IOrder, setFullDigits, setTableSorting, toggleShowTicker } from "../red
 import { getViewAs } from "../utils";
 import { trackClaimButton, trackShowTicker } from "../telemetry";
 import { farmClaimAll, fetchAccount } from "../redux/accountSlice";
-import { TOKEN_FORMAT } from "../store/constants";
 import { shrinkToken } from "../store";
 
 export function useLoading() {
@@ -124,12 +123,8 @@ export function useStaking() {
   const staking = useAppSelector(getStaking);
   const config = useAppSelector(getConfig);
 
-  const xBRRR = Number(
-    shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
-  const xBooster = Number(
-    shrinkToken(staking["x_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
+  const BRRR = Number(shrinkToken(staking["staked_booster_amount"], config.booster_decimals));
+  const xBRRR = Number(shrinkToken(staking["x_booster_amount"], config.booster_decimals));
 
-  return { xBRRR, xBooster, staking, config };
+  return { BRRR, xBRRR, staking, config };
 }
