@@ -4,26 +4,25 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
 import { TOKEN_FORMAT } from "../../store/constants";
-import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
-import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
-import { getConfig } from "../../redux/appSelectors";
+import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
 import Slider from "../../components/Slider/staking";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
+import { useAccountId, useRewards, useStaking } from "../../hooks";
+import TokenIcon from "../../components/TokenIcon";
 
 const Staking = () => {
-  const accountId = useAppSelector(getAccountId);
+  const accountId = useAccountId();
   const [total] = useAppSelector(getTotalBRRR);
-  const staking = useAppSelector(getStaking);
-  const config = useAppSelector(getConfig);
   const [amount, setAmount] = useState(0);
   const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
+  const { xBRRR, xBooster, staking, config } = useStaking();
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -63,13 +62,6 @@ const Staking = () => {
 
   const disabledStake = !amount || invalidAmount || invalidMonths;
 
-  const xBRRR = Number(
-    shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
-  const xBooster = Number(
-    shrinkToken(staking["x_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
-
   const disabledUnstake = DateTime.now() < unstakeDate;
 
   const inputAmount = `${amount}`
@@ -84,9 +76,6 @@ const Staking = () => {
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
   const extraXBoosterAmount = amount * xBoosterMultiplier;
-
-  const booster_log_base = 100;
-  const rewardsMultiplier = 1 + Math.log(amount || 1) / Math.log(booster_log_base);
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -182,16 +171,14 @@ const Staking = () => {
           )}
         </Stack>
         <Alert severity="info">
-          <Stack spacing={0.5}>
+          <Stack spacing={0.75}>
             <Box>
               xBooster multiplier: <b>{xBoosterMultiplier}x</b>
             </Box>
             <Box>
               xBooster amount: <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
             </Box>
-            <Box>
-              Rewards multiplier: <b>{rewardsMultiplier.toFixed(2)}x</b>
-            </Box>
+            <BoostedRewards amount={amount} />
           </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
@@ -207,6 +194,53 @@ const Staking = () => {
         </Box>
       </Stack>
     </Box>
+  );
+};
+
+const BoostedRewards = ({ amount }) => {
+  const { extra } = useRewards();
+  return (
+    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1} pt="1rem">
+      <Typography fontSize="0.85rem" textAlign="left" fontWeight="bold">
+        Extra rewards
+      </Typography>
+      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
+        Daily
+      </Typography>
+      <Typography fontSize="0.85rem" textAlign="center" fontWeight="bold">
+        Multiplier
+      </Typography>
+      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
+        Boosted
+      </Typography>
+      {extra.map(([tokenId, r]) => (
+        <Reward key={tokenId} {...r} amount={amount} />
+      ))}
+    </Box>
+  );
+};
+
+const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
+  const multiplier = 1 + Math.log(amount || 1) / Math.log(boosterLogBase || 100);
+
+  return (
+    <>
+      <Stack direction="row" gap={1}>
+        <TokenIcon width={18} height={18} icon={icon} />
+        <Typography fontSize="0.85rem" textAlign="left">
+          {symbol}
+        </Typography>
+      </Stack>
+      <Typography fontSize="0.85rem" textAlign="right">
+        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+      <Typography fontSize="0.85rem" textAlign="center">
+        {multiplier.toFixed(2)}x
+      </Typography>
+      <Typography fontSize="0.85rem" textAlign="right">
+        {(dailyAmount * multiplier).toLocaleString(undefined, TOKEN_FORMAT)}
+      </Typography>
+    </>
   );
 };
 

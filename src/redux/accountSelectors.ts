@@ -545,6 +545,7 @@ interface IPortfolioReward {
   totalAmount: number;
   dailyAmount: number;
   unclaimedAmount: number;
+  boosterLogBase: number;
 }
 
 interface IAccountRewards {
@@ -577,6 +578,8 @@ export const getAccountRewards = createSelector(
           shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
         );
 
+        const boosterLogBase = Number(farmData.asset_farm_reward.booster_log_base);
+
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const { icon, symbol, name } = rewardAsset.metadata;
         return {
@@ -586,6 +589,7 @@ export const getAccountRewards = createSelector(
           tokenId: rewardTokenId,
           unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
           dailyAmount: (boostedShares / totalBoostedShares) * totalRewardsPerDay,
+          boosterLogBase,
         };
       });
     };
