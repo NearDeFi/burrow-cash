@@ -10,7 +10,8 @@ import { TotalBRRR, Input } from "../../components";
 import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
-import Slider from "../../components/Slider/staking";
+import MonthSlider from "../../components/Slider/staking";
+import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
 import { useAccountId, useRewards, useStaking } from "../../hooks";
 import TokenIcon from "../../components/TokenIcon";
@@ -34,6 +35,11 @@ const Staking = () => {
   };
 
   const handleSliderChange = (e) => {
+    const { value: percent } = e.target;
+    setAmount((Number(total) * percent) / 100);
+  };
+
+  const handleMonthSliderChange = (e) => {
     setMonths(e.target.value);
   };
 
@@ -76,6 +82,8 @@ const Staking = () => {
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
   const extraXBoosterAmount = amount * xBoosterMultiplier;
+
+  const sliderValue = Math.round((amount * 100) / total) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -155,6 +163,9 @@ const Staking = () => {
             onChange={handleInputChange}
             onFocus={handleFocus}
           />
+          <Box px="0.5rem" my="1rem">
+            <Slider value={sliderValue} onChange={handleSliderChange} />
+          </Box>
           {invalidAmount && (
             <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
           )}
@@ -162,7 +173,7 @@ const Staking = () => {
         <Stack spacing={1}>
           <Typography>Number of months:</Typography>
           <Box px="0.5rem">
-            <Slider value={months} onChange={handleSliderChange} />
+            <MonthSlider value={months} onChange={handleMonthSliderChange} />
           </Box>
           {invalidMonths && (
             <Alert severity="error">
