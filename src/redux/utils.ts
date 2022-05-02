@@ -78,6 +78,10 @@ export const emptyBorrowedAsset = (asset: { borrowed: number }): boolean =>
     (0).toLocaleString(undefined, TOKEN_FORMAT)
   );
 
+export const hasZeroSharesFarmRewards = (farms): boolean => {
+  return farms.some((farm) => farm["rewards"].some((reward) => reward["boosted_shares"] === "0"));
+};
+
 export const transformAsset = (
   asset: Asset,
   account: AccountState,
