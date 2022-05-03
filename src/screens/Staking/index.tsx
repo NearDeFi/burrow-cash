@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Alert } from "@mui/material";
+import { Box, Stack, Typography, Alert, Grid, useTheme, Paper } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
@@ -23,6 +23,7 @@ const Staking = () => {
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
   const { BRRR, xBRRR, staking, config } = useStaking();
+  const theme = useTheme();
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -179,21 +180,45 @@ const Staking = () => {
             </Alert>
           )}
         </Stack>
-        <Alert severity="info">
-          <Stack spacing={0.75}>
-            <Box>
-              xBRRR multiplier: <b>{xBRRRMultiplier}x</b>
-            </Box>
-            <Box>
-              xBRRR to receive: <b>{extraXBRRRAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-            </Box>
-            <Box>
-              Total xBRRR after staking:{" "}
-              <b>{(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}</b>
-            </Box>
+        <Paper sx={{ backgroundColor: "#e5f7fd" }}>
+          <Stack spacing={0.75} p="1rem">
+            <Grid container spacing={1} columns={2}>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">xBRRR multiplier:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {xBRRRMultiplier}x
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {extraXBRRRAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">Total xBRRR after staking:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Box
+              component="hr"
+              sx={{
+                borderWidth: 0.5,
+                bgcolor: theme.palette.background.default,
+                borderStyle: "outset",
+              }}
+            />
             <BoostedRewards amount={xBRRR + extraXBRRRAmount} />
           </Stack>
-        </Alert>
+        </Paper>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
             disabled={disabledStake}
