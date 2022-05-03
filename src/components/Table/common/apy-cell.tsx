@@ -23,11 +23,12 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
 
-  const extraAPY = extraRewards.reduce(
-    (acc, { rewards, metadata, price }) =>
-      acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
-    0,
-  );
+  const extraAPY =
+    extraRewards?.reduce(
+      (acc, { rewards, metadata, price }) =>
+        acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+      0,
+    ) || 0;
 
   const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
 
@@ -58,11 +59,12 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
   const theme = useTheme();
   if (!list?.length) return children;
 
-  const extraAPY = list.reduce(
-    (acc, { rewards, metadata, price }) =>
-      acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
-    0,
-  );
+  const extraAPY =
+    list?.reduce(
+      (acc, { rewards, metadata, price }) =>
+        acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+      0,
+    ) || 0;
 
   const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
 
