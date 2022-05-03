@@ -1,6 +1,5 @@
 import Decimal from "decimal.js";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
-import { BsFillLightningFill } from "@react-icons/all-files/bs/BsFillLightningFill";
 
 import { useConfig } from "../../../hooks";
 import HtmlTooltip from "../../common/html-tooltip";
@@ -37,7 +36,13 @@ const APYCell = ({ baseAPY, rewards: list }) => {
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards ? <BsFillLightningFill style={{ color: "#f4b831" }} /> : <Box width="14px" />}
+        {hasRewards ? (
+          <Box component="span" ml="3px">
+            🚀
+          </Box>
+        ) : (
+          <Box width="14px" />
+        )}
       </Stack>
     </ToolTip>
   );
@@ -90,7 +95,7 @@ const ToolTip = ({ children, list, baseAPY }) => {
             }}
           />
           <Stack direction="row" alignItems="center" spacing={1}>
-            <BsFillLightningFill style={{ color: "#f4b831" }} />
+            <Box component="span">🚀</Box>
             <Typography fontSize="0.75rem">Boosted APY</Typography>
           </Stack>
           <Typography fontSize="0.75rem" textAlign="right">
