@@ -37,11 +37,7 @@ const APYCell = ({ baseAPY, rewards: list }) => {
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards ? (
-          <BsFillLightningFill style={{ color: "#f4b831", width: "14px" }} />
-        ) : (
-          <Box width="14px" />
-        )}
+        {hasRewards ? <BsFillLightningFill style={{ color: "#f4b831" }} /> : <Box width="14px" />}
       </Stack>
     </ToolTip>
   );
@@ -93,9 +89,10 @@ const ToolTip = ({ children, list, baseAPY }) => {
               borderStyle: "outset",
             }}
           />
-          <Typography pl="22px" fontSize="0.75rem">
-            Boosted APY
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <BsFillLightningFill style={{ color: "#f4b831" }} />
+            <Typography fontSize="0.75rem">Boosted APY</Typography>
+          </Stack>
           <Typography fontSize="0.75rem" textAlign="right">
             {toAPY(boostedAPY)}%
           </Typography>
