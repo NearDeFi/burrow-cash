@@ -8,30 +8,36 @@ import { APY_FORMAT } from "../../../store/constants";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
-const computeRewardAPY = (rewards, decimals, price) =>
+const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) =>
   new Decimal(rewards.reward_per_day)
     .div(new Decimal(10).pow(decimals))
     .mul(365)
     .mul(price)
-    .div(new Decimal(rewards.remaining_rewards).div(new Decimal(10).pow(decimals)))
-    .div(100)
+    .div(totalSupplyMoney)
+    .mul(100)
     .toNumber();
 
-const APYCell = ({ baseAPY, rewards: list }) => {
+const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
   const config = useConfig();
   const extraRewards = list?.filter((r) => r.metadata.token_id !== config.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
+  const isBorrow = page === "borrow";
 
-  const boostedAPY =
-    baseAPY +
-    extraRewards.reduce(
-      (acc, { rewards, metadata, price }) =>
-        acc + computeRewardAPY(rewards, metadata.decimals, price),
-      0,
-    );
+  const extraAPY = extraRewards.reduce(
+    (acc, { rewards, metadata, price }) =>
+      acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+    0,
+  );
+
+  const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
 
   return (
-    <ToolTip list={extraRewards} baseAPY={baseAPY}>
+    <ToolTip
+      list={extraRewards}
+      baseAPY={baseAPY}
+      totalSupplyMoney={totalSupplyMoney}
+      isBorrow={isBorrow}
+    >
       <Stack direction="row" gap="3px" alignItems="center">
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
           {toAPY(boostedAPY)}%
@@ -48,17 +54,17 @@ const APYCell = ({ baseAPY, rewards: list }) => {
   );
 };
 
-const ToolTip = ({ children, list, baseAPY }) => {
+const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
   const theme = useTheme();
   if (!list?.length) return children;
 
-  const boostedAPY =
-    baseAPY +
-    list.reduce(
-      (acc, { rewards, metadata, price }) =>
-        acc + computeRewardAPY(rewards, metadata.decimals, price),
-      0,
-    );
+  const extraAPY = list.reduce(
+    (acc, { rewards, metadata, price }) =>
+      acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+    0,
+  );
+
+  const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
 
   return (
     <HtmlTooltip
@@ -66,7 +72,7 @@ const ToolTip = ({ children, list, baseAPY }) => {
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1} p={1}>
           {list.map(({ metadata, rewards, price }) => {
             const { symbol, icon, decimals } = metadata;
-            const rewardAPY = computeRewardAPY(rewards, decimals, price);
+            const rewardAPY = computeRewardAPY(rewards, decimals, price, totalSupplyMoney);
 
             return [
               <Stack key={1} direction="row" alignItems="center" spacing={1}>

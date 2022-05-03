@@ -21,6 +21,7 @@ export const Cell = ({
   tooltip,
   rewards,
   rewardLayout,
+  page,
 }: {
   value?: number | string;
   rowData: UIAsset | undefined;
@@ -28,6 +29,7 @@ export const Cell = ({
   tooltip?: string;
   rewards?: IReward[];
   rewardLayout?: "horizontal" | "vertical";
+  page?: "deposit" | "borrow";
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -54,7 +56,15 @@ export const Cell = ({
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
-  if (isAPY) return <APYCell rewards={rewards} baseAPY={value} />;
+  if (isAPY)
+    return (
+      <APYCell
+        rewards={rewards}
+        baseAPY={value}
+        totalSupplyMoney={rowData.totalSupplyMoney}
+        page={page}
+      />
+    );
   if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
   if (!value) return <Box>-</Box>;
 

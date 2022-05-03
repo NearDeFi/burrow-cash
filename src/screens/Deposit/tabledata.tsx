@@ -34,6 +34,7 @@ export const columns = [
         rowData={rowData}
         format="apy"
         rewards={rowData.depositRewards}
+        page="deposit"
       />
     ),
   },
