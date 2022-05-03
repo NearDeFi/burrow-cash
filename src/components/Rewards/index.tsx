@@ -1,12 +1,4 @@
-import {
-  Box,
-  Tooltip,
-  Stack,
-  Typography,
-  styled,
-  TooltipProps,
-  tooltipClasses,
-} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import millify from "millify";
 
 import { PERCENT_DIGITS } from "../../store/constants";
@@ -15,6 +7,7 @@ import { IReward } from "../../interfaces/asset";
 import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks";
 import TokenIcon from "../TokenIcon";
+import HtmlTooltip from "../common/html-tooltip";
 
 interface Props {
   rewards?: IReward[];
@@ -73,7 +66,6 @@ const RewardsTooltip = ({ children, hidden, isCompact, list }) => {
 
   return (
     <HtmlTooltip
-      placement="top-start"
       title={
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
           {list.map(({ metadata, rewards, config }) => {
@@ -103,18 +95,5 @@ const RewardsTooltip = ({ children, hidden, isCompact, list }) => {
     </HtmlTooltip>
   );
 };
-
-const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.background.default,
-    boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
-    borderColor: "rgba(0, 7, 65, 0.2)",
-    color: theme.palette.secondary.main,
-    borderWidth: 0.5,
-    borderStyle: "solid",
-  },
-}));
 
 export default Rewards;

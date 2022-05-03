@@ -1,4 +1,6 @@
-import { TokenCell, Cell, Label } from "../../components/Table/common/cells";
+import { Cell } from "../../components/Table/common/cells";
+import Label from "../../components/Table/common/label";
+import TokenCell from "../../components/Table/common/token-cell";
 
 export const columns = [
   {
@@ -26,7 +28,14 @@ export const columns = [
     dataKey: "borrowApy",
     align: "right",
     sortLabelStyle: { minWidth: [70, 70, "auto"] },
-    Cell: ({ rowData }) => <Cell value={rowData?.borrowApy} rowData={rowData} format="apy" />,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData?.borrowApy}
+        rowData={rowData}
+        format="apy"
+        rewards={rowData.borrowRewards}
+      />
+    ),
   },
   {
     label: <Label name="Liquidity" title="Available Liquidity" />,
