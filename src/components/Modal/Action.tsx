@@ -128,7 +128,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
     return false;
   }, [amount, healthFactor]);
 
-  const showToggle = action === "Supply" && canUseAsCollateral;
+  const showToggle = action === "Supply";
 
   return (
     <>
@@ -137,7 +137,11 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           <Typography variant="body1" fontSize="0.85rem">
             Use as Collateral
           </Typography>
-          <Switch onChange={handleSwitchToggle} checked={useAsCollateral} />
+          <Switch
+            onChange={handleSwitchToggle}
+            checked={useAsCollateral}
+            disabled={!canUseAsCollateral}
+          />
         </Box>
       )}
       <Box display="flex" justifyContent="center">
