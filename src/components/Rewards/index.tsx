@@ -1,4 +1,12 @@
-import { Box, Tooltip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Stack,
+  Typography,
+  styled,
+  TooltipProps,
+  tooltipClasses,
+} from "@mui/material";
 import millify from "millify";
 
 import { PERCENT_DIGITS } from "../../store/constants";
@@ -21,46 +29,92 @@ const Rewards = ({ rewards: list, layout }: Props) => {
   if (!list) return null;
 
   return (
-    <Stack
-      spacing={0.75}
-      direction={isHorizontalLayout ? "row" : "column"}
-      justifyContent="flex-start"
-    >
-      {list.map(({ metadata, rewards, config, type }) => {
-        const { symbol, name, icon, decimals } = metadata;
-        const dailyRewards = shrinkToken(
-          rewards.reward_per_day || 0,
-          decimals + config.extra_decimals,
-        );
+    <RewardsTooltip hidden={!isHorizontalLayout} isCompact={isCompact} list={list}>
+      <Stack
+        spacing={0.75}
+        direction={isHorizontalLayout ? "row" : "column"}
+        justifyContent="flex-start"
+      >
+        {list.map(({ metadata, rewards, config }) => {
+          const { symbol, icon, decimals } = metadata;
+          const dailyRewards = shrinkToken(
+            rewards.reward_per_day || 0,
+            decimals + config.extra_decimals,
+          );
 
-        const isPortfolio = type === "portfolio";
-        const amount = isCompact
-          ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
-          : isPortfolio
-          ? formatPortfolioRewardAmount(Number(dailyRewards))
-          : formatRewardAmount(Number(dailyRewards));
+          const amount = isCompact
+            ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
+            : formatPortfolioRewardAmount(Number(dailyRewards));
 
-        const iconSize = isHorizontalLayout ? 20 : 14;
+          const iconSize = isHorizontalLayout ? 20 : 14;
 
-        return (
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            justifyContent="flex-end"
-            key={symbol}
-          >
-            {!isHorizontalLayout && <Typography fontSize="0.75rem">{amount}</Typography>}
-            <Tooltip title={`${symbol} (${name}) - ${amount} / day`}>
+          return (
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              justifyContent="flex-end"
+              key={symbol}
+            >
+              {!isHorizontalLayout && <Typography fontSize="0.75rem">{amount}</Typography>}
               <Box height={14}>
                 <TokenIcon width={iconSize} height={iconSize} icon={icon} />
               </Box>
-            </Tooltip>
-          </Stack>
-        );
-      })}
-    </Stack>
+            </Stack>
+          );
+        })}
+      </Stack>
+    </RewardsTooltip>
   );
 };
+
+const RewardsTooltip = ({ children, hidden, isCompact, list }) => {
+  if (hidden) return children;
+
+  return (
+    <HtmlTooltip
+      placement="top-start"
+      title={
+        <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
+          {list.map(({ metadata, rewards, config }) => {
+            const { symbol, icon, decimals } = metadata;
+            const dailyRewards = shrinkToken(
+              rewards.reward_per_day || 0,
+              decimals + config.extra_decimals,
+            );
+            const amount = isCompact
+              ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
+              : formatRewardAmount(Number(dailyRewards));
+
+            return [
+              <Stack key={1} direction="row" alignItems="center" spacing={1}>
+                <TokenIcon width={14} height={14} icon={icon} />
+                <Typography fontSize="0.75rem">{symbol}</Typography>
+              </Stack>,
+              <Typography key={2} fontSize="0.75rem" textAlign="right">
+                {amount} / day
+              </Typography>,
+            ];
+          })}
+        </Box>
+      }
+    >
+      {children}
+    </HtmlTooltip>
+  );
+};
+
+const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.background.default,
+    boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
+    borderColor: "rgba(0, 7, 65, 0.2)",
+    color: theme.palette.secondary.main,
+    borderWidth: 0.5,
+    borderStyle: "solid",
+  },
+}));
 
 export default Rewards;
