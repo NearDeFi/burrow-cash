@@ -31,6 +31,7 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
     ) || 0;
 
   const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
+  const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
     <ToolTip
@@ -45,7 +46,7 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
         </Typography>
         {hasRewards ? (
           <Box component="span" ml="3px">
-            🚀
+            {isLucky ? "🍀" : "🚀"}
           </Box>
         ) : (
           <Box width="14px" />
@@ -68,10 +69,18 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
 
   const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
 
+  const isLucky = isBorrow && boostedAPY <= 0;
+
   return (
     <HtmlTooltip
       title={
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1} p={1}>
+          <Typography pl="22px" fontSize="0.75rem">
+            Base APY
+          </Typography>
+          <Typography fontSize="0.75rem" textAlign="right">
+            {toAPY(baseAPY)}%
+          </Typography>
           {list.map(({ metadata, rewards, price }) => {
             const { symbol, icon, decimals } = metadata;
             const rewardAPY = computeRewardAPY(rewards, decimals, price, totalSupplyMoney);
@@ -82,16 +91,11 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
                 <Typography fontSize="0.75rem">{symbol}</Typography>
               </Stack>,
               <Typography key={2} fontSize="0.75rem" textAlign="right">
+                {isBorrow ? "-" : ""}
                 {toAPY(rewardAPY)}%
               </Typography>,
             ];
           })}
-          <Typography pl="22px" fontSize="0.75rem">
-            Base APY
-          </Typography>
-          <Typography fontSize="0.75rem" textAlign="right">
-            {toAPY(baseAPY)}%
-          </Typography>
           <Box
             gridColumn="1 / span 2"
             component="hr"
@@ -103,7 +107,7 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
             }}
           />
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Box component="span">🚀</Box>
+            <Box component="span">{isLucky ? "🍀" : "🚀"}</Box>
             <Typography fontSize="0.75rem">Boosted APY</Typography>
           </Stack>
           <Typography fontSize="0.75rem" textAlign="right">
