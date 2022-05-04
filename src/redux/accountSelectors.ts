@@ -69,11 +69,9 @@ export const getNetAPY_NEW = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (state: RootState) => state.app,
-  (assets, account, app) => {
+  (assets, account) => {
     if (!hasAssets(assets)) return 0;
-    const brrrTokenId = app.config.booster_token_id;
     const sum = Object.keys(assets.data)
-      .filter((t) => t !== brrrTokenId)
       .map((tokenId) => {
         const asset = assets.data[tokenId];
         const decimals = asset.metadata.decimals + asset.config.extra_decimals;
@@ -98,10 +96,9 @@ export const getNetAPY_NEW = createSelector(
       })
       .reduce(sumReducer, 0);
 
-    const getTotalValue = (source: "borrowed" | "supplied") =>
+    const getTotalValue = (source: "borrowed" | "supplied" | "collateral") =>
       Object.entries(account.portfolio[source])
         .map(([tokenId, { balance }]) => {
-          if (tokenId === brrrTokenId) return 0;
           const asset = assets.data[tokenId];
           const decimals = asset.metadata.decimals + asset.config.extra_decimals;
           return Number(shrinkToken(balance, decimals)) * (asset.price?.usd || 0);
@@ -109,9 +106,10 @@ export const getNetAPY_NEW = createSelector(
         .reduce(sumReducer, 0);
 
     const totalSuppliedValue = getTotalValue("supplied");
+    const totalCollateralValue = getTotalValue("collateral");
     const totalBorrowedValue = getTotalValue("borrowed");
 
-    const total = sum > 0 ? totalSuppliedValue : totalBorrowedValue;
+    const total = sum > 0 ? totalSuppliedValue + totalCollateralValue : totalBorrowedValue;
 
     if (sum === 0) return 0;
 
