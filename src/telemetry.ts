@@ -3,10 +3,10 @@ import posthogJs from "posthog-js";
 const POSTHOG_KEY = process.env.POSTHOG_KEY as string;
 const POSTHOG_HOST = process.env.POSTHOG_HOST as string;
 
-const isEnabled = POSTHOG_KEY && POSTHOG_HOST;
+export const isPostHogEnabled = POSTHOG_KEY && POSTHOG_HOST;
 
 const initPostHog = () => {
-  if (typeof window !== "undefined" && isEnabled) {
+  if (typeof window !== "undefined" && isPostHogEnabled) {
     posthogJs.init(POSTHOG_KEY, {
       api_host: POSTHOG_HOST,
       autocapture: false,
@@ -16,15 +16,15 @@ const initPostHog = () => {
   return posthogJs;
 };
 
-const posthog = initPostHog();
+export const posthog = initPostHog();
 
 export const track = (name, props = {}) => {
-  if (!isEnabled) return;
+  if (!isPostHogEnabled) return;
   posthog.capture(name, props);
 };
 
 export const identifyUser = (id, traits = {}) => {
-  if (!isEnabled) return;
+  if (!isPostHogEnabled) return;
   posthog.identify(id, traits);
 };
 
