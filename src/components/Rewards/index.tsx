@@ -16,7 +16,7 @@ interface Props {
 
 const Rewards = ({ rewards: list, layout }: Props) => {
   const { fullDigits } = useFullDigits();
-  const isCompact = fullDigits.table;
+  const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
 
   if (!list) return null;

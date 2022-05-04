@@ -29,7 +29,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
   const { fullDigits, setDigits } = useFullDigits();
-  const isCompact = fullDigits.table;
+  const isCompact = fullDigits?.table;
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -58,7 +58,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   };
 
   const handleToggleAmountDigits = () => {
-    const digits = { table: !fullDigits.table };
+    const digits = { table: !fullDigits?.table };
     trackToggleAmountDigits(digits);
     setDigits(digits);
   };

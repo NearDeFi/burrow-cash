@@ -37,7 +37,7 @@ export const Cell = ({
   const displayAsTokenValue = useAppSelector(getDisplayAsTokenValue);
   const showDust = useAppSelector(getShowDust);
   const { fullDigits } = useFullDigits();
-  const isCompact = fullDigits.table;
+  const isCompact = fullDigits?.table;
   const isReward = format === "reward";
   const isAPY = format === "apy";
 

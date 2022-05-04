@@ -53,7 +53,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
     handleRequestSort(event, property);
   };
 
-  const padding = fullDigits.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
+  const padding = fullDigits?.table ? "0.5rem 0.5rem" : "0.5rem 1rem";
 
   return (
     <TableContainer
