@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed } from "../store";
 import { getBurrow } from "../utils";
 import { getBalance, getPortfolio } from "../api";
-import { listToMap, transformAccountFarms } from "./utils";
+import { hasZeroSharesFarmRewards, listToMap, transformAccountFarms } from "./utils";
 import { ChangeMethodsLogic, IBoosterStaking } from "../interfaces";
 import { identifyUser } from "../telemetry";
 
@@ -17,7 +17,7 @@ interface PortfolioAsset {
   shares: string;
 }
 
-interface Farm {
+export interface Farm {
   [reward_token_id: string]: {
     boosted_shares: string;
     unclaimed_amount: string;
@@ -49,6 +49,7 @@ export interface Portfolio {
     };
   };
   staking: IBoosterStaking;
+  hasNonFarmedAssets: boolean;
 }
 
 type Status = "pending" | "fulfilled" | "rejected" | undefined;
@@ -79,6 +80,7 @@ const initialState: AccountState = {
       borrowed: {},
     },
     staking: initialStaking,
+    hasNonFarmedAssets: false,
   },
   status: undefined,
   isClaiming: undefined,
@@ -100,7 +102,10 @@ export const fetchAccount = createAsyncThunk("account/fetchAccount", async () =>
   const { accountId } = account;
 
   if (accountId) {
-    identifyUser(accountId);
+    const wallet = JSON.parse(
+      localStorage.getItem("near-wallet-selector:selectedWalletId") || `"undefined"`,
+    );
+    identifyUser(accountId, { wallet });
     const assets = await getAssetsDetailed();
     const tokenIds = assets.map((asset) => asset.token_id);
     const accountBalance = (await account.getAccountBalance()).available;
@@ -135,6 +140,7 @@ export const accountSlice = createSlice({
       state.status = action.meta.requestStatus;
     });
     builder.addCase(fetchAccount.fulfilled, (state, action) => {
+      state.isClaiming = undefined;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
       if (!action.payload?.accountId) return;
@@ -154,6 +160,7 @@ export const accountSlice = createSlice({
           collateral: listToMap(collateral),
           farms: transformAccountFarms(farms),
           staking: booster_staking || initialStaking,
+          hasNonFarmedAssets: portfolio["has_non_farmed_assets"] || hasZeroSharesFarmRewards(farms),
         };
       }
     });

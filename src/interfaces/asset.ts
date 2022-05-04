@@ -90,6 +90,14 @@ export interface Balance {
   total: string;
 }
 
+export interface IReward {
+  rewards: IAssetFarmReward;
+  metadata: IMetadata;
+  config: IAssetConfig;
+  price: number;
+  type?: "portfolio" | "asset";
+}
+
 export interface UIAsset {
   tokenId: string;
   icon: string;
@@ -99,6 +107,7 @@ export interface UIAsset {
   supplyApy: number;
   totalSupply: number;
   totalSupply$: string;
+  totalSupplyMoney: number;
   borrowApy: number;
   availableLiquidity: number;
   availableLiquidity$: string;
@@ -113,4 +122,6 @@ export interface UIAsset {
   extraDecimals: number;
   brrrBorrow: number;
   brrrSupply: number;
+  depositRewards: IReward[];
+  borrowRewards: IReward[];
 }

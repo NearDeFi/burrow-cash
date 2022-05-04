@@ -5,14 +5,22 @@ import { IConfig } from "../interfaces";
 
 type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 
+export type IOrder = "asc" | "desc";
+
+export interface ITableSorting {
+  property: string;
+  order: IOrder;
+}
 export interface AppState {
   showModal: boolean;
   displayAsTokenValue: boolean;
+  showTicker: boolean;
   showDust: boolean;
   slimStats: boolean;
   fullDigits: {
     totals: boolean;
     user: boolean;
+    table: boolean;
   };
   selected: {
     action?: TokenAction;
@@ -21,17 +29,25 @@ export interface AppState {
     amount: number;
     isMax: boolean;
   };
+  tableSorting: {
+    deposit: ITableSorting;
+    borrow: ITableSorting;
+    portfolioDeposited: ITableSorting;
+    portfolioBorrowed: ITableSorting;
+  };
   config: IConfig;
 }
 
-const initialState: AppState = {
+export const initialState: AppState = {
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
+  showTicker: false,
   slimStats: false,
   fullDigits: {
     totals: false,
     user: false,
+    table: true,
   },
   selected: {
     action: undefined,
@@ -39,6 +55,24 @@ const initialState: AppState = {
     useAsCollateral: false,
     amount: 0,
     isMax: false,
+  },
+  tableSorting: {
+    deposit: {
+      property: "totalSupplyMoney",
+      order: "desc" as IOrder,
+    },
+    borrow: {
+      property: "borrowed",
+      order: "desc" as IOrder,
+    },
+    portfolioDeposited: {
+      property: "deposited",
+      order: "desc" as IOrder,
+    },
+    portfolioBorrowed: {
+      property: "borrowed",
+      order: "desc" as IOrder,
+    },
   },
   config: {
     booster_decimals: 0,
@@ -93,6 +127,13 @@ export const appSlice = createSlice({
     setFullDigits(state, action) {
       state.fullDigits = { ...state.fullDigits, ...action.payload };
     },
+    toggleShowTicker(state) {
+      state.showTicker = !state.showTicker;
+    },
+    setTableSorting(state, action) {
+      const { name, property, order } = action.payload;
+      state.tableSorting[name] = { property, order };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -110,5 +151,7 @@ export const {
   toggleShowDust,
   toggleSlimStats,
   setFullDigits,
+  toggleShowTicker,
+  setTableSorting,
 } = appSlice.actions;
 export default appSlice.reducer;

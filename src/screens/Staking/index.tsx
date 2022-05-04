@@ -1,29 +1,29 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Alert } from "@mui/material";
+import { Box, Stack, Typography, Alert, Grid, useTheme, Paper } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
 import { TOKEN_FORMAT } from "../../store/constants";
-import { shrinkToken } from "../../store/helper";
 import { useAppSelector } from "../../redux/hooks";
-import { getAccountId, getTotalBRRR, getStaking } from "../../redux/accountSelectors";
-import { getConfig } from "../../redux/appSelectors";
+import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
-import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
-import Slider from "../../components/Slider/staking";
+import MonthSlider from "../../components/Slider/staking";
+import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
+import { useAccountId, useStaking } from "../../hooks";
+import { BoostedRewards } from "./rewards";
 
 const Staking = () => {
-  const accountId = useAppSelector(getAccountId);
+  const accountId = useAccountId();
   const [total] = useAppSelector(getTotalBRRR);
-  const staking = useAppSelector(getStaking);
-  const config = useAppSelector(getConfig);
   const [amount, setAmount] = useState(0);
   const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
+  const { BRRR, xBRRR, staking, config } = useStaking();
+  const theme = useTheme();
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -35,6 +35,11 @@ const Staking = () => {
   };
 
   const handleSliderChange = (e) => {
+    const { value: percent } = e.target;
+    setAmount((Number(total) * percent) / 100);
+  };
+
+  const handleMonthSliderChange = (e) => {
     setMonths(e.target.value);
   };
 
@@ -63,13 +68,6 @@ const Staking = () => {
 
   const disabledStake = !amount || invalidAmount || invalidMonths;
 
-  const xBRRR = Number(
-    shrinkToken(staking["staked_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
-  const booster = Number(
-    shrinkToken(staking["x_booster_amount"], config.booster_decimals),
-  ).toLocaleString(undefined, TOKEN_FORMAT);
-
   const disabledUnstake = DateTime.now() < unstakeDate;
 
   const inputAmount = `${amount}`
@@ -77,13 +75,15 @@ const Staking = () => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const xBoosterMultiplier =
+  const xBRRRMultiplier =
     1 +
     ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
       (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
-  const extraXBoosterAmount = amount * xBoosterMultiplier;
+  const extraXBRRRAmount = amount * xBRRRMultiplier;
+
+  const sliderValue = Math.round((amount * 100) / total) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -111,17 +111,17 @@ const Staking = () => {
           >
             <Box>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Staked xBRRR: <b>{xBRRR}</b>
+                Staked BRRR: <b>{BRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Booster: <b>{booster}</b>
+                xBRRR: <b>{xBRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="div" fontSize="0.875rem" mt="0.5rem">
                 Unstake date:{" "}
                 <b>
                   {stakingTimestamp
-                    ? unstakeDate.toFormat("dd / LLL / yyyy @ HH:mm")
-                    : "-- / -- / ----"}
+                    ? unstakeDate.toFormat("yyyy-MM-dd @ HH:mm")
+                    : "___-__-__ @ --:--"}
                 </b>
               </Typography>
             </Box>
@@ -152,7 +152,6 @@ const Staking = () => {
         justifyContent="space-between"
         position="relative"
       >
-        {!accountId && <NotConnected />}
         <Stack spacing={1}>
           <Typography>Amount of BRRR to stake:</Typography>
           <Input
@@ -163,14 +162,17 @@ const Staking = () => {
             onChange={handleInputChange}
             onFocus={handleFocus}
           />
+          <Box px="0.5rem" my="1rem">
+            <Slider value={sliderValue} onChange={handleSliderChange} />
+          </Box>
           {invalidAmount && (
             <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
           )}
         </Stack>
         <Stack spacing={1}>
-          <Typography>Number of months:</Typography>
+          <Typography>Number of months to stake:</Typography>
           <Box px="0.5rem">
-            <Slider value={months} onChange={handleSliderChange} />
+            <MonthSlider value={months} onChange={handleMonthSliderChange} />
           </Box>
           {invalidMonths && (
             <Alert severity="error">
@@ -178,15 +180,45 @@ const Staking = () => {
             </Alert>
           )}
         </Stack>
-        <Alert severity="info">
-          <div>
-            Booster multiplier: <b>{xBoosterMultiplier.toFixed(2)}</b>
-          </div>
-          <div>
-            Extra Booster amount:{" "}
-            <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-          </div>
-        </Alert>
+        <Paper sx={{ backgroundColor: "#e5f7fd" }}>
+          <Stack spacing={0.75} p="1rem">
+            <Grid container spacing={1} columns={2}>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">xBRRR multiplier:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {xBRRRMultiplier}x
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {extraXBRRRAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem">Total xBRRR after staking:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography fontSize="0.75rem" textAlign="right">
+                  {(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Box
+              component="hr"
+              sx={{
+                borderWidth: 0.5,
+                bgcolor: theme.palette.background.default,
+                borderStyle: "outset",
+              }}
+            />
+            <BoostedRewards amount={xBRRR + extraXBRRRAmount} />
+          </Stack>
+        </Paper>
         <Box display="flex" justifyContent="center" width="100%">
           <LoadingButton
             disabled={disabledStake}

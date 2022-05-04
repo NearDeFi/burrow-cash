@@ -62,7 +62,8 @@ const Header = () => {
           fontWeight="bold"
           color="#47C880"
           textAlign="center"
-          top={[0, "3.5rem", "1rem"]}
+          top={["0rem", "3.5rem", "1rem"]}
+          zIndex="1"
           py={1}
           sx={{ backgroundColor: "#EBFFF4" }}
         >

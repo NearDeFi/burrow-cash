@@ -38,9 +38,19 @@ export const getShowDust = createSelector(
   (app) => app.showDust,
 );
 
+export const getShowTicker = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.showTicker,
+);
+
 export const getSelectedValues = createSelector(
   (state: RootState) => state.app,
   (app) => app.selected,
+);
+
+export const getTableSorting = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.tableSorting,
 );
 
 export const getAssetData = createSelector(

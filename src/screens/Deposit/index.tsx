@@ -1,24 +1,22 @@
-import { Box, Alert } from "@mui/material";
+import { Box } from "@mui/material";
 
-import { PageTitle, InfoBanner, OnboardingBRRR } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getAvailableAssets } from "../../redux/assetsSelectors";
-import { getConfig } from "../../redux/appSelectors";
-import { getAccountId } from "../../redux/accountSelectors";
+import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { isBeta } from "../../store";
+import { useAccountId, useAvailableAssets, useConfig, useTableSorting } from "../../hooks";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
-  const config = useAppSelector(getConfig);
-  const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableAssets("supply"));
+  const accountId = useAccountId();
+  const config = useConfig();
+  const rows = useAvailableAssets("supply");
+  const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
-    ? [...defaultColumns.filter((col) => col.dataKey !== "supplied")]
-    : defaultColumns;
+    ? [...defaultColumns.filter((col) => !["supplied", "deposited"].includes(col.dataKey))]
+    : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
 
   const handleOnRowClick = ({ tokenId }) => {
     if (config.booster_token_id === tokenId) return;
@@ -27,15 +25,17 @@ const Deposit = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
+      <NonFarmedAssets />
       <PageTitle first="Deposit" second="Assets" />
-      {isBeta && (
-        <Box width={["100%", "580px"]} mx="auto" mt="1rem" mb="1rem">
-          <Alert severity="warning">Withdraw your funds from the beta and move to mainnet</Alert>
-        </Box>
-      )}
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="deposited" />
+      <BetaInfo />
+      <Table
+        rows={rows}
+        columns={columns}
+        onRowClick={handleOnRowClick}
+        sorting={{ name: "deposit", ...sorting.deposit, setSorting }}
+      />
     </Box>
   );
 };

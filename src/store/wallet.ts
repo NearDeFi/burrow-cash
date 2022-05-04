@@ -1,12 +1,15 @@
-import { baseDecode } from "borsh";
-import { ConnectedWalletAccount, Contract, WalletConnection } from "near-api-js";
-import { Action, createTransaction, functionCall } from "near-api-js/lib/transaction";
-import { PublicKey } from "near-api-js/lib/utils";
+import { Contract } from "near-api-js";
 import BN from "bn.js";
+import { Transaction as SelectorTransaction } from "@near-wallet-selector/core";
 
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { Balance } from "../interfaces";
+
+export interface Transaction {
+  receiverId: string;
+  functionCalls: FunctionCallOptions[];
+}
 
 export interface FunctionCallOptions {
   methodName: string;
@@ -15,106 +18,48 @@ export interface FunctionCallOptions {
   attachedDeposit?: BN;
 }
 
-export interface Transaction {
-  receiverId: string;
-  functionCalls: FunctionCallOptions[];
-}
+export const executeMultipleTransactions = async (transactions) => {
+  const { account, selector, fetchData, hideModal, signOut } = await getBurrow();
 
-export class BatchWalletAccount extends ConnectedWalletAccount {
-  async sendTransactionWithActions(receiverId: string, actions: Action[]) {
-    return this.signAndSendTransaction(receiverId, actions);
-  }
+  const selectorTransactions: Array<SelectorTransaction> = transactions.map((t) => ({
+    signerId: account.accountId,
+    receiverId: t.receiverId,
+    actions: t.functionCalls.map(
+      ({ methodName, args = {}, gas = "150000000000000", attachedDeposit = "1" }) => ({
+        type: "FunctionCall",
+        params: {
+          methodName,
+          args,
+          gas: gas.toString(),
+          deposit: attachedDeposit.toString(),
+        },
+      }),
+    ),
+  }));
 
-  async createTransaction({
-    receiverId,
-    actions,
-    nonceOffset = 1,
-  }: {
-    receiverId: string;
-    actions: Action[];
-    nonceOffset?: number;
-  }) {
-    const localKey = await this.connection.signer.getPublicKey(
-      this.accountId,
-      this.connection.networkId,
-    );
-    const accessKey = await this.accessKeyForTransaction(receiverId, actions, localKey);
-    if (!accessKey) {
-      throw new Error(`Cannot find matching key for transaction sent to ${receiverId}`);
-    }
-
-    const block = await this.connection.provider.block({ finality: "final" });
-    const blockHash = baseDecode(block.header.hash);
-
-    const publicKey = PublicKey.from(accessKey.public_key);
-    const nonce = accessKey.access_key.nonce + nonceOffset;
-
-    return createTransaction(this.accountId, publicKey, receiverId, nonce, actions, blockHash);
-  }
-}
-
-export class BatchWallet extends WalletConnection {
-  override _connectedAccount!: BatchWalletAccount;
-
-  account() {
-    if (!this._connectedAccount) {
-      this._connectedAccount = new BatchWalletAccount(
-        this,
-        this._near.connection,
-        this._authData.accountId,
-      );
-    }
-
-    return this._connectedAccount;
-  }
-
-  createTransaction({
-    receiverId,
-    actions,
-    nonceOffset = 1,
-  }: {
-    receiverId: string;
-    actions: Action[];
-    nonceOffset?: number;
-  }) {
-    return this._connectedAccount.createTransaction({
-      receiverId,
-      actions,
-      nonceOffset,
+  try {
+    await selector.signAndSendTransactions({
+      transactions: selectorTransactions,
     });
+  } catch (e: any) {
+    if (/reject/.test(e)) {
+      alert("Transaction was rejected in wallet. Please try again!");
+      hideModal();
+      return;
+    }
+    if (!/No accounts available/.test(e)) {
+      throw e;
+    }
+    console.warn(e);
+    signOut();
+    alert(
+      "No accounts available. Your wallet may be locked. You have been signed out. Please sign in again!",
+    );
+    return;
   }
-}
-
-export const executeMultipleTransactions = async (
-  transactions: Transaction[],
-  callbackUrl?: string,
-) => {
-  const { walletConnection } = await getBurrow();
-
-  const gas = new BN(150000000000000);
-  const attachedDeposit = new BN(1);
-
-  const nearTransactions = await Promise.all(
-    transactions.map((t, i) => {
-      return walletConnection.createTransaction({
-        receiverId: t.receiverId,
-        nonceOffset: i + 1,
-        actions: t.functionCalls.map((fc) =>
-          functionCall(
-            fc.methodName,
-            fc.args || {},
-            fc.gas || gas,
-            fc.attachedDeposit || attachedDeposit,
-          ),
-        ),
-      });
-    }),
-  );
-
-  return walletConnection.requestSignTransactions({
-    transactions: nearTransactions,
-    callbackUrl,
-  })!;
+  /// will refresh for injected wallets (near wallet would have redirected by now)
+  await fetchData();
+  hideModal();
 };
 
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {

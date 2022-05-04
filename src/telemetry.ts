@@ -33,7 +33,7 @@ export const trackConnectWallet = () => {
 };
 
 export const trackLogout = () => {
-  track("Log Out Clicked");
+  track("Sign Out Clicked");
 };
 
 export const trackUseAsCollateral = (props) => {
@@ -48,8 +48,8 @@ export const trackActionButton = (action, props) => {
   track(`${action} button clicked`, props);
 };
 
-export const trackClaimButton = () => {
-  track("Calim all button clicked");
+export const trackClaimButton = (location) => {
+  track("Claim all button clicked", { location });
 };
 
 export const trackDisplayAsUsd = () => {
@@ -78,4 +78,12 @@ export const trackSlimStats = (props) => {
 
 export const trackFullDigits = (props) => {
   track("Full digits clicked", props);
+};
+
+export const trackToggleAmountDigits = (props) => {
+  track("Display compact amounts clicked", props);
+};
+
+export const trackShowTicker = (props) => {
+  track("Show ticker clicked", props);
 };

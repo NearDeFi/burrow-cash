@@ -1,4 +1,6 @@
-import { TokenCell, Cell, BRRRLabel, formatBRRRAmount } from "../../components/Table/common/cells";
+import { Cell } from "../../components/Table/common/cells";
+import TokenCell from "../../components/Table/common/token-cell";
+import Label from "../../components/Table/common/label";
 
 export const columns = [
   {
@@ -7,41 +9,61 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <BRRRLabel title="BRRR Rewards / Day" />,
+    label: <Label name="Rewards" title="Rewards / Day" />,
     dataKey: "brrrSupply",
-    align: "right",
+    align: "left",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell
-        value={`${formatBRRRAmount(rowData?.brrrSupply)} / Day`}
+        value={rowData?.brrrSupply}
         rowData={rowData}
-        format="string"
+        format="reward"
+        rewardLayout="horizontal"
+        rewards={rowData.depositRewards}
       />
     ),
   },
   {
-    label: "APY",
+    label: <Label name="APY" title="Deposit APY" />,
     dataKey: "supplyApy",
     align: "right",
-    Cell: ({ rowData }) => <Cell value={rowData?.supplyApy} rowData={rowData} format="apy" />,
+    sortLabelStyle: { minWidth: [70, 70, "auto"] },
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData?.supplyApy}
+        rowData={rowData}
+        format="apy"
+        rewards={rowData.depositRewards}
+        page="deposit"
+      />
+    ),
   },
   {
-    label: "Total Deposit",
+    label: <Label name="Deposits" title="Total Deposits" />,
     dataKey: "totalSupply",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => <Cell value={rowData?.totalSupply} rowData={rowData} format="amount" />,
     align: "right",
   },
   {
-    label: "Available Liquidity",
+    label: <Label name="Liquidity" title="Available Liquidity" />,
     dataKey: "availableLiquidity",
     align: "right",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
     ),
   },
   {
-    label: "Your Deposit",
+    label: <Label name="Deposited" title="Your deposits" />,
     dataKey: "deposited",
     Cell: ({ rowData }) => <Cell value={rowData.deposited} rowData={rowData} format="amount" />,
+    align: "right",
+  },
+  {
+    label: <Label name="USD Value" title="Token amount as USD Value" />,
+    dataKey: "totalSupplyMoney",
+    Cell: ({ rowData }) => <Cell value={rowData.totalSupplyMoney} rowData={rowData} format="usd" />,
     align: "right",
   },
 ];

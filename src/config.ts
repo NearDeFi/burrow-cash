@@ -3,6 +3,12 @@ import { ConnectConfig } from "near-api-js";
 export const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME as string;
 export const DUST_THRESHOLD = 0.001;
 
+export const hiddenAssets = ["ref.fakes.testnet", "meta-token.near"];
+
+export const defaultNetwork = (process.env.DEFAULT_NETWORK ||
+  process.env.NODE_ENV ||
+  "development") as any;
+
 const getConfig = (env: string) => {
   switch (env) {
     case "production":
@@ -13,7 +19,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
-      } as ConnectConfig;
+      } as unknown as ConnectConfig;
     case "development":
     case "testnet":
       return {
@@ -22,7 +28,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
-      } as ConnectConfig;
+      } as unknown as ConnectConfig;
     case "betanet":
       return {
         networkId: "betanet",
@@ -30,7 +36,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
         explorerUrl: "https://explorer.betanet.near.org",
-      } as ConnectConfig;
+      } as unknown as ConnectConfig;
     case "local":
       return {
         networkId: "local",

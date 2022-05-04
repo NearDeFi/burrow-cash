@@ -1,17 +1,17 @@
 import { Box } from "@mui/material";
 
-import { getAccountId } from "../../redux/accountSelectors";
-import { PageTitle, InfoBanner, OnboardingBRRR } from "../../components";
+import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
 import { columns as defaultColumns } from "./tabledata";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { getAvailableAssets } from "../../redux/assetsSelectors";
+import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
+import { useAccountId, useAvailableAssets, useTableSorting } from "../../hooks";
 
 const Borrow = () => {
   const dispatch = useAppDispatch();
-  const accountId = useAppSelector(getAccountId);
-  const rows = useAppSelector(getAvailableAssets("borrow"));
+  const accountId = useAccountId();
+  const rows = useAvailableAssets("borrow");
+  const { sorting, setSorting } = useTableSorting();
 
   const columns = !accountId
     ? [...defaultColumns.filter((col) => col.dataKey !== "borrowed")]
@@ -23,10 +23,17 @@ const Borrow = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
+      <NonFarmedAssets />
       <PageTitle first="Borrow" second="Assets" />
-      <Table rows={rows} columns={columns} onRowClick={handleOnRowClick} sortColumn="borrowed" />
+      <BetaInfo />
+      <Table
+        rows={rows}
+        columns={columns}
+        onRowClick={handleOnRowClick}
+        sorting={{ name: "borrow", ...sorting.borrow, setSorting }}
+      />
     </Box>
   );
 };

@@ -7,7 +7,12 @@ import PageTitle from "./PageTitle";
 import TotalBRRR from "./TotalBRRR";
 import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
-import InfoBanner from "./InfoBanner";
+import Rewards from "./Rewards";
+import BetaInfo from "./BetaInfo";
+import InfoBox from "./InfoBanner";
+import Ticker from "./Ticker";
+import NonFarmedAssets from "./NonFarmedAssets";
+import ClaimAllRewards from "./ClaimAllRewards";
 
 export {
   Table,
@@ -19,5 +24,10 @@ export {
   TotalBRRR,
   OnboardingBRRR,
   BRRRPrice,
-  InfoBanner,
+  Rewards,
+  BetaInfo,
+  InfoBox,
+  Ticker,
+  NonFarmedAssets,
+  ClaimAllRewards,
 };

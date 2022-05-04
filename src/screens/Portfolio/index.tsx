@@ -1,28 +1,40 @@
 import { Box } from "@mui/material";
 
-import { InfoBanner, PageTitle, OnboardingBRRR } from "../../components";
+import { InfoBox, PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
-import { useAppSelector } from "../../redux/hooks";
-import { getPortfolioAssets, getAccountId } from "../../redux/accountSelectors";
+import { useAccountId, usePortfolioAssets, useTableSorting } from "../../hooks";
 
 const Portfolio = () => {
-  const [suppliedRows, borrowedRows] = useAppSelector(getPortfolioAssets);
-  const accountId = useAppSelector(getAccountId);
+  const [suppliedRows, borrowedRows] = usePortfolioAssets();
+  const { sorting, setSorting } = useTableSorting();
+  const accountId = useAccountId();
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBanner />
+      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
+      <BetaInfo />
+      <NonFarmedAssets />
       <PageTitle first="Deposited" second="Assets" />
       {suppliedRows.length ? (
-        <Table rows={suppliedRows} columns={suppliedColumns} sortColumn="supplied" />
+        <Table
+          rows={suppliedRows}
+          columns={suppliedColumns}
+          sx={{ maxWidth: "800px", width: "none" }}
+          sorting={{ name: "portfolioDeposited", ...sorting.portfolioDeposited, setSorting }}
+        />
       ) : (
         <Box textAlign="center">No deposited assets yet</Box>
       )}
       <PageTitle first="Borrowed" second="Assets" />
       {borrowedRows.length ? (
-        <Table rows={borrowedRows} columns={borrowedColumns} sortColumn="borrowed" />
+        <Table
+          rows={borrowedRows}
+          columns={borrowedColumns}
+          sx={{ maxWidth: "800px", width: "none" }}
+          sorting={{ name: "portfolioBorrowed", ...sorting.portfolioBorrowed, setSorting }}
+        />
       ) : (
         <Box textAlign="center">No borrowed assets yet</Box>
       )}

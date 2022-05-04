@@ -78,6 +78,10 @@ export const emptyBorrowedAsset = (asset: { borrowed: number }): boolean =>
     (0).toLocaleString(undefined, TOKEN_FORMAT)
   );
 
+export const hasZeroSharesFarmRewards = (farms): boolean => {
+  return farms.some((farm) => farm["rewards"].some((reward) => reward["boosted_shares"] === "0"));
+};
+
 export const transformAsset = (
   asset: Asset,
   account: AccountState,
@@ -146,6 +150,7 @@ export const transformAsset = (
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
+    totalSupplyMoney: toUsd(totalSupplyD, asset),
     borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,
@@ -164,34 +169,16 @@ export const transformAsset = (
         assets[brrrTokenId].metadata.decimals,
       ),
     ),
+    depositRewards: getRewards("supplied", asset, assets),
+    borrowRewards: getRewards("borrowed", asset, assets),
   };
 };
 
-export const getDailyBRRRewards = (
-  asset: Asset,
-  account: AccountState,
-  assets: Assets,
-  brrrTokenId: string,
-  type: "supplied" | "borrowed",
-): number => {
-  const totalRewardsPerDay = Number(
-    shrinkToken(
-      asset.farms.borrowed[brrrTokenId]?.["reward_per_day"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const totalBoostedShares = Number(
-    shrinkToken(
-      asset.farms[type][brrrTokenId]?.["boosted_shares"] || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-  const boostedShares = Number(
-    shrinkToken(
-      account.portfolio.farms[type]?.[asset.token_id]?.[brrrTokenId]?.boosted_shares || "0",
-      assets[brrrTokenId].metadata.decimals,
-    ),
-  );
-
-  return (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
+const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {
+  return Object.entries(asset.farms[action]).map(([tokenId, rewards]) => ({
+    rewards,
+    metadata: assets[tokenId].metadata,
+    config: assets[tokenId].config,
+    price: assets[tokenId].price?.usd ?? 0,
+  }));
 };

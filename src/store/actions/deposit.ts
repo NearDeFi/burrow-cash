@@ -1,5 +1,6 @@
 import { Contract } from "near-api-js";
 import BN from "bn.js";
+import Decimal from "decimal.js";
 
 import { getBurrow, nearTokenId } from "../../utils";
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
@@ -8,6 +9,7 @@ import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
 import { expandToken } from "../helper";
 import { NEAR_DECIMALS } from "../constants";
 import { isRegistered, Transaction } from "../wallet";
+import getBalance from "../../api/get-balance";
 
 export async function deposit({
   amount,
@@ -21,22 +23,17 @@ export async function deposit({
   const transactions: Transaction[] = [];
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
+  const tokenBalance = new Decimal(await getBalance(nearTokenId, account.accountId));
+  const extraDeposit = new Decimal(expandedAmount).greaterThan(tokenBalance)
+    ? new Decimal(expandedAmount).sub(tokenBalance)
+    : new Decimal(0);
 
-  const collateralTemplate = {
-    receiverId: logicContract.contractId,
-    functionCalls: [
+  const collateralActions = {
+    actions: [
       {
-        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-        gas: new BN("100000000000000"),
-        args: {
-          actions: [
-            {
-              IncreaseCollateral: {
-                token_id: nearTokenId,
-                max_amount: expandedAmount,
-              },
-            },
-          ],
+        IncreaseCollateral: {
+          token_id: nearTokenId,
+          max_amount: expandedAmount,
         },
       },
     ],
@@ -46,26 +43,26 @@ export async function deposit({
     receiverId: tokenContract.contractId,
     functionCalls: [
       ...(await registerNearFnCall(account.accountId, tokenContract)),
-      {
-        methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
-        gas: new BN("5000000000000"),
-        attachedDeposit: new BN(expandedAmount),
-      },
+      ...(extraDeposit.greaterThan(0)
+        ? [
+            {
+              methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
+              gas: new BN("5000000000000"),
+              attachedDeposit: new BN(extraDeposit.toFixed(0)),
+            },
+          ]
+        : []),
       {
         methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-        gas: new BN("100000000000000"),
+        gas: new BN("150000000000000"),
         args: {
           receiver_id: logicContract.contractId,
           amount: expandedAmount,
-          msg: "",
+          msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
         },
       },
     ],
   });
-
-  if (useAsCollateral) {
-    transactions.push(collateralTemplate);
-  }
 
   try {
     await prepareAndExecuteTransactions(transactions);
