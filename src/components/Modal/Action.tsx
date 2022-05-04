@@ -139,7 +139,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           </Typography>
           <Switch
             onChange={handleSwitchToggle}
-            checked={useAsCollateral}
+            checked={canUseAsCollateral ? useAsCollateral : false}
             disabled={!canUseAsCollateral}
           />
         </Box>
