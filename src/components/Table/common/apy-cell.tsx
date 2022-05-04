@@ -18,15 +18,21 @@ const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) =>
     .toNumber();
 
 const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
-  const config = useConfig();
-  const extraRewards = list?.filter((r) => r.metadata.token_id !== config.booster_token_id);
+  const appConfig = useConfig();
+  const extraRewards = list?.filter((r) => r.metadata.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
 
   const extraAPY =
     extraRewards?.reduce(
-      (acc, { rewards, metadata, price }) =>
-        acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+      (acc, { rewards, metadata, price, config }) =>
+        acc +
+        computeRewardAPY(
+          rewards,
+          metadata.decimals + config.extra_decimals,
+          price,
+          totalSupplyMoney,
+        ),
       0,
     ) || 0;
 
@@ -62,8 +68,14 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
 
   const extraAPY =
     list?.reduce(
-      (acc, { rewards, metadata, price }) =>
-        acc + computeRewardAPY(rewards, metadata.decimals, price, totalSupplyMoney),
+      (acc, { rewards, metadata, price, config }) =>
+        acc +
+        computeRewardAPY(
+          rewards,
+          metadata.decimals + config.extra_decimals,
+          price,
+          totalSupplyMoney,
+        ),
       0,
     ) || 0;
 
@@ -81,9 +93,14 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
           <Typography fontSize="0.75rem" textAlign="right">
             {toAPY(baseAPY)}%
           </Typography>
-          {list.map(({ metadata, rewards, price }) => {
+          {list.map(({ metadata, rewards, price, config }) => {
             const { symbol, icon, decimals } = metadata;
-            const rewardAPY = computeRewardAPY(rewards, decimals, price, totalSupplyMoney);
+            const rewardAPY = computeRewardAPY(
+              rewards,
+              decimals + config.extra_decimals,
+              price,
+              totalSupplyMoney,
+            );
 
             return [
               <Stack key={1} direction="row" alignItems="center" spacing={1}>
