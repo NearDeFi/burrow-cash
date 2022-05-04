@@ -14,7 +14,7 @@ import { fetchAccount } from "./redux/accountSlice";
 import { fetchConfig } from "./redux/appSlice";
 import { isMain } from "./store/constants";
 
-if (!isMain) {
+if (isMain) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     environment: process.env.DEFAULT_NETWORK,
