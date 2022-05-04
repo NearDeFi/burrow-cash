@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "parcel build src/index.html --public-url ./ --no-cache",
+    "build": "parcel build src/index.html --public-url ./ --no-cache && yarn sentry-upload",
     "clean": "rm -rf public && rm -rf dist && rm -rf .parcel-cache",
     "analyze": "BUNDLE_BUDDY=true parcel build src/index.html --reporter @parcel/reporter-bundle-buddy",
     "start": "parcel src/index.html --open",
@@ -13,6 +13,7 @@
     "prettier": "prettier ./src --write",
     "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\" && yarn type-check",
     "type-check": "tsc --pretty --noEmit",
+    "sentry-upload": "sentry-cli releases -o burrow-fdn -p burrow files releases upload-sourcemaps -x map dist",
     "postinstall": "husky install",
     "prepare": "husky install"
   },
