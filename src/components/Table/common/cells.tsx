@@ -1,48 +1,13 @@
-import { useState } from "react";
-import { Box, Tooltip, Skeleton } from "@mui/material";
-import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import millify from "millify";
+import { Box, Tooltip, Skeleton } from "@mui/material";
 
-import TokenIcon from "../../TokenIcon";
 import { USD_FORMAT, TOKEN_FORMAT, APY_FORMAT, DUST_FORMAT, NUMBER_FORMAT } from "../../../store";
 import type { IReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
-import { BRRRPrice, Rewards } from "../../index";
-import { useIsBurrowToken, useFullDigits } from "../../../hooks";
-
-export const TokenCell = ({ rowData }) => {
-  const isBurrowToken = useIsBurrowToken(rowData.tokenId);
-
-  return (
-    <Box display="flex" alignItems="center">
-      <Box>
-        {rowData ? (
-          <TokenIcon icon={rowData?.icon} />
-        ) : (
-          <Skeleton sx={{ bgcolor: "gray" }} width={35} height={35} variant="circular" />
-        )}
-      </Box>
-      <Box px="1rem">
-        {rowData ? (
-          <>
-            <Box>{rowData.symbol}</Box>
-            {isBurrowToken ? (
-              <BRRRPrice />
-            ) : (
-              <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
-            )}
-          </>
-        ) : (
-          <>
-            <Skeleton sx={{ bgcolor: "gray" }} width={40} height={20} />
-            <Skeleton sx={{ bgcolor: "gray" }} width={50} height={20} />
-          </>
-        )}
-      </Box>
-    </Box>
-  );
-};
+import { Rewards } from "../../index";
+import { useFullDigits } from "../../../hooks";
+import APYCell from "./apy-cell";
 
 type FormatType = "apy" | "amount" | "string" | "reward" | "usd";
 type FormatMap = {
@@ -56,6 +21,7 @@ export const Cell = ({
   tooltip,
   rewards,
   rewardLayout,
+  page,
 }: {
   value?: number | string;
   rowData: UIAsset | undefined;
@@ -63,6 +29,7 @@ export const Cell = ({
   tooltip?: string;
   rewards?: IReward[];
   rewardLayout?: "horizontal" | "vertical";
+  page?: "deposit" | "borrow";
 }) => {
   if (!rowData) return <Skeleton sx={{ bgcolor: "gray" }} height={32} />;
 
@@ -72,6 +39,7 @@ export const Cell = ({
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits.table;
   const isReward = format === "reward";
+  const isAPY = format === "apy";
 
   const formatMap: FormatMap = {
     apy: (v) => `${v.toLocaleString(undefined, APY_FORMAT)}%`,
@@ -88,6 +56,15 @@ export const Cell = ({
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
+  if (isAPY)
+    return (
+      <APYCell
+        rewards={rewards}
+        baseAPY={value}
+        totalSupplyMoney={rowData.totalSupplyMoney}
+        page={page}
+      />
+    );
   if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
   if (!value) return <Box>-</Box>;
 
@@ -99,28 +76,6 @@ export const Cell = ({
     </Tooltip>
   ) : (
     <Box>{displayValue}</Box>
-  );
-};
-
-export const Label = ({ name, title }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  const handleOpenTooltip = (e) => {
-    setShowTooltip(true);
-    e.stopPropagation();
-  };
-
-  return (
-    <Tooltip
-      title={title}
-      open={showTooltip}
-      onOpen={() => setShowTooltip(true)}
-      onClose={() => setShowTooltip(false)}
-    >
-      <Box>
-        {name} <FcInfo onClick={handleOpenTooltip} />
-      </Box>
-    </Tooltip>
   );
 };
 

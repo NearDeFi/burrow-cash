@@ -1,4 +1,6 @@
-import { TokenCell, Cell, Label } from "../../components/Table/common/cells";
+import { Cell } from "../../components/Table/common/cells";
+import TokenCell from "../../components/Table/common/token-cell";
+import Label from "../../components/Table/common/label";
 import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 
 export const suppliedColumns = [

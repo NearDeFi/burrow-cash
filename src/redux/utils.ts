@@ -179,5 +179,6 @@ const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Asset
     rewards,
     metadata: assets[tokenId].metadata,
     config: assets[tokenId].config,
+    price: assets[tokenId].price?.usd ?? 0,
   }));
 };
