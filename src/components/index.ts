@@ -13,6 +13,7 @@ import InfoBox from "./InfoBanner";
 import Ticker from "./Ticker";
 import NonFarmedAssets from "./NonFarmedAssets";
 import ClaimAllRewards from "./ClaimAllRewards";
+import FallbackError from "./FallbackError";
 
 export {
   Table,
@@ -30,4 +31,5 @@ export {
   Ticker,
   NonFarmedAssets,
   ClaimAllRewards,
+  FallbackError,
 };
