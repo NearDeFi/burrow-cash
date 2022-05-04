@@ -10,20 +10,17 @@ import App from "./App";
 import { FallbackError, Modal } from "./components";
 import theme from "./theme";
 import { store, persistor } from "./redux/store";
-import { isMain } from "./store/constants";
 import "./global.css";
 
 dotenv.config();
 
-if (isMain) {
-  init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.DEFAULT_NETWORK,
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0,
-    release: "v1",
-  });
-}
+init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.DEFAULT_NETWORK,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 1.0,
+  release: "v1",
+});
 
 ReactDOM.render(
   <ErrorBoundary fallback={FallbackError}>
