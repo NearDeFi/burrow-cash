@@ -82,6 +82,7 @@ export const getNetAPY_NEW = createSelector(
           Number(shrinkToken(depositBalance, decimals)) * (asset.price?.usd || 0);
 
         const collateralBalance = Number(account.portfolio.collateral?.[tokenId]?.balance) || 0;
+        const collateralApr = Number(account.portfolio.collateral?.[tokenId]?.apr) || 0;
         const collateralBalanceUSD =
           Number(shrinkToken(collateralBalance, decimals)) * (asset.price?.usd || 0);
 
@@ -91,7 +92,8 @@ export const getNetAPY_NEW = createSelector(
           Number(shrinkToken(borrowBalance, decimals)) * (asset.price?.usd || 0);
 
         const amount =
-          (depositBalanceUSD + collateralBalanceUSD) * depositApr - borrowBalanceUSD * borrowApr;
+          (depositBalanceUSD + collateralBalanceUSD) * (depositApr || collateralApr) -
+          borrowBalanceUSD * borrowApr;
         return amount;
       })
       .reduce(sumReducer, 0);
