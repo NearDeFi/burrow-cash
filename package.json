@@ -13,7 +13,7 @@
     "prettier": "prettier ./src --write",
     "lint": "prettier --check \"./src/**/*.{ts,tsx}\" && eslint \"./src/**/*.{ts,tsx}\" && yarn type-check",
     "type-check": "tsc --pretty --noEmit",
-    "sentry-upload": "sentry-cli releases -o burrow-fdn -p burrow files releases upload-sourcemaps -x map public",
+    "sentry-upload": "sentry-cli releases files v1 -o burrow-fdn -p burrow upload-sourcemaps public",
     "postinstall": "husky install",
     "prepare": "husky install"
   },

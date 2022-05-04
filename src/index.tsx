@@ -21,6 +21,7 @@ if (isMain) {
     environment: process.env.DEFAULT_NETWORK,
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 1.0,
+    release: "v1",
   });
 }
 
