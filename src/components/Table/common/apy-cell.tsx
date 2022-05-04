@@ -19,7 +19,7 @@ const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) =>
 
 const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
   const appConfig = useConfig();
-  const extraRewards = list?.filter((r) => r.metadata?.token_id !== appConfig.booster_token_id);
+  const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
 

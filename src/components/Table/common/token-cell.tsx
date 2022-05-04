@@ -24,7 +24,9 @@ const TokenCell = ({ rowData }) => {
             {isBurrowToken ? (
               <BRRRPrice />
             ) : (
-              <Box>{rowData.price.toLocaleString(undefined, USD_FORMAT) || "$-.-"}</Box>
+              <Box>
+                {rowData.price ? rowData.price.toLocaleString(undefined, USD_FORMAT) : "$-.-"}
+              </Box>
             )}
           </>
         ) : (

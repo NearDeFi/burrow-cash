@@ -128,7 +128,7 @@ export const getPortfolioAssets = createSelector(
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
-          price: asset.price?.usd ?? 1,
+          price: asset.price?.usd ?? 0,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
           supplied:
