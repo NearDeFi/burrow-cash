@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Typography, Switch } from "@mui/material";
+import { Box, Typography, Switch, Tooltip } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import { nearTokenId } from "../../utils";
 import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
 import { actionMapTitle, getModalData } from "./utils";
@@ -144,6 +145,17 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           <Typography variant="body1" fontSize="0.85rem">
             Use as Collateral
           </Typography>
+          {!canUseAsCollateral && (
+            <Tooltip
+              sx={{ ml: "auto" }}
+              placement="top"
+              title="This asset can't be used as collateral yet"
+            >
+              <Box alignItems="center" display="flex">
+                <FcInfo />
+              </Box>
+            </Tooltip>
+          )}
           <Switch
             onChange={handleSwitchToggle}
             checked={useAsCollateral}
