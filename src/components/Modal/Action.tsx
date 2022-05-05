@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Box, Typography, Switch } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -38,6 +38,12 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
     healthFactor,
     amount,
   });
+
+  useEffect(() => {
+    if (!canUseAsCollateral) {
+      dispatch(toggleUseAsCollateral({ useAsCollateral: false }));
+    }
+  }, [useAsCollateral]);
 
   const handleSwitchToggle = (event) => {
     trackUseAsCollateral({ useAsCollateral: event.target.checked, action, tokenId });
@@ -140,7 +146,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           </Typography>
           <Switch
             onChange={handleSwitchToggle}
-            checked={canUseAsCollateral ? useAsCollateral : false}
+            checked={useAsCollateral}
             disabled={!canUseAsCollateral}
           />
         </Box>
