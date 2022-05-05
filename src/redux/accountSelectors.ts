@@ -1,10 +1,18 @@
 import { clone } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
 import { omit } from "lodash";
+import Decimal from "decimal.js";
 
 import { shrinkToken, expandToken, PERCENT_DIGITS, NEAR_DECIMALS } from "../store";
 import type { RootState } from "./store";
-import { emptySuppliedAsset, emptyBorrowedAsset, sumReducer, hasAssets } from "./utils";
+import {
+  emptySuppliedAsset,
+  emptyBorrowedAsset,
+  sumReducer,
+  hasAssets,
+  getRewards,
+  toUsd,
+} from "./utils";
 import { Asset, Assets } from "./assetsSlice";
 import { AccountState, Farm } from "./accountSlice";
 
@@ -124,6 +132,10 @@ export const getPortfolioAssets = createSelector(
           asset.metadata.decimals + asset.config.extra_decimals,
         );
         const suppliedBalance = account.portfolio.supplied[tokenId]?.balance || 0;
+        const totalSupplyD = new Decimal(asset.supplied.balance)
+          .plus(new Decimal(asset.reserved))
+          .toFixed();
+
         return {
           tokenId,
           symbol: asset.metadata.symbol,
@@ -144,6 +156,8 @@ export const getPortfolioAssets = createSelector(
             account.portfolio.farms.supplied[tokenId],
             assets.data,
           ),
+          depositRewards: getRewards("supplied", asset, assets.data),
+          totalSupplyMoney: toUsd(totalSupplyD, asset),
         };
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
@@ -155,6 +169,9 @@ export const getPortfolioAssets = createSelector(
         const borrowedBalance = account.portfolio.borrowed[tokenId].balance;
         const brrrUnclaimedAmount =
           account.portfolio.farms.borrowed[tokenId]?.[brrrTokenId]?.unclaimed_amount || "0";
+        const totalSupplyD = new Decimal(asset.supplied.balance)
+          .plus(new Decimal(asset.reserved))
+          .toFixed();
 
         return {
           tokenId,
@@ -175,6 +192,8 @@ export const getPortfolioAssets = createSelector(
             account.portfolio.farms.borrowed[tokenId],
             assets.data,
           ),
+          borrowRewards: getRewards("borrowed", asset, assets.data),
+          totalSupplyMoney: toUsd(totalSupplyD, asset),
         };
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);

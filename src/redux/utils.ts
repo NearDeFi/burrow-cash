@@ -174,7 +174,7 @@ export const transformAsset = (
   };
 };
 
-const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {
+export const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {
   return Object.entries(asset.farms[action]).map(([tokenId, rewards]) => ({
     rewards,
     metadata: assets[tokenId].metadata,

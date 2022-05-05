@@ -63,6 +63,7 @@ export const Cell = ({
         baseAPY={value}
         totalSupplyMoney={rowData.totalSupplyMoney}
         page={page}
+        tokenId={rowData.tokenId}
       />
     );
   if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;

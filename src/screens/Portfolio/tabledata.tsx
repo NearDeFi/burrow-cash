@@ -21,7 +21,15 @@ export const suppliedColumns = [
     dataKey: "apy",
     align: "right",
     sortLabelStyle: { minWidth: [70, 70, "auto"] },
-    Cell: ({ rowData }) => <Cell value={rowData.apy} rowData={rowData} format="apy" />,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData.apy}
+        rowData={rowData}
+        format="apy"
+        rewards={rowData.depositRewards}
+        page="deposit"
+      />
+    ),
   },
   {
     label: <Label name="Collateral" title="Collateral" />,
@@ -74,7 +82,15 @@ export const borrowedColumns = [
     dataKey: "borrowApy",
     align: "right",
     sortLabelStyle: { minWidth: [70, 70, "auto"] },
-    Cell: ({ rowData }) => <Cell value={rowData.borrowApy} rowData={rowData} format="apy" />,
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData.borrowApy}
+        rowData={rowData}
+        format="apy"
+        rewards={rowData.borrowRewards}
+        page="borrow"
+      />
+    ),
   },
   {
     label: <Label name="Borrowed" title="Your borrows" />,
