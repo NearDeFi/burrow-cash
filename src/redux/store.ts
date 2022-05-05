@@ -24,7 +24,7 @@ const persistConfig = {
   storage,
   blacklist: ["feed"],
   version: 1,
-  migrate: createMigrate(migrations, { debug: true }),
+  migrate: createMigrate(migrations, { debug: false }),
 };
 
 const rootReducer = combineReducers({

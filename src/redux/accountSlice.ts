@@ -138,6 +138,8 @@ export const accountSlice = createSlice({
     });
     builder.addCase(fetchAccount.rejected, (state, action) => {
       state.status = action.meta.requestStatus;
+      console.error(action.payload);
+      throw new Error("Failed to fetch account");
     });
     builder.addCase(fetchAccount.fulfilled, (state, action) => {
       state.isClaiming = undefined;

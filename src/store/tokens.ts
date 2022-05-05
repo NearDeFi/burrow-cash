@@ -71,11 +71,16 @@ export const getBalance = async (
 };
 
 export const getAllMetadata = async (token_ids: string[]): Promise<IMetadata[]> => {
-  const metadata: IMetadata[] = (
-    await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
-  ).filter((m): m is IMetadata => !!m);
+  try {
+    const metadata: IMetadata[] = (
+      await Promise.all(token_ids.map((token_id) => getMetadata(token_id)))
+    ).filter((m): m is IMetadata => !!m);
 
-  return metadata;
+    return metadata;
+  } catch (err) {
+    console.error(err);
+    throw new Error("getAllMetadata");
+  }
 };
 
 export const prepareAndExecuteTokenTransactions = async (

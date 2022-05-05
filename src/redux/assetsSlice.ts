@@ -68,6 +68,8 @@ export const assetSlice = createSlice({
     });
     builder.addCase(fetchAssetsAndMetadata.rejected, (state, action) => {
       state.status = action.meta.requestStatus;
+      console.error(action.payload);
+      throw new Error("Failed to fetch assets and metadata");
     });
     builder.addCase(fetchAssets.pending, (state) => {
       state.status = "fetching";
@@ -84,6 +86,11 @@ export const assetSlice = createSlice({
       });
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
+    });
+    builder.addCase(fetchAssets.rejected, (state, action) => {
+      state.status = action.meta.requestStatus;
+      console.error(action.payload);
+      throw new Error("Failed to fetch assets");
     });
   },
 });
