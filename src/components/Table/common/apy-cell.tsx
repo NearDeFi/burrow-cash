@@ -46,16 +46,20 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
       totalSupplyMoney={totalSupplyMoney}
       isBorrow={isBorrow}
     >
-      <Stack direction="row" gap="3px" alignItems="center">
+      <Stack
+        position="relative"
+        direction="row"
+        gap="3px"
+        alignItems="center"
+        justifyContent="flex-end"
+      >
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards ? (
-          <Box component="span" ml="3px">
+        {hasRewards && (
+          <Box component="span" position="absolute" right="-22px">
             {isLucky ? "🍀" : "🚀"}
           </Box>
-        ) : (
-          <Box width="14px" />
         )}
       </Stack>
     </ToolTip>
