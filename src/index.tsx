@@ -31,7 +31,7 @@ init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.DEFAULT_NETWORK,
   integrations,
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 0.1,
   release: "v1",
 });
 
