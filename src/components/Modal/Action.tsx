@@ -55,6 +55,8 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       collateral,
       sliderValue: Math.round((amount * 100) / available) || 0,
     });
+    dispatch(hideModal());
+
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {
@@ -113,7 +115,6 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       default:
         break;
     }
-    dispatch(hideModal());
   };
 
   const actionDisabled = useMemo(() => {
