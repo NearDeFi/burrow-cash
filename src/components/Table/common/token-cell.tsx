@@ -21,7 +21,7 @@ const TokenCell = ({ rowData }) => {
         {rowData ? (
           <>
             <Box>{rowData.symbol}</Box>
-            {isBurrowToken ? (
+            {isBurrowToken && !rowData.price ? (
               <BRRRPrice />
             ) : (
               <Box>

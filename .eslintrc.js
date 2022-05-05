@@ -41,6 +41,7 @@ module.exports = {
     "no-restricted-syntax": 1,
     "no-unused-expressions": [1, { allowShortCircuit: false, allowTernary: false }],
     "no-void": [1, { allowAsStatement: true }],
+    "no-console": ["error", { allow: ["warn", "error", "info"] }],
     "react/react-in-jsx-scope": 0,
     "react/prop-types": 0,
     "react/jsx-filename-extension": [1, { extensions: [".ts", ".tsx"] }],

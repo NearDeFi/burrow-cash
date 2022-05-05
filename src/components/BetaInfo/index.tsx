@@ -2,7 +2,7 @@ import { Box, Alert, Link, useTheme } from "@mui/material";
 
 import { isBeta } from "../../store";
 
-export const BetaInfo = () => {
+const BetaInfo = () => {
   const theme = useTheme();
   const width = ["100%", "580px"];
 

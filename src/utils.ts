@@ -68,7 +68,7 @@ export const getBurrow = async ({
   if (!signOutCached && !!signOut)
     signOutCached = async () => {
       await selector?.signOut().catch((err) => {
-        console.log("Failed to sign out");
+        console.error("Failed to sign out");
         console.error(err);
       });
       if (hideModal) hideModal();
@@ -114,7 +114,7 @@ export const getBurrow = async ({
       args,
       gas,
       attachedDeposit,
-    }).catch((e) => console.log(e));
+    }).catch((e) => console.error(e));
   };
 
   const logicContract: Contract = await getContract(
