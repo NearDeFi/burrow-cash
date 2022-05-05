@@ -102,11 +102,13 @@ export const assetSlice = createSlice({
     });
     builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
       const META_TOKEN = "meta-token.near";
-      state.data[META_TOKEN]["price"] = {
-        decimals: action.payload[META_TOKEN].decimal,
-        usd: Number(action.payload[META_TOKEN].price),
-        multiplier: "1",
-      };
+      if (state.data[META_TOKEN]) {
+        state.data[META_TOKEN]["price"] = {
+          decimals: action.payload[META_TOKEN].decimal,
+          usd: Number(action.payload[META_TOKEN].price),
+          multiplier: "1",
+        };
+      }
     });
     builder.addCase(fetchRefPrices.pending, (state) => {
       state.status = "fetching";
