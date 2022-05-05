@@ -46,6 +46,14 @@ export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
   return { assets };
 });
 
+export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
+  const res = await fetch("https://indexer.ref-finance.net/list-token-price", {
+    mode: "cors",
+  });
+  const prices = await res.json();
+  return prices;
+});
+
 export const assetSlice = createSlice({
   name: "assets",
   initialState,
@@ -91,6 +99,22 @@ export const assetSlice = createSlice({
       state.status = action.meta.requestStatus;
       console.error(action.payload);
       throw new Error("Failed to fetch assets");
+    });
+    builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
+      const META_TOKEN = "meta-token.near";
+      state.data[META_TOKEN]["price"] = {
+        decimals: action.payload[META_TOKEN].decimal,
+        usd: Number(action.payload[META_TOKEN].price),
+        multiplier: "1",
+      };
+    });
+    builder.addCase(fetchRefPrices.pending, (state) => {
+      state.status = "fetching";
+    });
+    builder.addCase(fetchRefPrices.rejected, (state, action) => {
+      state.status = action.meta.requestStatus;
+      console.error(action.payload);
+      throw new Error("Failed to fetch REF prices");
     });
   },
 });

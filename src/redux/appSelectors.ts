@@ -124,8 +124,8 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
       }
 
       let iterations = 0;
-      const MIN_SAFE_HEALTH_FACTOR = 101;
-      const MAX_SAFE_HEALTH_FACTOR = 105;
+      const MIN_SAFE_HEALTH_FACTOR = 100.1;
+      const MAX_SAFE_HEALTH_FACTOR = 101;
       const MAX_ITERATIONS = 150;
 
       const computeMaxWithdraw = (amount: number) => {

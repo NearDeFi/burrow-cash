@@ -3,7 +3,7 @@ import { Button, Box, IconButton, useTheme, useMediaQuery, Typography } from "@m
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
 import NearWalletSelector from "@near-wallet-selector/core";
-import { fetchAssetsAndMetadata } from "../../redux/assetsSlice";
+import { fetchAssetsAndMetadata, fetchRefPrices } from "../../redux/assetsSlice";
 import { logoutAccount, fetchAccount } from "../../redux/accountSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getBurrow, accountTrim } from "../../utils";
@@ -32,7 +32,7 @@ const WalletButton = () => {
   };
 
   const fetchData = () => {
-    dispatch(fetchAssetsAndMetadata());
+    dispatch(fetchAssetsAndMetadata()).then(() => dispatch(fetchRefPrices()));
     dispatch(fetchAccount());
   };
 

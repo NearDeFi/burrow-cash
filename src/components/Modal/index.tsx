@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Modal as MUIModal, Typography, Box } from "@mui/material";
 
 import { USD_FORMAT } from "../../store";
@@ -32,6 +33,7 @@ import {
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
+import { fetchAssetsAndMetadata, fetchRefPrices } from "../../redux/assetsSlice";
 
 const Modal = () => {
   const isOpen = useAppSelector(getModalStatus);
@@ -74,6 +76,12 @@ const Modal = () => {
   const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
 
   const handleClose = () => dispatch(hideModal());
+
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(fetchAssetsAndMetadata()).then(() => dispatch(fetchRefPrices()));
+    }
+  }, [isOpen]);
 
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
