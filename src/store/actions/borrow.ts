@@ -1,8 +1,9 @@
 import BN from "bn.js";
 
-import { getBurrow } from "../../utils";
+import Decimal from "decimal.js";
+import { getBurrow, nearTokenId } from "../../utils";
 import { expandToken } from "../helper";
-import { ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
+import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { Transaction, isRegistered } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
@@ -19,6 +20,7 @@ export async function borrow({
   const { oracleContract, logicContract, account } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
   const tokenContract = await getTokenContract(tokenId);
+  const isNEAR = tokenId === nearTokenId;
 
   const transactions: Transaction[] = [];
 
@@ -68,6 +70,22 @@ export async function borrow({
       },
     ],
   });
+
+  if (isNEAR) {
+    transactions.push({
+      receiverId: tokenContract.contractId,
+      functionCalls: [
+        {
+          methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
+          args: {
+            amount: new Decimal(expandToken(amount, decimals + extraDecimals, 0))
+              .sub(10)
+              .toFixed(0),
+          },
+        },
+      ],
+    });
+  }
 
   await prepareAndExecuteTransactions(transactions);
 }

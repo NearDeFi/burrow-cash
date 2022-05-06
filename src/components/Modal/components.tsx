@@ -5,22 +5,6 @@ import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
 import { APY_FORMAT } from "../../store";
 
-export const RepayInfo = () => (
-  <Box mt="1rem">
-    <Alert severity="info">
-      <Stack>
-        <Box>You repay NEAR loans using wNEAR.</Box>
-        <Box>
-          To aquire it, use &nbsp;
-          <Link href="https://app.ref.finance" title="REF Finance" target="blank">
-            REF Finance
-          </Link>
-        </Box>
-      </Stack>
-    </Alert>
-  </Box>
-);
-
 export const USNInfo = () => (
   <Box mt="1rem">
     <Alert severity="info">

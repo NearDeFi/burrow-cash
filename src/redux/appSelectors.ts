@@ -5,8 +5,9 @@ import { clone } from "ramda";
 import type { RootState } from "./store";
 import { transformAsset } from "./utils";
 import { getBorrowedSum, getCollateralSum } from "./accountSelectors";
-import { shrinkToken, expandToken } from "../store";
+import { shrinkToken, expandToken, NEAR_STORAGE_DEPOSIT } from "../store";
 import { DUST_THRESHOLD } from "../config";
+import { nearTokenId } from "../utils";
 
 export const getConfig = createSelector(
   (state: RootState) => state.app,
@@ -74,9 +75,16 @@ export const getRepayMaxAmount = (tokenId: string) =>
     (assets, account) => {
       const asset = assets[tokenId];
 
-      const accountBalance = new Decimal(account.balances[tokenId] || "0").div(
+      let accountBalance = new Decimal(account.balances[tokenId] || "0").div(
         new Decimal(10).pow(asset.metadata.decimals),
       );
+      if (tokenId === nearTokenId) {
+        accountBalance = accountBalance.add(
+          new Decimal(account.balances["near"] || "0")
+            .div(new Decimal(10).pow(asset.metadata.decimals))
+            .sub(NEAR_STORAGE_DEPOSIT),
+        );
+      }
       const borrowed = new Decimal(account.portfolio.borrowed[tokenId]?.balance || "0").div(
         new Decimal(10).pow(asset.metadata.decimals + asset.config.extra_decimals),
       );

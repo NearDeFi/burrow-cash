@@ -29,7 +29,6 @@ import {
   HealthFactor,
   Rates,
   Alerts,
-  RepayInfo,
   USNInfo,
 } from "./components";
 import Controls from "./Controls";
@@ -91,7 +90,6 @@ const Modal = () => {
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
-          {action === "Repay" && symbol === "wNEAR" && <RepayInfo />}
           {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
             totalAvailable={available}

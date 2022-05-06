@@ -45,7 +45,14 @@ export async function withdraw({
     });
   }
 
-  if (collateralAmount) {
+  const withdrawAction = {
+    Withdraw: {
+      token_id: tokenId,
+      amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
+    },
+  };
+
+  if (collateralAmount && collateralAmount > 1e-18) {
     transactions.push({
       receiverId: oracleContract.contractId,
       functionCalls: [
@@ -59,6 +66,7 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
+                      // TODO: Figure out why isNEAR handled differently.
                       amount: expandToken(
                         maxAmount ? (isNEAR ? maxAmount : collateral) : collateralAmount,
                         decimals + extraDecimals,
@@ -66,6 +74,7 @@ export async function withdraw({
                       ),
                     },
                   },
+                  withdrawAction,
                 ],
               },
             }),
@@ -73,26 +82,19 @@ export async function withdraw({
         },
       ],
     });
-  }
-
-  transactions.push({
-    receiverId: logicContract.contractId,
-    functionCalls: [
-      {
-        methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
-        args: {
-          actions: [
-            {
-              Withdraw: {
-                token_id: tokenId,
-                amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
-              },
-            },
-          ],
+  } else {
+    transactions.push({
+      receiverId: logicContract.contractId,
+      functionCalls: [
+        {
+          methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
+          args: {
+            actions: [withdrawAction],
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
+  }
 
   if (isNEAR) {
     transactions.push({
