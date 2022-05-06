@@ -9,6 +9,11 @@ export const defaultNetwork = (process.env.DEFAULT_NETWORK ||
   process.env.NODE_ENV ||
   "development") as any;
 
+const META_TOKEN = { testnet: undefined, mainnet: "meta-token.near" };
+const REF_TOKEN = { testnet: "ref.fakes.testnet", mainnet: "token.v2.ref-finance.near" };
+
+export const missingPriceTokens = [REF_TOKEN, META_TOKEN];
+
 const getConfig = (env: string) => {
   switch (env) {
     case "production":

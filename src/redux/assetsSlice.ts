@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAssetsDetailed, getAllMetadata } from "../store";
 import { IAssetDetailed, IMetadata, IAssetFarmReward } from "../interfaces";
 import { transformAssetFarms } from "./utils";
+import { defaultNetwork, missingPriceTokens } from "../config";
 
 export type Asset = Omit<IAssetDetailed, "farms"> & {
   metadata: IMetadata;
@@ -101,14 +102,17 @@ export const assetSlice = createSlice({
       throw new Error("Failed to fetch assets");
     });
     builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
-      const META_TOKEN = "meta-token.near";
-      if (state.data[META_TOKEN]) {
-        state.data[META_TOKEN]["price"] = {
-          decimals: action.payload[META_TOKEN].decimal,
-          usd: Number(action.payload[META_TOKEN].price),
-          multiplier: "1",
-        };
-      }
+      missingPriceTokens.forEach((missingToken) => {
+        const missingTokenId = missingToken[defaultNetwork];
+
+        if (missingTokenId && state.data[missingTokenId]) {
+          state.data[missingTokenId]["price"] = {
+            decimals: action.payload[missingToken.mainnet].decimal,
+            usd: Number(action.payload[missingToken.mainnet].price),
+            multiplier: "1",
+          };
+        }
+      });
     });
     builder.addCase(fetchRefPrices.pending, (state) => {
       state.status = "fetching";
