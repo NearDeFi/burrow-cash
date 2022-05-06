@@ -21,6 +21,25 @@ export const RepayInfo = () => (
   </Box>
 );
 
+export const USNInfo = () => (
+  <Box mt="1rem">
+    <Alert severity="info">
+      <Stack>
+        <Box>
+          To swap NEAR for USN, use &nbsp;
+          <Link
+            href="https://swap.decentral-bank.finance/"
+            title="DecentralBank SWAP"
+            target="blank"
+          >
+            DecentralBank SWAP
+          </Link>
+        </Box>
+      </Stack>
+    </Alert>
+  </Box>
+);
+
 export const NotConnected = () => (
   <Box
     position="absolute"

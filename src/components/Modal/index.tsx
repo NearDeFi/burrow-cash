@@ -30,6 +30,7 @@ import {
   Rates,
   Alerts,
   RepayInfo,
+  USNInfo,
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
@@ -91,6 +92,7 @@ const Modal = () => {
           <CloseButton onClose={handleClose} />
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
           {action === "Repay" && symbol === "wNEAR" && <RepayInfo />}
+          {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
             totalAvailable={available}
             displaySymbol={symbol}
