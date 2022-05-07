@@ -630,8 +630,8 @@ export const getAccountRewards = createSelector(
     }, {});
 
     return {
-      brrr: sumRewards[brrrTokenId],
-      extra: omit(sumRewards, brrrTokenId),
+      brrr: sumRewards[brrrTokenId] || {},
+      extra: omit(sumRewards, brrrTokenId) || {},
     } as IAccountRewards;
   },
 );
