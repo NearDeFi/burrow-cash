@@ -9,8 +9,8 @@ import { APY_FORMAT } from "../../../store/constants";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
-const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) => {
-  return new Decimal(rewards.reward_per_day)
+const computeRewardAPY = (rewardsPerDay, decimals, price, totalSupplyMoney) => {
+  return new Decimal(rewardsPerDay)
     .div(new Decimal(10).pow(decimals))
     .mul(365)
     .mul(price)
@@ -19,7 +19,15 @@ const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) => {
     .toNumber();
 };
 
-const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page, tokenId }) => {
+const APYCell = ({
+  baseAPY,
+  rewards: list,
+  totalSupplyMoney,
+  page,
+  tokenId,
+  showIcons = true,
+  sx = {},
+}) => {
   const appConfig = useConfig();
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
@@ -32,7 +40,7 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page, tokenId }) =>
       (acc, { rewards, metadata, price, config }) =>
         acc +
         computeRewardAPY(
-          rewards,
+          rewards.reward_per_day,
           metadata.decimals + config.extra_decimals,
           price,
           totalSupplyMoney,
@@ -57,10 +65,10 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page, tokenId }) =>
         alignItems="center"
         justifyContent="flex-end"
       >
-        <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
+        <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px" sx={sx}>
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards && (
+        {hasRewards && showIcons && (
           <Box component="span" position="absolute" right="-22px">
             {isLucky ? "🍀" : "🚀"}
           </Box>
@@ -79,7 +87,7 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
       (acc, { rewards, metadata, price, config }) =>
         acc +
         computeRewardAPY(
-          rewards,
+          rewards.reward_per_day,
           metadata.decimals + config.extra_decimals,
           price,
           totalSupplyMoney,
@@ -104,7 +112,7 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
           {list.map(({ metadata, rewards, price, config }) => {
             const { symbol, icon, decimals } = metadata;
             const rewardAPY = computeRewardAPY(
-              rewards,
+              rewards.reward_per_day,
               decimals + config.extra_decimals,
               price,
               totalSupplyMoney,

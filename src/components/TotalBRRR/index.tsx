@@ -19,7 +19,6 @@ export default function TotalBRRR() {
 
   return (
     <Box
-      width={["100%", "580px"]}
       mx="auto"
       mb="2rem"
       bgcolor="#e5f6fd"

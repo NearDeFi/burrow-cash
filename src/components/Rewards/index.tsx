@@ -12,9 +12,10 @@ import HtmlTooltip from "../common/html-tooltip";
 interface Props {
   rewards?: IReward[];
   layout?: "horizontal" | "vertical";
+  fontWeight?: "normal" | "bold";
 }
 
-const Rewards = ({ rewards: list, layout }: Props) => {
+const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
@@ -49,7 +50,11 @@ const Rewards = ({ rewards: list, layout }: Props) => {
               justifyContent="flex-end"
               key={symbol}
             >
-              {!isHorizontalLayout && <Typography fontSize="0.75rem">{amount}</Typography>}
+              {!isHorizontalLayout && (
+                <Typography fontSize="0.75rem" fontWeight={fontWeight}>
+                  {amount}
+                </Typography>
+              )}
               <Box height={14}>
                 <TokenIcon width={iconSize} height={iconSize} icon={icon} />
               </Box>

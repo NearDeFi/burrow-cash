@@ -1,3 +1,4 @@
+import { clone } from "ramda";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import {
@@ -20,7 +21,8 @@ import { IOrder, setFullDigits, setTableSorting, toggleShowTicker } from "../red
 import { getViewAs } from "../utils";
 import { trackClaimButton, trackShowTicker } from "../telemetry";
 import { farmClaimAll, fetchAccount } from "../redux/accountSlice";
-import { shrinkToken } from "../store";
+import { expandToken, shrinkToken } from "../store";
+import { IPortfolioAsset } from "../interfaces/asset";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -127,4 +129,56 @@ export function useStaking() {
   const xBRRR = Number(shrinkToken(staking["x_booster_amount"], config.booster_decimals));
 
   return { BRRR, xBRRR, staking, config };
+}
+
+export function useStakingRewards(amount) {
+  const [suppliedRows, borrowedRows] = usePortfolioAssets() as IPortfolioAsset[][];
+  const appConfig = useAppSelector(getConfig);
+
+  const notBRRRToken = (r) => r.metadata.token_id !== appConfig.booster_token_id;
+  const filterRewards = (rewards) => rewards.some(notBRRRToken);
+  const extraRewardsOnly = (row) => ({
+    ...row,
+    rewards: row.rewards.filter(notBRRRToken),
+  });
+
+  const computeBoost = (asset) => {
+    asset.rewards = asset.rewards.filter(notBRRRToken).map((reward) => {
+      const { metadata, rewards, config } = reward;
+
+      const dailyRewards = Number(
+        shrinkToken(rewards.reward_per_day || 0, metadata.decimals + config.extra_decimals),
+      );
+
+      const multiplier =
+        1 +
+        Math.log(amount || 1) / Math.log(Number(rewards.asset_farm_reward.booster_log_base) || 100);
+
+      const boostedDailyRewards = expandToken(
+        dailyRewards * multiplier,
+        metadata.decimals + config.extra_decimals,
+        0,
+      );
+
+      reward.rewards.reward_per_day = boostedDailyRewards;
+
+      return reward;
+    });
+    return asset;
+  };
+
+  const supplied = suppliedRows
+    .filter((row) => filterRewards(row.depositRewards))
+    .map(extraRewardsOnly);
+
+  const borrowed = borrowedRows
+    .filter((row) => filterRewards(row.borrowRewards))
+    .map(extraRewardsOnly);
+
+  const boosted = {
+    supplied: clone(supplied).map(computeBoost),
+    borrowed: clone(borrowed).map(computeBoost),
+  };
+
+  return { supplied, borrowed, boosted };
 }

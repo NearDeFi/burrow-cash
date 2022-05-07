@@ -2,31 +2,34 @@ import { Box, Stack, Typography, Tooltip } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 
 import { TOKEN_FORMAT } from "../../store/constants";
-import TokenIcon from "../../components/TokenIcon";
 import { useRewards } from "../../hooks";
+import TokenIcon from "../../components/TokenIcon";
 
-export const BoostedRewards = ({ amount }) => {
+export const StakingRewards = ({ amount }) => {
   const { extra } = useRewards();
+
   return (
-    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1}>
-      <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
-        Extra Rewards
-      </Typography>
-      <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-        Daily
-      </Typography>
-      <Typography fontSize="0.75rem" textAlign="center" fontWeight="bold">
-        Multiplier
-        <Info title="New farming multiplier" />
-      </Typography>
-      <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-        <Info title="Boosted daily rewards after staking" style={{ marginRight: "5px" }} />
-        Boosted
-      </Typography>
-      {extra.map(([tokenId, r]) => (
-        <Reward key={tokenId} {...r} amount={amount} />
-      ))}
-    </Box>
+    <Stack direction="column" px={[1, 2]} p={1.5} bgcolor="white">
+      <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1}>
+        <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
+          Extra Rewards
+        </Typography>
+        <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
+          Daily Total
+        </Typography>
+        <Typography fontSize="0.75rem" textAlign="center" fontWeight="bold">
+          Multiplier
+          <Info title="New farming multiplier" />
+        </Typography>
+        <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
+          <Info title="Boosted daily rewards after staking" style={{ marginRight: "5px" }} />
+          🚀 Boost 🚀
+        </Typography>
+        {extra.map(([tokenId, r]) => (
+          <Reward key={tokenId} {...r} amount={amount} />
+        ))}
+      </Box>
+    </Stack>
   );
 };
 
@@ -47,7 +50,7 @@ const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
       <Typography fontSize="0.75rem" textAlign="center">
         {multiplier.toFixed(2)}x
       </Typography>
-      <Typography fontSize="0.75rem" textAlign="right">
+      <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
         {(dailyAmount * multiplier).toLocaleString(undefined, TOKEN_FORMAT)}
       </Typography>
     </>

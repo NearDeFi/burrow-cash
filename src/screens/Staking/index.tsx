@@ -13,7 +13,8 @@ import MonthSlider from "../../components/Slider/staking";
 import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
 import { useAccountId, useStaking } from "../../hooks";
-import { BoostedRewards } from "./rewards";
+import { StakingRewards } from "./rewards";
+import { RewardsDetailed } from "./rewards-detailed";
 
 const Staking = () => {
   const accountId = useAccountId();
@@ -90,12 +91,11 @@ const Staking = () => {
   }, [staking]);
 
   return (
-    <Box mt="2rem">
+    <Box mt="2rem" px={["0rem", "2rem"]} maxWidth={["auto", 700]} mx="auto">
       {accountId && (
         <>
           <TotalBRRR />
           <Box
-            width={["100%", "580px"]}
             mx="auto"
             mt="-1rem"
             mb="1rem"
@@ -141,48 +141,46 @@ const Staking = () => {
       )}
       <Stack
         spacing={3}
-        width={["100%", "580px"]}
         mx="auto"
         mb="2rem"
-        bgcolor="#fff"
-        boxShadow="0px 1px 1px rgba(0, 7, 65, 0.1)"
-        px="1rem"
         py={["1.5rem", "0.75rem"]}
-        borderRadius="0.3rem"
         justifyContent="space-between"
         position="relative"
       >
-        <Stack spacing={1}>
-          <Typography>Amount of BRRR to stake:</Typography>
-          <Input
-            value={inputAmount}
-            type="number"
-            step="0.01"
-            onClickMax={handleMaxClick}
-            onChange={handleInputChange}
-            onFocus={handleFocus}
-          />
-          <Box px="0.5rem" my="1rem">
-            <Slider value={sliderValue} onChange={handleSliderChange} />
-          </Box>
-          {invalidAmount && (
-            <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
-          )}
+        <Stack gap={[2, 4]} direction={["column", "row"]} alignItems="flex-end">
+          <Stack spacing={1} px={[2, 0]} width={["100%", "40%"]} maxWidth={["100%", "50%"]}>
+            <Typography>Amount of BRRR to stake:</Typography>
+            <Input
+              value={inputAmount}
+              type="number"
+              step="0.01"
+              onClickMax={handleMaxClick}
+              onChange={handleInputChange}
+              onFocus={handleFocus}
+            />
+            <Box px="0.5rem" my="1rem">
+              <Slider value={sliderValue} onChange={handleSliderChange} />
+            </Box>
+            {invalidAmount && (
+              <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
+            )}
+          </Stack>
+          <Stack spacing={1} px={[2, 0]} width="100%" maxWidth={["100%", "50%"]}>
+            <Typography>Number of months to stake:</Typography>
+            <Box px="0.5rem">
+              <MonthSlider value={months} onChange={handleMonthSliderChange} />
+            </Box>
+            {invalidMonths && (
+              <Alert severity="error">
+                The new staking duration is shorter than the current remaining staking duration
+              </Alert>
+            )}
+          </Stack>
         </Stack>
-        <Stack spacing={1}>
-          <Typography>Number of months to stake:</Typography>
-          <Box px="0.5rem">
-            <MonthSlider value={months} onChange={handleMonthSliderChange} />
-          </Box>
-          {invalidMonths && (
-            <Alert severity="error">
-              The new staking duration is shorter than the current remaining staking duration
-            </Alert>
-          )}
-        </Stack>
+
         <Paper sx={{ backgroundColor: "#e5f7fd" }}>
-          <Stack spacing={0.75} p="1rem">
-            <Grid container spacing={1} columns={2}>
+          <Stack spacing={2} p="1rem">
+            <Grid container spacing={1} columns={2} px={[0, 1]}>
               <Grid item xs={1}>
                 <Typography fontSize="0.75rem">xBRRR multiplier:</Typography>
               </Grid>
@@ -216,7 +214,11 @@ const Staking = () => {
                 borderStyle: "outset",
               }}
             />
-            <BoostedRewards amount={xBRRR + extraXBRRRAmount} />
+            <StakingRewards amount={xBRRR + extraXBRRRAmount} />
+            <Box>
+              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
+              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="borrowed" />
+            </Box>
           </Stack>
         </Paper>
         <Box display="flex" justifyContent="center" width="100%">

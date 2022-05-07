@@ -90,12 +90,43 @@ export interface Balance {
   total: string;
 }
 
+export interface IAssetFarmRewardPortfolio extends IAssetFarmReward {
+  asset_farm_reward: IAssetFarmReward;
+  boosted_shares: "string";
+  unclaimed_amount: "string";
+}
+
 export interface IReward {
   rewards: IAssetFarmReward;
   metadata: IMetadata;
   config: IAssetConfig;
   price: number;
   type?: "portfolio" | "asset";
+}
+
+export interface IPortfolioReward {
+  rewards: IAssetFarmRewardPortfolio;
+  metadata: IMetadata;
+  config: IAssetConfig;
+  price: number;
+  type?: "portfolio" | "asset";
+}
+
+export interface IPortfolioAsset {
+  tokenId: string;
+  symbol: string;
+  icon: string;
+  price: number;
+  apy: number;
+  collateral: number;
+  supplied: number;
+  canUseAsCollateral: boolean;
+  canWithdraw: boolean;
+  rewards: IPortfolioReward[];
+  depositRewards: IReward[];
+  borrowRewards: IReward[];
+  totalSupplyMoney: number;
+  borrowApy?: number;
 }
 
 export interface UIAsset {

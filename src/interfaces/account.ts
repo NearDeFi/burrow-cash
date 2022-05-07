@@ -17,7 +17,7 @@ interface IAssetFarmReward {
   boosted_shares: string;
 }
 
-interface AccountFarmRewardView {
+export interface AccountFarmRewardView {
   asset_farm_reward: IAssetFarmReward;
   boosted_shares: "string";
   unclaimed_amount: "string";
