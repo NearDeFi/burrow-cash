@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Alert, Grid, useTheme, Paper } from "@mui/material";
+import { Box, Stack, Typography, Alert, Grid, useTheme, Paper, Button } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 
@@ -161,21 +161,36 @@ const Staking = () => {
             <Box px="0.5rem" my="1rem">
               <Slider value={sliderValue} onChange={handleSliderChange} />
             </Box>
-            {invalidAmount && (
-              <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
-            )}
           </Stack>
           <Stack spacing={1} px={[2, 0]} width="100%" maxWidth={["100%", "50%"]}>
             <Typography>Number of months to stake:</Typography>
             <Box px="0.5rem">
               <MonthSlider value={months} onChange={handleMonthSliderChange} />
             </Box>
-            {invalidMonths && (
-              <Alert severity="error">
-                The new staking duration is shorter than the current remaining staking duration
-              </Alert>
-            )}
           </Stack>
+        </Stack>
+        {invalidAmount && (
+          <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
+        )}
+        {invalidMonths && (
+          <Alert severity="error">
+            The new staking duration is shorter than the current remaining staking duration
+          </Alert>
+        )}
+
+        <Stack>
+          <Alert severity="info">
+            <Stack direction={["column", "row"]} alignItems="center">
+              <Typography fontSize="0.85rem">Not enough BRRR? Simulate a staking with:</Typography>
+              <Stack direction="row">
+                {[100, 1000, 10000, 100000].map((a) => (
+                  <Button key={a} size="small" onClick={() => setAmount(a)}>
+                    {a}
+                  </Button>
+                ))}
+              </Stack>
+            </Stack>
+          </Alert>
         </Stack>
 
         <Paper sx={{ backgroundColor: "#e5f7fd" }}>

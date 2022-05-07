@@ -1,3 +1,4 @@
+import { useLayoutEffect, useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -15,7 +16,18 @@ const ClaimButton = (props) => (
 export default function TotalBRRR() {
   const [total] = useAppSelector(getTotalBRRR);
   const rewards = useAppSelector(getAccountRewards);
+  const { unclaimedAmount = 0, dailyAmount = 0 } = rewards.brrr;
+  const [unclaimed, setUnclaimed] = useState<number>(unclaimedAmount);
+
   const theme = useTheme();
+
+  const count = dailyAmount / 24 / 3600 / 10;
+
+  useLayoutEffect(() => {
+    setUnclaimed(unclaimedAmount);
+    const timer = setInterval(() => setUnclaimed((u) => u + count), 100);
+    return () => clearInterval(timer);
+  }, [unclaimedAmount]);
 
   return (
     <Box
@@ -36,7 +48,7 @@ export default function TotalBRRR() {
         You&apos;ve earned: &nbsp;
         <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
         <Box display={["block", "inline"]} mt={[0.5, 0]} color={theme.palette.grey[800]}>
-          (unclaimed: {rewards.brrr?.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
+          (unclaimed: {unclaimed.toLocaleString(undefined, TOKEN_FORMAT)})
         </Box>
       </Box>
       <ClaimAllRewards location="staking" Button={ClaimButton} />
