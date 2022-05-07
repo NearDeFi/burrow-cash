@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Box, Stack, Typography, Alert, Grid, useTheme, Paper, Button } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
+import { NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 
-import { TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
@@ -184,8 +184,8 @@ const Staking = () => {
               <Typography fontSize="0.85rem">Not enough BRRR? Simulate a staking with:</Typography>
               <Stack direction="row">
                 {[100, 1000, 10000, 100000].map((a) => (
-                  <Button key={a} size="small" onClick={() => setAmount(a)}>
-                    {a}
+                  <Button key={a} size="small" onClick={() => setAmount(a)} sx={{ p: 0 }}>
+                    {a.toLocaleString(undefined, NUMBER_FORMAT)}
                   </Button>
                 ))}
               </Stack>
