@@ -1,9 +1,11 @@
+import BN from "bn.js";
 import Decimal from "decimal.js";
 import { Account, Contract } from "near-api-js";
 
-import { DEFAULT_PRECISION, NANOS_PER_YEAR } from "./constants";
+import { DEFAULT_PRECISION, NANOS_PER_YEAR, NEAR_DECIMALS } from "./constants";
 import { getBurrow } from "../utils";
-import { ViewMethodsOracle, IAssetPrice, IPrices } from "../interfaces";
+import { ViewMethodsOracle, IAssetPrice, IPrices, ChangeMethodsLogic } from "../interfaces";
+import { isRegistered } from "./wallet";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -86,3 +88,14 @@ export const getContract = async (
 
   return contract;
 };
+
+export const registerNearFnCall = async (accountId: string, contract: Contract) =>
+  !(await isRegistered(accountId, contract))
+    ? [
+        {
+          methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+          attachedDeposit: new BN(expandToken(0.00125, NEAR_DECIMALS)),
+          gas: new BN("5000000000000"),
+        },
+      ]
+    : [];

@@ -5,10 +5,9 @@ import Decimal from "decimal.js";
 import { getBurrow, nearTokenId } from "../../utils";
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
-import { ChangeMethodsLogic, ChangeMethodsToken } from "../../interfaces";
-import { expandToken } from "../helper";
+import { ChangeMethodsToken } from "../../interfaces";
+import { expandToken, registerNearFnCall } from "../helper";
 import { NEAR_DECIMALS } from "../constants";
-import { isRegistered, Transaction } from "../wallet";
 import getBalance from "../../api/get-balance";
 
 export async function deposit({
@@ -20,7 +19,6 @@ export async function deposit({
 }) {
   const { account, logicContract } = await getBurrow();
   const tokenContract: Contract = await getTokenContract(nearTokenId);
-  const transactions: Transaction[] = [];
 
   const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
   const tokenBalance = new Decimal(await getBalance(nearTokenId, account.accountId));
@@ -39,45 +37,34 @@ export async function deposit({
     ],
   };
 
-  transactions.push({
-    receiverId: tokenContract.contractId,
-    functionCalls: [
-      ...(await registerNearFnCall(account.accountId, tokenContract)),
-      ...(extraDeposit.greaterThan(0)
-        ? [
-            {
-              methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
-              gas: new BN("5000000000000"),
-              attachedDeposit: new BN(extraDeposit.toFixed(0)),
-            },
-          ]
-        : []),
-      {
-        methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-        gas: new BN("150000000000000"),
-        args: {
-          receiver_id: logicContract.contractId,
-          amount: expandedAmount,
-          msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
-        },
-      },
-    ],
-  });
-
   try {
-    await prepareAndExecuteTransactions(transactions);
+    await prepareAndExecuteTransactions([
+      {
+        receiverId: tokenContract.contractId,
+        functionCalls: [
+          ...(await registerNearFnCall(account.accountId, tokenContract)),
+          ...(extraDeposit.greaterThan(0)
+            ? [
+                {
+                  methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
+                  gas: new BN("5000000000000"),
+                  attachedDeposit: new BN(extraDeposit.toFixed(0)),
+                },
+              ]
+            : []),
+          {
+            methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
+            gas: new BN("150000000000000"),
+            args: {
+              receiver_id: logicContract.contractId,
+              amount: expandedAmount,
+              msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
+            },
+          },
+        ],
+      },
+    ]);
   } catch (e) {
     console.error(e);
   }
 }
-
-const registerNearFnCall = async (accountId: string, contract: Contract) =>
-  !(await isRegistered(accountId, contract))
-    ? [
-        {
-          methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(0.00125, NEAR_DECIMALS)),
-          gas: new BN("5000000000000"),
-        },
-      ]
-    : [];

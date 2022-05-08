@@ -83,7 +83,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
         break;
       }
       case "Withdraw": {
-        const collateralAmount = Math.abs(Math.min(0, supplied - amount));
+        const collateralAmount = Math.max(0, amount - supplied);
 
         await withdraw({
           tokenId,
