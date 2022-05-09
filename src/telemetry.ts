@@ -87,3 +87,7 @@ export const trackToggleAmountDigits = (props) => {
 export const trackShowTicker = (props) => {
   track("Show ticker clicked", props);
 };
+
+export const trackShowDailyReturns = (props) => {
+  track("Show daily returns", props);
+};

@@ -11,4 +11,14 @@ export const migrations = {
       },
     };
   },
+  2: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        showDailyReturns: false,
+        fullDigits: initialState.fullDigits,
+      },
+    };
+  },
 };

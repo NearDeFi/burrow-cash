@@ -34,6 +34,11 @@ export const getFullDigits = createSelector(
   (app) => app.fullDigits,
 );
 
+export const getAppState = createSelector(
+  (state: RootState) => state.app,
+  (app) => app,
+);
+
 export const getShowDust = createSelector(
   (state: RootState) => state.app,
   (app) => app.showDust,

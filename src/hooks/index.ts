@@ -4,7 +4,10 @@ import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import {
   getAccountId,
   getAccountRewards,
+  getDailyReturns,
   getHasNonFarmedAssets,
+  getHealthFactor,
+  getNetAPY,
   getPortfolioAssets,
   getStaking,
   isAccountLoading,
@@ -16,10 +19,17 @@ import {
   getFullDigits,
   getShowTicker,
   getTableSorting,
+  getAppState,
 } from "../redux/appSelectors";
-import { IOrder, setFullDigits, setTableSorting, toggleShowTicker } from "../redux/appSlice";
+import {
+  IOrder,
+  setFullDigits,
+  setTableSorting,
+  toggleShowTicker,
+  toggleShowDailyReturns,
+} from "../redux/appSlice";
 import { getViewAs } from "../utils";
-import { trackClaimButton, trackShowTicker } from "../telemetry";
+import { trackClaimButton, trackShowDailyReturns, trackShowTicker } from "../telemetry";
 import { farmClaimAll, fetchAccount } from "../redux/accountSlice";
 import { expandToken, shrinkToken } from "../store";
 import { IPortfolioAsset } from "../interfaces/asset";
@@ -46,6 +56,36 @@ export function useFullDigits() {
   const setDigits = (value) => dispatch(setFullDigits(value));
 
   return { fullDigits, setDigits };
+}
+
+export function useUserHealth() {
+  const dispatch = useAppDispatch();
+  const { showDailyReturns } = useAppSelector(getAppState);
+  const netAPY = useAppSelector(getNetAPY);
+  const dailyReturns = useAppSelector(getDailyReturns);
+  const healthFactor = useAppSelector(getHealthFactor);
+  const { fullDigits, setDigits } = useFullDigits();
+  const slimStats = useSlimStats();
+
+  const toggleDailyReturns = () => {
+    trackShowDailyReturns({ showDailyReturns });
+    dispatch(toggleShowDailyReturns());
+  };
+
+  const toggleDigits = () => {
+    setDigits({ dailyReturns: !fullDigits.dailyReturns });
+  };
+
+  return {
+    netAPY,
+    dailyReturns,
+    healthFactor,
+    slimStats,
+    fullDigits,
+    toggleDigits,
+    showDailyReturns,
+    toggleDailyReturns,
+  };
 }
 
 export function useViewAs() {

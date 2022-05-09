@@ -43,33 +43,49 @@ export const getAccountBalance = createSelector(
   },
 );
 
+const getGains = (account, assets, source: "supplied" | "collateral" | "borrowed") =>
+  Object.keys(account.portfolio[source])
+    .map((id) => {
+      const asset = assets.data[id];
+      const balance = Number(account.portfolio[source][id].balance);
+      const apr = Number(account.portfolio[source][id].apr);
+      const balance$ =
+        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
+        (asset.price?.usd || 0);
+
+      return [balance$, apr];
+    })
+    .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+
 export const getNetAPY = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
     if (!hasAssets(assets)) return 0;
-    const getGains = (source: "supplied" | "collateral" | "borrowed") =>
-      Object.keys(account.portfolio[source])
-        .map((id) => {
-          const asset = assets.data[id];
-          const balance = Number(account.portfolio[source][id].balance);
-          const apr = Number(account.portfolio[source][id].apr);
-          const balance$ =
-            Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-            (asset.price?.usd || 0);
 
-          return [balance$, apr];
-        })
-        .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
-
-    const [gainCollateral, totalCollateral] = getGains("collateral");
-    const [gainSupplied, totalSupplied] = getGains("supplied");
-    const [gainBorrowed] = getGains("borrowed");
+    const [gainCollateral, totalCollateral] = getGains(account, assets, "collateral");
+    const [gainSupplied, totalSupplied] = getGains(account, assets, "supplied");
+    const [gainBorrowed] = getGains(account, assets, "borrowed");
 
     const netGains = gainCollateral + gainSupplied - gainBorrowed;
     const netTotals = totalCollateral + totalSupplied;
     const netAPY = (netGains * 100) / netTotals;
     return netAPY || 0;
+  },
+);
+
+export const getDailyReturns = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    if (!hasAssets(assets)) return 0;
+
+    const [gainCollateral] = getGains(account, assets, "collateral");
+    const [gainSupplied] = getGains(account, assets, "supplied");
+    const [gainBorrowed] = getGains(account, assets, "borrowed");
+
+    const netGains = (gainCollateral + gainSupplied - gainBorrowed) / 365;
+    return netGains;
   },
 );
 

@@ -17,10 +17,12 @@ export interface AppState {
   showTicker: boolean;
   showDust: boolean;
   slimStats: boolean;
+  showDailyReturns: boolean;
   fullDigits: {
     totals: boolean;
     user: boolean;
     table: boolean;
+    dailyReturns: boolean;
   };
   selected: {
     action?: TokenAction;
@@ -44,10 +46,12 @@ export const initialState: AppState = {
   showDust: false,
   showTicker: false,
   slimStats: false,
+  showDailyReturns: false,
   fullDigits: {
     totals: false,
     user: false,
     table: true,
+    dailyReturns: true,
   },
   selected: {
     action: undefined,
@@ -130,6 +134,9 @@ export const appSlice = createSlice({
     toggleShowTicker(state) {
       state.showTicker = !state.showTicker;
     },
+    toggleShowDailyReturns(state) {
+      state.showDailyReturns = !state.showDailyReturns;
+    },
     setTableSorting(state, action) {
       const { name, property, order } = action.payload;
       state.tableSorting[name] = { property, order };
@@ -153,5 +160,7 @@ export const {
   setFullDigits,
   toggleShowTicker,
   setTableSorting,
+  toggleShowDailyReturns,
 } = appSlice.actions;
+
 export default appSlice.reducer;
