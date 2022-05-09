@@ -1,20 +1,20 @@
-import { Menu, MenuItem, Divider } from "@mui/material";
+import { Menu, MenuItem, Divider, Typography } from "@mui/material";
 
 import NearWalletSelector from "@near-wallet-selector/core";
 
 import ClaimAllRewards from "../ClaimAllRewards";
-import { getBurrow } from "../../utils";
+import { getBurrow, getLocalAppVersion } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
+import { useFullDigits } from "../../hooks";
 import {
   trackDisplayAsUsd,
   trackLogout,
   trackShowDust,
   trackToggleAmountDigits,
 } from "../../telemetry";
-import { useFullDigits } from "../../hooks";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -30,6 +30,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const showDust = useAppSelector(getShowDust);
   const { fullDigits, setDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
+  const appVersion = getLocalAppVersion();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -96,6 +97,10 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
           Sign Out
         </MenuItem>,
       ]}
+      <Divider key={2} />
+      <MenuItem sx={{ backgroundColor: "white" }}>
+        <Typography fontSize="0.75rem">App Version: {appVersion}</Typography>
+      </MenuItem>
     </Menu>
   );
 };

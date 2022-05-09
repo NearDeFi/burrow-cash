@@ -173,3 +173,18 @@ export function accountTrim(accountId: string) {
     ? `${accountId.slice(0, 8)}...${accountId.slice(-8)}`
     : accountId;
 }
+const versionRegex = /index\.(.*)\.js/;
+
+export const getLocalAppVersion = () => {
+  const script = document.querySelector("#burrow-script")?.["src"];
+  const version = script ? script.match(versionRegex)[1] : "0000";
+  return version;
+};
+
+export const getRemoteAppVersion = async () => {
+  const res = await fetch(window.location.origin);
+  const html = await res.text();
+  const parser = new DOMParser();
+  const htmlDoc = parser.parseFromString(html, "text/html");
+  return htmlDoc.querySelector("#burrow-script")?.["src"]?.match(versionRegex)[1];
+};
