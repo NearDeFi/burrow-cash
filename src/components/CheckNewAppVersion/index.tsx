@@ -4,7 +4,7 @@ import { Typography, Box, useTheme } from "@mui/material";
 
 import { getLocalAppVersion, getRemoteAppVersion } from "../../utils";
 
-const REFETCH_INTERVAL = 60e3;
+const REFETCH_INTERVAL = 10 * 60e3;
 
 const CheckNewAppVersion = () => {
   const [isNew, setIsNew] = useState(false);
