@@ -2,6 +2,7 @@ import { Box, Alert, Link } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useViewAs, useTicker } from "../../hooks";
+import CheckNewAppVersion from "../CheckNewAppVersion";
 import Footer from "../Footer";
 import Header from "../Header";
 import Ticker from "../Ticker";
@@ -31,6 +32,7 @@ const Layout = ({ children }) => {
         minHeight: "100%",
         border: isViewingAs ? "10px solid #47C880" : "none",
         WebkitTapHighlightColor: "transparent",
+        position: "relative",
       }}
     >
       <AnimatePresence>
@@ -47,6 +49,7 @@ const Layout = ({ children }) => {
       <Header />
       <main>{children}</main>
       <Footer />
+      <CheckNewAppVersion />
     </Box>
   );
 };

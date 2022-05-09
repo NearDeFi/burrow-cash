@@ -14,6 +14,7 @@ import Ticker from "./Ticker";
 import NonFarmedAssets from "./NonFarmedAssets";
 import ClaimAllRewards from "./ClaimAllRewards";
 import FallbackError from "./FallbackError";
+import CheckNewAppVersion from "./CheckNewAppVersion";
 
 export {
   Table,
@@ -32,4 +33,5 @@ export {
   NonFarmedAssets,
   ClaimAllRewards,
   FallbackError,
+  CheckNewAppVersion,
 };
