@@ -14,13 +14,10 @@ import { withdraw } from "../../store/actions/withdraw";
 import { removeCollateral } from "../../store/actions/removeCollateral";
 import { addCollateral } from "../../store/actions/addCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import {
-  getSelectedValues,
-  getAssetData,
-  getRepayMaxAmount,
-  getWithdrawMaxAmount,
-  getSupplyMaxAmount,
-} from "../../redux/appSelectors";
+import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
+import { getSupplyMaxAmount } from "../../redux/selectors/getSupplyMaxAmount";
+import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
+import { getRepayMaxAmount } from "../../redux/selectors/getRepayMaxAmount";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {

@@ -1,18 +1,19 @@
 import { clone } from "ramda";
+
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import {
   getAccountId,
-  getAccountRewards,
-  getDailyReturns,
   getHasNonFarmedAssets,
-  getHealthFactor,
-  getNetAPY,
-  getPortfolioAssets,
   getStaking,
   isAccountLoading,
   isClaiming,
 } from "../redux/accountSelectors";
+import { getDailyReturns } from "../redux/selectors/getDailyReturns";
+import { getNetAPY } from "../redux/selectors/getNetAPY";
+import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
+import { getHealthFactor } from "../redux/selectors/getHealthFactor";
+import { getAccountRewards } from "../redux/selectors/getAccountRewards";
 import {
   getConfig,
   getSlimStats,

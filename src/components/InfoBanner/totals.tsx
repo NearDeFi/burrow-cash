@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 
 import { USD_FORMAT } from "../../store/constants";
-import { getTotalBalance } from "../../redux/assetsSelectors";
+import { getTotalBalance } from "../../redux/selectors/getTotalBalance";
 import { useAppSelector } from "../../redux/hooks";
 import { useFullDigits, useSlimStats } from "../../hooks";
 import { trackFullDigits } from "../../telemetry";

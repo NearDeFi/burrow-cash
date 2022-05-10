@@ -4,21 +4,15 @@ import { Modal as MUIModal, Typography, Box } from "@mui/material";
 import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal } from "../../redux/appSlice";
-import {
-  getModalStatus,
-  getAssetData,
-  getSelectedValues,
-  getWithdrawMaxAmount,
-} from "../../redux/appSelectors";
-import {
-  getMaxBorrowAmount,
-  getAccountId,
-  recomputeHealthFactor,
-  recomputeHealthFactorWithdraw,
-  recomputeHealthFactorAdjust,
-  recomputeHealthFactorSupply,
-  recomputeHealthFactorRepay,
-} from "../../redux/accountSelectors";
+import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
+import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
+import { getAccountId } from "../../redux/accountSelectors";
+import { getMaxBorrowAmount } from "../../redux/selectors/getMaxBorrowAmount";
+import { recomputeHealthFactor } from "../../redux/selectors/recomputeHealthFactor";
+import { recomputeHealthFactorAdjust } from "../../redux/selectors/recomputeHealthFactorAdjust";
+import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHealthFactorWithdraw";
+import { recomputeHealthFactorSupply } from "../../redux/selectors/recomputeHealthFactorSupply";
+import { recomputeHealthFactorRepay } from "../../redux/selectors/recomputeHealthFactorRepay";
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {

@@ -3,7 +3,8 @@ import { Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import ClaimAllRewards from "../ClaimAllRewards";
-import { getAccountRewards, getTotalBRRR } from "../../redux/accountSelectors";
+import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
+import { getAccountRewards } from "../../redux/selectors/getAccountRewards";
 import { useAppSelector } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 

@@ -3,7 +3,7 @@ import { Box, Button, Snackbar, Alert } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { getCollateralAmount } from "../../redux/accountSelectors";
+import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
 
 export const WithdrawCell = ({ rowData }) => {
   const [open, setOpen] = useState(false);

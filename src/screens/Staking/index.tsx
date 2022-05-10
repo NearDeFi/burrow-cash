@@ -18,7 +18,7 @@ import { DateTime } from "luxon";
 
 import { APY_FORMAT, NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalBRRR } from "../../redux/accountSelectors";
+import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
 import { TotalBRRR, Input } from "../../components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
