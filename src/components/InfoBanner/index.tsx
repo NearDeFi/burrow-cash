@@ -5,7 +5,7 @@ import { UserTotals, UserHealth } from "./user";
 import { Totals } from "./totals";
 import { ToggleSlimBanner } from "./toggle";
 import { Wrapper } from "./style";
-import { useSlimStats } from "../../hooks";
+import { useSlimStats } from "../../hooks/hooks";
 
 interface Props {
   accountId?: string;

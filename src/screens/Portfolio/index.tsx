@@ -3,7 +3,8 @@ import { Box } from "@mui/material";
 import { InfoBox, PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
-import { useAccountId, usePortfolioAssets, useTableSorting } from "../../hooks";
+import { useAccountId, usePortfolioAssets } from "../../hooks/hooks";
+import { useTableSorting } from "../../hooks/useTableSorting";
 
 const Portfolio = () => {
   const [suppliedRows, borrowedRows] = usePortfolioAssets();

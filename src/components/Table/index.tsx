@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
-import { useFullDigits } from "../../hooks";
+import { useFullDigits } from "../../hooks/useFullDigits";
 import { IOrder } from "../../redux/appSlice";
 
 const descendingComparator = (a, b, orderBy) => {

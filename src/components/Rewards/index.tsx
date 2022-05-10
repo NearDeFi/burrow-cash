@@ -5,7 +5,7 @@ import { PERCENT_DIGITS } from "../../store/constants";
 import { formatRewardAmount, formatPortfolioRewardAmount } from "../Table/common/cells";
 import { IReward } from "../../interfaces/asset";
 import { shrinkToken } from "../../store/helper";
-import { useFullDigits } from "../../hooks";
+import { useFullDigits } from "../../hooks/useFullDigits";
 import TokenIcon from "../TokenIcon";
 import HtmlTooltip from "../common/html-tooltip";
 

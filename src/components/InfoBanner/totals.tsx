@@ -3,7 +3,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { USD_FORMAT } from "../../store/constants";
 import { getTotalBalance } from "../../redux/selectors/getTotalBalance";
 import { useAppSelector } from "../../redux/hooks";
-import { useFullDigits, useSlimStats } from "../../hooks";
+import { useSlimStats } from "../../hooks/hooks";
+import { useFullDigits } from "../../hooks/useFullDigits";
 import { trackFullDigits } from "../../telemetry";
 import { m } from "./user";
 

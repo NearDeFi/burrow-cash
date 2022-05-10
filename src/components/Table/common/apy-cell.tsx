@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
 import { hiddenAssets } from "../../../config";
 
-import { useConfig } from "../../../hooks";
+import { useConfig } from "../../../hooks/hooks";
 import HtmlTooltip from "../../common/html-tooltip";
 import TokenIcon from "../../TokenIcon";
 import { APY_FORMAT } from "../../../store/constants";

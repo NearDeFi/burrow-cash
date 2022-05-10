@@ -10,7 +10,7 @@ import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { isTestnet } from "../../utils";
-import { useViewAs } from "../../hooks";
+import { useViewAs } from "../../hooks/hooks";
 
 const MenuItem = ({ title, pathname }) => {
   const location = useLocation();

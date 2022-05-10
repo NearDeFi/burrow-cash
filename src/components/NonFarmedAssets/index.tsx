@@ -1,7 +1,7 @@
 import { Alert, Stack, Box, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { useNonFarmedAssets } from "../../hooks";
+import { useNonFarmedAssets } from "../../hooks/hooks";
 import ClaimAllRewards from "../ClaimAllRewards";
 
 function NonFarmedAssets() {

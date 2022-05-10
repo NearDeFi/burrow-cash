@@ -25,7 +25,9 @@ import { unstake } from "../../store/actions/unstake";
 import MonthSlider from "../../components/Slider/staking";
 import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
-import { useAccountId, useStaking, useUserHealth } from "../../hooks";
+import { useAccountId } from "../../hooks/hooks";
+import { useStaking } from "../../hooks/useStaking";
+import { useUserHealth } from "../../hooks/useUserHealth";
 import { StakingRewards } from "./rewards";
 import { RewardsDetailed } from "./rewards-detailed";
 

@@ -1,7 +1,8 @@
 import { Box, Alert, Link } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useViewAs, useTicker } from "../../hooks";
+import { useViewAs } from "../../hooks/hooks";
+import { useTicker } from "../../hooks/useTicker";
 import CheckNewAppVersion from "../CheckNewAppVersion";
 import Footer from "../Footer";
 import Header from "../Header";

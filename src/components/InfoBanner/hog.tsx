@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import { useAppDispatch } from "../../redux/hooks";
-import { useTicker } from "../../hooks";
+import { useTicker } from "../../hooks/useTicker";
 import { orderFeed } from "../../redux/feedSlice";
 import Hog from "./hog.svg";
 import HogCool from "./hog-cool.svg";

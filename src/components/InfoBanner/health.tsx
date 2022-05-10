@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { useSlimStats } from "../../hooks";
+import { useSlimStats } from "../../hooks/hooks";
 
 interface Props {
   value: number | null;

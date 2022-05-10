@@ -2,7 +2,7 @@ import { Box, Stack, Typography, Tooltip } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 
 import { TOKEN_FORMAT } from "../../store/constants";
-import { useRewards } from "../../hooks";
+import { useRewards } from "../../hooks/useRewards";
 import TokenIcon from "../../components/TokenIcon";
 
 export const StakingRewards = ({ amount }) => {

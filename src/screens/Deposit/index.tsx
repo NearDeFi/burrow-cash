@@ -5,7 +5,8 @@ import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { useAccountId, useAvailableAssets, useConfig, useTableSorting } from "../../hooks";
+import { useAccountId, useAvailableAssets, useConfig } from "../../hooks/hooks";
+import { useTableSorting } from "../../hooks/useTableSorting";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();

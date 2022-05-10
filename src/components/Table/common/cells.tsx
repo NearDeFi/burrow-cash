@@ -6,7 +6,7 @@ import type { IReward, UIAsset } from "../../../interfaces";
 import { useAppSelector } from "../../../redux/hooks";
 import { getDisplayAsTokenValue, getShowDust } from "../../../redux/appSelectors";
 import { Rewards } from "../../index";
-import { useFullDigits } from "../../../hooks";
+import { useFullDigits } from "../../../hooks/useFullDigits";
 import APYCell from "./apy-cell";
 
 type FormatType = "apy" | "amount" | "string" | "reward" | "usd";

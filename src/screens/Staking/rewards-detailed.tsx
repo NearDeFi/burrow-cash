@@ -4,7 +4,7 @@ import { USD_FORMAT } from "../../store/constants";
 import TokenIcon from "../../components/TokenIcon";
 import APYCell from "../../components/Table/common/apy-cell";
 import { Rewards } from "../../components";
-import { useStakingRewards } from "../../hooks";
+import { useStakingRewards } from "../../hooks/useStakingRewards";
 import { Info } from "./rewards";
 
 interface Props {

@@ -1,7 +1,7 @@
 import { LoadingButtonProps } from "@mui/lab/LoadingButton";
 import { ButtonProps, MenuItemProps } from "@mui/material";
 
-import { useClaimAllRewards } from "../../hooks";
+import { useClaimAllRewards } from "../../hooks/useClaimAllRewards";
 
 interface Props {
   Button: React.ComponentType<LoadingButtonProps | ButtonProps | MenuItemProps>;

@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@mui/material";
 
 import { USD_FORMAT } from "../../../store/constants";
 import { BRRRPrice } from "../../index";
-import { useIsBurrowToken } from "../../../hooks";
+import { useIsBurrowToken } from "../../../hooks/hooks";
 import TokenIcon from "../../TokenIcon";
 
 const TokenCell = ({ rowData }) => {

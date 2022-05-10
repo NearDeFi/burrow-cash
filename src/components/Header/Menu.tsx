@@ -8,7 +8,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
-import { useFullDigits } from "../../hooks";
+import { useFullDigits } from "../../hooks/useFullDigits";
 import {
   trackDisplayAsUsd,
   trackLogout,
