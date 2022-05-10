@@ -16,7 +16,6 @@ export const RewardsDetailed = ({ amount, type }: Props) => {
   const theme = useTheme();
   const isSupplied = type === "supplied";
   const rewards = stakingRewards[type];
-  const boosted = stakingRewards.boosted[type];
   const displayOnSupplied = isSupplied ? "inherit" : "none";
   const title = isSupplied ? "Deposited Rewards" : "Borrowed Rewards";
 
@@ -30,7 +29,7 @@ export const RewardsDetailed = ({ amount, type }: Props) => {
         alignItems="center"
         p={[0, 1]}
         pr={[0, 0]}
-        width={["100%", "75%"]}
+        width={["100%", "100%"]}
       >
         <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
           {title}
@@ -96,64 +95,92 @@ export const RewardsDetailed = ({ amount, type }: Props) => {
           );
         })}
       </Box>
-      <Box
-        display="grid"
-        gridTemplateColumns={["1fr auto 1fr", "auto"]}
-        alignItems="center"
-        bgcolor="#d7f0e5"
-        p={1}
-        pl={[2, 0]}
-        pr={[2, 1]}
-        width={["108%", "25%"]}
-        ml={[-2, 0]}
-      >
-        <Typography
-          gridColumn={["1 / span 3", "1 / span 2"]}
-          fontSize="0.75rem"
-          textAlign="right"
-          fontWeight="bold"
-          display={[!isSupplied ? "none" : "inherit", "inherit"]}
-          pr={1}
-        >
-          {isSupplied ? `🚀 Boost 🚀` : <span>&nbsp;</span>}
-        </Typography>
-        {boosted.map((token) => {
-          return (
-            <>
-              <Box
-                key={`${token.tokenId}-0`}
-                gridColumn={["1 / span 3", "1 / span 2"]}
-                component="hr"
-                sx={{
-                  width: "100%",
-                  borderWidth: 0.5,
-                  bgcolor: theme.palette.background.default,
-                  borderStyle: "outset",
-                }}
-              />
-              <Box key={`${token.tokenId}-1`} display={["flex", "none"]} alignItems="center">
-                <TokenIcon icon={token.icon} width={30} height={30} />
-                <Box px="0.5rem">
-                  <Typography fontSize="0.7rem">{token.symbol}</Typography>
-                  <Typography fontSize="0.7rem">
-                    {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
-                  </Typography>
-                </Box>
-              </Box>
-              <Box />
-              <Box
-                key={`${token.tokenId}-2`}
-                minHeight={42}
-                alignItems="center"
-                display="grid"
-                pr={1}
-              >
-                <Rewards rewards={token.rewards} layout="vertical" fontWeight="bold" />
-              </Box>
-            </>
-          );
-        })}
-      </Box>
+      <BoostedRewards amount={amount} type={type} />
     </Stack>
+  );
+};
+
+const BoostedRewards = ({ amount, type }: Props) => {
+  const stakingRewards = useStakingRewards(amount);
+  const theme = useTheme();
+  const isSupplied = type === "supplied";
+  const rewards = stakingRewards[type];
+  const boosted = stakingRewards.boosted[type];
+
+  if (!rewards.length) return null;
+
+  return (
+    <Box
+      display="grid"
+      gridTemplateColumns={["1fr auto 1fr", "auto"]}
+      alignItems="center"
+      bgcolor="#d7f0e5"
+      p={1}
+      pl={[2, 0]}
+      pr={[2, 1]}
+      width={["108%", "60%"]}
+      ml={[-2, 0]}
+    >
+      <Typography
+        gridColumn={["2 / span 1", "1 / span 1"]}
+        fontSize="0.75rem"
+        textAlign="right"
+        fontWeight="bold"
+      >
+        {isSupplied ? `🚀 APY 🚀` : <span>&nbsp;</span>}
+      </Typography>
+      <Typography
+        gridColumn={["3 / span 1", "2 / span 1"]}
+        fontSize="0.75rem"
+        textAlign="right"
+        fontWeight="bold"
+        display={[!isSupplied ? "none" : "inherit", "inherit"]}
+      >
+        {isSupplied ? `🚀 Daily 🚀` : <span>&nbsp;</span>}
+      </Typography>
+      {boosted.map((token) => {
+        const apyRewards = isSupplied ? token.depositRewards : token.borrowRewards;
+        const baseAPY = isSupplied ? token.apy : token.borrowApy;
+        const page = isSupplied ? "deposit" : "borrow";
+        return (
+          <>
+            <Box
+              key={`${token.tokenId}-hr`}
+              gridColumn={["1 / span 3", "1 / span 2"]}
+              component="hr"
+              sx={{
+                width: "100%",
+                borderWidth: 0.5,
+                bgcolor: theme.palette.background.default,
+                borderStyle: "outset",
+              }}
+            />
+            <Box key={`${token.tokenId}-token`} display={["flex", "none"]} alignItems="center">
+              <TokenIcon icon={token.icon} width={30} height={30} />
+              <Box px="0.5rem">
+                <Typography fontSize="0.7rem">{token.symbol}</Typography>
+                <Typography fontSize="0.7rem">
+                  {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
+                </Typography>
+              </Box>
+            </Box>
+            <Box key={`${token.tokenId}-apy`}>
+              <APYCell
+                rewards={apyRewards}
+                baseAPY={baseAPY}
+                totalSupplyMoney={token.totalSupplyMoney}
+                page={page}
+                tokenId={token.tokenId}
+                showIcons={false}
+                sx={{ fontSize: "0.75rem" }}
+              />
+            </Box>
+            <Box key={`${token.tokenId}-rewards`} minHeight={42} alignItems="center" display="grid">
+              <Rewards rewards={token.rewards} layout="vertical" fontWeight="bold" />
+            </Box>
+          </>
+        );
+      })}
+    </Box>
   );
 };
