@@ -1,9 +1,22 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Alert, Grid, useTheme, Paper, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Alert,
+  Grid,
+  useTheme,
+  Paper,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DateTime } from "luxon";
-import { NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 
+import { NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
@@ -197,14 +210,6 @@ const Staking = () => {
           <Stack spacing={2} p="1rem">
             <Grid container spacing={1} columns={2} px={[0, 1]}>
               <Grid item xs={1}>
-                <Typography fontSize="0.75rem">xBRRR multiplier:</Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <Typography fontSize="0.75rem" textAlign="right">
-                  {xBRRRMultiplier}x
-                </Typography>
-              </Grid>
-              <Grid item xs={1}>
                 <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
               </Grid>
               <Grid item xs={1}>
@@ -230,10 +235,20 @@ const Staking = () => {
               }}
             />
             <StakingRewards amount={xBRRR + extraXBRRRAmount} />
-            <Box>
-              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
-              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="borrowed" />
-            </Box>
+
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="reward-details"
+                id="reward-details"
+              >
+                <Typography>Reward Details</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
+                <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="borrowed" />
+              </AccordionDetails>
+            </Accordion>
           </Stack>
         </Paper>
         <Box display="flex" justifyContent="center" width="100%">
