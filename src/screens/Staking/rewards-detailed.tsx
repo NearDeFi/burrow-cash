@@ -56,44 +56,42 @@ export const RewardsDetailed = ({ amount, type }: Props) => {
           const apyRewards = isSupplied ? token.depositRewards : token.borrowRewards;
           const baseAPY = isSupplied ? token.apy : token.borrowApy;
           const page = isSupplied ? "deposit" : "borrow";
-          return (
-            <>
-              <Box
-                key={`${token.tokenId}-0`}
-                gridColumn="1 / span 3"
-                component="hr"
-                sx={{
-                  width: "100%",
-                  borderWidth: 0.5,
-                  bgcolor: theme.palette.background.default,
-                  borderStyle: "outset",
-                }}
+          return [
+            <Box
+              key={`${token.tokenId}-0`}
+              gridColumn="1 / span 3"
+              component="hr"
+              sx={{
+                width: "100%",
+                borderWidth: 0.5,
+                bgcolor: theme.palette.background.default,
+                borderStyle: "outset",
+              }}
+            />,
+            <Box key={`${token.tokenId}-1`} display="flex" alignItems="center" minHeight={42}>
+              <TokenIcon icon={token.icon} width={30} height={30} />
+              <Box px="0.5rem">
+                <Typography fontSize="0.7rem">{token.symbol}</Typography>
+                <Typography fontSize="0.7rem">
+                  {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
+                </Typography>
+              </Box>
+            </Box>,
+            <Box key={`${token.tokenId}-2`}>
+              <APYCell
+                rewards={apyRewards}
+                baseAPY={baseAPY}
+                totalSupplyMoney={token.totalSupplyMoney}
+                page={page}
+                tokenId={token.tokenId}
+                showIcons={false}
+                sx={{ fontWeight: "normal", fontSize: "0.75rem" }}
               />
-              <Box key={`${token.tokenId}-1`} display="flex" alignItems="center" minHeight={42}>
-                <TokenIcon icon={token.icon} width={30} height={30} />
-                <Box px="0.5rem">
-                  <Typography fontSize="0.7rem">{token.symbol}</Typography>
-                  <Typography fontSize="0.7rem">
-                    {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
-                  </Typography>
-                </Box>
-              </Box>
-              <Box key={`${token.tokenId}-2`}>
-                <APYCell
-                  rewards={apyRewards}
-                  baseAPY={baseAPY}
-                  totalSupplyMoney={token.totalSupplyMoney}
-                  page={page}
-                  tokenId={token.tokenId}
-                  showIcons={false}
-                  sx={{ fontWeight: "normal", fontSize: "0.75rem" }}
-                />
-              </Box>
-              <Box key={`${token.tokenId}-3`} pr={[0, 1]}>
-                <Rewards rewards={token.rewards} layout="vertical" />
-              </Box>
-            </>
-          );
+            </Box>,
+            <Box key={`${token.tokenId}-3`} pr={[0, 1]}>
+              <Rewards rewards={token.rewards} layout="vertical" />
+            </Box>,
+          ];
         })}
       </Box>
       <BoostedRewards amount={amount} type={type} />
@@ -155,44 +153,42 @@ const BoostedRewards = ({ amount, type }: Props) => {
         const apyRewards = isSupplied ? token.depositRewards : token.borrowRewards;
         const baseAPY = isSupplied ? token.apy : token.borrowApy;
         const page = isSupplied ? "deposit" : "borrow";
-        return (
-          <>
-            <Box
-              key={`${token.tokenId}-hr`}
-              gridColumn={["1 / span 3", "1 / span 2"]}
-              component="hr"
-              sx={{
-                width: "100%",
-                borderWidth: 0.5,
-                bgcolor: theme.palette.background.default,
-                borderStyle: "outset",
-              }}
+        return [
+          <Box
+            key={`${token.tokenId}-hr`}
+            gridColumn={["1 / span 3", "1 / span 2"]}
+            component="hr"
+            sx={{
+              width: "100%",
+              borderWidth: 0.5,
+              bgcolor: theme.palette.background.default,
+              borderStyle: "outset",
+            }}
+          />,
+          <Box key={`${token.tokenId}-token`} display={["flex", "none"]} alignItems="center">
+            <TokenIcon icon={token.icon} width={30} height={30} />
+            <Box px="0.5rem">
+              <Typography fontSize="0.7rem">{token.symbol}</Typography>
+              <Typography fontSize="0.7rem">
+                {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
+              </Typography>
+            </Box>
+          </Box>,
+          <Box key={`${token.tokenId}-apy`}>
+            <APYCell
+              rewards={apyRewards}
+              baseAPY={baseAPY}
+              totalSupplyMoney={token.totalSupplyMoney}
+              page={page}
+              tokenId={token.tokenId}
+              showIcons={false}
+              sx={{ fontSize: "0.75rem" }}
             />
-            <Box key={`${token.tokenId}-token`} display={["flex", "none"]} alignItems="center">
-              <TokenIcon icon={token.icon} width={30} height={30} />
-              <Box px="0.5rem">
-                <Typography fontSize="0.7rem">{token.symbol}</Typography>
-                <Typography fontSize="0.7rem">
-                  {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
-                </Typography>
-              </Box>
-            </Box>
-            <Box key={`${token.tokenId}-apy`}>
-              <APYCell
-                rewards={apyRewards}
-                baseAPY={baseAPY}
-                totalSupplyMoney={token.totalSupplyMoney}
-                page={page}
-                tokenId={token.tokenId}
-                showIcons={false}
-                sx={{ fontSize: "0.75rem" }}
-              />
-            </Box>
-            <Box key={`${token.tokenId}-rewards`} minHeight={42} alignItems="center" display="grid">
-              <Rewards rewards={token.rewards} layout="vertical" fontWeight="bold" />
-            </Box>
-          </>
-        );
+          </Box>,
+          <Box key={`${token.tokenId}-rewards`} minHeight={42} alignItems="center" display="grid">
+            <Rewards rewards={token.rewards} layout="vertical" fontWeight="bold" />
+          </Box>,
+        ];
       })}
     </Box>
   );
