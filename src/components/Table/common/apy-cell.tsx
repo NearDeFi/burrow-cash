@@ -1,4 +1,3 @@
-import Decimal from "decimal.js";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
 import { hiddenAssets } from "../../../config";
 
@@ -6,18 +5,9 @@ import { useConfig } from "../../../hooks/hooks";
 import HtmlTooltip from "../../common/html-tooltip";
 import TokenIcon from "../../TokenIcon";
 import { APY_FORMAT } from "../../../store/constants";
+import { computeRewardAPY, getExtraAPY } from "../../../redux/selectors/getNetAPY";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
-
-const computeRewardAPY = (rewardsPerDay, decimals, price, totalSupplyMoney) => {
-  return new Decimal(rewardsPerDay)
-    .div(new Decimal(10).pow(decimals))
-    .mul(365)
-    .mul(price)
-    .div(totalSupplyMoney)
-    .mul(100)
-    .toNumber();
-};
 
 const APYCell = ({
   baseAPY,
@@ -35,20 +25,9 @@ const APYCell = ({
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
 
-  const extraAPY =
-    extraRewards?.reduce(
-      (acc, { rewards, metadata, price, config }) =>
-        acc +
-        computeRewardAPY(
-          rewards.reward_per_day,
-          metadata.decimals + config.extra_decimals,
-          price,
-          totalSupplyMoney,
-        ),
-      0,
-    ) || 0;
-
-  const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
+  const extraAPY = getExtraAPY(extraRewards, totalSupplyMoney) * 100;
+  const sign = isBorrow ? -1 : 1;
+  const boostedAPY = baseAPY + sign * extraAPY;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
@@ -57,6 +36,8 @@ const APYCell = ({
       baseAPY={baseAPY}
       totalSupplyMoney={totalSupplyMoney}
       isBorrow={isBorrow}
+      boostedAPY={boostedAPY}
+      isLucky={isLucky}
     >
       <Stack
         position="relative"
@@ -78,26 +59,9 @@ const APYCell = ({
   );
 };
 
-const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
+const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow, boostedAPY, isLucky }) => {
   const theme = useTheme();
   if (!list?.length) return children;
-
-  const extraAPY =
-    list?.reduce(
-      (acc, { rewards, metadata, price, config }) =>
-        acc +
-        computeRewardAPY(
-          rewards.reward_per_day,
-          metadata.decimals + config.extra_decimals,
-          price,
-          totalSupplyMoney,
-        ),
-      0,
-    ) || 0;
-
-  const boostedAPY = isBorrow ? baseAPY - extraAPY : baseAPY + extraAPY;
-
-  const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
     <HtmlTooltip
@@ -111,12 +75,14 @@ const ToolTip = ({ children, list, baseAPY, totalSupplyMoney, isBorrow }) => {
           </Typography>
           {list.map(({ metadata, rewards, price, config }) => {
             const { symbol, icon, decimals } = metadata;
-            const rewardAPY = computeRewardAPY(
-              rewards.reward_per_day,
-              decimals + config.extra_decimals,
-              price,
-              totalSupplyMoney,
-            );
+
+            const rewardAPY =
+              computeRewardAPY(
+                rewards.reward_per_day,
+                decimals + config.extra_decimals,
+                price || 0,
+                totalSupplyMoney,
+              ) * 100;
 
             return [
               <Stack key={1} direction="row" alignItems="center" spacing={1}>
