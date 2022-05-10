@@ -22,8 +22,8 @@ export const StakingRewards = ({ amount }) => {
           <Info title="New farming multiplier" />
         </Typography>
         <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-          <Info title="Boosted daily rewards after staking" style={{ marginRight: "5px" }} />
-          🚀 Boost 🚀
+          🚀 Boost
+          <Info title="Boosted total daily rewards after staking" />
         </Typography>
         {extra.map(([tokenId, r]) => (
           <Reward key={tokenId} {...r} amount={amount} />
@@ -57,7 +57,7 @@ const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
   );
 };
 
-const Info = ({ title, style }: { title: string; style?: React.CSSProperties }) => (
+export const Info = ({ title, style }: { title: string; style?: React.CSSProperties }) => (
   <Tooltip title={title}>
     <Box component="span">
       <FcInfo style={{ marginLeft: "5px", ...style }} />

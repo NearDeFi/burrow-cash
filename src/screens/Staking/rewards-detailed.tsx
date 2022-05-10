@@ -5,6 +5,7 @@ import TokenIcon from "../../components/TokenIcon";
 import APYCell from "../../components/Table/common/apy-cell";
 import { Rewards } from "../../components";
 import { useStakingRewards } from "../../hooks";
+import { Info } from "./rewards";
 
 interface Props {
   amount: number;
@@ -127,7 +128,13 @@ const BoostedRewards = ({ amount, type }: Props) => {
         textAlign="right"
         fontWeight="bold"
       >
-        {isSupplied ? `🚀 APY 🚀` : <span>&nbsp;</span>}
+        {isSupplied ? (
+          <span>
+            🚀 APY <Info title="Boosted APY for each asset after staking" />
+          </span>
+        ) : (
+          <span>&nbsp;</span>
+        )}
       </Typography>
       <Typography
         gridColumn={["3 / span 1", "2 / span 1"]}
@@ -136,7 +143,13 @@ const BoostedRewards = ({ amount, type }: Props) => {
         fontWeight="bold"
         display={[!isSupplied ? "none" : "inherit", "inherit"]}
       >
-        {isSupplied ? `🚀 Daily 🚀` : <span>&nbsp;</span>}
+        {isSupplied ? (
+          <span>
+            🚀 Daily <Info title="Boosted daily rewards for each asset after staking" />
+          </span>
+        ) : (
+          <span>&nbsp;</span>
+        )}
       </Typography>
       {boosted.map((token) => {
         const apyRewards = isSupplied ? token.depositRewards : token.borrowRewards;
