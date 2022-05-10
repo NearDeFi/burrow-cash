@@ -16,7 +16,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DateTime } from "luxon";
 
-import { NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
+import { APY_FORMAT, NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
@@ -25,7 +25,7 @@ import { unstake } from "../../store/actions/unstake";
 import MonthSlider from "../../components/Slider/staking";
 import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
-import { useAccountId, useStaking } from "../../hooks";
+import { useAccountId, useStaking, useUserHealth } from "../../hooks";
 import { StakingRewards } from "./rewards";
 import { RewardsDetailed } from "./rewards-detailed";
 
@@ -37,6 +37,7 @@ const Staking = () => {
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
   const { BRRR, xBRRR, staking, config } = useStaking();
+  const { netAPY } = useUserHealth();
   const theme = useTheme();
 
   const handleMaxClick = () => {
@@ -207,8 +208,8 @@ const Staking = () => {
         </Stack>
 
         <Paper sx={{ backgroundColor: "#e5f7fd" }}>
-          <Stack spacing={2} p="1rem">
-            <Grid container spacing={1} columns={2} px={[0, 1]}>
+          <Stack p="1rem">
+            <Grid container spacing={1} columns={2} px={[1, 2]}>
               <Grid item xs={1}>
                 <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
               </Grid>
@@ -234,15 +235,26 @@ const Staking = () => {
                 borderStyle: "outset",
               }}
             />
-            <StakingRewards amount={xBRRR + extraXBRRRAmount} />
 
-            <Accordion>
+            <Box display="grid" gridTemplateColumns="1fr auto " px={[1, 2]} p={1.5} bgcolor="white">
+              <Typography fontSize="0.85rem">Net APY</Typography>
+              <Typography fontSize="0.85rem">
+                {netAPY.toLocaleString(undefined, APY_FORMAT)}%
+              </Typography>
+              <Typography fontSize="0.85rem">Boosted Net APY 🚀</Typography>
+              <Typography fontSize="0.85rem" fontWeight="bold">
+                {netAPY.toLocaleString(undefined, APY_FORMAT)}%
+              </Typography>
+            </Box>
+
+            <StakingRewards amount={xBRRR + extraXBRRRAmount} />
+            <Accordion sx={{ boxShadow: "none" }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="reward-details"
                 id="reward-details"
               >
-                <Typography>Reward Details</Typography>
+                <Typography fontSize="0.85rem">Staking Rewards Detailed</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
