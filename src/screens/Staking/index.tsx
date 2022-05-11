@@ -106,12 +106,11 @@ const Staking = () => {
             bgcolor="#d7f0e5"
             boxShadow="0px 1px 1px rgba(0, 7, 65, 0.1)"
             px="1rem"
-            py={["1.5rem", "0.75rem"]}
             borderRadius="0.3rem"
             justifyContent="space-between"
             display="flex"
-            flexDirection={["column", "row"]}
             alignItems="center"
+            sx={{ py: ["1.5rem", "0.75rem"], flexDirection: ["column", "row"] }}
           >
             <Box>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
@@ -147,12 +146,12 @@ const Staking = () => {
         spacing={3}
         mx="auto"
         mb="2rem"
-        py={["1.5rem", "0.75rem"]}
+        sx={{ py: ["1.5rem", "0.75rem"] }}
         justifyContent="space-between"
         position="relative"
       >
-        <Stack gap={[2, 4]} direction={["column", "row"]} alignItems="flex-end">
-          <Stack spacing={1} px={[2, 0]} width={["100%", "40%"]} maxWidth={["100%", "50%"]}>
+        <Stack alignItems="flex-end" sx={{ gap: [2, 4], flexDirection: ["column", "row"] }}>
+          <Stack spacing={1} sx={{ px: [2, 0], width: ["100%", "40%"], maxWidth: ["100%", "50%"] }}>
             <Typography>Amount of BRRR to stake:</Typography>
             <Input
               value={inputAmount}
@@ -166,7 +165,7 @@ const Staking = () => {
               <Slider value={sliderValue} onChange={handleSliderChange} />
             </Box>
           </Stack>
-          <Stack spacing={1} px={[2, 0]} width="100%" maxWidth={["100%", "50%"]}>
+          <Stack spacing={1} sx={{ px: [2, 0], width: "100%", maxWidth: ["100%", "50%"] }}>
             <Typography>Number of months to stake:</Typography>
             <Box px="0.5rem">
               <MonthSlider value={months} onChange={handleMonthSliderChange} />
@@ -184,7 +183,7 @@ const Staking = () => {
 
         <Stack>
           <Alert severity="info">
-            <Stack direction={["column", "row"]} alignItems="center">
+            <Stack alignItems="center" sx={{ flexDirection: ["column", "row"] }}>
               <Typography fontSize="0.85rem">Not enough BRRR? Simulate a staking with:</Typography>
               <Stack direction="row">
                 {[100, 1000, 10000, 100000].map((a) => (
@@ -199,7 +198,7 @@ const Staking = () => {
 
         <Paper sx={{ backgroundColor: "#e5f7fd" }}>
           <Stack p="1rem">
-            <Grid container spacing={1} columns={2} px={[1, 2]}>
+            <Grid container spacing={1} columns={2} sx={{ px: [1, 2] }}>
               <Grid item xs={1}>
                 <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
               </Grid>
@@ -226,7 +225,13 @@ const Staking = () => {
               }}
             />
 
-            <Box display="grid" gridTemplateColumns="1fr auto " px={[1, 2]} p={1.5} bgcolor="white">
+            <Box
+              display="grid"
+              gridTemplateColumns="1fr auto "
+              p={1.5}
+              bgcolor="white"
+              sx={{ px: [1, 2] }}
+            >
               <Typography fontSize="0.85rem">Net APY</Typography>
               <Typography fontSize="0.85rem">
                 {netAPY.toLocaleString(undefined, APY_FORMAT)}%
@@ -259,7 +264,7 @@ const Staking = () => {
             variant="contained"
             onClick={handleStake}
             loading={loadingStake}
-            sx={{ px: "4rem " }}
+            sx={{ px: "4rem" }}
           >
             Stake
           </LoadingButton>

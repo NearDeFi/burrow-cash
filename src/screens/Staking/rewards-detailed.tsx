@@ -22,14 +22,16 @@ export const RewardsDetailed = ({ type }: Props) => {
   if (!rewards.length) return null;
 
   return (
-    <Stack direction={["column", "row"]} width="100%" gap={[2, 0]} pt={[2, 0]}>
+    <Stack direction={["column", "row"]} sx={{ width: "100%", pt: [2, 0], gap: [2, 0] }}>
       <Box
-        display="grid"
-        gridTemplateColumns="1fr auto 1fr"
-        alignItems="center"
-        p={[0, 1]}
-        pr={[0, 0]}
-        width={["100%", "100%"]}
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          width: ["100%", "100%"],
+          p: [0, 1],
+          pr: [0, 0],
+        }}
       >
         <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
           {title}
@@ -47,7 +49,7 @@ export const RewardsDetailed = ({ type }: Props) => {
           fontSize="0.75rem"
           textAlign="right"
           fontWeight="bold"
-          pr={[0, 1]}
+          sx={{ pr: [0, 1] }}
         >
           Daily
         </Typography>
@@ -87,7 +89,7 @@ export const RewardsDetailed = ({ type }: Props) => {
                 sx={{ fontWeight: "normal", fontSize: "0.75rem" }}
               />
             </Box>,
-            <Box key={`${token.tokenId}-3`} pr={[0, 1]}>
+            <Box key={`${token.tokenId}-3`} sx={{ pr: [0, 1] }}>
               <Rewards rewards={token.rewards} layout="vertical" />
             </Box>,
           ];
@@ -110,17 +112,20 @@ const BoostedRewards = ({ type }: Props) => {
   return (
     <Box
       display="grid"
-      gridTemplateColumns={["1fr auto 1fr", "auto"]}
       alignItems="center"
       bgcolor="#d7f0e5"
       p={1}
-      pl={[2, 0]}
-      pr={[2, 1]}
-      width={["108%", "60%"]}
-      ml={[-2, 0]}
+      sx={{
+        width: ["108%", "60%"],
+        p: 1,
+        pl: [2, 0],
+        pr: [2, 1],
+        ml: [-2, 0],
+        gridTemplateColumns: ["1fr auto 1fr", "auto"],
+      }}
     >
       <Typography
-        gridColumn={["2 / span 1", "1 / span 1"]}
+        sx={{ gridColumn: ["2 / span 1", "1 / span 1"] }}
         fontSize="0.75rem"
         textAlign="right"
         fontWeight="bold"
@@ -138,7 +143,7 @@ const BoostedRewards = ({ type }: Props) => {
         fontSize="0.75rem"
         textAlign="right"
         fontWeight="bold"
-        display={[!isSupplied ? "none" : "inherit", "inherit"]}
+        sx={{ display: [!isSupplied ? "none" : "inherit", "inherit"] }}
       >
         {isSupplied ? (
           <span>
@@ -155,16 +160,20 @@ const BoostedRewards = ({ type }: Props) => {
         return [
           <Box
             key={`${token.tokenId}-hr`}
-            gridColumn={["1 / span 3", "1 / span 2"]}
             component="hr"
             sx={{
               width: "100%",
               borderWidth: 0.5,
               bgcolor: theme.palette.background.default,
               borderStyle: "outset",
+              gridColumn: ["1 / span 3", "1 / span 2"],
             }}
           />,
-          <Box key={`${token.tokenId}-token`} display={["flex", "none"]} alignItems="center">
+          <Box
+            key={`${token.tokenId}-token`}
+            alignItems="center"
+            sx={{ display: ["flex", "none"] }}
+          >
             <TokenIcon icon={token.icon} width={30} height={30} />
             <Box px="0.5rem">
               <Typography fontSize="0.7rem">{token.symbol}</Typography>
