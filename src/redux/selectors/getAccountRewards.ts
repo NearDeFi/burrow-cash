@@ -65,7 +65,14 @@ export const getAccountRewards = createSelector(
         const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
         const multiplier = log >= 0 ? 1 + log : 1;
 
-        const newBoostedShares = boostedShares * multiplier;
+        const suppliedShares = Number(
+          shrinkToken(account.portfolio.supplied[tokenId]?.shares || 0, assetDecimals),
+        );
+        const collateralShares = Number(
+          shrinkToken(account.portfolio.collateral[tokenId]?.shares || 0, assetDecimals),
+        );
+        const shares = suppliedShares + collateralShares;
+        const newBoostedShares = shares * multiplier;
         const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
         const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
 
