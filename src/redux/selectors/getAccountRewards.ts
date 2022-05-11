@@ -51,30 +51,46 @@ export const getAccountRewards = createSelector(
           shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
         );
 
-        const boosterLogBase = Number(
-          shrinkToken(farmData.asset_farm_reward.booster_log_base, rewardAssetDecimals),
-        );
-
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const { icon, symbol, name } = rewardAsset.metadata;
 
         const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
         const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
 
+        // new daily amount
+        const boosterLogBase = Number(
+          shrinkToken(farmData.asset_farm_reward.booster_log_base, app.config.booster_decimals),
+        );
+
         const xBRRRAmount = xBRRR + extraXBRRRAmount;
         const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
         const multiplier = log >= 0 ? 1 + log : 1;
 
         const suppliedShares = Number(
-          shrinkToken(account.portfolio.supplied[tokenId]?.shares || 0, assetDecimals),
+          shrinkToken(
+            account.portfolio.supplied[rewardAsset.token_id]?.shares || 0,
+            rewardAssetDecimals,
+          ),
         );
         const collateralShares = Number(
-          shrinkToken(account.portfolio.collateral[tokenId]?.shares || 0, assetDecimals),
+          shrinkToken(
+            account.portfolio.collateral[rewardAsset.token_id]?.shares || 0,
+            rewardAssetDecimals,
+          ),
         );
         const shares = suppliedShares + collateralShares;
         const newBoostedShares = shares * multiplier;
         const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
         const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
+
+        console.info(
+          asset.token_id,
+          assetDecimals,
+          boosterLogBase,
+          multiplier,
+          rewardAsset.token_id,
+          rewardAssetDecimals,
+        );
 
         return {
           icon,

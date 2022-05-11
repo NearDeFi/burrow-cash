@@ -42,7 +42,7 @@ export const Rewards = () => {
       }}
     >
       <BurrowHog />
-      <Box top={0} left={0} right={0} height={145} overflow="hidden" position="absolute">
+      <Box top={0} left={0} right={0} height={155} overflow="hidden" position="absolute">
         <Stack ml="4.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
           {!slimStats && (
             <Typography fontWeight="bold" fontSize="0.85rem">
@@ -95,7 +95,7 @@ const Reward = ({ dailyAmount = 0, icon }) => (
 
 const rewardsVariants = {
   closed: {
-    top: "-100%",
+    top: "-170px",
   },
   open: {
     top: 0,
