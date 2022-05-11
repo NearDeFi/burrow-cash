@@ -23,7 +23,7 @@ const persistConfig = {
   key: "root",
   storage,
   blacklist: ["feed"],
-  version: 2,
+  version: 3,
   migrate: createMigrate(migrations, { debug: false }),
 };
 

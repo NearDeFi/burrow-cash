@@ -5,10 +5,12 @@ import { getConfig } from "../redux/appSelectors";
 import { expandToken, shrinkToken } from "../store";
 import { IPortfolioAsset } from "../interfaces/asset";
 import { usePortfolioAssets } from "./hooks";
+import { getStaking } from "../redux/selectors/getStaking";
 
-export function useStakingRewards(amount) {
+export function useStakingRewards() {
   const [suppliedRows, borrowedRows] = usePortfolioAssets() as IPortfolioAsset[][];
   const appConfig = useAppSelector(getConfig);
+  const { xBRRR, extraXBRRRAmount } = useAppSelector(getStaking);
 
   const notBRRRToken = (r) => r.metadata.token_id !== appConfig.booster_token_id;
   const filterRewards = (rewards) => rewards.some(notBRRRToken);
@@ -21,21 +23,29 @@ export function useStakingRewards(amount) {
     asset.rewards = asset.rewards.filter(notBRRRToken).map((reward) => {
       const { metadata, rewards, config } = reward;
 
-      const dailyRewards = Number(
-        shrinkToken(rewards.reward_per_day || 0, metadata.decimals + config.extra_decimals),
+      const decimals = metadata.decimals + config.extra_decimals;
+
+      const boosterLogBase = Number(
+        shrinkToken(rewards.asset_farm_reward.booster_log_base, decimals),
       );
 
-      const multiplier =
-        1 +
-        Math.log(amount || 1) / Math.log(Number(rewards.asset_farm_reward.booster_log_base) || 100);
-
-      const boostedDailyRewards = expandToken(
-        dailyRewards * multiplier,
-        metadata.decimals + config.extra_decimals,
-        0,
+      const totalRewardsPerDay = Number(
+        shrinkToken(rewards.asset_farm_reward.reward_per_day, decimals),
       );
 
-      reward.rewards.reward_per_day = boostedDailyRewards;
+      const boostedShares = Number(shrinkToken(rewards.boosted_shares, decimals));
+
+      const totalBoostedShares = Number(
+        shrinkToken(rewards.asset_farm_reward.boosted_shares, decimals),
+      );
+
+      const log = Math.log(xBRRR + extraXBRRRAmount) / Math.log(boosterLogBase);
+      const multiplier = log >= 0 ? 1 + log : 1;
+      const newBoostedShares = boostedShares * multiplier;
+      const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
+      const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
+
+      reward.rewards.reward_per_day = expandToken(newDailyAmount, decimals, 0);
 
       return reward;
     });

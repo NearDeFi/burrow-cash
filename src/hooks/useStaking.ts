@@ -1,14 +1,18 @@
-import { useAppSelector } from "../redux/hooks";
-import { getStaking } from "../redux/accountSelectors";
-import { getConfig } from "../redux/appSelectors";
-import { shrinkToken } from "../store";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { getStaking } from "../redux/selectors/getStaking";
+import { setStaking } from "../redux/appSlice";
 
 export function useStaking() {
   const staking = useAppSelector(getStaking);
-  const config = useAppSelector(getConfig);
+  const dispatch = useAppDispatch();
 
-  const BRRR = Number(shrinkToken(staking["staked_booster_amount"], config.booster_decimals));
-  const xBRRR = Number(shrinkToken(staking["x_booster_amount"], config.booster_decimals));
+  const setAmount = (amount) => {
+    dispatch(setStaking({ amount }));
+  };
 
-  return { BRRR, xBRRR, staking, config };
+  const setMonths = (months) => {
+    dispatch(setStaking({ months }));
+  };
+
+  return { ...staking, setAmount, setMonths };
 }

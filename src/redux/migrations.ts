@@ -21,4 +21,13 @@ export const migrations = {
       },
     };
   },
+  3: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        staking: initialState.staking,
+      },
+    };
+  },
 };

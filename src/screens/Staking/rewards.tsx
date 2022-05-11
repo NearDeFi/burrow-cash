@@ -5,11 +5,11 @@ import { TOKEN_FORMAT } from "../../store/constants";
 import { useRewards } from "../../hooks/useRewards";
 import TokenIcon from "../../components/TokenIcon";
 
-export const StakingRewards = ({ amount }) => {
+export const StakingRewards = () => {
   const { extra } = useRewards();
 
   return (
-    <Stack direction="column" px={[1, 2]} p={1.5} bgcolor="white">
+    <Stack direction="column" sx={{ px: [1, 2], p: 1.5 }} bgcolor="white">
       <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1}>
         <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
           Extra Rewards
@@ -26,16 +26,14 @@ export const StakingRewards = ({ amount }) => {
           <Info title="Boosted total daily rewards after staking" />
         </Typography>
         {extra.map(([tokenId, r]) => (
-          <Reward key={tokenId} {...r} amount={amount} />
+          <Reward key={tokenId} {...r} />
         ))}
       </Box>
     </Stack>
   );
 };
 
-const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
-  const multiplier = 1 + Math.log(amount || 1) / Math.log(boosterLogBase || 100);
-
+const Reward = ({ icon, dailyAmount, symbol, multiplier, newDailyAmount }) => {
   return (
     <>
       <Stack direction="row" gap={1}>
@@ -51,7 +49,7 @@ const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
         {multiplier.toFixed(2)}x
       </Typography>
       <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-        {(dailyAmount * multiplier).toLocaleString(undefined, TOKEN_FORMAT)}
+        {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
       </Typography>
     </>
   );

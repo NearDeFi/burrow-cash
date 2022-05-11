@@ -4,6 +4,7 @@ import { omit } from "lodash";
 import { shrinkToken } from "../../store";
 import { RootState } from "../store";
 import { Farm } from "../accountSlice";
+import { getStaking } from "./getStaking";
 
 interface IPortfolioReward {
   icon: string;
@@ -14,6 +15,8 @@ interface IPortfolioReward {
   dailyAmount: number;
   unclaimedAmount: number;
   boosterLogBase: number;
+  newDailyAmount: number;
+  multiplier: number;
 }
 
 export interface IAccountRewards {
@@ -27,8 +30,10 @@ export const getAccountRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (state: RootState) => state.app,
-  (assets, account, app) => {
+  getStaking,
+  (assets, account, app, staking) => {
     const brrrTokenId = app.config.booster_token_id;
+    const { xBRRR, extraXBRRRAmount } = staking;
 
     const computeRewards = ([tokenId, farm]: [string, Farm]) => {
       return Object.entries(farm).map(([rewardTokenId, farmData]) => {
@@ -46,18 +51,34 @@ export const getAccountRewards = createSelector(
           shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
         );
 
-        const boosterLogBase = Number(farmData.asset_farm_reward.booster_log_base);
+        const boosterLogBase = Number(
+          shrinkToken(farmData.asset_farm_reward.booster_log_base, rewardAssetDecimals),
+        );
 
         const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
         const { icon, symbol, name } = rewardAsset.metadata;
+
+        const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
+        const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
+
+        const xBRRRAmount = xBRRR + extraXBRRRAmount;
+        const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
+        const multiplier = log >= 0 ? 1 + log : 1;
+
+        const newBoostedShares = boostedShares * multiplier;
+        const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
+        const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
+
         return {
           icon,
           name,
           symbol,
           tokenId: rewardTokenId,
-          unclaimedAmount: Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals)),
-          dailyAmount: (boostedShares / totalBoostedShares) * totalRewardsPerDay,
+          unclaimedAmount,
+          dailyAmount,
           boosterLogBase,
+          newDailyAmount,
+          multiplier,
         };
       });
     };

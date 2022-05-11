@@ -34,11 +34,10 @@ import { RewardsDetailed } from "./rewards-detailed";
 const Staking = () => {
   const accountId = useAccountId();
   const [total] = useAppSelector(getTotalBRRR);
-  const [amount, setAmount] = useState(0);
-  const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
-  const { BRRR, xBRRR, staking, config } = useStaking();
+  const { BRRR, xBRRR, extraXBRRRAmount, stakingTimestamp, amount, months, setAmount, setMonths } =
+    useStaking();
   const { netAPY } = useUserHealth();
   const theme = useTheme();
 
@@ -61,7 +60,7 @@ const Staking = () => {
   };
 
   const handleStake = () => {
-    trackStaking({ amount, months });
+    trackStaking({ amount, months, percent: (amount / total) * 100 });
     stake({ amount, months });
     setLoadingStake(true);
   };
@@ -76,15 +75,12 @@ const Staking = () => {
     e.target.select();
   };
 
-  const stakingTimestamp = Number(staking["unlock_timestamp"]);
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
-  const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : 1;
+  const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : months;
 
   const invalidAmount = amount > total;
   const invalidMonths = months < selectedMonths;
-
   const disabledStake = !amount || invalidAmount || invalidMonths;
-
   const disabledUnstake = DateTime.now() < unstakeDate;
 
   const inputAmount = `${amount}`
@@ -92,22 +88,14 @@ const Staking = () => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const xBRRRMultiplier =
-    1 +
-    ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
-      (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
-      (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
-
-  const extraXBRRRAmount = amount * xBRRRMultiplier;
-
   const sliderValue = Math.round((amount * 100) / total) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
-  }, [staking]);
+  }, [stakingTimestamp]);
 
   return (
-    <Box mt="2rem" px={["0rem", "2rem"]} maxWidth={["auto", 700]} mx="auto">
+    <Box mt="2rem" sx={{ px: ["0rem", "2rem"], mx: "auto", maxWidth: ["auto", 700] }}>
       {accountId && (
         <>
           <TotalBRRR />
@@ -249,7 +237,7 @@ const Staking = () => {
               </Typography>
             </Box>
 
-            <StakingRewards amount={xBRRR + extraXBRRRAmount} />
+            <StakingRewards />
             <Accordion sx={{ boxShadow: "none" }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -259,8 +247,8 @@ const Staking = () => {
                 <Typography fontSize="0.85rem">Staking Rewards Detailed</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
-                <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="borrowed" />
+                <RewardsDetailed type="supplied" />
+                <RewardsDetailed type="borrowed" />
               </AccordionDetails>
             </Accordion>
           </Stack>

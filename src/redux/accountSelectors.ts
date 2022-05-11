@@ -25,11 +25,6 @@ export const isClaiming = createSelector(
   (account) => account.isClaiming === "pending",
 );
 
-export const getStaking = createSelector(
-  (state: RootState) => state.account,
-  (account) => account.portfolio.staking,
-);
-
 export const getHasNonFarmedAssets = createSelector(
   (state: RootState) => state.account,
   (account) => account.portfolio.hasNonFarmedAssets,

@@ -8,12 +8,11 @@ import { useStakingRewards } from "../../hooks/useStakingRewards";
 import { Info } from "./rewards";
 
 interface Props {
-  amount: number;
   type: "supplied" | "borrowed";
 }
 
-export const RewardsDetailed = ({ amount, type }: Props) => {
-  const stakingRewards = useStakingRewards(amount);
+export const RewardsDetailed = ({ type }: Props) => {
+  const stakingRewards = useStakingRewards();
   const theme = useTheme();
   const isSupplied = type === "supplied";
   const rewards = stakingRewards[type];
@@ -94,13 +93,13 @@ export const RewardsDetailed = ({ amount, type }: Props) => {
           ];
         })}
       </Box>
-      <BoostedRewards amount={amount} type={type} />
+      <BoostedRewards type={type} />
     </Stack>
   );
 };
 
-const BoostedRewards = ({ amount, type }: Props) => {
-  const stakingRewards = useStakingRewards(amount);
+const BoostedRewards = ({ type }: Props) => {
+  const stakingRewards = useStakingRewards();
   const theme = useTheme();
   const isSupplied = type === "supplied";
   const rewards = stakingRewards[type];

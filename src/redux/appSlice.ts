@@ -31,6 +31,10 @@ export interface AppState {
     amount: number;
     isMax: boolean;
   };
+  staking: {
+    amount: number;
+    months: number;
+  };
   tableSorting: {
     deposit: ITableSorting;
     borrow: ITableSorting;
@@ -59,6 +63,10 @@ export const initialState: AppState = {
     useAsCollateral: false,
     amount: 0,
     isMax: false,
+  },
+  staking: {
+    amount: 0,
+    months: 1,
   },
   tableSorting: {
     deposit: {
@@ -141,6 +149,9 @@ export const appSlice = createSlice({
       const { name, property, order } = action.payload;
       state.tableSorting[name] = { property, order };
     },
+    setStaking(state, action) {
+      state.staking = { ...state.staking, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -161,6 +172,7 @@ export const {
   toggleShowTicker,
   setTableSorting,
   toggleShowDailyReturns,
+  setStaking,
 } = appSlice.actions;
 
 export default appSlice.reducer;

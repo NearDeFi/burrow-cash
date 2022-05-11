@@ -14,6 +14,8 @@ export const computeRewardAPY = (rewardsPerDay, decimals, price, totalSupplyMone
     .toNumber();
 };
 
+// new rewards per day for user / user deposit
+
 export const getExtraAPY = (extraRewards, totalSupplyMoney) =>
   extraRewards?.reduce(
     (acc, { rewards, metadata, price, config }) =>
