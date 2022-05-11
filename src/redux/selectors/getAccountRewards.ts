@@ -112,6 +112,7 @@ export const getAccountRewards = createSelector(
 
       updatedAsset.unclaimedAmount += asset.unclaimedAmount;
       updatedAsset.dailyAmount += asset.dailyAmount;
+      updatedAsset.newDailyAmount += asset.newDailyAmount;
 
       return { ...rewards, [asset.tokenId]: updatedAsset };
     }, {});
