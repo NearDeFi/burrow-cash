@@ -44,14 +44,14 @@ export const getAccountRewards = createSelector(
           rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
         const totalRewardsPerDay = Number(
-          shrinkToken(farmData.asset_farm_reward.reward_per_day, assetDecimals),
+          shrinkToken(farmData.asset_farm_reward.reward_per_day, rewardAssetDecimals),
         );
 
         const totalBoostedShares = Number(
           shrinkToken(farmData.asset_farm_reward.boosted_shares, assetDecimals),
         );
 
-        const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
+        const boostedShares = Number(shrinkToken(farmData.boosted_shares, assetDecimals));
         const { icon, symbol, name } = rewardAsset.metadata;
 
         const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
@@ -67,16 +67,10 @@ export const getAccountRewards = createSelector(
         const multiplier = log >= 0 ? 1 + log : 1;
 
         const suppliedShares = Number(
-          shrinkToken(
-            account.portfolio.supplied[rewardAsset.token_id]?.shares || 0,
-            rewardAssetDecimals,
-          ),
+          shrinkToken(account.portfolio.supplied[asset.token_id]?.shares || 0, assetDecimals),
         );
         const collateralShares = Number(
-          shrinkToken(
-            account.portfolio.collateral[rewardAsset.token_id]?.shares || 0,
-            rewardAssetDecimals,
-          ),
+          shrinkToken(account.portfolio.collateral[asset.token_id]?.shares || 0, assetDecimals),
         );
         const shares = suppliedShares + collateralShares;
         const newBoostedShares = shares * multiplier;
@@ -86,10 +80,10 @@ export const getAccountRewards = createSelector(
         console.info(
           asset.token_id,
           assetDecimals,
-          boosterLogBase,
           multiplier,
           rewardAsset.token_id,
-          rewardAssetDecimals,
+          dailyAmount,
+          newDailyAmount,
         );
 
         return {
