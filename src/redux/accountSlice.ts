@@ -17,17 +17,19 @@ interface PortfolioAsset {
   shares: string;
 }
 
-export interface Farm {
-  [reward_token_id: string]: {
+export interface FarmData {
+  boosted_shares: string;
+  unclaimed_amount: string;
+  asset_farm_reward: {
+    reward_per_day: string;
+    booster_log_base: string;
+    remaining_rewards: string;
     boosted_shares: string;
-    unclaimed_amount: string;
-    asset_farm_reward: {
-      reward_per_day: string;
-      booster_log_base: string;
-      remaining_rewards: string;
-      boosted_shares: string;
-    };
   };
+}
+
+export interface Farm {
+  [reward_token_id: string]: FarmData;
 }
 
 export interface Portfolio {

@@ -8,6 +8,11 @@ export const getAccountId = createSelector(
   (account) => account.accountId,
 );
 
+export const getAccountPortfolio = createSelector(
+  (state: RootState) => state.account,
+  (account) => account.portfolio,
+);
+
 export const getAccountBalance = createSelector(
   (state: RootState) => state.account.balances,
   (balances) => {
