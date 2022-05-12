@@ -7,6 +7,7 @@ import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "..
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction, isRegistered } from "../wallet";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
+import { getAssetDetailed } from "../assets";
 
 export async function withdraw({
   tokenId,
@@ -26,6 +27,7 @@ export async function withdraw({
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
   const { decimals } = (await getMetadata(tokenId))!;
+  const asset = await getAssetDetailed(tokenId);
 
   const isNEAR = tokenId === nearTokenId;
   const transactions: Transaction[] = [];
@@ -52,7 +54,7 @@ export async function withdraw({
     },
   };
 
-  if (collateralAmount && collateralAmount > 1e-18) {
+  if (asset.config.can_use_as_collateral && collateralAmount && collateralAmount > 1e-18) {
     transactions.push({
       receiverId: oracleContract.contractId,
       functionCalls: [
