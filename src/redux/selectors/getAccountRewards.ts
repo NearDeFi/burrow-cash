@@ -72,6 +72,22 @@ export const computeDailyAmount = (
   const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
   const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
 
+  // boosted APY
+  // new rewards per day for user / user deposit || borrowed
+  const supplied = Number(
+    shrinkToken(portfolio.supplied[asset.token_id]?.balance || 0, assetDecimals),
+  );
+  const collateral = Number(
+    shrinkToken(portfolio.collateral[asset.token_id]?.balance || 0, assetDecimals),
+  );
+  const borrowed = Number(
+    shrinkToken(portfolio.borrowed[asset.token_id]?.balance || 0, assetDecimals),
+  );
+
+  const totalAmount = type === "supplied" ? supplied + collateral : borrowed;
+  const newAPY = (newDailyAmount / totalAmount) * 100;
+  console.info(type, asset.token_id, rewardAsset.token_id, dailyAmount, newDailyAmount, newAPY);
+
   return { dailyAmount, newDailyAmount, multiplier };
 };
 
