@@ -61,7 +61,6 @@ export const getAccountRewards = createSelector(
             shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals),
           );
 
-          // new daily amount
           const boosterLogBase = Number(
             shrinkToken(farmData.asset_farm_reward.booster_log_base, app.config.booster_decimals),
           );
@@ -83,15 +82,6 @@ export const getAccountRewards = createSelector(
           const newBoostedShares = shares * multiplier;
           const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
           const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
-
-          console.info(
-            asset.token_id,
-            assetDecimals,
-            multiplier,
-            rewardAsset.token_id,
-            dailyAmount,
-            newDailyAmount,
-          );
 
           return {
             icon,
