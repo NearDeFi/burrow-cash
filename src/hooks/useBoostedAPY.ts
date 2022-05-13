@@ -15,7 +15,9 @@ export function useBoostedAPY() {
   const getBoostedAPY = (type: "supplied" | "borrowed", tokenId: string, rewardTokenId: string) => {
     const asset = assets[tokenId];
     const rewardAsset = assets[rewardTokenId];
-    const farmData = portfolio.farms[type][tokenId][rewardTokenId];
+    const farmData = portfolio.farms?.[type]?.[tokenId]?.[rewardTokenId];
+
+    if (!farmData) return 0;
 
     const { newDailyAmount } = computeDailyAmount(
       type,

@@ -30,7 +30,7 @@ const APYCell = ({
 
   const extraAPY = getExtraAPY(extraRewards, totalSupplyMoney) * 100;
 
-  const extraStakingAPY = extraRewards.reduce((acc, { metadata }) => {
+  const extraStakingAPY = extraRewards.reduce((acc: number, { metadata }) => {
     const boostedStakingAPY = getStakingBoostedAPY(
       isBorrow ? "borrowed" : "supplied",
       tokenId,
