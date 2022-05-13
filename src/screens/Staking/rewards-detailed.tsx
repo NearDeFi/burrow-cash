@@ -191,6 +191,7 @@ const BoostedRewards = ({ type }: Props) => {
               tokenId={token.tokenId}
               showIcons={false}
               sx={{ fontSize: "0.75rem" }}
+              isStaking
             />
           </Box>,
           <Box key={`${token.tokenId}-rewards`} minHeight={42} alignItems="center" display="grid">
