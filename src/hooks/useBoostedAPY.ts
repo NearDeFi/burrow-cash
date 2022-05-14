@@ -3,7 +3,7 @@ import { getConfig } from "../redux/appSelectors";
 import { getAssets } from "../redux/assetsSelectors";
 import { useAppSelector } from "../redux/hooks";
 import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
-import { computeStakingBoostedAPY } from "../redux/selectors/getSakingNetAPY";
+import { computeStakingBoostedAPY } from "../redux/selectors/getNetAPY";
 import { getStaking } from "../redux/selectors/getStaking";
 
 export function useBoostedAPY() {
