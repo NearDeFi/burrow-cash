@@ -56,14 +56,15 @@ export const getSakingNetAPY = createSelector(
 
     const { extra } = rewards;
 
-    const gainExtra = Object.keys(extra).reduce((acc, tokenId) => {
-      const price = assets.data[tokenId]?.price?.usd || 0;
-      return acc + extra[tokenId].newDailyAmount * price;
-    }, 0);
+    const gainExtra =
+      Object.keys(extra).reduce((acc, tokenId) => {
+        const price = assets.data[tokenId]?.price?.usd || 0;
+        return acc + extra[tokenId].newDailyAmount * price;
+      }, 0) * 365;
 
-    const netGains = gainCollateral + gainSupplied - gainBorrowed + gainExtra * 365;
+    const netGains = gainCollateral + gainSupplied - gainBorrowed + gainExtra;
     const netTotals = totalCollateral + totalSupplied;
-    const netAPY = (netGains * 100) / netTotals;
+    const netAPY = (netGains / netTotals) * 100;
     return netAPY || 0;
   },
 );

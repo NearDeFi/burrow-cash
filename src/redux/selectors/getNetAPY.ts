@@ -76,7 +76,7 @@ export const getNetAPY = createSelector(
 
     const netGains = gainCollateral + gainSupplied - gainBorrowed;
     const netTotals = totalCollateral + totalSupplied;
-    const netAPY = (netGains * 100) / netTotals;
+    const netAPY = (netGains / netTotals) * 100;
     return netAPY || 0;
   },
 );
