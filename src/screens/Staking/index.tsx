@@ -36,8 +36,17 @@ const Staking = () => {
   const [total] = useAppSelector(getTotalBRRR);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
-  const { BRRR, xBRRR, extraXBRRRAmount, stakingTimestamp, amount, months, setAmount, setMonths } =
-    useStaking();
+  const {
+    BRRR,
+    xBRRR,
+    extraXBRRRAmount,
+    stakingTimestamp,
+    amount,
+    months,
+    setAmount,
+    setMonths,
+    stakingNetAPY,
+  } = useStaking();
   const { netAPY } = useUserHealth();
   const theme = useTheme();
 
@@ -233,12 +242,12 @@ const Staking = () => {
               sx={{ px: [1, 2] }}
             >
               <Typography fontSize="0.85rem">Net APY</Typography>
-              <Typography fontSize="0.85rem">
+              <Typography fontSize="0.85rem" textAlign="right">
                 {netAPY.toLocaleString(undefined, APY_FORMAT)}%
               </Typography>
               <Typography fontSize="0.85rem">Boosted Net APY 🚀</Typography>
-              <Typography fontSize="0.85rem" fontWeight="bold">
-                {netAPY.toLocaleString(undefined, APY_FORMAT)}%
+              <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right">
+                {stakingNetAPY.toLocaleString(undefined, APY_FORMAT)}%
               </Typography>
             </Box>
 

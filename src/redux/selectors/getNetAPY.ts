@@ -1,35 +1,8 @@
 import Decimal from "decimal.js";
 import { createSelector } from "@reduxjs/toolkit";
 
-import { shrinkToken } from "../../store/helper";
 import { RootState } from "../store";
 import { getRewards, hasAssets, toUsd } from "../utils";
-import { Asset } from "../assetsSlice";
-import { Portfolio } from "../accountSlice";
-
-export const computeStakingBoostedAPY = (
-  type: "supplied" | "borrowed",
-  asset: Asset,
-  portfolio: Portfolio,
-  newDailyAmount: number,
-) => {
-  const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
-
-  const supplied = Number(
-    shrinkToken(portfolio.supplied[asset.token_id]?.balance || 0, assetDecimals),
-  );
-  const collateral = Number(
-    shrinkToken(portfolio.collateral[asset.token_id]?.balance || 0, assetDecimals),
-  );
-  const borrowed = Number(
-    shrinkToken(portfolio.borrowed[asset.token_id]?.balance || 0, assetDecimals),
-  );
-
-  const totalAmount = type === "supplied" ? supplied + collateral : borrowed;
-  const newAPY = ((newDailyAmount * 365) / totalAmount) * 100;
-
-  return newAPY;
-};
 
 export const computeRewardAPY = (rewardsPerDay, decimals, price, totalSupplyMoney) => {
   return new Decimal(rewardsPerDay)
@@ -62,11 +35,9 @@ export const getGains = (
   Object.keys(account.portfolio[source])
     .map((id) => {
       const asset = assets.data[id];
-      const balance = Number(account.portfolio[source][id].balance);
+      const { balance } = account.portfolio[source][id];
       const apr = Number(account.portfolio[source][id].apr);
-      const balance$ =
-        Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
-        (asset.price?.usd || 0);
+      const balanceUSD = toUsd(balance, asset);
 
       let extraAPY = 0;
       const sign = source === "borrowed" ? -1 : 1;
@@ -82,7 +53,7 @@ export const getGains = (
         extraAPY = getExtraAPY(extraRewards, totalSupplyMoney);
       }
 
-      return [balance$, apr + sign * extraAPY];
+      return [balanceUSD, apr + sign * extraAPY];
     })
     .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
 
