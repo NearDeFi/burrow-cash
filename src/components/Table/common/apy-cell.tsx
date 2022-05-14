@@ -6,7 +6,7 @@ import HtmlTooltip from "../../common/html-tooltip";
 import TokenIcon from "../../TokenIcon";
 import { APY_FORMAT } from "../../../store/constants";
 import { computeRewardAPY, getExtraAPY } from "../../../redux/selectors/getNetAPY";
-import { useBoostedAPY } from "../../../hooks/useBoostedAPY";
+import { useStakingAPY } from "../../../hooks/useStakingAPY";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
@@ -21,7 +21,7 @@ const APYCell = ({
   isStaking = false,
 }) => {
   const appConfig = useConfig();
-  const getStakingBoostedAPY = useBoostedAPY();
+  const getStakingAPY = useStakingAPY();
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
@@ -31,13 +31,13 @@ const APYCell = ({
   const extraAPY = getExtraAPY(extraRewards, totalSupplyMoney) * 100;
 
   const extraStakingAPY = extraRewards.reduce((acc: number, { metadata }) => {
-    const boostedStakingAPY = getStakingBoostedAPY(
+    const stakingAPY = getStakingAPY(
       isBorrow ? "borrowed" : "supplied",
       tokenId,
       metadata.token_id,
     );
 
-    return acc + boostedStakingAPY;
+    return acc + stakingAPY;
   }, 0);
 
   const sign = isBorrow ? -1 : 1;
@@ -87,7 +87,7 @@ const ToolTip = ({
   isStaking,
 }) => {
   const theme = useTheme();
-  const getStakingBoostedAPY = useBoostedAPY();
+  const getStakingAPY = useStakingAPY();
   if (!list?.length) return children;
 
   return (
@@ -103,7 +103,7 @@ const ToolTip = ({
           {list.map(({ metadata, rewards, price, config }) => {
             const { symbol, icon, decimals } = metadata;
 
-            const boostedStakingAPY = getStakingBoostedAPY(
+            const stakingAPY = getStakingAPY(
               isBorrow ? "borrowed" : "supplied",
               tokenId,
               metadata.token_id,
@@ -124,7 +124,7 @@ const ToolTip = ({
               </Stack>,
               <Typography key={2} fontSize="0.75rem" textAlign="right">
                 {isBorrow ? "-" : ""}
-                {toAPY(isStaking ? boostedStakingAPY : rewardAPY)}%
+                {toAPY(isStaking ? stakingAPY : rewardAPY)}%
               </Typography>,
             ];
           })}

@@ -12,9 +12,9 @@ export const getDailyReturns = createSelector(
   (assets, account, extraDaily) => {
     if (!hasAssets(assets)) return 0;
 
-    const [gainCollateral] = getGains(account, assets, "collateral");
-    const [gainSupplied] = getGains(account, assets, "supplied");
-    const [gainBorrowed] = getGains(account, assets, "borrowed");
+    const [gainCollateral] = getGains(account.portfolio, assets, "collateral");
+    const [gainSupplied] = getGains(account.portfolio, assets, "supplied");
+    const [gainBorrowed] = getGains(account.portfolio, assets, "borrowed");
 
     const netGains = (gainCollateral + gainSupplied + extraDaily * 365 - gainBorrowed) / 365;
     return netGains;

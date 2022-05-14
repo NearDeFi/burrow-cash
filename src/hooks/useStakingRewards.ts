@@ -32,8 +32,8 @@ export function useStakingRewards() {
 
       const { newDailyAmount } = computeDailyAmount(
         type,
-        assets[asset.tokenId],
-        assets[metadata.token_id],
+        assets.data[asset.tokenId],
+        assets.data[metadata.token_id],
         portfolio,
         xBRRR + extraXBRRRAmount,
         rewards,

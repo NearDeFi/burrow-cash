@@ -30,5 +30,5 @@ export const isAssetsFetching = createSelector(
 
 export const getAssets = createSelector(
   (state: RootState) => state.assets,
-  (assets) => assets.data,
+  (assets) => assets,
 );

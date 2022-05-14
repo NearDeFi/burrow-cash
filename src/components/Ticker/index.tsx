@@ -29,7 +29,7 @@ const Ticker = () => {
         fontSize="0.85rem"
       >
         {events.map((e) => {
-          const asset = assets[e.data.tokenId];
+          const asset = assets.data[e.data.tokenId];
           if (!asset) return null;
           const decimals = asset.metadata.decimals + asset.config.extra_decimals;
           const amount = Number(shrinkToken(e.data.amount, decimals)).toLocaleString(
