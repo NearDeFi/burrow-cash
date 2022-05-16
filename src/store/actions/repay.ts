@@ -78,7 +78,7 @@ export async function repay({
     gas: new BN("150000000000000"),
     args: {
       receiver_id: logicContract.contractId,
-      amount: expandedAmountToken,
+      amount: expandedAmountToken.toFixed(0),
       msg: JSON.stringify(msg),
     },
   });
