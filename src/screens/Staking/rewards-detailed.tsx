@@ -82,7 +82,6 @@ export const RewardsDetailed = ({ type }: Props) => {
               <APYCell
                 rewards={apyRewards}
                 baseAPY={baseAPY}
-                totalSupplyMoney={token.totalSupplyMoney}
                 page={page}
                 tokenId={token.tokenId}
                 showIcons={false}
@@ -186,11 +185,11 @@ const BoostedRewards = ({ type }: Props) => {
             <APYCell
               rewards={apyRewards}
               baseAPY={baseAPY}
-              totalSupplyMoney={token.totalSupplyMoney}
               page={page}
               tokenId={token.tokenId}
               showIcons={false}
               sx={{ fontSize: "0.75rem" }}
+              isStaking
             />
           </Box>,
           <Box key={`${token.tokenId}-rewards`} minHeight={42} alignItems="center" display="grid">

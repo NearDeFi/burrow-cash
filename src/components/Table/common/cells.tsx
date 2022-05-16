@@ -57,15 +57,7 @@ export const Cell = ({
   };
 
   if (isAPY)
-    return (
-      <APYCell
-        rewards={rewards}
-        baseAPY={value}
-        totalSupplyMoney={rowData.totalSupplyMoney}
-        page={page}
-        tokenId={rowData.tokenId}
-      />
-    );
+    return <APYCell rewards={rewards} baseAPY={value} page={page} tokenId={rowData.tokenId} />;
   if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
   if (!value) return <Box>-</Box>;
 

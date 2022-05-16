@@ -11,7 +11,7 @@ import { useFullDigits } from "./useFullDigits";
 export function useUserHealth() {
   const dispatch = useAppDispatch();
   const { showDailyReturns } = useAppSelector(getAppState);
-  const netAPY = useAppSelector(getNetAPY);
+  const netAPY = useAppSelector(getNetAPY({ isStaking: false }));
   const dailyReturns = useAppSelector(getDailyReturns);
   const healthFactor = useAppSelector(getHealthFactor);
   const { fullDigits, setDigits } = useFullDigits();
