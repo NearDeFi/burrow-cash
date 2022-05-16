@@ -1,5 +1,6 @@
 import { Contract } from "near-api-js";
 import BN from "bn.js";
+import Decimal from "decimal.js";
 
 import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
 import {
@@ -173,6 +174,7 @@ export function accountTrim(accountId: string) {
     ? `${accountId.slice(0, 8)}...${accountId.slice(-8)}`
     : accountId;
 }
+
 const versionRegex = /index\.(.*)\.js/;
 
 export const getLocalAppVersion = () => {
@@ -188,3 +190,15 @@ export const getRemoteAppVersion = async () => {
   const htmlDoc = parser.parseFromString(html, "text/html");
   return htmlDoc.querySelector("#burrow-script")?.["src"]?.match(versionRegex)[1];
 };
+
+export function decimalMax(a: string | number | Decimal, b: string | number | Decimal): Decimal {
+  a = new Decimal(a);
+  b = new Decimal(b);
+  return a.gt(b) ? a : b;
+}
+
+export function decimalMin(a: string | number | Decimal, b: string | number | Decimal): Decimal {
+  a = new Decimal(a);
+  b = new Decimal(b);
+  return a.lt(b) ? a : b;
+}

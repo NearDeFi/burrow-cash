@@ -2,36 +2,43 @@ import { Contract } from "near-api-js";
 import BN from "bn.js";
 import Decimal from "decimal.js";
 
-import { getBurrow, nearTokenId } from "../../utils";
+import { decimalMax, decimalMin, getBurrow, nearTokenId } from "../../utils";
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
-import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
-import { ChangeMethodsToken } from "../../interfaces";
-import { expandToken, registerNearFnCall } from "../helper";
-import { NEAR_DECIMALS } from "../constants";
+import { ChangeMethodsNearToken, ChangeMethodsToken } from "../../interfaces";
+import { expandTokenDecimal, registerNearFnCall } from "../helper";
+import { NEAR_DECIMALS, NEAR_STORAGE_DEPOSIT_DECIMAL } from "../constants";
 import getBalance from "../../api/get-balance";
 
 export async function deposit({
   amount,
   useAsCollateral,
+  isMax,
 }: {
   amount: number;
   useAsCollateral: boolean;
+  isMax: boolean;
 }) {
   const { account, logicContract } = await getBurrow();
   const tokenContract: Contract = await getTokenContract(nearTokenId);
 
-  const expandedAmount = expandToken(amount, NEAR_DECIMALS, 0);
+  const accountBalance = decimalMax(
+    0,
+    new Decimal((await account.getAccountBalance()).available).sub(NEAR_STORAGE_DEPOSIT_DECIMAL),
+  );
   const tokenBalance = new Decimal(await getBalance(nearTokenId, account.accountId));
-  const extraDeposit = new Decimal(expandedAmount).greaterThan(tokenBalance)
-    ? new Decimal(expandedAmount).sub(tokenBalance)
-    : new Decimal(0);
+  const maxAmount = accountBalance.add(tokenBalance);
+
+  const expandedAmount = isMax
+    ? maxAmount
+    : decimalMin(expandTokenDecimal(amount, NEAR_DECIMALS), maxAmount);
+  const extraDeposit = decimalMax(0, expandedAmount.sub(tokenBalance));
 
   const collateralActions = {
     actions: [
       {
         IncreaseCollateral: {
           token_id: nearTokenId,
-          max_amount: expandedAmount,
+          max_amount: expandedAmount.toFixed(0),
         },
       },
     ],
@@ -57,7 +64,7 @@ export async function deposit({
             gas: new BN("150000000000000"),
             args: {
               receiver_id: logicContract.contractId,
-              amount: expandedAmount,
+              amount: expandedAmount.toFixed(0),
               msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
             },
           },

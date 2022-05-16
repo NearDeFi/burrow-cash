@@ -11,13 +11,9 @@ import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
 import { borrow } from "../../store/actions/borrow";
 import { withdraw } from "../../store/actions/withdraw";
-import { removeCollateral } from "../../store/actions/removeCollateral";
-import { addCollateral } from "../../store/actions/addCollateral";
+import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
-import { getSupplyMaxAmount } from "../../redux/selectors/getSupplyMaxAmount";
-import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
-import { getRepayMaxAmount } from "../../redux/selectors/getRepayMaxAmount";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
@@ -26,11 +22,8 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
-  const repayMaxAmount = useAppSelector(getRepayMaxAmount(tokenId));
-  const withdrawMaxAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
-  const supplyMaxAmount = useAppSelector(getSupplyMaxAmount(tokenId));
 
-  const { available, canUseAsCollateral, extraDecimals, collateral, supplied } = getModalData({
+  const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
     maxBorrowAmount,
     healthFactor,
@@ -64,14 +57,14 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {
-          await deposit({ amount, useAsCollateral });
+          await deposit({ amount, useAsCollateral, isMax });
         } else {
           await supply({
             tokenId,
             extraDecimals,
             useAsCollateral,
             amount,
-            maxAmount: isMax ? supplyMaxAmount : undefined,
+            isMax,
           });
         }
         break;
@@ -80,40 +73,28 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
         break;
       }
       case "Withdraw": {
-        const collateralAmount = Math.max(0, amount - supplied);
-
         await withdraw({
           tokenId,
           extraDecimals,
           amount,
-          collateralAmount,
-          maxAmount: isMax ? Math.min(withdrawMaxAmount, collateralAmount) : undefined,
-          collateral,
+          isMax,
         });
         break;
       }
       case "Adjust":
-        if (amount < collateral) {
-          await removeCollateral({
-            tokenId,
-            extraDecimals,
-            amount: amount === available ? undefined : collateral - amount,
-          });
-        }
-        if (amount > collateral) {
-          await addCollateral({
-            tokenId,
-            extraDecimals,
-            amount: amount === available ? undefined : amount - collateral,
-          });
-        }
+        await adjustCollateral({
+          tokenId,
+          extraDecimals,
+          amount,
+          isMax,
+        });
         break;
       case "Repay":
         await repay({
           tokenId,
           amount,
           extraDecimals,
-          maxAmount: isMax ? repayMaxAmount : undefined,
+          isMax,
         });
         break;
       default:

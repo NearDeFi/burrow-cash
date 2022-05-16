@@ -1,31 +1,42 @@
-import { getBurrow } from "../../utils";
-import { expandToken } from "../helper";
+import Decimal from "decimal.js";
+
+import { decimalMin, getBurrow } from "../../utils";
+import { expandTokenDecimal } from "../helper";
 import { ChangeMethodsToken } from "../../interfaces";
 import { getTokenContract, getMetadata, prepareAndExecuteTokenTransactions } from "../tokens";
+import getBalance from "../../api/get-balance";
 
 export async function supply({
   tokenId,
   extraDecimals,
   useAsCollateral,
   amount,
-  maxAmount,
+  isMax,
 }: {
   tokenId: string;
   extraDecimals: number;
   useAsCollateral: boolean;
   amount: number;
-  maxAmount?: string;
+  isMax: boolean;
 }): Promise<void> {
-  const { logicContract } = await getBurrow();
+  const { account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
   const tokenContract = await getTokenContract(tokenId);
+
+  const tokenBalance = new Decimal(await getBalance(tokenId, account.accountId));
+
+  const expandedAmount = isMax
+    ? tokenBalance
+    : decimalMin(expandTokenDecimal(amount, decimals), tokenBalance);
+
+  const collateralAmount = expandTokenDecimal(expandedAmount, extraDecimals);
 
   const collateralActions = {
     actions: [
       {
         IncreaseCollateral: {
           token_id: tokenId,
-          max_amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
+          max_amount: collateralAmount.toFixed(0),
         },
       },
     ],
@@ -35,7 +46,7 @@ export async function supply({
     methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
     args: {
       receiver_id: logicContract.contractId,
-      amount: expandToken(maxAmount || amount, decimals, 0),
+      amount: expandedAmount.toFixed(0),
       msg: useAsCollateral ? JSON.stringify({ Execute: collateralActions }) : "",
     },
   });
