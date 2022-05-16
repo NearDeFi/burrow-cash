@@ -6,20 +6,25 @@ import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
 import { getGains } from "../redux/selectors/getNetAPY";
 import { getStaking } from "../redux/selectors/getStaking";
 
-export function useStakingAPY() {
+export function useExtraAPY() {
   const { xBRRR, extraXBRRRAmount } = useAppSelector(getStaking);
   const portfolio = useAppSelector(getAccountPortfolio);
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
 
-  const getStakingAPY = (type: "supplied" | "borrowed", tokenId: string, rewardTokenId: string) => {
+  const getExtraAPY = (
+    type: "supplied" | "borrowed",
+    tokenId: string,
+    rewardTokenId: string,
+    isStaking = false,
+  ) => {
     const asset = assets.data[tokenId];
     const rewardAsset = assets.data[rewardTokenId];
     const farmData = portfolio.farms?.[type]?.[tokenId]?.[rewardTokenId];
 
     if (!farmData) return 0;
 
-    const { newDailyAmount } = computeDailyAmount(
+    const { dailyAmount, newDailyAmount } = computeDailyAmount(
       type,
       asset,
       rewardAsset,
@@ -35,10 +40,11 @@ export function useStakingAPY() {
 
     const totalAmount = type === "supplied" ? totalSupplied + totalCollateral : totalBorrowed;
     const price = asset?.price?.usd || 0;
-    const apy = ((newDailyAmount * price * 365) / totalAmount) * 100;
+    const amount = isStaking ? newDailyAmount : dailyAmount;
+    const apy = ((amount * price * 365) / totalAmount) * 100;
 
     return apy;
   };
 
-  return getStakingAPY;
+  return getExtraAPY;
 }

@@ -5,15 +5,13 @@ import { useConfig } from "../../../hooks/hooks";
 import HtmlTooltip from "../../common/html-tooltip";
 import TokenIcon from "../../TokenIcon";
 import { APY_FORMAT } from "../../../store/constants";
-import { computeRewardAPY, getExtraAPY } from "../../../redux/selectors/getNetAPY";
-import { useStakingAPY } from "../../../hooks/useStakingAPY";
+import { useExtraAPY } from "../../../hooks/useExtraAPY";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
 const APYCell = ({
   baseAPY,
   rewards: list,
-  totalSupplyMoney,
   page,
   tokenId,
   showIcons = true,
@@ -21,23 +19,21 @@ const APYCell = ({
   isStaking = false,
 }) => {
   const appConfig = useConfig();
-  const getStakingAPY = useStakingAPY();
+  const getExtraAPY = useExtraAPY();
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
 
-  const extraAPY = getExtraAPY(extraRewards, totalSupplyMoney) * 100;
+  const extraAPY = extraRewards.reduce((acc: number, { metadata }) => {
+    const apy = getExtraAPY(isBorrow ? "borrowed" : "supplied", tokenId, metadata.token_id, false);
+    return acc + apy;
+  }, 0);
 
   const extraStakingAPY = extraRewards.reduce((acc: number, { metadata }) => {
-    const stakingAPY = getStakingAPY(
-      isBorrow ? "borrowed" : "supplied",
-      tokenId,
-      metadata.token_id,
-    );
-
-    return acc + stakingAPY;
+    const apy = getExtraAPY(isBorrow ? "borrowed" : "supplied", tokenId, metadata.token_id, true);
+    return acc + apy;
   }, 0);
 
   const sign = isBorrow ? -1 : 1;
@@ -49,7 +45,6 @@ const APYCell = ({
       tokenId={tokenId}
       list={extraRewards}
       baseAPY={baseAPY}
-      totalSupplyMoney={totalSupplyMoney}
       isBorrow={isBorrow}
       boostedAPY={boostedAPY}
       isLucky={isLucky}
@@ -80,14 +75,13 @@ const ToolTip = ({
   tokenId,
   list,
   baseAPY,
-  totalSupplyMoney,
   isBorrow,
   boostedAPY,
   isLucky,
   isStaking,
 }) => {
   const theme = useTheme();
-  const getStakingAPY = useStakingAPY();
+  const getExtraAPY = useExtraAPY();
   if (!list?.length) return children;
 
   return (
@@ -100,22 +94,22 @@ const ToolTip = ({
           <Typography fontSize="0.75rem" textAlign="right">
             {toAPY(baseAPY)}%
           </Typography>
-          {list.map(({ metadata, rewards, price, config }) => {
-            const { symbol, icon, decimals } = metadata;
+          {list.map(({ metadata }) => {
+            const { symbol, icon } = metadata;
 
-            const stakingAPY = getStakingAPY(
+            const stakingAPY = getExtraAPY(
               isBorrow ? "borrowed" : "supplied",
               tokenId,
               metadata.token_id,
+              true,
             );
 
-            const rewardAPY =
-              computeRewardAPY(
-                rewards.reward_per_day,
-                decimals + config.extra_decimals,
-                price || 0,
-                totalSupplyMoney,
-              ) * 100;
+            const rewardAPY = getExtraAPY(
+              isBorrow ? "borrowed" : "supplied",
+              tokenId,
+              metadata.token_id,
+              false,
+            );
 
             return [
               <Stack key={1} direction="row" alignItems="center" spacing={1}>

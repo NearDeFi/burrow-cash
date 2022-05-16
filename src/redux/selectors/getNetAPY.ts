@@ -1,4 +1,3 @@
-import Decimal from "decimal.js";
 import { createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
@@ -6,28 +5,6 @@ import { hasAssets, toUsd } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
 import { AssetsState } from "../assetsSlice";
 import { Portfolio } from "../accountSlice";
-
-export const computeRewardAPY = (rewardsPerDay, decimals, price, totalSupplyMoney) => {
-  return new Decimal(rewardsPerDay)
-    .div(new Decimal(10).pow(decimals))
-    .mul(365)
-    .mul(price)
-    .div(totalSupplyMoney)
-    .toNumber();
-};
-
-export const getExtraAPY = (extraRewards, totalSupplyMoney) =>
-  extraRewards?.reduce(
-    (acc, { rewards, metadata, price, config }) =>
-      acc +
-      computeRewardAPY(
-        rewards.reward_per_day,
-        metadata.decimals + config.extra_decimals,
-        price || 0,
-        totalSupplyMoney,
-      ),
-    0,
-  ) || 0;
 
 export const getGains = (
   portfolio: Portfolio,
