@@ -40,6 +40,7 @@ const Staking = () => {
     BRRR,
     xBRRR,
     extraXBRRRAmount,
+    totalXBRRR,
     stakingTimestamp,
     amount,
     months,
@@ -72,6 +73,7 @@ const Staking = () => {
     trackStaking({ amount, months, percent: (amount / total) * 100 });
     stake({ amount, months });
     setLoadingStake(true);
+    setAmount(0);
   };
 
   const handleUnstake = () => {
@@ -221,7 +223,7 @@ const Staking = () => {
               </Grid>
               <Grid item xs={1}>
                 <Typography fontSize="0.75rem" textAlign="right">
-                  {(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}
+                  {totalXBRRR.toLocaleString(undefined, TOKEN_FORMAT)}
                 </Typography>
               </Grid>
             </Grid>

@@ -40,12 +40,12 @@ export const computeDailyAmount = (
     shrinkToken(farmData.asset_farm_reward.booster_log_base, boosterDecimals),
   );
 
+  const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
   const rewardAssetDecimals = rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
   const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
   const multiplier = log >= 0 ? 1 + log : 1;
 
-  const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
   const boostedShares = Number(shrinkToken(farmData.boosted_shares, assetDecimals));
 
   const totalBoostedShares = Number(

@@ -24,12 +24,18 @@ export const getStaking = createSelector(
         (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
         (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
-    const extraXBRRRAmount = amount * xBRRRMultiplier;
+    const totalXBRRR = Math.max(
+      xBRRR + amount * xBRRRMultiplier,
+      (BRRR + amount) * xBRRRMultiplier,
+    );
+
+    const extraXBRRRAmount = totalXBRRR - xBRRR;
 
     return {
       BRRR,
       xBRRR,
       extraXBRRRAmount,
+      totalXBRRR,
       stakingTimestamp,
       amount,
       months,
