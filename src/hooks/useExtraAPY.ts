@@ -1,22 +1,34 @@
+import Decimal from "decimal.js";
+
 import { getAccountPortfolio } from "../redux/accountSelectors";
 import { getConfig } from "../redux/appSelectors";
-import { getAssets } from "../redux/assetsSelectors";
+import { getAssets, getTotalSupplyUSD } from "../redux/assetsSelectors";
 import { useAppSelector } from "../redux/hooks";
 import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
 import { getGains } from "../redux/selectors/getNetAPY";
 import { getStaking } from "../redux/selectors/getStaking";
 
-export function useExtraAPY() {
+export function useExtraAPY(assetId: string) {
   const { xBRRR, extraXBRRRAmount } = useAppSelector(getStaking);
   const portfolio = useAppSelector(getAccountPortfolio);
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
+  const totalSupplyUSD = useAppSelector(getTotalSupplyUSD(assetId));
 
-  const getExtraAPY = (
+  const computeRewardAPY = (rewardsPerDay, decimals, price) => {
+    return new Decimal(rewardsPerDay)
+      .div(new Decimal(10).pow(decimals))
+      .mul(365)
+      .mul(price)
+      .div(totalSupplyUSD)
+      .mul(100)
+      .toNumber();
+  };
+
+  const computeStakingRewardAPY = (
     type: "supplied" | "borrowed",
     tokenId: string,
     rewardTokenId: string,
-    isStaking = false,
   ) => {
     const asset = assets.data[tokenId];
     const rewardAsset = assets.data[rewardTokenId];
@@ -24,7 +36,7 @@ export function useExtraAPY() {
 
     if (!farmData) return 0;
 
-    const { dailyAmount, newDailyAmount } = computeDailyAmount(
+    const { newDailyAmount } = computeDailyAmount(
       type,
       asset,
       rewardAsset,
@@ -40,11 +52,11 @@ export function useExtraAPY() {
 
     const totalAmount = type === "supplied" ? totalSupplied + totalCollateral : totalBorrowed;
     const price = asset?.price?.usd || 0;
-    const amount = isStaking ? newDailyAmount : dailyAmount;
-    const apy = ((amount * price * 365) / totalAmount) * 100;
+
+    const apy = ((newDailyAmount * price * 365) / totalAmount) * 100;
 
     return apy;
   };
 
-  return getExtraAPY;
+  return { computeStakingRewardAPY, computeRewardAPY };
 }

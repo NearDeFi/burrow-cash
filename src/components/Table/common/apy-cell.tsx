@@ -19,20 +19,29 @@ const APYCell = ({
   isStaking = false,
 }) => {
   const appConfig = useConfig();
-  const getExtraAPY = useExtraAPY();
+  const { computeStakingRewardAPY, computeRewardAPY } = useExtraAPY(tokenId);
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
 
-  const extraAPY = extraRewards.reduce((acc: number, { metadata }) => {
-    const apy = getExtraAPY(isBorrow ? "borrowed" : "supplied", tokenId, metadata.token_id, false);
+  const extraAPY = extraRewards.reduce((acc: number, { metadata, rewards, price, config }) => {
+    const apy = computeRewardAPY(
+      rewards.reward_per_day,
+      metadata.decimals + config.extra_decimals,
+      price || 0,
+    );
+
     return acc + apy;
   }, 0);
 
   const extraStakingAPY = extraRewards.reduce((acc: number, { metadata }) => {
-    const apy = getExtraAPY(isBorrow ? "borrowed" : "supplied", tokenId, metadata.token_id, true);
+    const apy = computeStakingRewardAPY(
+      isBorrow ? "borrowed" : "supplied",
+      tokenId,
+      metadata.token_id,
+    );
     return acc + apy;
   }, 0);
 
@@ -81,7 +90,7 @@ const ToolTip = ({
   isStaking,
 }) => {
   const theme = useTheme();
-  const getExtraAPY = useExtraAPY();
+  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY(tokenId);
   if (!list?.length) return children;
 
   return (
@@ -94,21 +103,19 @@ const ToolTip = ({
           <Typography fontSize="0.75rem" textAlign="right">
             {toAPY(baseAPY)}%
           </Typography>
-          {list.map(({ metadata }) => {
+          {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
 
-            const stakingAPY = getExtraAPY(
+            const stakingAPY = computeStakingRewardAPY(
               isBorrow ? "borrowed" : "supplied",
               tokenId,
               metadata.token_id,
-              true,
             );
 
-            const rewardAPY = getExtraAPY(
-              isBorrow ? "borrowed" : "supplied",
-              tokenId,
-              metadata.token_id,
-              false,
+            const rewardAPY = computeRewardAPY(
+              rewards.reward_per_day,
+              metadata.decimals + config.extra_decimals,
+              price || 0,
             );
 
             return [
