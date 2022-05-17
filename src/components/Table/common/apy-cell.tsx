@@ -9,18 +9,10 @@ import { useExtraAPY } from "../../../hooks/useExtraAPY";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
-const APYCell = ({
-  baseAPY,
-  rewards: list,
-  page,
-  tokenId,
-  showIcons = true,
-  sx = {},
-  isStaking = false,
-}) => {
+const APYCell = ({ baseAPY, rewards: list, page, tokenId, showIcons = true, sx = {} }) => {
   const appConfig = useConfig();
   const isBorrow = page === "borrow";
-  const { computeStakingRewardAPY, computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
+  const { computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
 
@@ -36,17 +28,8 @@ const APYCell = ({
     return acc + apy;
   }, 0);
 
-  const extraStakingAPY = extraRewards.reduce((acc: number, { metadata }) => {
-    const apy = computeStakingRewardAPY(
-      isBorrow ? "borrowed" : "supplied",
-      tokenId,
-      metadata.token_id,
-    );
-    return acc + apy;
-  }, 0);
-
   const sign = isBorrow ? -1 : 1;
-  const boostedAPY = baseAPY + sign * (isStaking ? extraStakingAPY : extraAPY);
+  const boostedAPY = baseAPY + sign * extraAPY;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
@@ -57,7 +40,6 @@ const APYCell = ({
       isBorrow={isBorrow}
       boostedAPY={boostedAPY}
       isLucky={isLucky}
-      isStaking={isStaking}
     >
       <Stack
         position="relative"
@@ -79,18 +61,9 @@ const APYCell = ({
   );
 };
 
-const ToolTip = ({
-  children,
-  tokenId,
-  list,
-  baseAPY,
-  isBorrow,
-  boostedAPY,
-  isLucky,
-  isStaking,
-}) => {
+const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, boostedAPY, isLucky }) => {
   const theme = useTheme();
-  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY({ tokenId, isBorrow });
+  const { computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   if (!list?.length) return children;
 
   return (
@@ -106,12 +79,6 @@ const ToolTip = ({
           {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
 
-            const stakingAPY = computeStakingRewardAPY(
-              isBorrow ? "borrowed" : "supplied",
-              tokenId,
-              metadata.token_id,
-            );
-
             const rewardAPY = computeRewardAPY(
               rewards.reward_per_day,
               metadata.decimals + config.extra_decimals,
@@ -125,7 +92,7 @@ const ToolTip = ({
               </Stack>,
               <Typography key={2} fontSize="0.75rem" textAlign="right">
                 {isBorrow ? "-" : ""}
-                {toAPY(isStaking ? stakingAPY : rewardAPY)}%
+                {toAPY(rewardAPY)}%
               </Typography>,
             ];
           })}
