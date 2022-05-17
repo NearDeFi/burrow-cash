@@ -9,15 +9,14 @@ import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction, isRegistered } from "../wallet";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
 import { getAccountDetailed } from "../accounts";
+import { getAssetDetailed } from "../assets";
 
 export async function withdraw({
   tokenId,
-  extraDecimals,
   amount,
   maxAmount,
 }: {
   tokenId: string;
-  extraDecimals: number;
   amount: number;
   maxAmount: number;
   isMax: boolean;
@@ -25,8 +24,12 @@ export async function withdraw({
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
   const { decimals } = (await getMetadata(tokenId))!;
+  const asset = await getAssetDetailed(tokenId);
   const detailedAccount = (await getAccountDetailed(account.accountId))!;
   const isNEAR = tokenId === nearTokenId;
+
+  const extraDecimals = asset.config.extra_decimals;
+  const canUseAsCollateral = asset.config.can_use_as_collateral;
 
   const suppliedBalance = new Decimal(
     detailedAccount.supplied.find((a) => a.token_id === tokenId)?.balance || 0,
@@ -65,7 +68,7 @@ export async function withdraw({
 
   const decreaseCollateralAmount = decimalMax(expandedAmount.sub(suppliedBalance), 0);
 
-  if (decreaseCollateralAmount.gt(0)) {
+  if (canUseAsCollateral && decreaseCollateralAmount.gt(0)) {
     transactions.push({
       receiverId: oracleContract.contractId,
       functionCalls: [

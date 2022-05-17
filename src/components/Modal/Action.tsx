@@ -77,7 +77,6 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
       case "Withdraw": {
         await withdraw({
           tokenId,
-          extraDecimals,
           amount,
           maxAmount: withdrawMaxAmount,
           isMax,
