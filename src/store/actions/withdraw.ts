@@ -1,35 +1,47 @@
 import BN from "bn.js";
+import Decimal from "decimal.js";
 
-import { getBurrow, nearTokenId } from "../../utils";
-import { expandToken } from "../helper";
+import { decimalMax, decimalMin, getBurrow, nearTokenId } from "../../utils";
+import { expandToken, expandTokenDecimal } from "../helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction, isRegistered } from "../wallet";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
-import { getAssetDetailed } from "../assets";
+import { getAccountDetailed } from "../accounts";
 
 export async function withdraw({
   tokenId,
   extraDecimals,
   amount,
-  collateralAmount,
-  maxAmount,
-  collateral,
+  isMax,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: number;
-  collateralAmount?: number;
-  maxAmount?: string | number;
-  collateral: number;
+  isMax: boolean;
 }) {
   const { logicContract, oracleContract, account } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
   const { decimals } = (await getMetadata(tokenId))!;
-  const asset = await getAssetDetailed(tokenId);
-
+  const detailedAccount = (await getAccountDetailed(account.accountId))!;
   const isNEAR = tokenId === nearTokenId;
+
+  const suppliedBalance = new Decimal(
+    detailedAccount.supplied.find((a) => a.token_id === tokenId)?.balance || 0,
+  );
+
+  const collateralBalance = new Decimal(
+    detailedAccount.collateral.find((a) => a.token_id === tokenId)?.balance || 0,
+  );
+
+  const maxAmount = suppliedBalance.add(collateralBalance);
+
+  const expandedAmount = decimalMin(
+    maxAmount,
+    expandTokenDecimal(amount, decimals + extraDecimals),
+  );
+
   const transactions: Transaction[] = [];
 
   if (
@@ -50,11 +62,15 @@ export async function withdraw({
   const withdrawAction = {
     Withdraw: {
       token_id: tokenId,
-      amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0),
+      max_amount: !isMax ? expandedAmount.toFixed(0) : undefined,
     },
   };
 
-  if (asset.config.can_use_as_collateral && collateralAmount && collateralAmount > 1e-18) {
+  const decreaseCollateralAmount = isMax
+    ? collateralBalance
+    : decimalMax(expandedAmount.sub(suppliedBalance), 0);
+
+  if (decreaseCollateralAmount.gt(0)) {
     transactions.push({
       receiverId: oracleContract.contractId,
       functionCalls: [
@@ -68,12 +84,7 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
-                      // TODO: Figure out why isNEAR handled differently.
-                      amount: expandToken(
-                        maxAmount ? (isNEAR ? maxAmount : collateral) : collateralAmount,
-                        decimals + extraDecimals,
-                        0,
-                      ),
+                      amount: !isMax ? decreaseCollateralAmount.toFixed(0) : undefined,
                     },
                   },
                   withdrawAction,
@@ -98,13 +109,16 @@ export async function withdraw({
     });
   }
 
-  if (isNEAR) {
+  // 10 yocto is for rounding errors.
+  if (isNEAR && expandedAmount.gt(10)) {
     transactions.push({
       receiverId: tokenContract.contractId,
       functionCalls: [
         {
           methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
-          args: { amount: expandToken(maxAmount || amount, decimals + extraDecimals, 0) },
+          args: {
+            amount: isMax ? maxAmount.toFixed(0) : expandedAmount.sub(10).toFixed(0),
+          },
         },
       ],
     });

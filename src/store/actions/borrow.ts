@@ -1,8 +1,7 @@
 import BN from "bn.js";
 
-import Decimal from "decimal.js";
 import { getBurrow, nearTokenId } from "../../utils";
-import { expandToken } from "../helper";
+import { expandToken, expandTokenDecimal } from "../helper";
 import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { Transaction, isRegistered } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
@@ -23,6 +22,8 @@ export async function borrow({
   const isNEAR = tokenId === nearTokenId;
 
   const transactions: Transaction[] = [];
+
+  const expandedAmount = expandTokenDecimal(amount, decimals + extraDecimals);
 
   if (
     !(await isRegistered(account.accountId, tokenContract)) &&
@@ -45,13 +46,13 @@ export async function borrow({
         {
           Borrow: {
             token_id: tokenId,
-            amount: expandToken(amount, decimals + extraDecimals, 0),
+            amount: expandedAmount.toFixed(0),
           },
         },
         {
           Withdraw: {
             token_id: tokenId,
-            max_amount: expandToken(amount, decimals + extraDecimals, 0),
+            max_amount: expandedAmount.toFixed(0),
           },
         },
       ],
@@ -71,16 +72,14 @@ export async function borrow({
     ],
   });
 
-  if (isNEAR) {
+  if (isNEAR && expandedAmount.gt(10)) {
     transactions.push({
       receiverId: tokenContract.contractId,
       functionCalls: [
         {
           methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
           args: {
-            amount: new Decimal(expandToken(amount, decimals + extraDecimals, 0))
-              .sub(10)
-              .toFixed(0),
+            amount: expandedAmount.sub(10).toFixed(0),
           },
         },
       ],

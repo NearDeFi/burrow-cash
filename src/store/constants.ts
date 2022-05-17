@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export const NANOS_PER_YEAR = 31536000000;
 export const DEFAULT_PRECISION = 60;
 export const TOKEN_DECIMALS = 18;
@@ -38,6 +40,10 @@ export const DUST_FORMAT = {
 export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
 export const STORAGE_DEPOSIT_FEE = process.env.STORAGE_DEPOSIT_FEE || 0.15;
 export const NEAR_STORAGE_DEPOSIT = 0.25;
+
+export const NEAR_STORAGE_DEPOSIT_DECIMAL = new Decimal(25).mul(
+  new Decimal(10).pow(NEAR_DECIMALS - 2),
+);
 
 export const CONTRACT_MAIN = "contract.main.burrow.near";
 export const CONTRACT_BETA = "contract.beta.burrow.near";
