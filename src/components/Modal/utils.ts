@@ -51,6 +51,7 @@ export const getModalData = (asset): UIAsset & Props => {
     healthFactor,
     amount,
     maxWithdrawAmount,
+    canUseAsCollateral,
   } = asset;
 
   const data: any = {
@@ -109,7 +110,9 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = Math.min(supplied + collateral, maxWithdrawAmount);
+      data.available = canUseAsCollateral
+        ? Math.min(supplied + collateral, maxWithdrawAmount)
+        : supplied;
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
