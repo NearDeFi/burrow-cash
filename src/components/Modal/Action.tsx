@@ -15,6 +15,7 @@ import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
+import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 
 export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
+  const withdrawMaxAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -77,6 +79,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           tokenId,
           extraDecimals,
           amount,
+          maxAmount: withdrawMaxAmount,
           isMax,
         });
         break;

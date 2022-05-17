@@ -79,19 +79,15 @@ export const getModalData = (asset): UIAsset & Props => {
         { label: "Deposit APY", value: `${supplyApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
       ];
-      data.available = available.toFixed(PERCENT_DIGITS);
+      data.available = available;
       if (isWrappedNear) {
-        data.available = Number(
-          Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT),
-        ).toFixed(PERCENT_DIGITS);
+        data.available = Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT));
       }
       data.alerts = {};
       break;
     case "Borrow":
       data.totalTitle = `Total Borrow = `;
-      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity).toFixed(
-        PERCENT_DIGITS,
-      );
+      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity);
       data.rates = [
         { label: "Borrow APY", value: `${borrowApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
@@ -113,7 +109,7 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = Math.min(supplied + collateral, maxWithdrawAmount).toFixed(PERCENT_DIGITS);
+      data.available = Math.min(supplied + collateral, maxWithdrawAmount);
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
@@ -129,7 +125,7 @@ export const getModalData = (asset): UIAsset & Props => {
           ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
           : available,
         borrowed,
-      ).toFixed(PERCENT_DIGITS);
+      );
       data.alerts = {};
       break;
 

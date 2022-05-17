@@ -14,11 +14,12 @@ export async function withdraw({
   tokenId,
   extraDecimals,
   amount,
-  isMax,
+  maxAmount,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: number;
+  maxAmount: number;
   isMax: boolean;
 }) {
   const { logicContract, oracleContract, account } = await getBurrow();
@@ -31,14 +32,10 @@ export async function withdraw({
     detailedAccount.supplied.find((a) => a.token_id === tokenId)?.balance || 0,
   );
 
-  const collateralBalance = new Decimal(
-    detailedAccount.collateral.find((a) => a.token_id === tokenId)?.balance || 0,
-  );
-
-  const maxAmount = suppliedBalance.add(collateralBalance);
+  const maxAmountD = expandTokenDecimal(maxAmount, decimals + extraDecimals);
 
   const expandedAmount = decimalMin(
-    maxAmount,
+    maxAmountD,
     expandTokenDecimal(amount, decimals + extraDecimals),
   );
 
@@ -62,13 +59,11 @@ export async function withdraw({
   const withdrawAction = {
     Withdraw: {
       token_id: tokenId,
-      max_amount: !isMax ? expandedAmount.toFixed(0) : undefined,
+      max_amount: expandedAmount.toFixed(0),
     },
   };
 
-  const decreaseCollateralAmount = isMax
-    ? collateralBalance
-    : decimalMax(expandedAmount.sub(suppliedBalance), 0);
+  const decreaseCollateralAmount = decimalMax(expandedAmount.sub(suppliedBalance), 0);
 
   if (decreaseCollateralAmount.gt(0)) {
     transactions.push({
@@ -84,7 +79,7 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
-                      amount: !isMax ? decreaseCollateralAmount.toFixed(0) : undefined,
+                      amount: decreaseCollateralAmount.toFixed(0),
                     },
                   },
                   withdrawAction,
@@ -117,7 +112,7 @@ export async function withdraw({
         {
           methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
           args: {
-            amount: isMax ? maxAmount.toFixed(0) : expandedAmount.sub(10).toFixed(0),
+            amount: expandedAmount.sub(10).toFixed(0),
           },
         },
       ],

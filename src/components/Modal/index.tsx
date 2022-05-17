@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Modal as MUIModal, Typography, Box } from "@mui/material";
 
-import { USD_FORMAT } from "../../store";
+import { PERCENT_DIGITS, USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
@@ -86,7 +86,7 @@ const Modal = () => {
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
           {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
-            totalAvailable={available}
+            totalAvailable={available.toFixed(PERCENT_DIGITS)}
             displaySymbol={symbol}
             available$={available$}
             price={price}
