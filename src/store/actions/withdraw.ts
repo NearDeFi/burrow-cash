@@ -35,8 +35,10 @@ export async function withdraw({
     detailedAccount.collateral.find((a) => a.token_id === tokenId)?.balance || 0,
   );
 
+  const maxAmount = suppliedBalance.add(collateralBalance);
+
   const expandedAmount = decimalMin(
-    suppliedBalance.add(collateralBalance),
+    maxAmount,
     expandTokenDecimal(amount, decimals + extraDecimals),
   );
 
@@ -82,7 +84,7 @@ export async function withdraw({
                   {
                     DecreaseCollateral: {
                       token_id: tokenId,
-                      amount: !isMax ? decreaseCollateralAmount : undefined,
+                      amount: !isMax ? decreaseCollateralAmount.toFixed(0) : undefined,
                     },
                   },
                   withdrawAction,
@@ -115,9 +117,7 @@ export async function withdraw({
         {
           methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_withdraw],
           args: {
-            amount: isMax
-              ? suppliedBalance.add(collateralBalance)
-              : expandedAmount.sub(10).toFixed(0),
+            amount: isMax ? maxAmount.toFixed(0) : expandedAmount.sub(10).toFixed(0),
           },
         },
       ],
