@@ -86,7 +86,7 @@ const Modal = () => {
           <TokenInfo action={action} apy={apy} icon={icon} name={name} />
           {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
-            totalAvailable={available.toFixed(PERCENT_DIGITS)}
+            totalAvailable={available?.toFixed(PERCENT_DIGITS)}
             displaySymbol={symbol}
             available$={available$}
             price={price}
