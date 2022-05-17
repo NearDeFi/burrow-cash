@@ -19,10 +19,10 @@ const APYCell = ({
   isStaking = false,
 }) => {
   const appConfig = useConfig();
-  const { computeStakingRewardAPY, computeRewardAPY } = useExtraAPY(tokenId);
+  const isBorrow = page === "borrow";
+  const { computeStakingRewardAPY, computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
-  const isBorrow = page === "borrow";
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
 
@@ -90,7 +90,7 @@ const ToolTip = ({
   isStaking,
 }) => {
   const theme = useTheme();
-  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY(tokenId);
+  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   if (!list?.length) return children;
 
   return (

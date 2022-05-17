@@ -34,17 +34,16 @@ export const getAssets = createSelector(
   (assets) => assets,
 );
 
-export const getTotalSupplyUSD = (tokenId: string) =>
+export const getTotalSupplyAndBorrowUSD = (tokenId: string) =>
   createSelector(
     (state: RootState) => state.assets,
     (assets) => {
       const asset = assets.data[tokenId];
-      if (!asset) return 0;
+      if (!asset) return [0, 0];
 
-      const totalSupplyD = new Decimal(asset.supplied.balance)
-        .plus(new Decimal(asset.reserved))
-        .toFixed();
+      const totalSupplyD = new Decimal(asset.supplied.balance).toFixed();
+      const totalBorrowD = new Decimal(asset.borrowed.balance).toFixed();
 
-      return toUsd(totalSupplyD, asset);
+      return [toUsd(totalSupplyD, asset), toUsd(totalBorrowD, asset)];
     },
   );

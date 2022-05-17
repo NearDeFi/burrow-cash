@@ -2,25 +2,25 @@ import Decimal from "decimal.js";
 
 import { getAccountPortfolio } from "../redux/accountSelectors";
 import { getConfig } from "../redux/appSelectors";
-import { getAssets, getTotalSupplyUSD } from "../redux/assetsSelectors";
+import { getAssets, getTotalSupplyAndBorrowUSD } from "../redux/assetsSelectors";
 import { useAppSelector } from "../redux/hooks";
 import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
 import { getGains } from "../redux/selectors/getNetAPY";
 import { getStaking } from "../redux/selectors/getStaking";
 
-export function useExtraAPY(assetId: string) {
+export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const { xBRRR, extraXBRRRAmount } = useAppSelector(getStaking);
   const portfolio = useAppSelector(getAccountPortfolio);
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
-  const totalSupplyUSD = useAppSelector(getTotalSupplyUSD(assetId));
+  const [totalSupplyUSD, totalBorrowUSD] = useAppSelector(getTotalSupplyAndBorrowUSD(assetId));
 
   const computeRewardAPY = (rewardsPerDay, decimals, price) => {
     return new Decimal(rewardsPerDay)
       .div(new Decimal(10).pow(decimals))
       .mul(365)
       .mul(price)
-      .div(totalSupplyUSD)
+      .div(isBorrow ? totalBorrowUSD : totalSupplyUSD)
       .mul(100)
       .toNumber();
   };
