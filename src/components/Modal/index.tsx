@@ -27,7 +27,7 @@ import {
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
-import { fetchAssetsAndMetadata, fetchRefPrices } from "../../redux/assetsSlice";
+import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
 
 const Modal = () => {
   const isOpen = useAppSelector(getModalStatus);
@@ -73,7 +73,7 @@ const Modal = () => {
 
   useEffect(() => {
     if (isOpen) {
-      dispatch(fetchAssetsAndMetadata()).then(() => dispatch(fetchRefPrices()));
+      dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
     }
   }, [isOpen]);
 

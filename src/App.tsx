@@ -7,7 +7,7 @@ import { useIdle, useInterval } from "react-use";
 import { Borrow, Portfolio, Deposit, Staking, Terms, Privacy } from "./screens";
 import { Layout } from "./components";
 import { useAppDispatch } from "./redux/hooks";
-import { fetchAssetsAndMetadata, fetchRefPrices } from "./redux/assetsSlice";
+import { fetchAssets, fetchRefPrices } from "./redux/assetsSlice";
 import { fetchAccount } from "./redux/accountSlice";
 import { fetchConfig } from "./redux/appSlice";
 
@@ -19,7 +19,7 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   const fetchData = () => {
-    dispatch(fetchAssetsAndMetadata()).then(() => dispatch(fetchRefPrices()));
+    dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
     dispatch(fetchAccount());
   };
 

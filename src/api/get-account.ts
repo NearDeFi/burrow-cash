@@ -4,7 +4,7 @@ import getBalance from "./get-balance";
 import getPortfolio from "./get-portfolio";
 import { getBurrow } from "../utils";
 
-export async function getAccount() {
+const getAccount = async () => {
   const { account } = await getBurrow();
   const { accountId } = account;
 
@@ -18,4 +18,6 @@ export async function getAccount() {
   }
 
   return undefined;
-}
+};
+
+export default getAccount;

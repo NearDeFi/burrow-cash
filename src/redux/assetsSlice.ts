@@ -1,20 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getAssetsDetailed, getAllMetadata } from "../store";
-import { IMetadata } from "../interfaces";
-import { transformAssetFarms } from "../transformers/farms";
 import { defaultNetwork, missingPriceTokens } from "../config";
 import { initialState } from "./assetState";
+import { transformAssets } from "../transformers/asstets";
+import getAssets from "../api/get-assets";
 
-export const fetchAssetsAndMetadata = createAsyncThunk(
-  "assets/fetchAssetsAndMetadata",
-  async () => {
-    const assets = await getAssetsDetailed();
-    const tokenIds = assets.map((asset) => asset.token_id);
-    const metadata = await getAllMetadata(tokenIds);
-    return { assets, metadata };
-  },
-);
+export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
+  const assets = await getAssets().then(transformAssets);
+  return assets;
+});
 
 export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
   const res = await fetch("https://indexer.ref-finance.net/list-token-price", {
@@ -29,22 +23,15 @@ export const assetSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAssetsAndMetadata.pending, (state) => {
+    builder.addCase(fetchAssets.pending, (state) => {
       state.status = "fetching";
     });
-    builder.addCase(fetchAssetsAndMetadata.fulfilled, (state, action) => {
-      const { assets, metadata } = action.payload;
-      assets.forEach((asset) => {
-        state.data[asset.token_id] = {
-          metadata: metadata.find((m) => m.token_id === asset.token_id) as IMetadata,
-          ...asset,
-          farms: transformAssetFarms(asset.farms),
-        };
-      });
+    builder.addCase(fetchAssets.fulfilled, (state, action) => {
+      state.data = action.payload;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
     });
-    builder.addCase(fetchAssetsAndMetadata.rejected, (state, action) => {
+    builder.addCase(fetchAssets.rejected, (state, action) => {
       state.status = action.meta.requestStatus;
       console.error(action.payload);
       throw new Error("Failed to fetch assets and metadata");

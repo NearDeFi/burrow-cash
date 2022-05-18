@@ -4,8 +4,8 @@ import { getBurrow } from "../utils";
 import { ChangeMethodsLogic } from "../interfaces";
 import { identifyUser } from "../telemetry";
 import { transformAccount } from "../transformers/account";
-import { getAccount } from "../api/get-account";
 import { initialState } from "./accountState";
+import getAccount from "../api/get-account";
 
 export const farmClaimAll = createAsyncThunk("account/farmClaimAll", async () => {
   const { call, logicContract } = await getBurrow();
