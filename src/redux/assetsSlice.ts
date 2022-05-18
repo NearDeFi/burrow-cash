@@ -1,50 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getAssetsDetailed, getAllMetadata } from "../store";
-import { IAssetDetailed, IMetadata, IAssetFarmReward } from "../interfaces";
-import { transformAssetFarms } from "./utils";
 import { defaultNetwork, missingPriceTokens } from "../config";
-
-export type Asset = Omit<IAssetDetailed, "farms"> & {
-  metadata: IMetadata;
-  farms: {
-    supplied: {
-      [token: string]: IAssetFarmReward;
-    };
-    borrowed: {
-      [token: string]: IAssetFarmReward;
-    };
-  };
-};
-
-export interface Assets {
-  [id: string]: Asset;
-}
-export interface AssetsState {
-  data: Assets;
-  status: "pending" | "fulfilled" | "rejected" | "fetching" | null;
-  fetchedAt: string | undefined;
-}
-
-const initialState: AssetsState = {
-  data: {},
-  status: null,
-  fetchedAt: undefined,
-};
-
-export const fetchAssetsAndMetadata = createAsyncThunk(
-  "assets/fetchAssetsAndMetadata",
-  async () => {
-    const assets = await getAssetsDetailed();
-    const tokenIds = assets.map((asset) => asset.token_id);
-    const metadata = await getAllMetadata(tokenIds);
-    return { assets, metadata };
-  },
-);
+import { initialState } from "./assetState";
+import { transformAssets } from "../transformers/asstets";
+import getAssets from "../api/get-assets";
 
 export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
-  const assets = await getAssetsDetailed();
-  return { assets };
+  const assets = await getAssets().then(transformAssets);
+  return assets;
 });
 
 export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
@@ -60,46 +23,18 @@ export const assetSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAssetsAndMetadata.pending, (state) => {
-      state.status = "fetching";
-    });
-    builder.addCase(fetchAssetsAndMetadata.fulfilled, (state, action) => {
-      const { assets, metadata } = action.payload;
-      assets.forEach((asset) => {
-        state.data[asset.token_id] = {
-          metadata: metadata.find((m) => m.token_id === asset.token_id) as IMetadata,
-          ...asset,
-          farms: transformAssetFarms(asset.farms),
-        };
-      });
-      state.status = action.meta.requestStatus;
-      state.fetchedAt = new Date().toString();
-    });
-    builder.addCase(fetchAssetsAndMetadata.rejected, (state, action) => {
-      state.status = action.meta.requestStatus;
-      console.error(action.payload);
-      throw new Error("Failed to fetch assets and metadata");
-    });
     builder.addCase(fetchAssets.pending, (state) => {
       state.status = "fetching";
     });
     builder.addCase(fetchAssets.fulfilled, (state, action) => {
-      const { assets } = action.payload;
-      assets.forEach((asset) => {
-        const { metadata } = state.data[asset.token_id];
-        state.data[asset.token_id] = {
-          ...asset,
-          metadata,
-          farms: transformAssetFarms(asset.farms),
-        };
-      });
+      state.data = action.payload;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
     });
     builder.addCase(fetchAssets.rejected, (state, action) => {
       state.status = action.meta.requestStatus;
       console.error(action.payload);
-      throw new Error("Failed to fetch assets");
+      throw new Error("Failed to fetch assets and metadata");
     });
     builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
       missingPriceTokens.forEach((missingToken) => {

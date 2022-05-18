@@ -4,8 +4,8 @@ import Decimal from "decimal.js";
 import { RootState } from "../store";
 import { emptySuppliedAsset, emptyBorrowedAsset, hasAssets, getRewards, toUsd } from "../utils";
 import { shrinkToken, expandToken } from "../../store";
-import { Asset, Assets } from "../assetsSlice";
-import { Farm } from "../accountSlice";
+import { Asset, Assets } from "../assetState";
+import { Farm } from "../accountState";
 
 export const getPortfolioRewards = (
   type: "supplied" | "borrowed",

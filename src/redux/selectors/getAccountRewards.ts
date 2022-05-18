@@ -3,8 +3,8 @@ import { omit } from "lodash";
 
 import { shrinkToken } from "../../store";
 import { RootState } from "../store";
-import { Asset } from "../assetsSlice";
-import { Farm, FarmData, Portfolio } from "../accountSlice";
+import { Asset } from "../assetState";
+import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 
 interface IPortfolioReward {
