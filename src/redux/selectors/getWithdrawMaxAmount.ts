@@ -1,76 +1,72 @@
+import Decimal from "decimal.js";
 import { createSelector } from "@reduxjs/toolkit";
-import { clone } from "ramda";
 
 import { RootState } from "../store";
-import { getBorrowedSum, getCollateralSum } from "./getMaxBorrowAmount";
-import { shrinkToken, expandToken } from "../../store";
-import { DUST_THRESHOLD } from "../../config";
+import { shrinkToken, expandTokenDecimal } from "../../store";
+import { decimalMax, decimalMin } from "../../utils";
+import { Assets } from "../assetsSlice";
+import { Portfolio } from "../accountSlice";
+
+const sumReducerDecimal = (sum: Decimal, cur: Decimal) => sum.add(cur);
+
+const getAdjustedSum = (type: "borrowed" | "collateral", portfolio: Portfolio, assets: Assets) =>
+  Object.keys(portfolio[type])
+    .map((id) => {
+      const asset = assets[id];
+
+      const price = asset.price
+        ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
+        : new Decimal(0);
+
+      const pricedBalance = new Decimal(portfolio[type][id].balance)
+        .div(expandTokenDecimal(1, asset.config.extra_decimals))
+        .mul(price);
+
+      return type === "borrowed"
+        ? pricedBalance.div(asset.config.volatility_ratio).mul(10000)
+        : pricedBalance.mul(asset.config.volatility_ratio).div(10000);
+    })
+    .reduce(sumReducerDecimal, new Decimal(0));
 
 export const getWithdrawMaxAmount = (tokenId: string) =>
   createSelector(
     (state: RootState) => state.app,
     (state: RootState) => state.assets.data,
-    (state: RootState) => state.account,
-    (app, assets, account) => {
+    (state: RootState) => state.account.portfolio,
+    (app, assets, portfolio) => {
       const asset = assets[tokenId];
       if (!asset || app.selected.tokenId !== tokenId) return 0;
       if (!["Withdraw", "Adjust"].includes(app.selected.action as string)) return 0;
+
       const { metadata, config } = asset;
       const decimals = metadata.decimals + config.extra_decimals;
 
-      const clonedAccount = clone(account);
-      const empty = {
-        balance: "0",
-        shares: "0",
-        apr: "0",
-      };
+      const assetPrice = asset.price
+        ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
+        : new Decimal(0);
 
-      const { supplied, collateral } = clonedAccount.portfolio;
+      const suppliedBalance = new Decimal(portfolio.supplied[tokenId]?.balance || 0);
+      const collateralBalance = new Decimal(portfolio.collateral[tokenId]?.balance || 0);
 
-      if (!supplied[tokenId]) {
-        supplied[tokenId] = empty;
+      let maxAmount = suppliedBalance;
+
+      if (collateralBalance.gt(0)) {
+        const adjustedCollateralSum = getAdjustedSum("collateral", portfolio, assets);
+        const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets);
+
+        const adjustedPricedDiff = decimalMax(0, adjustedCollateralSum.sub(adjustedBorrowedSum));
+        const safeAdjustedPricedDiff = adjustedPricedDiff.mul(99).div(100);
+
+        const safePricedDiff = safeAdjustedPricedDiff.div(asset.config.volatility_ratio).mul(10000);
+
+        const safeDiff = safePricedDiff
+          .div(assetPrice)
+          .mul(expandTokenDecimal(1, asset.config.extra_decimals))
+          .trunc();
+
+        maxAmount = maxAmount.add(decimalMin(safeDiff, collateralBalance));
       }
 
-      if (!collateral[tokenId]) {
-        collateral[tokenId] = empty;
-      }
-
-      const collateralBalance = Number(shrinkToken(collateral[tokenId].balance, decimals));
-      const suppliedBalance = Number(shrinkToken(supplied[tokenId].balance, decimals));
-
-      const borrowedSum = getBorrowedSum(assets, account);
-
-      if (borrowedSum <= DUST_THRESHOLD) {
-        return collateralBalance + suppliedBalance;
-      }
-
-      let iterations = 0;
-      const MIN_SAFE_HEALTH_FACTOR = 100.1;
-      const MAX_SAFE_HEALTH_FACTOR = 101;
-      const MAX_ITERATIONS = 150;
-
-      const computeMaxWithdraw = (amount: number) => {
-        const newBalance = expandToken(collateralBalance + suppliedBalance - amount, decimals);
-        clonedAccount.portfolio.collateral[tokenId].balance = newBalance;
-        const collateralSum = getCollateralSum(assets, clonedAccount);
-        const healthFactor = (collateralSum / borrowedSum) * 100;
-
-        iterations++;
-
-        if (
-          (healthFactor >= MIN_SAFE_HEALTH_FACTOR && healthFactor <= MAX_SAFE_HEALTH_FACTOR) ||
-          iterations > MAX_ITERATIONS
-        ) {
-          return amount;
-        }
-
-        if (healthFactor < MIN_SAFE_HEALTH_FACTOR) {
-          return computeMaxWithdraw(amount - amount / 2);
-        }
-
-        return computeMaxWithdraw(amount + amount * 2);
-      };
-
-      return computeMaxWithdraw(collateralBalance + suppliedBalance);
+      return Number(shrinkToken(maxAmount.toFixed(), decimals));
     },
   );
