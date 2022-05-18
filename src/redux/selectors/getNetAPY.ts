@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { hasAssets, toUsd } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
-import { AssetsState } from "../assetsSlice";
+import { AssetsState } from "../assetState";
 import { Portfolio } from "../accountState";
 
 export const getGains = (

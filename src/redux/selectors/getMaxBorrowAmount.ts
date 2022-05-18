@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { shrinkToken } from "../../store";
 import { RootState } from "../store";
 import { sumReducer, hasAssets } from "../utils";
-import { Assets } from "../assetsSlice";
+import { Assets } from "../assetState";
 import { AccountState } from "../accountState";
 
 const MAX_RATIO = 10000;

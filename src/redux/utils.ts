@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { pick, omit } from "ramda";
 
 import { shrinkToken, USD_FORMAT, TOKEN_FORMAT } from "../store";
-import type { Asset, Assets, AssetsState } from "./assetsSlice";
+import type { Asset, Assets, AssetsState } from "./assetState";
 import type { AccountState } from "./accountState";
 import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";

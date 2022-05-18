@@ -3,7 +3,7 @@ import { omit } from "lodash";
 
 import { shrinkToken } from "../../store";
 import { RootState } from "../store";
-import { Asset } from "../assetsSlice";
+import { Asset } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 

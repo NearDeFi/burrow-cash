@@ -1,36 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getAssetsDetailed, getAllMetadata } from "../store";
-import { IAssetDetailed, IMetadata, IAssetFarmReward } from "../interfaces";
+import { IMetadata } from "../interfaces";
 import { transformAssetFarms } from "../transformers/farms";
 import { defaultNetwork, missingPriceTokens } from "../config";
-
-export type Asset = Omit<IAssetDetailed, "farms"> & {
-  metadata: IMetadata;
-  farms: {
-    supplied: {
-      [token: string]: IAssetFarmReward;
-    };
-    borrowed: {
-      [token: string]: IAssetFarmReward;
-    };
-  };
-};
-
-export interface Assets {
-  [id: string]: Asset;
-}
-export interface AssetsState {
-  data: Assets;
-  status: "pending" | "fulfilled" | "rejected" | "fetching" | null;
-  fetchedAt: string | undefined;
-}
-
-const initialState: AssetsState = {
-  data: {},
-  status: null,
-  fetchedAt: undefined,
-};
+import { initialState } from "./assetState";
 
 export const fetchAssetsAndMetadata = createAsyncThunk(
   "assets/fetchAssetsAndMetadata",

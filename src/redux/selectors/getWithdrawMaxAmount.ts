@@ -4,7 +4,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { shrinkToken, expandTokenDecimal } from "../../store";
 import { decimalMax, decimalMin } from "../../utils";
-import { Assets } from "../assetsSlice";
+import { Assets } from "../assetState";
 import { Portfolio } from "../accountState";
 
 const sumReducerDecimal = (sum: Decimal, cur: Decimal) => sum.add(cur);
