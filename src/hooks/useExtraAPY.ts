@@ -54,8 +54,12 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     const totalCollateralAssetUSD =
       Number(shrinkToken(portfolio.collateral[assetId]?.balance || 0, assetDecimals)) * assetPrice;
 
-    const total = isBorrow ? totalBorrowAssetUSD : totalSupplyAssetUSD + totalCollateralAssetUSD;
-    const apy = ((newDailyAmount * 365 * rewardAssetPrice) / total) * 100;
+    const totalAssetUSD = isBorrow
+      ? totalBorrowAssetUSD
+      : totalSupplyAssetUSD + totalCollateralAssetUSD;
+
+    const apy = ((newDailyAmount * 365 * rewardAssetPrice) / totalAssetUSD) * 100;
+
     return apy;
   };
 
