@@ -1,3 +1,3 @@
 export function transformAssets() {
-  return undefined;
+  return null;
 }

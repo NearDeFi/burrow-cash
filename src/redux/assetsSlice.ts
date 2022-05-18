@@ -16,11 +16,6 @@ export const fetchAssetsAndMetadata = createAsyncThunk(
   },
 );
 
-export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
-  const assets = await getAssetsDetailed();
-  return { assets };
-});
-
 export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
   const res = await fetch("https://indexer.ref-finance.net/list-token-price", {
     mode: "cors",
@@ -53,27 +48,6 @@ export const assetSlice = createSlice({
       state.status = action.meta.requestStatus;
       console.error(action.payload);
       throw new Error("Failed to fetch assets and metadata");
-    });
-    builder.addCase(fetchAssets.pending, (state) => {
-      state.status = "fetching";
-    });
-    builder.addCase(fetchAssets.fulfilled, (state, action) => {
-      const { assets } = action.payload;
-      assets.forEach((asset) => {
-        const { metadata } = state.data[asset.token_id];
-        state.data[asset.token_id] = {
-          ...asset,
-          metadata,
-          farms: transformAssetFarms(asset.farms),
-        };
-      });
-      state.status = action.meta.requestStatus;
-      state.fetchedAt = new Date().toString();
-    });
-    builder.addCase(fetchAssets.rejected, (state, action) => {
-      state.status = action.meta.requestStatus;
-      console.error(action.payload);
-      throw new Error("Failed to fetch assets");
     });
     builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
       missingPriceTokens.forEach((missingToken) => {
