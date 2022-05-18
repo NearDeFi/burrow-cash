@@ -4,7 +4,7 @@ import { shrinkToken } from "../../store";
 import { RootState } from "../store";
 import { sumReducer, hasAssets } from "../utils";
 import { Assets } from "../assetsSlice";
-import { AccountState } from "../accountSlice";
+import { AccountState } from "../accountState";
 
 const MAX_RATIO = 10000;
 

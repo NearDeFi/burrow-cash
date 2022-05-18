@@ -3,7 +3,7 @@ import { pick, omit } from "ramda";
 
 import { shrinkToken, USD_FORMAT, TOKEN_FORMAT } from "../store";
 import type { Asset, Assets, AssetsState } from "./assetsSlice";
-import type { AccountState } from "./accountSlice";
+import type { AccountState } from "./accountState";
 import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";
 
@@ -15,48 +15,6 @@ export const listToMap = (list) =>
   list
     .map((asset) => ({ [asset.token_id]: omit(["token_id"], asset) }))
     .reduce((a, b) => ({ ...a, ...b }), {});
-
-export const transformAccountFarms = (list) => {
-  const farms = {
-    supplied: {},
-    borrowed: {},
-  };
-
-  list.forEach((farm) => {
-    const [action, token] = Object.entries(farm["farm_id"])
-      .flat()
-      .map((s: any) => s.toLowerCase());
-
-    farms[action] = {
-      ...farms[action],
-      [token]: farm.rewards.reduce(
-        (o, item) => ({
-          ...o,
-          [item["reward_token_id"]]: {
-            ...pick(["boosted_shares", "unclaimed_amount", "asset_farm_reward"], item),
-          },
-        }),
-        {},
-      ),
-    };
-  });
-
-  return farms;
-};
-
-export const transformAssetFarms = (list) => {
-  const farms = {
-    supplied: {},
-    borrowed: {},
-  };
-  list.forEach((farm) => {
-    const [action] = Object.entries(farm["farm_id"])
-      .flat()
-      .map((s: any) => s.toLowerCase());
-    farms[action] = { ...farms[action], ...farm.rewards };
-  });
-  return farms;
-};
 
 export const toUsd = (balance: string, asset: Asset) =>
   asset.price?.usd

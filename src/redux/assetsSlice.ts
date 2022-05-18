@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getAssetsDetailed, getAllMetadata } from "../store";
 import { IAssetDetailed, IMetadata, IAssetFarmReward } from "../interfaces";
-import { transformAssetFarms } from "./utils";
+import { transformAssetFarms } from "../transformers/farms";
 import { defaultNetwork, missingPriceTokens } from "../config";
 
 export type Asset = Omit<IAssetDetailed, "farms"> & {
