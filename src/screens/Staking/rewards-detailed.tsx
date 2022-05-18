@@ -115,16 +115,30 @@ const BoostedRewards = ({ type }: Props) => {
       bgcolor="#d7f0e5"
       p={1}
       sx={{
-        width: ["110%", "40%"],
+        width: ["108%", "60%"],
         p: 1,
         pl: [2, 0],
         pr: [2, 1],
         ml: [-2, 0],
-        gridTemplateColumns: ["auto 1fr", "auto"],
+        gridTemplateColumns: ["1fr auto 1fr", "auto"],
       }}
     >
       <Typography
-        gridColumn={["2 / span 1", "2 / span 1"]}
+        sx={{ gridColumn: ["2 / span 1", "1 / span 1"] }}
+        fontSize="0.75rem"
+        textAlign="right"
+        fontWeight="bold"
+      >
+        {isSupplied ? (
+          <span>
+            🚀 APY <Info title="Boosted APY for each asset after staking" />
+          </span>
+        ) : (
+          <span>&nbsp;</span>
+        )}
+      </Typography>
+      <Typography
+        gridColumn={["3 / span 1", "2 / span 1"]}
         fontSize="0.75rem"
         textAlign="right"
         fontWeight="bold"
@@ -139,6 +153,10 @@ const BoostedRewards = ({ type }: Props) => {
         )}
       </Typography>
       {boosted.map((token) => {
+        const apyRewards = isSupplied ? token.depositRewards : token.borrowRewards;
+        const baseAPY = isSupplied ? token.apy : token.borrowApy;
+        const page = isSupplied ? "deposit" : "borrow";
+
         return [
           <Box
             key={`${token.tokenId}-hr`}
@@ -148,7 +166,7 @@ const BoostedRewards = ({ type }: Props) => {
               borderWidth: 0.5,
               bgcolor: theme.palette.background.default,
               borderStyle: "outset",
-              gridColumn: ["1 / span 2", "1 / span 2"],
+              gridColumn: ["1 / span 3", "1 / span 2"],
             }}
           />,
           <Box
@@ -163,6 +181,17 @@ const BoostedRewards = ({ type }: Props) => {
                 {token.price?.toLocaleString(undefined, USD_FORMAT) || "$-.-"}
               </Typography>
             </Box>
+          </Box>,
+          <Box key={`${token.tokenId}-apy`}>
+            <APYCell
+              rewards={apyRewards}
+              baseAPY={baseAPY}
+              page={page}
+              tokenId={token.tokenId}
+              showIcons={false}
+              sx={{ fontSize: "0.75rem" }}
+              isStaking
+            />
           </Box>,
           <Box
             key={`${token.tokenId}-rewards`}
