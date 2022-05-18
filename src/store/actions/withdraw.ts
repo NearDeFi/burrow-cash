@@ -4,12 +4,15 @@ import Decimal from "decimal.js";
 import { decimalMax, decimalMin, getBurrow, nearTokenId } from "../../utils";
 import { expandToken, expandTokenDecimal } from "../helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
-import { getMetadata, getTokenContract, prepareAndExecuteTransactions } from "../tokens";
+import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction, isRegistered } from "../wallet";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
-import { getAccountDetailed } from "../accounts";
-import { getAssetsDetailed } from "../assets";
+import getAssets from "../../api/get-assets";
+import { transformAssets } from "../../transformers/asstets";
+import getAccount from "../../api/get-account";
+import { transformAccount } from "../../transformers/account";
+import { computeWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 
 export async function withdraw({
   tokenId,
@@ -22,66 +25,18 @@ export async function withdraw({
   amount: number;
   isMax: boolean;
 }) {
-  const { logicContract, oracleContract, account } = await getBurrow();
+  const assets = await getAssets().then(transformAssets);
+  const account = await getAccount().then(transformAccount);
+  if (!account) return;
+
+  const asset = assets[tokenId];
+  const { decimals } = asset.metadata;
+  const { logicContract, oracleContract } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
-  const { decimals } = (await getMetadata(tokenId))!;
-  const assetDetailed = await getAssetsDetailed();
-  const detailedAccount = (await getAccountDetailed(account.accountId))!;
-  const assets = assetDetailed.reduce((obj, asset) => {
-    obj[asset.token_id] = {
-      asset,
-      price: asset.price
-        ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
-        : new Decimal(0),
-    };
-    return obj;
-  }, {});
   const isNEAR = tokenId === nearTokenId;
 
-  const suppliedBalance = new Decimal(
-    detailedAccount.supplied.find((a) => a.token_id === tokenId)?.balance || 0,
-  );
-
-  const collateralBalance = new Decimal(
-    detailedAccount.collateral.find((a) => a.token_id === tokenId)?.balance || 0,
-  );
-
-  let maxAmount = suppliedBalance;
-
-  if (collateralBalance.gt(0)) {
-    const adjustedCollateralSum = detailedAccount.collateral.reduce((sum, a) => {
-      const { asset, price } = assets[a.token_id];
-      const pricedBalance = new Decimal(a.balance)
-        .div(expandTokenDecimal(1, asset.config.extra_decimals))
-        .mul(price);
-      const adjustedPricedBalance = pricedBalance.mul(asset.config.volatility_ratio).div(10000);
-      sum = sum.add(adjustedPricedBalance);
-      return sum;
-    }, new Decimal(0));
-
-    const adjustedBorrowedSum = detailedAccount.borrowed.reduce((sum, a) => {
-      const { asset, price } = assets[a.token_id];
-      const pricedBalance = new Decimal(a.balance)
-        .div(expandTokenDecimal(1, asset.config.extra_decimals))
-        .mul(price);
-      const adjustedPricedBalance = pricedBalance.div(asset.config.volatility_ratio).mul(10000);
-      sum = sum.add(adjustedPricedBalance);
-      return sum;
-    }, new Decimal(0));
-
-    const adjustedPricedDiff = decimalMax(0, adjustedCollateralSum.sub(adjustedBorrowedSum));
-    const safeAdjustedPricedDiff = adjustedPricedDiff.mul(99).div(100);
-    const { asset, price } = assets[tokenId];
-    // Unadjust back for collateral.
-    const safePricedDiff = safeAdjustedPricedDiff.div(asset.config.volatility_ratio).mul(10000);
-    // Unprice it for this collateral.
-    const safeDiff = safePricedDiff
-      .div(price)
-      .mul(expandTokenDecimal(1, asset.config.extra_decimals))
-      .trunc();
-
-    maxAmount = maxAmount.add(decimalMin(safeDiff, collateralBalance));
-  }
+  const suppliedBalance = new Decimal(account.portfolio?.supplied?.balance || 0);
+  const maxAmount = computeWithdrawMaxAmount(tokenId, assets, account.portfolio!);
 
   const expandedAmount = isMax
     ? maxAmount
