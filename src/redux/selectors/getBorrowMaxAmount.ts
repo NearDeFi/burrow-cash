@@ -25,7 +25,7 @@ export const computeBorrowMaxAmount = (tokenId: string, assets: Assets, portfoli
   return maxBorrowAmount;
 };
 
-export const getMaxBorrowAmount = (tokenId: string) =>
+export const getBorrowMaxAmount = (tokenId: string) =>
   createSelector(
     (state: RootState) => state.assets,
     (state: RootState) => state.account,

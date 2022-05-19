@@ -7,7 +7,7 @@ import { hideModal } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
 import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 import { getAccountId } from "../../redux/accountSelectors";
-import { getMaxBorrowAmount } from "../../redux/selectors/getMaxBorrowAmount";
+import { getBorrowMaxAmount } from "../../redux/selectors/getBorrowMaxAmount";
 import { recomputeHealthFactor } from "../../redux/selectors/recomputeHealthFactor";
 import { recomputeHealthFactorAdjust } from "../../redux/selectors/recomputeHealthFactorAdjust";
 import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHealthFactorWithdraw";
@@ -50,7 +50,7 @@ const Modal = () => {
       : recomputeHealthFactor(tokenId, amount),
   );
 
-  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
+  const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const {
