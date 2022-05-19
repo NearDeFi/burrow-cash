@@ -15,7 +15,20 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
   const asset = assets.data[assetId];
+
   const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+  const assetPrice = assets.data[assetId].price?.usd || 0;
+
+  const totalBorrowAssetUSD =
+    Number(shrinkToken(portfolio.borrowed[assetId]?.balance || 0, assetDecimals)) * assetPrice;
+  const totalSupplyAssetUSD =
+    Number(shrinkToken(portfolio.supplied[assetId]?.balance || 0, assetDecimals)) * assetPrice;
+  const totalCollateralAssetUSD =
+    Number(shrinkToken(portfolio.collateral[assetId]?.balance || 0, assetDecimals)) * assetPrice;
+
+  const totalUserAssetUSD = isBorrow
+    ? totalBorrowAssetUSD
+    : totalSupplyAssetUSD + totalCollateralAssetUSD;
 
   const computeRewardAPY = (rewardTokenId, rewardsPerDay, decimals, price) => {
     const rewardAsset = assets.data[rewardTokenId];
@@ -61,7 +74,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     // APY = total_daily_rewards * 365 * users_multiplier / (total_deposits * total_boosted_shares / total_shares)
     const apy =
       ((totalDailyRewards * price * 365 * multiplier) /
-        ((totalDeposits * totalBoostedShares) / shares)) *
+        ((totalUserAssetUSD * totalBoostedShares) / shares)) *
       100;
 
     return apy;
@@ -84,21 +97,9 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
       appConfig.booster_decimals,
     );
 
-    const assetPrice = assets.data[assetId].price?.usd || 0;
     const rewardAssetPrice = assets.data[rewardTokenId].price?.usd || 0;
 
-    const totalBorrowAssetUSD =
-      Number(shrinkToken(portfolio.borrowed[assetId]?.balance || 0, assetDecimals)) * assetPrice;
-    const totalSupplyAssetUSD =
-      Number(shrinkToken(portfolio.supplied[assetId]?.balance || 0, assetDecimals)) * assetPrice;
-    const totalCollateralAssetUSD =
-      Number(shrinkToken(portfolio.collateral[assetId]?.balance || 0, assetDecimals)) * assetPrice;
-
-    const totalAssetUSD = isBorrow
-      ? totalBorrowAssetUSD
-      : totalSupplyAssetUSD + totalCollateralAssetUSD;
-
-    const apy = ((newDailyAmount * 365 * rewardAssetPrice) / totalAssetUSD) * 100;
+    const apy = ((newDailyAmount * 365 * rewardAssetPrice) / totalUserAssetUSD) * 100;
 
     return apy;
   };
