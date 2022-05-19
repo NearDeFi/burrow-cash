@@ -22,6 +22,21 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     const type = isBorrow ? "borrowed" : "supplied";
     const farmData = portfolio.farms?.[type]?.[assetId]?.[rewardTokenId];
 
+    const totalDailyRewards = new Decimal(rewardsPerDay)
+      .div(new Decimal(10).pow(decimals))
+      .toNumber();
+
+    const totalDeposits = isBorrow ? totalBorrowUSD : totalSupplyUSD;
+
+    if (!farmData)
+      return new Decimal(rewardsPerDay)
+        .div(new Decimal(10).pow(decimals))
+        .mul(365)
+        .mul(price)
+        .div(totalDeposits)
+        .mul(100)
+        .toNumber();
+
     const { multiplier, totalBoostedShares, shares } = computeDailyAmount(
       type,
       asset,
@@ -31,12 +46,6 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
       farmData,
       appConfig.booster_decimals,
     );
-
-    const totalDailyRewards = new Decimal(rewardsPerDay)
-      .div(new Decimal(10).pow(decimals))
-      .toNumber();
-
-    const totalDeposits = isBorrow ? totalBorrowUSD : totalSupplyUSD;
 
     console.info(
       isBorrow,
