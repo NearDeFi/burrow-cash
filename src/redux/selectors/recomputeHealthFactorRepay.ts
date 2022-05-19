@@ -1,10 +1,11 @@
+import Decimal from "decimal.js";
 import { clone } from "ramda";
-
 import { createSelector } from "@reduxjs/toolkit";
-import { expandToken } from "../../store";
+
+import { expandTokenDecimal, MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
-import { getCollateralSum, getBorrowedSum } from "./getMaxBorrowAmount";
+import { getAdjustedSum } from "./getWithdrawMaxAmount";
 
 export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
   createSelector(
@@ -14,20 +15,20 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
       if (!hasAssets(assets)) return 0;
       if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
 
-      const collateralSum = getCollateralSum(assets.data, account);
       const { metadata, config } = assets.data[tokenId];
+      const decimals = metadata.decimals + config.extra_decimals;
 
-      const newBalance = (
-        Number(account.portfolio.borrowed[tokenId].balance) -
-        Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
-      ).toString();
+      const borrowedBalance = new Decimal(account.portfolio.borrowed[tokenId].balance);
+      const newBalance = borrowedBalance.minus(expandTokenDecimal(amount, decimals));
 
       const clonedAccount = clone(account);
-      clonedAccount.portfolio.borrowed[tokenId].balance = newBalance;
+      clonedAccount.portfolio.borrowed[tokenId].balance = newBalance.toFixed();
 
-      const borrowedSum = getBorrowedSum(assets.data, clonedAccount);
+      const adjustedCollateralSum = getAdjustedSum("collateral", account.portfolio, assets.data);
+      const adjustedBorrowedSum = getAdjustedSum("borrowed", clonedAccount.portfolio, assets.data);
 
-      const healthFactor = (collateralSum / borrowedSum) * 100;
-      return healthFactor < 10000 ? healthFactor : 10000;
+      const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+
+      return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
     },
   );
