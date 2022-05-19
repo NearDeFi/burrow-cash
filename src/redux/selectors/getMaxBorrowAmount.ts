@@ -19,7 +19,7 @@ export const computeBorrowMaxAmount = (tokenId: string, assets: Assets, portfoli
     .mul(volatiliyRatio)
     .div(MAX_RATIO)
     .div(price)
-    .mul(99)
+    .mul(95)
     .div(100);
 
   return maxBorrowAmount;
