@@ -55,7 +55,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
       asset,
       rewardAsset,
       portfolio,
-      xBRRR + extraXBRRRAmount,
+      xBRRR,
       farmData,
       appConfig.booster_decimals,
     );
