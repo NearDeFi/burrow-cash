@@ -14,20 +14,51 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const portfolio = useAppSelector(getAccountPortfolio);
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
+  const asset = assets.data[assetId];
+  const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
 
-  const computeRewardAPY = (rewardsPerDay, decimals, price) => {
-    return new Decimal(rewardsPerDay)
+  const computeRewardAPY = (rewardTokenId, rewardsPerDay, decimals, price) => {
+    const rewardAsset = assets.data[rewardTokenId];
+    const type = isBorrow ? "borrowed" : "supplied";
+    const farmData = portfolio.farms?.[type]?.[assetId]?.[rewardTokenId];
+
+    const { multiplier, totalBoostedShares, shares } = computeDailyAmount(
+      type,
+      asset,
+      rewardAsset,
+      portfolio,
+      xBRRR + extraXBRRRAmount,
+      farmData,
+      appConfig.booster_decimals,
+    );
+
+    const totalDailyRewards = new Decimal(rewardsPerDay)
       .div(new Decimal(10).pow(decimals))
-      .mul(365)
-      .mul(price)
-      .div(isBorrow ? totalBorrowUSD : totalSupplyUSD)
-      .mul(100)
       .toNumber();
+
+    const totalDeposits = isBorrow ? totalBorrowUSD : totalSupplyUSD;
+
+    console.info(
+      isBorrow,
+      assetId,
+      rewardTokenId,
+      totalDailyRewards,
+      price,
+      multiplier,
+      totalBoostedShares,
+      shares,
+    );
+
+    // APY = total_daily_rewards * 365 * users_multiplier / (total_deposits * total_boosted_shares / total_shares)
+    const apy =
+      ((totalDailyRewards * price * 365 * multiplier) /
+        ((totalDeposits * totalBoostedShares) / shares)) *
+      100;
+
+    return apy;
   };
 
   const computeStakingRewardAPY = (rewardTokenId: string) => {
-    const asset = assets.data[assetId];
-    const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
     const rewardAsset = assets.data[rewardTokenId];
     const type = isBorrow ? "borrowed" : "supplied";
     const farmData = portfolio.farms?.[type]?.[assetId]?.[rewardTokenId];

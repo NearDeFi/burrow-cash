@@ -28,6 +28,7 @@ const APYCell = ({
 
   const extraAPY = extraRewards.reduce((acc: number, { metadata, rewards, price, config }) => {
     const apy = computeRewardAPY(
+      metadata.token_id,
       rewards.reward_per_day,
       metadata.decimals + config.extra_decimals,
       price || 0,
@@ -104,6 +105,7 @@ const ToolTip = ({
             const { symbol, icon } = metadata;
 
             const rewardAPY = computeRewardAPY(
+              metadata.token_id,
               rewards.reward_per_day,
               metadata.decimals + config.extra_decimals,
               price || 0,
