@@ -1,10 +1,11 @@
 import { clone } from "ramda";
 
 import { createSelector } from "@reduxjs/toolkit";
-import { expandToken } from "../../store";
+import { expandTokenDecimal } from "../../store/helper";
+import { MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
-import { getCollateralSum, getBorrowedSum } from "./getMaxBorrowAmount";
+import { getAdjustedSum } from "./getWithdrawMaxAmount";
 
 export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
   createSelector(
@@ -15,10 +16,9 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
       if (!account.portfolio || !tokenId) return 0;
 
       const { metadata, config } = assets.data[tokenId];
+      const decimals = metadata.decimals + config.extra_decimals;
 
-      const newBalance = Number(
-        expandToken(amount, metadata.decimals + config.extra_decimals, 0),
-      ).toString();
+      const newBalance = expandTokenDecimal(amount, decimals).toFixed();
 
       const clonedAccount = clone(account);
 
@@ -35,10 +35,15 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
         balance: newBalance,
       };
 
-      const collateralSum = getCollateralSum(assets.data, clonedAccount);
-      const borrowedSum = getBorrowedSum(assets.data, account);
+      const adjustedCollateralSum = getAdjustedSum(
+        "collateral",
+        clonedAccount.portfolio,
+        assets.data,
+      );
+      const adjustedBorrowedSum = getAdjustedSum("borrowed", account.portfolio, assets.data);
 
-      const healthFactor = (collateralSum / borrowedSum) * 100;
-      return healthFactor < 10000 ? healthFactor : 10000;
+      const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+
+      return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
     },
   );

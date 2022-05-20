@@ -16,6 +16,7 @@ const APYCell = ({
   tokenId,
   showIcons = true,
   isStaking = false,
+  justifyContent = "flex-end",
   sx = {},
 }) => {
   const appConfig = useConfig();
@@ -62,7 +63,7 @@ const APYCell = ({
         direction="row"
         gap="3px"
         alignItems="center"
-        justifyContent="flex-end"
+        justifyContent={justifyContent}
       >
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px" sx={sx}>
           {toAPY(boostedAPY)}%

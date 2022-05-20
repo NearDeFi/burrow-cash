@@ -7,7 +7,7 @@ import { hideModal } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
 import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 import { getAccountId } from "../../redux/accountSelectors";
-import { getMaxBorrowAmount } from "../../redux/selectors/getMaxBorrowAmount";
+import { getBorrowMaxAmount } from "../../redux/selectors/getBorrowMaxAmount";
 import { recomputeHealthFactor } from "../../redux/selectors/recomputeHealthFactor";
 import { recomputeHealthFactorAdjust } from "../../redux/selectors/recomputeHealthFactorAdjust";
 import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHealthFactorWithdraw";
@@ -50,13 +50,11 @@ const Modal = () => {
       : recomputeHealthFactor(tokenId, amount),
   );
 
-  const maxBorrowAmount = useAppSelector(getMaxBorrowAmount(tokenId));
+  const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const {
-    name,
     symbol,
-    icon,
     apy,
     price,
     available,
@@ -83,7 +81,7 @@ const Modal = () => {
         <Box sx={{ overflowY: "auto" }} p="1rem">
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
-          <TokenInfo action={action} apy={apy} icon={icon} name={name} />
+          <TokenInfo apy={apy} asset={asset} />
           {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
             totalAvailable={available}

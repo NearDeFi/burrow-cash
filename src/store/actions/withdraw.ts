@@ -35,7 +35,7 @@ export async function withdraw({
   const tokenContract = await getTokenContract(tokenId);
   const isNEAR = tokenId === nearTokenId;
 
-  const suppliedBalance = new Decimal(account.portfolio?.supplied?.balance || 0);
+  const suppliedBalance = new Decimal(account.portfolio?.supplied[tokenId]?.balance || 0);
   const maxAmount = computeWithdrawMaxAmount(tokenId, assets, account.portfolio!);
 
   const expandedAmount = isMax

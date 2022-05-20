@@ -113,13 +113,19 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount = `;
-      data.available = Math.min(supplied + collateral, maxWithdrawAmount).toFixed(PERCENT_DIGITS);
+      data.apy = supplyApy;
+      data.available = Math.min(
+        supplied + collateral,
+        maxWithdrawAmount,
+        availableLiquidity,
+      ).toFixed(PERCENT_DIGITS);
       data.remainingCollateral = Math.abs(
         Math.min(collateral, collateral + supplied - amount),
       ).toLocaleString(undefined, TOKEN_FORMAT);
       break;
     case "Adjust":
       data.totalTitle = `Amount designated as collateral = `;
+      data.apy = supplyApy;
       data.available = getAvailableWithdrawOrAdjust;
       break;
     case "Repay":
