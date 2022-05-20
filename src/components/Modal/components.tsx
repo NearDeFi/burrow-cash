@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
-import { APY_FORMAT } from "../../store";
+import APYCell from "../Table/common/apy-cell";
 
 export const USNInfo = () => (
   <Box mt="1rem">
@@ -56,21 +56,34 @@ export const CloseButton = ({ onClose, ...props }) => (
   </Box>
 );
 
-export const TokenInfo = ({ action, apy, icon, name }) => (
-  <>
-    <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
-      {actionMapTitle[action]}
-    </Typography>
-    <Box display="grid" justifyContent="center" mt="2rem">
-      <TokenIcon icon={icon} />
-    </Box>
-    <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
-      {name}
-      <br />
-      <span>{apy?.toLocaleString(undefined, APY_FORMAT)}%</span>
-    </Typography>
-  </>
-);
+export const TokenInfo = ({ apy, asset }) => {
+  const { action, name, tokenId, icon, depositRewards, borrowRewards } = asset;
+  const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
+  const apyRewards = page === "deposit" ? depositRewards : borrowRewards;
+
+  return (
+    <>
+      <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
+        {actionMapTitle[action]}
+      </Typography>
+      <Box display="grid" justifyContent="center" mt="2rem">
+        <TokenIcon icon={icon} />
+      </Box>
+      <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
+        {name}
+      </Typography>
+      <APYCell
+        rewards={apyRewards}
+        baseAPY={apy}
+        page={page}
+        tokenId={tokenId}
+        showIcons={false}
+        justifyContent="center"
+        sx={{ fontSize: "0.75rem", color: "gray" }}
+      />
+    </>
+  );
+};
 
 export const Available = ({ totalAvailable, displaySymbol, available$, price }) => (
   <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">

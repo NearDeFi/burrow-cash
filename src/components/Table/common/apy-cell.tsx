@@ -9,7 +9,15 @@ import { useExtraAPY } from "../../../hooks/useExtraAPY";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
-const APYCell = ({ baseAPY, rewards: list, page, tokenId, showIcons = true, sx = {} }) => {
+const APYCell = ({
+  baseAPY,
+  rewards: list,
+  page,
+  tokenId,
+  showIcons = true,
+  justifyContent = "flex-end",
+  sx = {},
+}) => {
   const appConfig = useConfig();
   const isBorrow = page === "borrow";
   const { computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
@@ -46,7 +54,7 @@ const APYCell = ({ baseAPY, rewards: list, page, tokenId, showIcons = true, sx =
         direction="row"
         gap="3px"
         alignItems="center"
-        justifyContent="flex-end"
+        justifyContent={justifyContent}
       >
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px" sx={sx}>
           {toAPY(boostedAPY)}%

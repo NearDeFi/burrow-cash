@@ -54,9 +54,7 @@ const Modal = () => {
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
   const {
-    name,
     symbol,
-    icon,
     apy,
     price,
     available,
@@ -83,7 +81,7 @@ const Modal = () => {
         <Box sx={{ overflowY: "auto" }} p="1rem">
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
-          <TokenInfo action={action} apy={apy} icon={icon} name={name} />
+          <TokenInfo apy={apy} asset={asset} />
           {action === "Supply" && symbol === "USN" && <USNInfo />}
           <Available
             totalAvailable={available}
