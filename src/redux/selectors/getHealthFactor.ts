@@ -1,20 +1,23 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { MAX_RATIO } from "../../store";
 
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
-import { getCollateralSum, getBorrowedSum } from "./getMaxBorrowAmount";
+import { getAdjustedSum } from "./getWithdrawMaxAmount";
 
 export const getHealthFactor = createSelector(
   (state: RootState) => state.assets,
-  (state: RootState) => state.account,
-  (assets, account) => {
+  (state: RootState) => state.account.portfolio,
+  (assets, portfolio) => {
     if (!hasAssets(assets)) return null;
-    if (!account.portfolio) return null;
-    if (!Object.keys(account.portfolio.borrowed).length) return -1;
-    const collateralSum = getCollateralSum(assets.data, account);
-    const borrowedSum = getBorrowedSum(assets.data, account);
+    if (!portfolio) return null;
+    if (!Object.keys(portfolio.borrowed).length) return -1;
 
-    const healthFactor = (collateralSum / borrowedSum) * 100;
-    return healthFactor < 10000 ? healthFactor : 10000;
+    const adjustedCollateralSum = getAdjustedSum("collateral", portfolio, assets.data);
+    const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets.data);
+
+    const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+
+    return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
   },
 );

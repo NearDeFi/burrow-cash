@@ -1,10 +1,11 @@
+import Decimal from "decimal.js";
 import { clone } from "ramda";
 import { createSelector } from "@reduxjs/toolkit";
 
-import { expandToken } from "../../store";
+import { expandTokenDecimal, MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
-import { getCollateralSum, getBorrowedSum } from "./getMaxBorrowAmount";
+import { getAdjustedSum } from "./getWithdrawMaxAmount";
 
 export const recomputeHealthFactor = (tokenId: string, amount: number) =>
   createSelector(
@@ -13,14 +14,14 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
       if (!account.portfolio || !tokenId) return 0;
+      if (!Object.keys(account.portfolio.borrowed).length && amount === 0) return -1;
 
-      const collateralSum = getCollateralSum(assets.data, account);
       const { metadata, config } = assets.data[tokenId];
+      const decimals = metadata.decimals + config.extra_decimals;
 
-      const newBalance = (
-        Number(account.portfolio.borrowed[tokenId]?.balance || 0) +
-        Number(expandToken(amount, metadata.decimals + config.extra_decimals, 0))
-      ).toString();
+      const newBalance = expandTokenDecimal(amount, decimals)
+        .plus(new Decimal(account.portfolio.borrowed[tokenId]?.balance || 0))
+        .toFixed();
 
       const clonedAccount = clone(account);
 
@@ -37,11 +38,13 @@ export const recomputeHealthFactor = (tokenId: string, amount: number) =>
         balance: newBalance,
       };
 
-      const borrowedSum = getBorrowedSum(assets.data, amount === 0 ? account : clonedAccount);
+      const portfolio = amount === 0 ? account.portfolio : clonedAccount.portfolio;
 
-      if (!Object.keys(account.portfolio.borrowed).length && amount === 0) return -1;
+      const adjustedCollateralSum = getAdjustedSum("collateral", account.portfolio, assets.data);
+      const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets.data);
 
-      const healthFactor = (collateralSum / borrowedSum) * 100;
-      return healthFactor < 10000 ? healthFactor : 10000;
+      const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+
+      return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
     },
   );

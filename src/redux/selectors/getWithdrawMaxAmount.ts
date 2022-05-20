@@ -2,14 +2,18 @@ import Decimal from "decimal.js";
 import { createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
-import { shrinkToken, expandTokenDecimal } from "../../store";
+import { shrinkToken, expandTokenDecimal, MAX_RATIO } from "../../store";
 import { decimalMax, decimalMin } from "../../utils";
 import { Assets } from "../assetState";
 import { Portfolio } from "../accountState";
 
 const sumReducerDecimal = (sum: Decimal, cur: Decimal) => sum.add(cur);
 
-const getAdjustedSum = (type: "borrowed" | "collateral", portfolio: Portfolio, assets: Assets) =>
+export const getAdjustedSum = (
+  type: "borrowed" | "collateral",
+  portfolio: Portfolio,
+  assets: Assets,
+) =>
   Object.keys(portfolio[type])
     .map((id) => {
       const asset = assets[id];
@@ -23,8 +27,8 @@ const getAdjustedSum = (type: "borrowed" | "collateral", portfolio: Portfolio, a
         .mul(price);
 
       return type === "borrowed"
-        ? pricedBalance.div(asset.config.volatility_ratio).mul(10000)
-        : pricedBalance.mul(asset.config.volatility_ratio).div(10000);
+        ? pricedBalance.div(asset.config.volatility_ratio).mul(MAX_RATIO)
+        : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);
     })
     .reduce(sumReducerDecimal, new Decimal(0));
 
