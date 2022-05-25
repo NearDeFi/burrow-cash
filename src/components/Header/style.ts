@@ -31,7 +31,7 @@ export const Menu = styled("div")(({ theme }) => ({
   display: "grid",
   gridArea: "menu",
   gap: "0.5rem",
-  gridTemplateColumns: isTestnet ? "1fr 1fr 1fr 1fr" : "1fr 1fr 1fr",
+  gridTemplateColumns: isTestnet ? "repeat(5, 1fr)" : "repeat(4, 1fr)",
   marginRight: "auto",
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",

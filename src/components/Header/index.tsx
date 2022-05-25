@@ -12,7 +12,7 @@ import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { isTestnet } from "../../utils";
 import { useViewAs } from "../../hooks/hooks";
 
-const MenuItem = ({ title, pathname }) => {
+const MenuItem = ({ title, pathname, sx = {} }) => {
   const location = useLocation();
   const theme = useTheme();
   const isSelected = location.pathname === pathname;
@@ -20,7 +20,7 @@ const MenuItem = ({ title, pathname }) => {
   const style = isSelected ? { borderBottomColor: theme.palette.primary.main } : {};
 
   return (
-    <LinkStyled to={pathname + location.search} sx={style}>
+    <LinkStyled to={pathname + location.search} sx={{ ...style, ...sx }}>
       {title}
     </LinkStyled>
   );
@@ -90,6 +90,7 @@ const Header = () => {
         <MenuItem title="Borrow" pathname="/borrow" />
         <MenuItem title="Portfolio" pathname="/portfolio" />
         {isTestnet && <MenuItem title="Staking" pathname="/staking" />}
+        <MenuItem title="Bridge" pathname="/bridge" sx={{ color: "#47C880", fontWeight: "bold" }} />
       </Menu>
       <WalletButton />
       <Snackbar
