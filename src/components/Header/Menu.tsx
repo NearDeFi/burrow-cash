@@ -15,7 +15,6 @@ import {
   trackShowDust,
   trackToggleAmountDigits,
 } from "../../telemetry";
-import BridgeMenu from "../BridgeMenu";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -88,7 +87,6 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
-      <BridgeMenu onDone={handleClose} />
       {accountId && [
         <Divider key={1} />,
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={2}>
