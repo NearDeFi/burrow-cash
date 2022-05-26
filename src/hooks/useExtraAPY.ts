@@ -60,18 +60,6 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
       appConfig.booster_decimals,
     );
 
-    console.info(
-      isBorrow,
-      assetId,
-      rewardTokenId,
-      totalDailyRewards,
-      price,
-      multiplier,
-      totalBoostedShares,
-      shares,
-    );
-
-    // APY = total_daily_rewards * 365 * users_multiplier / (total_deposits * total_boosted_shares / total_shares)
     const apy =
       ((totalDailyRewards * price * 365 * multiplier) /
         ((totalUserAssetUSD * totalBoostedShares) / shares)) *

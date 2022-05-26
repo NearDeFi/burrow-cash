@@ -46,8 +46,6 @@ export const computeDailyAmount = (
   const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
   const multiplier = log >= 0 ? 1 + log : 1;
 
-  // get current multiplier and use for reward apy
-
   const boostedShares = Number(shrinkToken(farmData.boosted_shares, assetDecimals));
 
   const totalBoostedShares = Number(
