@@ -39,11 +39,10 @@ export const DUST_FORMAT = {
 };
 
 export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
-export const STORAGE_DEPOSIT_FEE = process.env.STORAGE_DEPOSIT_FEE || 0.15;
-export const NEAR_STORAGE_DEPOSIT = 0.25;
+export const NEAR_STORAGE_DEPOSIT = Number(process.env.NEAR_STORAGE_DEPOSIT) || 0.25;
 
-export const NEAR_STORAGE_DEPOSIT_DECIMAL = new Decimal(25).mul(
-  new Decimal(10).pow(NEAR_DECIMALS - 2),
+export const NEAR_STORAGE_DEPOSIT_DECIMAL = new Decimal(NEAR_STORAGE_DEPOSIT).mul(
+  new Decimal(10).pow(NEAR_DECIMALS),
 );
 
 export const CONTRACT_MAIN = "contract.main.burrow.near";

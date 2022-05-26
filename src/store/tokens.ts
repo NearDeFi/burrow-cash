@@ -7,7 +7,7 @@ import {
   DEFAULT_PRECISION,
   NEAR_DECIMALS,
   NO_STORAGE_DEPOSIT_CONTRACTS,
-  STORAGE_DEPOSIT_FEE,
+  NEAR_STORAGE_DEPOSIT,
 } from "./constants";
 import { expandToken, getContract, shrinkToken } from "./helper";
 import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
@@ -100,7 +100,7 @@ export const prepareAndExecuteTokenTransactions = async (
   ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
+      attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
     });
   }
 
@@ -130,7 +130,7 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
       functionCalls: [
         {
           methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
         },
       ],
     });
