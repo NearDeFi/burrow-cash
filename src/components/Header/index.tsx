@@ -9,7 +9,6 @@ import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { isTestnet } from "../../utils";
 import { useViewAs } from "../../hooks/hooks";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
@@ -89,7 +88,7 @@ const Header = () => {
         <MenuItem title="Deposit" pathname="/deposit" />
         <MenuItem title="Borrow" pathname="/borrow" />
         <MenuItem title="Portfolio" pathname="/portfolio" />
-        {isTestnet && <MenuItem title="Staking" pathname="/staking" />}
+        <MenuItem title="Staking" pathname="/staking" />
         <MenuItem title="Bridge" pathname="/bridge" sx={{ color: "#47C880", fontWeight: "bold" }} />
       </Menu>
       <WalletButton />
