@@ -158,7 +158,7 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
     const balanceAvailableDecimal = new Decimal(balance.available);
     const nearStorageDepositMin = expandTokenDecimal(NEAR_STORAGE_DEPOSIT_MIN, NEAR_DECIMALS);
 
-    if (balanceAvailableDecimal.lessThanOrEqualTo(nearStorageDepositMin)) {
+    if (balanceAvailableDecimal.lessThan(nearStorageDepositMin)) {
       transactions.push(storageDepositTransaction(NEAR_STORAGE_EXTRA_DEPOSIT));
     }
   }
