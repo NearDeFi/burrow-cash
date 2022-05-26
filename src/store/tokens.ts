@@ -9,6 +9,7 @@ import {
   NO_STORAGE_DEPOSIT_CONTRACTS,
   NEAR_STORAGE_DEPOSIT,
   NEAR_STORAGE_DEPOSIT_MIN,
+  NEAR_STORAGE_EXTRA_DEPOSIT,
 } from "./constants";
 import { expandToken, expandTokenDecimal, getContract, shrinkToken } from "./helper";
 import {
@@ -132,19 +133,19 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
   const { account, logicContract, view } = await getBurrow();
   const transactions: Transaction[] = [];
 
-  const storageDepositTransaction = {
+  const storageDepositTransaction = (deposit: number) => ({
     receiverId: logicContract.contractId,
     functionCalls: [
       {
         methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-        attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+        attachedDeposit: new BN(expandToken(deposit, NEAR_DECIMALS)),
       },
     ],
-  };
+  });
 
   // check if account is registered in burrow cash
   if (!(await isRegistered(account.accountId, logicContract))) {
-    transactions.push(storageDepositTransaction);
+    transactions.push(storageDepositTransaction(NEAR_STORAGE_DEPOSIT));
   } else {
     const balance = (await view(
       logicContract,
@@ -153,11 +154,12 @@ export const prepareAndExecuteTransactions = async (operations: Transaction[] = 
         account_id: account.accountId,
       },
     )) as Balance;
-    const balanceTotalDecimal = new Decimal(balance.total);
+
+    const balanceAvailableDecimal = new Decimal(balance.available);
     const nearStorageDepositMin = expandTokenDecimal(NEAR_STORAGE_DEPOSIT_MIN, NEAR_DECIMALS);
 
-    if (balanceTotalDecimal.lessThanOrEqualTo(nearStorageDepositMin)) {
-      transactions.push(storageDepositTransaction);
+    if (balanceAvailableDecimal.lessThanOrEqualTo(nearStorageDepositMin)) {
+      transactions.push(storageDepositTransaction(NEAR_STORAGE_EXTRA_DEPOSIT));
     }
   }
 

@@ -40,7 +40,8 @@ export const DUST_FORMAT = {
 
 export const NO_STORAGE_DEPOSIT_CONTRACTS = ["aurora", "meta-pool.near"];
 export const NEAR_STORAGE_DEPOSIT = Number(process.env.NEAR_STORAGE_DEPOSIT) || 0.25;
-export const NEAR_STORAGE_DEPOSIT_MIN = 0.1;
+export const NEAR_STORAGE_DEPOSIT_MIN = 0.05;
+export const NEAR_STORAGE_EXTRA_DEPOSIT = 0.1;
 
 export const NEAR_STORAGE_DEPOSIT_DECIMAL = new Decimal(NEAR_STORAGE_DEPOSIT).mul(
   new Decimal(10).pow(NEAR_DECIMALS),
