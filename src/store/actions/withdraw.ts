@@ -7,7 +7,7 @@ import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
 import { Transaction, isRegistered } from "../wallet";
-import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, STORAGE_DEPOSIT_FEE } from "../constants";
+import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
 import getAssets from "../../api/get-assets";
 import { transformAssets } from "../../transformers/asstets";
 import getAccount from "../../api/get-account";
@@ -53,7 +53,7 @@ export async function withdraw({
       functionCalls: [
         {
           methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
+          attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
         },
       ],
     });

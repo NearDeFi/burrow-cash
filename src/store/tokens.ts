@@ -7,10 +7,20 @@ import {
   DEFAULT_PRECISION,
   NEAR_DECIMALS,
   NO_STORAGE_DEPOSIT_CONTRACTS,
-  STORAGE_DEPOSIT_FEE,
+  NEAR_STORAGE_DEPOSIT,
+  NEAR_STORAGE_DEPOSIT_MIN,
+  NEAR_STORAGE_EXTRA_DEPOSIT,
 } from "./constants";
-import { expandToken, getContract, shrinkToken } from "./helper";
-import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
+import { expandToken, expandTokenDecimal, getContract, shrinkToken } from "./helper";
+import {
+  ViewMethodsLogic,
+  ChangeMethodsLogic,
+  ChangeMethodsToken,
+  ViewMethodsToken,
+  IMetadata,
+  Balance,
+} from "../interfaces";
+
 import {
   executeMultipleTransactions,
   FunctionCallOptions,
@@ -100,7 +110,7 @@ export const prepareAndExecuteTokenTransactions = async (
   ) {
     functionCalls.push({
       methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
+      attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
     });
   }
 
@@ -120,20 +130,37 @@ export const prepareAndExecuteTokenTransactions = async (
 };
 
 export const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
-  const { account, logicContract } = await getBurrow();
+  const { account, logicContract, view } = await getBurrow();
   const transactions: Transaction[] = [];
+
+  const storageDepositTransaction = (deposit: number) => ({
+    receiverId: logicContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+        attachedDeposit: new BN(expandToken(deposit, NEAR_DECIMALS)),
+      },
+    ],
+  });
 
   // check if account is registered in burrow cash
   if (!(await isRegistered(account.accountId, logicContract))) {
-    transactions.push({
-      receiverId: logicContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(STORAGE_DEPOSIT_FEE, NEAR_DECIMALS)),
-        },
-      ],
-    });
+    transactions.push(storageDepositTransaction(NEAR_STORAGE_DEPOSIT));
+  } else {
+    const balance = (await view(
+      logicContract,
+      ViewMethodsLogic[ViewMethodsLogic.storage_balance_of],
+      {
+        account_id: account.accountId,
+      },
+    )) as Balance;
+
+    const balanceAvailableDecimal = new Decimal(balance.available);
+    const nearStorageDepositMin = expandTokenDecimal(NEAR_STORAGE_DEPOSIT_MIN, NEAR_DECIMALS);
+
+    if (balanceAvailableDecimal.lessThan(nearStorageDepositMin)) {
+      transactions.push(storageDepositTransaction(NEAR_STORAGE_EXTRA_DEPOSIT));
+    }
   }
 
   transactions.push(...operations);
