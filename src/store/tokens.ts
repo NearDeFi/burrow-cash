@@ -8,9 +8,18 @@ import {
   NEAR_DECIMALS,
   NO_STORAGE_DEPOSIT_CONTRACTS,
   NEAR_STORAGE_DEPOSIT,
+  NEAR_STORAGE_DEPOSIT_MIN,
 } from "./constants";
-import { expandToken, getContract, shrinkToken } from "./helper";
-import { ChangeMethodsLogic, ChangeMethodsToken, ViewMethodsToken, IMetadata } from "../interfaces";
+import { expandToken, expandTokenDecimal, getContract, shrinkToken } from "./helper";
+import {
+  ViewMethodsLogic,
+  ChangeMethodsLogic,
+  ChangeMethodsToken,
+  ViewMethodsToken,
+  IMetadata,
+  Balance,
+} from "../interfaces";
+
 import {
   executeMultipleTransactions,
   FunctionCallOptions,
@@ -120,20 +129,36 @@ export const prepareAndExecuteTokenTransactions = async (
 };
 
 export const prepareAndExecuteTransactions = async (operations: Transaction[] = []) => {
-  const { account, logicContract } = await getBurrow();
+  const { account, logicContract, view } = await getBurrow();
   const transactions: Transaction[] = [];
+
+  const storageDepositTransaction = {
+    receiverId: logicContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
+        attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+      },
+    ],
+  };
 
   // check if account is registered in burrow cash
   if (!(await isRegistered(account.accountId, logicContract))) {
-    transactions.push({
-      receiverId: logicContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsLogic[ChangeMethodsLogic.storage_deposit],
-          attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
-        },
-      ],
-    });
+    transactions.push(storageDepositTransaction);
+  } else {
+    const balance = (await view(
+      logicContract,
+      ViewMethodsLogic[ViewMethodsLogic.storage_balance_of],
+      {
+        account_id: account.accountId,
+      },
+    )) as Balance;
+    const balanceTotalDecimal = new Decimal(balance.total);
+    const nearStorageDepositMin = expandTokenDecimal(NEAR_STORAGE_DEPOSIT_MIN, NEAR_DECIMALS);
+
+    if (balanceTotalDecimal.lessThanOrEqualTo(nearStorageDepositMin)) {
+      transactions.push(storageDepositTransaction);
+    }
   }
 
   transactions.push(...operations);
