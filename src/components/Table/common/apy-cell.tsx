@@ -15,12 +15,13 @@ const APYCell = ({
   page,
   tokenId,
   showIcons = true,
+  isStaking = false,
   justifyContent = "flex-end",
   sx = {},
 }) => {
   const appConfig = useConfig();
   const isBorrow = page === "borrow";
-  const { computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
+  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
 
@@ -28,6 +29,7 @@ const APYCell = ({
 
   const extraAPY = extraRewards.reduce((acc: number, { metadata, rewards, price, config }) => {
     const apy = computeRewardAPY(
+      metadata.token_id,
       rewards.reward_per_day,
       metadata.decimals + config.extra_decimals,
       price || 0,
@@ -36,8 +38,14 @@ const APYCell = ({
     return acc + apy;
   }, 0);
 
+  const stakingExtraAPY = extraRewards.reduce((acc: number, { metadata }) => {
+    const apy = computeStakingRewardAPY(metadata.token_id);
+    return acc + apy;
+  }, 0);
+
   const sign = isBorrow ? -1 : 1;
-  const boostedAPY = baseAPY + sign * extraAPY;
+  const apy = isStaking ? stakingExtraAPY : extraAPY;
+  const boostedAPY = baseAPY + sign * apy;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
@@ -48,6 +56,7 @@ const APYCell = ({
       isBorrow={isBorrow}
       boostedAPY={boostedAPY}
       isLucky={isLucky}
+      isStaking={isStaking}
     >
       <Stack
         position="relative"
@@ -69,9 +78,18 @@ const APYCell = ({
   );
 };
 
-const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, boostedAPY, isLucky }) => {
+const ToolTip = ({
+  children,
+  tokenId,
+  list,
+  baseAPY,
+  isBorrow,
+  boostedAPY,
+  isLucky,
+  isStaking,
+}) => {
   const theme = useTheme();
-  const { computeRewardAPY } = useExtraAPY({ tokenId, isBorrow });
+  const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY({ tokenId, isBorrow });
   if (!list?.length) return children;
 
   return (
@@ -88,10 +106,13 @@ const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, boostedAPY, isLuc
             const { symbol, icon } = metadata;
 
             const rewardAPY = computeRewardAPY(
+              metadata.token_id,
               rewards.reward_per_day,
               metadata.decimals + config.extra_decimals,
               price || 0,
             );
+
+            const stakingRewardAPY = computeStakingRewardAPY(metadata.token_id);
 
             return [
               <Stack key={1} direction="row" alignItems="center" spacing={1}>
@@ -100,7 +121,7 @@ const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, boostedAPY, isLuc
               </Stack>,
               <Typography key={2} fontSize="0.75rem" textAlign="right">
                 {isBorrow ? "-" : ""}
-                {toAPY(rewardAPY)}%
+                {toAPY(isStaking ? stakingRewardAPY : rewardAPY)}%
               </Typography>,
             ];
           })}

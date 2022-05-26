@@ -1,7 +1,6 @@
 import { styled } from "@mui/material/styles";
 import { Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
-import { isTestnet } from "../../utils";
 
 export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
@@ -31,7 +30,7 @@ export const Menu = styled("div")(({ theme }) => ({
   display: "grid",
   gridArea: "menu",
   gap: "0.5rem",
-  gridTemplateColumns: isTestnet ? "repeat(5, 1fr)" : "repeat(4, 1fr)",
+  gridTemplateColumns: "repeat(5, 1fr)",
   marginRight: "auto",
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",

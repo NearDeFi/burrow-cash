@@ -72,7 +72,7 @@ export const computeDailyAmount = (
   const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
   const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
 
-  return { dailyAmount, newDailyAmount, multiplier };
+  return { dailyAmount, newDailyAmount, multiplier, totalBoostedShares, shares };
 };
 
 export const getAccountRewards = createSelector(
