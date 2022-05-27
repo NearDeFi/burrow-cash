@@ -42,21 +42,19 @@ export const Rewards = () => {
       }}
     >
       <BurrowHog />
-      <Box top={0} left={0} right={0} height={155} overflow="hidden" position="absolute">
-        <Stack ml="4.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
-          {!slimStats && (
-            <Typography fontWeight="bold" fontSize="0.85rem">
-              Total Daily Rewards
-            </Typography>
-          )}
-          {isClaimingLoading ? (
-            <Typography fontSize="0.85rem">Claiming...</Typography>
-          ) : (
-            <RewardsDaily onOpen={handleOpen} />
-          )}
-        </Stack>
-        <RewardsDetailed onClose={handleClose} controls={rewardsControls} />
-      </Box>
+      <Stack ml="0.5rem" spacing="0.2rem" mt={slimStats ? "1.2rem" : "0.7rem"}>
+        {!slimStats && (
+          <Typography fontWeight="bold" fontSize="0.85rem">
+            Total Daily Rewards
+          </Typography>
+        )}
+        {isClaimingLoading ? (
+          <Typography fontSize="0.85rem">Claiming...</Typography>
+        ) : (
+          <RewardsDaily onOpen={handleOpen} />
+        )}
+      </Stack>
+      <RewardsDetailed onClose={handleClose} controls={rewardsControls} />
     </Wrapper>
   );
 };
@@ -95,10 +93,10 @@ const Reward = ({ dailyAmount = 0, icon }) => (
 
 const rewardsVariants = {
   closed: {
-    top: "-170px",
+    scaleY: 0,
   },
   open: {
-    top: 0,
+    scaleY: 1,
     transition: { duration: 0.5, type: "spring" },
   },
 };
@@ -114,13 +112,14 @@ const RewardsDetailed = ({ onClose, controls }) => {
         boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
         color: theme.palette.secondary.main,
         flexDirection: "column",
+        transformOrigin: "top",
         alignItems: "center",
         position: "absolute",
         borderRadius: "4px",
         display: "flex",
         width: "100%",
         p: "0.5rem",
-        zIndex: 3,
+        zIndex: 2,
         top: 0,
       }}
       component={motion.div}
