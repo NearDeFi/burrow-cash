@@ -34,7 +34,7 @@ const Links = () => (
     <Link href="https://github.com/NearDeFi/" title="GitHub" target="_blank" color="#000">
       <FaGithub />
     </Link>
-    <Link href="https://discord.gg/8esAssuE" title="Discord" target="_blank" color="#000">
+    <Link href="https://discord.gg/gUWBKy9Vur" title="Discord" target="_blank" color="#000">
       <FaDiscord />
     </Link>
     <Link href="https://twitter.com/burrowcash" title="Twitter" target="_blank" color="#000">
