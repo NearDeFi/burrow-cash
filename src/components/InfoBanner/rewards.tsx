@@ -61,13 +61,12 @@ export const Rewards = () => {
 
 const RewardsDaily = ({ onOpen }) => {
   const { brrr, extra } = useRewards();
-  const slimStats = useSlimStats();
   const theme = useTheme();
 
   return (
     <Stack direction="row" alignItems="center" spacing="0.5rem">
       <Reward {...brrr} />
-      {take(extra, slimStats ? extra.length : 1).map(([tokenId, r]) => (
+      {take(extra, 1).map(([tokenId, r]) => (
         <Reward key={tokenId} {...r} />
       ))}
       <Typography
