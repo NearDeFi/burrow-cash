@@ -1,7 +1,6 @@
 import { Box, Typography, Stack, useTheme } from "@mui/material";
 import { hiddenAssets } from "../../../config";
 
-import { useConfig } from "../../../hooks/hooks";
 import HtmlTooltip from "../../common/html-tooltip";
 import TokenIcon from "../../TokenIcon";
 import { APY_FORMAT } from "../../../store/constants";
@@ -19,15 +18,13 @@ const APYCell = ({
   justifyContent = "flex-end",
   sx = {},
 }) => {
-  const appConfig = useConfig();
   const isBorrow = page === "borrow";
   const { computeRewardAPY, computeStakingRewardAPY } = useExtraAPY({ tokenId, isBorrow });
-  const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
-  const hasRewards = extraRewards?.length > 0;
+  const hasRewards = list?.length > 0;
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
 
-  const extraAPY = extraRewards.reduce((acc: number, { metadata, rewards, price, config }) => {
+  const extraAPY = list.reduce((acc: number, { metadata, rewards, price, config }) => {
     const apy = computeRewardAPY(
       metadata.token_id,
       rewards.reward_per_day,
@@ -38,7 +35,7 @@ const APYCell = ({
     return acc + apy;
   }, 0);
 
-  const stakingExtraAPY = extraRewards.reduce((acc: number, { metadata }) => {
+  const stakingExtraAPY = list.reduce((acc: number, { metadata }) => {
     const apy = computeStakingRewardAPY(metadata.token_id);
     return acc + apy;
   }, 0);
@@ -51,7 +48,7 @@ const APYCell = ({
   return (
     <ToolTip
       tokenId={tokenId}
-      list={extraRewards}
+      list={list}
       baseAPY={baseAPY}
       isBorrow={isBorrow}
       boostedAPY={boostedAPY}
