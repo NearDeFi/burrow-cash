@@ -65,7 +65,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
         ((totalUserAssetUSD * totalBoostedShares) / shares)) *
       100;
 
-    return apy;
+    return apy || 0;
   };
 
   const computeStakingRewardAPY = (rewardTokenId: string) => {
