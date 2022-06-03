@@ -1,7 +1,5 @@
 import { Menu, MenuItem, Divider, Typography } from "@mui/material";
 
-import NearWalletSelector from "@near-wallet-selector/core";
-
 import ClaimAllRewards from "../ClaimAllRewards";
 import { getBurrow, getLocalAppVersion } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -19,10 +17,9 @@ import {
 interface Props {
   anchorEl: null | HTMLElement;
   setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-  selector: null | NearWalletSelector;
 }
 
-export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
+export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
   const accountId = useAppSelector(getAccountId);
@@ -48,7 +45,8 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
 
   const handleSwitchWallet = async () => {
     await handleSignOut();
-    selector?.show();
+    const { signIn } = await getBurrow();
+    signIn();
   };
 
   const handleSignOut = async () => {

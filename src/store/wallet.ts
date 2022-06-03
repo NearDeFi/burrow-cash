@@ -25,7 +25,7 @@ export const executeMultipleTransactions = async (transactions) => {
     signerId: account.accountId,
     receiverId: t.receiverId,
     actions: t.functionCalls.map(
-      ({ methodName, args = {}, gas = "150000000000000", attachedDeposit = "1" }) => ({
+      ({ methodName, args = {}, gas = "50000000000000", attachedDeposit = "1" }) => ({
         type: "FunctionCall",
         params: {
           methodName,
@@ -38,7 +38,8 @@ export const executeMultipleTransactions = async (transactions) => {
   }));
 
   try {
-    await selector.signAndSendTransactions({
+    const wallet = await selector.wallet();
+    await wallet.signAndSendTransactions({
       transactions: selectorTransactions,
     });
   } catch (e: any) {

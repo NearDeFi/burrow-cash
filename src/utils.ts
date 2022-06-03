@@ -12,7 +12,11 @@ import {
 import { IBurrow, IConfig } from "./interfaces/burrow";
 import { getContract } from "./store";
 
-import { getWalletSelector, getAccount, functionCall } from "./utils/wallet-selector-compat";
+import {
+  getSelector,
+  getAccount,
+  functionCall,
+} from "./utils/wallet-selector/wallet-selector-compat";
 
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
@@ -57,7 +61,9 @@ export const getBurrow = async ({
   };
 
   if (!selector) {
-    selector = await getWalletSelector({
+    selector = await getSelector({
+      networkId: "testnet",
+      contractId: "testnet",
       onAccountChange: changeAccount,
     });
   }
@@ -75,6 +81,7 @@ export const getBurrow = async ({
       if (hideModal) hideModal();
       signOut();
     };
+  const signIn = () => selector.signIn();
 
   const view = async (
     contract: Contract,
@@ -106,7 +113,7 @@ export const getBurrow = async ({
     deposit = "1",
   ) => {
     const { contractId } = contract;
-    const gas = new BN(150000000000000);
+    const gas = new BN(50000000000000);
     const attachedDeposit = new BN(deposit);
 
     return functionCall({
@@ -153,6 +160,7 @@ export const getBurrow = async ({
     fetchData: fetchDataCached,
     hideModal: hideModalCached,
     signOut: signOutCached,
+    signIn,
     account,
     logicContract,
     oracleContract,

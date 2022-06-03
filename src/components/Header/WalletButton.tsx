@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button, Box, IconButton, useTheme, useMediaQuery, Typography } from "@mui/material";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
-import NearWalletSelector from "@near-wallet-selector/core";
+import { WalletSelectorCompat } from "../../utils/wallet-selector/wallet-selector-compat";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
 import { logoutAccount, fetchAccount } from "../../redux/accountSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -24,8 +24,8 @@ const WalletButton = () => {
   const balance = useAppSelector(getAccountBalance);
   const accountId = useAppSelector(getAccountId);
 
-  const selectorRef = useRef<NearWalletSelector>();
-  const [selector, setSelector] = useState<NearWalletSelector | null>(null);
+  const selectorRef = useRef<WalletSelectorCompat>();
+  const [selector, setSelector] = useState<WalletSelectorCompat | null>(null);
 
   const hideModal = () => {
     dispatch(_hideModal());
@@ -53,7 +53,7 @@ const WalletButton = () => {
   const onWalletButtonClick = async () => {
     if (accountId) return;
     trackConnectWallet();
-    selector?.show();
+    selector?.signIn();
   };
 
   const handleOpenMenu = (event) => {
@@ -117,7 +117,7 @@ const WalletButton = () => {
           <GiHamburgerMenu size={32} color={theme.palette.primary.main} />
         </IconButton>
       </Box>
-      <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} selector={selector} />
+      <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
     </Box>
   );
 };
