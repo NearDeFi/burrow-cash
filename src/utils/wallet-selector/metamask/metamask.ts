@@ -6,7 +6,10 @@ import {
   WalletBehaviourFactory,
   waitFor,
 } from "@near-wallet-selector/core";
-import { getNear, signIn, signOut, signAndSendTransactions } from "./neth";
+import { nearWalletIcon } from "../assets/icons";
+import { getNear, signIn, signOut, signAndSendTransactions, initConnection } from "./neth";
+
+export { initConnection } from "./neth";
 
 declare global {
   interface Window {
@@ -15,6 +18,7 @@ declare global {
 }
 
 export interface MetaMaskParams {
+  useModalCover?: boolean;
   iconUrl?: string;
 }
 
@@ -35,7 +39,19 @@ const isMobile = () => {
   return check;
 };
 
-const MetaMask: WalletBehaviourFactory<InjectedWallet> = async ({ metadata, logger }) => {
+let useCover = false;
+
+const MetaMask: WalletBehaviourFactory<InjectedWallet> = async ({ metadata, logger, options }) => {
+  initConnection(options.network);
+
+  const cover = document.createElement("div");
+  const coverImg = document.createElement("img");
+  coverImg.src = nearWalletIcon;
+  cover.className = "modal-overlay-standalone";
+  cover.style.display = "none";
+  cover.appendChild(coverImg);
+  document.body.appendChild(cover);
+
   const isValidActions = (actions: Array<Action>): actions is Array<FunctionCallAction> => {
     return actions.every((x) => x.type === "FunctionCall");
   };
@@ -91,24 +107,43 @@ const MetaMask: WalletBehaviourFactory<InjectedWallet> = async ({ metadata, logg
     async signAndSendTransactions({ transactions }) {
       logger.log("MetaMask:signAndSendTransactions", { transactions });
 
+      if (useCover) {
+        cover.style.display = "block";
+      }
+
       const transformedTxs = transactions.map(({ receiverId, actions }) => ({
         receiverId,
         actions: transformActions(actions),
       }));
 
-      return signAndSendTransactions({
-        transactions: transformedTxs,
-      });
+      let res;
+      try {
+        res = await signAndSendTransactions({
+          transactions: transformedTxs,
+        });
+      } catch (e) {
+        /// user cancelled or near network error
+        console.warn(e);
+      }
+
+      if (useCover) {
+        cover.style.display = "none";
+      }
+
+      return res;
     },
   };
 };
 
 export function setupMetaMask({
-  iconUrl = "./assets/sender-icon.png",
+  useModalCover = false,
+  iconUrl = nearWalletIcon,
 }: MetaMaskParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
     const installed = await isInstalled();
+
+    useCover = useModalCover;
 
     if (mobile || !installed) {
       return null;
@@ -117,7 +152,7 @@ export function setupMetaMask({
     await waitFor(() => !!window.near?.isSignedIn(), { timeout: 300 }).catch(() => false);
 
     return {
-      id: "metamask",
+      id: "neth",
       type: "injected",
       metadata: {
         name: "NETH Account",

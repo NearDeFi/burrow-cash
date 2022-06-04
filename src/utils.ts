@@ -18,6 +18,7 @@ import {
   functionCall,
 } from "./utils/wallet-selector/wallet-selector-compat";
 
+/// pass networkId to wallet-selector-compat then call init on near-utils / neth
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
 export const getViewAs = () => {
@@ -51,7 +52,19 @@ export const getBurrow = async ({
   hideModal,
   signOut,
 }: GetBurrowArgs = {}): Promise<IBurrow> => {
-  if (burrow && !resetBurrow) return burrow;
+  /// because it's being called by multiple components on startup
+  /// all calls wait until setup is complete and then return burrow instance promise
+  const getBurrowInternal = async () => {
+    if (burrow) return burrow;
+    await new Promise((res) => {
+      setTimeout(() => {
+        res({});
+      }, 250);
+    });
+    return getBurrowInternal();
+  };
+
+  if (!resetBurrow) return getBurrowInternal();
   resetBurrow = false;
 
   const changeAccount = async () => {
@@ -62,8 +75,8 @@ export const getBurrow = async ({
 
   if (!selector) {
     selector = await getSelector({
-      networkId: "testnet",
-      contractId: "testnet",
+      networkId: isTestnet ? "testnet" : "mainnet",
+      contractId: LOGIC_CONTRACT_NAME,
       onAccountChange: changeAccount,
     });
   }

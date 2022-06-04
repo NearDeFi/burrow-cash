@@ -2,16 +2,16 @@ import { ethers } from "ethers";
 import * as nearAPI from "near-api-js";
 import { parseSeedPhrase, generateSeedPhrase } from "near-seed-phrase";
 const {
+  Near,
   Account,
   KeyPair,
+  keyStores: { BrowserLocalStorageKeyStore },
   transactions: { addKey, deleteKey, functionCallAccessKey },
   utils: {
     PublicKey,
     format: { parseNearAmount },
   },
 } = nearAPI;
-import { connection, keyStore, networkId, contractAccount, accountSuffix } from "./near-utils";
-import { accountExists } from "./test-utils";
 import { get, set, del } from "./store";
 import contractPath from "url:../assets/neth.wasm";
 
@@ -27,13 +27,49 @@ const half_gas = "50000000000000";
 /// this is the new account amount 0.21 for account name, keys, contract and 0.01 for mapping contract storage cost
 const attachedDeposit = parseNearAmount("0.3");
 const attachedDepositMapping = parseNearAmount("0.02");
-/// for NEAR keys we need 64 chars hex for publicKey WITHOUT 0x
+
+/// NEAR setup
+
+let near, connection, keyStore, networkId, contractAccount, accountSuffix;
+
+export const initConnection = (network) => {
+  keyStore = new BrowserLocalStorageKeyStore();
+  near = new Near({
+    ...network,
+    deps: { keyStore },
+  });
+  connection = near.connection;
+  const { networkId } = network;
+  contractAccount = new Account(connection, networkId === "mainnet" ? "near" : networkId);
+  accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
+};
+
+export const getConnection = () => {
+  return { near, connection, keyStore, networkId, contractAccount, accountSuffix };
+};
+
+/// helpers
+
+const accountExists = async (accountId) => {
+  try {
+    const account = new nearAPI.Account(connection, accountId);
+    await account.state();
+    return true;
+  } catch (e) {
+    if (!/no such file|does not exist/.test(e.toString())) {
+      throw e;
+    }
+    return false;
+  }
+};
+
 const buf2hex = (buf) => ethers.utils.hexlify(buf).substring(2);
 const pub2hex = (publicKey) =>
   ethers.utils.hexlify(PublicKey.fromString(publicKey).data).substring(2);
-const obj2hex = (obj) =>
-  ethers.utils.hexlify(ethers.utils.toUtf8Bytes(JSON.stringify(obj))).substring(2);
+
 const ACCOUNT_REGEX = new RegExp("^(([a-z0-9]+[-_])*[a-z0-9]+.)*([a-z0-9]+[-_])*[a-z0-9]+$");
+
+export {};
 
 /// account creation and connection flow
 
@@ -678,7 +714,7 @@ export const signAndSendTransactions = async ({ transactions }) => {
     transactions: transformedTxs,
   });
 
-  console.log(args);
+  //   console.log(args);
 
   const res = await account.functionCall({
     contractId: accountId,

@@ -1,5 +1,37 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
 
+.modal-overlay-standalone {
+  background: #26262630;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999999;
+  text-align: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.modal-overlay-standalone > img {
+  margin: auto;
+  margin-top: 128px;
+  width: 100px;
+  filter: drop-shadow(2px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(-2px 0 0 white)
+    drop-shadow(0 -1px 0 white);
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
 #near-wallet-selector-modal {
   --backdrop-bg: #26262630;
   --heading-color: #262626;
@@ -87,7 +119,7 @@
   background: var(--wallet-selector-backdrop-bg, var(--backdrop-bg));
   height: 100%;
   width: 100%;
-  position: absolute;
+  position: fixed;
 }
 /**
  * Modal

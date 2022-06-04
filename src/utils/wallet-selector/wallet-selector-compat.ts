@@ -16,7 +16,7 @@ const {
   keyStores: { BrowserLocalStorageKeyStore },
 } = nearAPI;
 
-const networks = {
+export const networks = {
   mainnet: {
     networkId: "mainnet",
     nodeUrl: "https://rpc.mainnet.near.org",
@@ -41,8 +41,8 @@ let init;
 let accountId;
 
 export interface WalletSelectorCompat extends WalletSelector {
-  signIn: () => unknown;
-  signOut: () => unknown;
+  signIn: () => void | null;
+  signOut: () => void | null;
 }
 
 interface WalletMethodArgs {
@@ -82,6 +82,7 @@ export const getSelector = async ({
         iconUrl: senderWalletIcon,
       }),
       setupMetaMask({
+        useModalCover: true,
         iconUrl: nearWalletIcon,
       }),
     ],
@@ -115,10 +116,12 @@ export const getSelector = async ({
   };
 
   selector.signOut = async () => {
-    await wallet.signOut().catch((err) => {
-      console.error(err);
-    });
-    window.location.reload();
+    try {
+      await wallet.signOut();
+      accountId = null;
+    } catch (e) {
+      console.warn(e);
+    }
   };
 
   return selector;
