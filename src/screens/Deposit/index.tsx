@@ -5,13 +5,12 @@ import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { useAccountId, useAvailableAssets, useConfig } from "../../hooks/hooks";
+import { useAccountId, useAvailableAssets } from "../../hooks/hooks";
 import { useTableSorting } from "../../hooks/useTableSorting";
 
 const Deposit = () => {
   const dispatch = useAppDispatch();
   const accountId = useAccountId();
-  const config = useConfig();
   const rows = useAvailableAssets("supply");
   const { sorting, setSorting } = useTableSorting();
 
@@ -20,7 +19,6 @@ const Deposit = () => {
     : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
 
   const handleOnRowClick = ({ tokenId }) => {
-    if (config.booster_token_id === tokenId) return;
     dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
   };
 
