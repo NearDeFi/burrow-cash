@@ -5,7 +5,8 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import * as nearAPI from "near-api-js";
 import BN from "bn.js";
-import { nearWalletIcon, senderWalletIcon } from "./assets/icons";
+import { nethIcon, nearWalletIcon, senderWalletIcon } from "./assets/icons";
+
 import { setupMetaMask } from "./metamask/metamask";
 
 import "./modal-ui.css";
@@ -83,7 +84,7 @@ export const getSelector = async ({
       }),
       setupMetaMask({
         useModalCover: true,
-        iconUrl: nearWalletIcon,
+        iconUrl: nethIcon,
       }),
     ],
   });

@@ -597,6 +597,11 @@ const keyPairFromEthSig = async (signer, json) => {
 /// ethereum
 
 export const getEthereum = async () => {
+  await window.ethereum.request({
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId: "0x" + domain.chainId.toString(16) }],
+  })
+
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const accounts = await provider.listAccounts();
   if (accounts.length === 0) {
