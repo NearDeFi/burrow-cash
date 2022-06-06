@@ -42,13 +42,15 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     const totalDeposits = isBorrow ? totalBorrowUSD : totalSupplyUSD;
 
     if (!farmData)
-      return new Decimal(rewardsPerDay)
-        .div(new Decimal(10).pow(decimals))
-        .mul(365)
-        .mul(price)
-        .div(totalDeposits)
-        .mul(100)
-        .toNumber();
+      return (
+        new Decimal(rewardsPerDay)
+          .div(new Decimal(10).pow(decimals))
+          .mul(365)
+          .mul(price)
+          .div(totalDeposits)
+          .mul(100)
+          .toNumber() || 0
+      );
 
     const { multiplier, totalBoostedShares, shares } = computeDailyAmount(
       type,
@@ -65,7 +67,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
         ((totalUserAssetUSD * totalBoostedShares) / shares)) *
       100;
 
-    return apy;
+    return apy || 0;
   };
 
   const computeStakingRewardAPY = (rewardTokenId: string) => {
