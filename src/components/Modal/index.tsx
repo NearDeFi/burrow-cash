@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Modal as MUIModal, Typography, Box } from "@mui/material";
+import { Modal as MUIModal, Typography, Box, Stack } from "@mui/material";
 
 import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -53,17 +53,13 @@ const Modal = () => {
   const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
-  const {
-    symbol,
-    apy,
-    price,
-    available,
-    available$,
-    totalTitle,
-    rates,
-    alerts,
-    remainingCollateral,
-  } = getModalData({ ...asset, maxBorrowAmount, maxWithdrawAmount, healthFactor, amount });
+  const { symbol, apy, price, available, available$, totalTitle, rates, alerts } = getModalData({
+    ...asset,
+    maxBorrowAmount,
+    maxWithdrawAmount,
+    healthFactor,
+    amount,
+  });
 
   const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
 
@@ -78,35 +74,36 @@ const Modal = () => {
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper>
-        <Box sx={{ overflowY: "auto" }} p="1rem">
+        <Box sx={{ overflowY: "auto", p: ["1.5rem", "2rem"] }}>
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
           <TokenInfo apy={apy} asset={asset} />
           {action === "Supply" && symbol === "USN" && <USNInfo />}
-          <Available
-            totalAvailable={available}
-            displaySymbol={symbol}
-            available$={available$}
-            price={price}
-          />
+          <Available totalAvailable={available} available$={available$} />
           <Controls amount={amount} available={available} action={action} tokenId={tokenId} />
-          <HealthFactor value={healthFactor} />
-          {action === "Withdraw" && (
-            <Typography textAlign="center" mt="0.5rem" fontSize="0.75rem" fontWeight="500">
-              Remaining collateral: {remainingCollateral}
+          <Stack
+            boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
+            borderRadius={1}
+            mt="2rem"
+            p={2}
+            gap={0.5}
+          >
+            <Typography fontWeight="400" mb="1rem">
+              Details
             </Typography>
-          )}
-          <Typography textAlign="center" mt="1rem" fontSize="1rem" fontWeight="500">
-            <span>{totalTitle}</span>
-            <span>{total}</span>
-          </Typography>
-          <Rates action={action} rates={rates} />
+            <HealthFactor value={healthFactor} />
+            <Box display="flex" justifyContent="space-between">
+              <Typography fontSize="0.85rem" color="gray">
+                <span>{totalTitle}</span>
+              </Typography>
+              <Typography fontSize="0.85rem" fontWeight="500">
+                {total}
+              </Typography>
+            </Box>
+            <Rates rates={rates} />
+          </Stack>
           <Alerts data={alerts} />
-          <Action
-            maxBorrowAmount={maxBorrowAmount}
-            healthFactor={healthFactor}
-            displaySymbol={symbol}
-          />
+          <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />
         </Box>
       </Wrapper>
     </MUIModal>

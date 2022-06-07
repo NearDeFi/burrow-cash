@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
 import APYCell from "../Table/common/apy-cell";
+import { TOKEN_FORMAT } from "../../store";
 
 export const USNInfo = () => (
   <Box mt="1rem">
@@ -47,7 +48,7 @@ export const CloseButton = ({ onClose, ...props }) => (
   <Box
     onClick={onClose}
     position="absolute"
-    right="1rem"
+    right="2rem"
     zIndex="2"
     sx={{ cursor: "pointer" }}
     {...props}
@@ -57,41 +58,70 @@ export const CloseButton = ({ onClose, ...props }) => (
 );
 
 export const TokenInfo = ({ apy, asset }) => {
-  const { action, name, tokenId, icon, depositRewards, borrowRewards } = asset;
+  const { action, symbol, tokenId, icon, depositRewards, borrowRewards, price } = asset;
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
   const apyRewards = page === "deposit" ? depositRewards : borrowRewards;
 
   return (
     <>
-      <Typography textAlign="center" fontWeight="500" fontSize="1.5rem">
+      <Typography textAlign="left" fontWeight="500" fontSize="1.3rem">
         {actionMapTitle[action]}
       </Typography>
-      <Box display="grid" justifyContent="center" mt="2rem">
+      <Box
+        boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
+        borderRadius={1}
+        mt="2rem"
+        p={2}
+        display="flex"
+      >
         <TokenIcon icon={icon} />
+        <Box ml="12px">
+          <Typography fontSize="0.85rem" fontWeight="500" color="grey.800">
+            {symbol}
+          </Typography>
+          <Typography fontSize="0.7rem" color="grey.700">
+            ${price}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            height: "24px",
+            bgcolor: "rgba(71, 200, 128, 0.24)",
+            alignItems: "center",
+            borderRadius: "4px",
+            px: "8px",
+            ml: "auto",
+            alignSelf: "center",
+          }}
+        >
+          <APYCell
+            rewards={apyRewards}
+            baseAPY={apy}
+            page={page}
+            tokenId={tokenId}
+            showIcons={false}
+            justifyContent="center"
+            sx={{
+              fontSize: "0.75rem",
+              color: "#47C880",
+              minWidth: "auto",
+              mr: "4px",
+            }}
+          />
+          <Typography sx={{ fontSize: "0.75rem", color: "#47C880", fontWeight: "bold" }}>
+            APY
+          </Typography>
+        </Box>
       </Box>
-      <Typography textAlign="center" fontSize="0.85rem" fontWeight="500" mt="1rem">
-        {name}
-      </Typography>
-      <APYCell
-        rewards={apyRewards}
-        baseAPY={apy}
-        page={page}
-        tokenId={tokenId}
-        showIcons={false}
-        justifyContent="center"
-        sx={{ fontSize: "0.75rem", color: "gray" }}
-      />
     </>
   );
 };
 
-export const Available = ({ totalAvailable, displaySymbol, available$, price }) => (
-  <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="space-between">
-    <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-      Available: {totalAvailable} {displaySymbol} ({available$})
-    </Typography>
-    <Typography variant="body1" fontSize="0.85rem" fontWeight="500">
-      1 {displaySymbol} = ${price}
+export const Available = ({ totalAvailable, available$ }) => (
+  <Box mt="1rem" mb="0.5rem" display="flex" justifyContent="flex-end">
+    <Typography fontSize="0.75rem" color="grey.500">
+      Available: {Number(totalAvailable).toLocaleString(undefined, TOKEN_FORMAT)} ({available$})
     </Typography>
   </Box>
 );
@@ -102,50 +132,29 @@ export const HealthFactor = ({ value }) => {
   const healthFactorDisplayValue = value === -1 ? "N/A" : `${value?.toFixed(2)}%`;
 
   return (
-    <Box
-      fontSize="1rem"
-      fontWeight="500"
-      border="1px solid black"
-      p="0.5rem"
-      m="0.5rem"
-      width="15rem"
-      margin="0 auto"
-      display="flex"
-      justifyContent="center"
-    >
-      <span>Health Factor:</span>
-      <Box ml={1} color={healthFactorColor}>
+    <Box display="flex" justifyContent="space-between">
+      <Typography color="gray" fontSize="0.85rem">
+        Health Factor
+      </Typography>
+      <Typography fontSize="0.85rem" color={healthFactorColor}>
         {healthFactorDisplayValue}
-      </Box>
+      </Typography>
     </Box>
   );
 };
 
-export const Rates = ({ action, rates }) => {
+export const Rates = ({ rates }) => {
   if (!rates) return null;
-  return (
-    <Box>
-      <Typography fontSize="0.85rem" fontWeight="bold">
-        {actionMapTitle[action]} Rates
+  return rates.map(({ label, value }) => (
+    <Box key={label} display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant="body1" fontSize="0.85rem" color="gray">
+        {label}
       </Typography>
-      {rates.map(({ label, value }) => (
-        <Box
-          mt="0.5rem"
-          key={label}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="body1" fontSize="0.85rem">
-            {label}
-          </Typography>
-          <Typography variant="body1" fontSize="0.85rem" fontWeight="bold">
-            {value}
-          </Typography>
-        </Box>
-      ))}
+      <Typography variant="body1" fontSize="0.85rem" fontWeight="500" color="gray">
+        {value}
+      </Typography>
     </Box>
-  );
+  ));
 };
 
 export const Alerts = ({ data }) => (

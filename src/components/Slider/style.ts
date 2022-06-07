@@ -14,12 +14,12 @@ export const SliderStyled = styled(Slider)(({ theme }) => ({
     color: theme.palette.primary.main,
   },
   "& .MuiSlider-rail": {
-    color: theme.palette.secondary.main,
+    color: "#DADADA",
     height: 3,
     opacity: 1,
   },
   "& .MuiSlider-mark": {
-    backgroundColor: theme.palette.secondary.main,
+    color: "#DADADA",
     height: 14,
     width: 14,
     borderRadius: 14,
@@ -31,6 +31,7 @@ export const SliderStyled = styled(Slider)(({ theme }) => ({
   },
   "& .MuiSlider-markLabel": {
     fontWeight: "bold",
+    color: "#DADADA",
     '&[data-index="0"]': {
       marginLeft: "5px",
     },

@@ -1,10 +1,4 @@
-import {
-  USD_FORMAT,
-  TOKEN_FORMAT,
-  APY_FORMAT,
-  PERCENT_DIGITS,
-  NEAR_STORAGE_DEPOSIT,
-} from "../../store";
+import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, NEAR_STORAGE_DEPOSIT } from "../../store";
 import type { UIAsset } from "../../interfaces";
 
 interface Alert {
@@ -74,11 +68,8 @@ export const getModalData = (asset): UIAsset & Props => {
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
-      data.totalTitle = `Total Supply = `;
-      data.rates = [
-        { label: "Deposit APY", value: `${supplyApy.toLocaleString(undefined, APY_FORMAT)}%` },
-        { label: "Collateral Factor", value: collateralFactor },
-      ];
+      data.totalTitle = `Total Supply`;
+      data.rates = [{ label: "Collateral Factor", value: collateralFactor }];
       data.available = available.toFixed(PERCENT_DIGITS);
       if (isWrappedNear) {
         data.available = Number(
@@ -88,12 +79,11 @@ export const getModalData = (asset): UIAsset & Props => {
       data.alerts = {};
       break;
     case "Borrow":
-      data.totalTitle = `Total Borrow = `;
+      data.totalTitle = `Total Borrow`;
       data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity).toFixed(
         PERCENT_DIGITS,
       );
       data.rates = [
-        { label: "Borrow APY", value: `${borrowApy.toLocaleString(undefined, APY_FORMAT)}%` },
         { label: "Collateral Factor", value: collateralFactor },
         {
           label: "Pool Liquidity",
@@ -112,24 +102,30 @@ export const getModalData = (asset): UIAsset & Props => {
       }
       break;
     case "Withdraw":
-      data.totalTitle = `Withdraw Supply Amount = `;
+      data.totalTitle = `Withdraw Supply Amount`;
       data.apy = supplyApy;
       data.available = Math.min(
         supplied + collateral,
         maxWithdrawAmount,
         availableLiquidity,
       ).toFixed(PERCENT_DIGITS);
-      data.remainingCollateral = Math.abs(
-        Math.min(collateral, collateral + supplied - amount),
-      ).toLocaleString(undefined, TOKEN_FORMAT);
+      data.rates = [
+        {
+          label: "Remaining Collateral",
+          value: Math.abs(Math.min(collateral, collateral + supplied - amount)).toLocaleString(
+            undefined,
+            TOKEN_FORMAT,
+          ),
+        },
+      ];
       break;
     case "Adjust":
-      data.totalTitle = `Amount designated as collateral = `;
+      data.totalTitle = `Amount designated as collateral`;
       data.apy = supplyApy;
       data.available = getAvailableWithdrawOrAdjust;
       break;
     case "Repay":
-      data.totalTitle = `Repay Borrow Amount = `;
+      data.totalTitle = `Repay Borrow Amount`;
       data.available = Math.min(
         isWrappedNear
           ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))

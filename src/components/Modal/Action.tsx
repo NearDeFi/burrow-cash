@@ -5,7 +5,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import { nearTokenId } from "../../utils";
 import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
-import { actionMapTitle, getModalData } from "./utils";
+import { getModalData } from "./utils";
 import { repay } from "../../store/actions/repay";
 import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
@@ -16,7 +16,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
 
-export default function Action({ maxBorrowAmount, healthFactor, displaySymbol }) {
+export default function Action({ maxBorrowAmount, healthFactor }) {
   const [loading, setLoading] = useState(false);
   const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
@@ -119,7 +119,7 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
   return (
     <>
       {showToggle && (
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb="0.5rem">
           <Typography variant="body1" fontSize="0.85rem">
             Use as Collateral
           </Typography>
@@ -141,16 +141,15 @@ export default function Action({ maxBorrowAmount, healthFactor, displaySymbol })
           />
         </Box>
       )}
-      <Box display="flex" justifyContent="center">
-        <LoadingButton
-          disabled={actionDisabled}
-          variant="contained"
-          onClick={handleActionButtonClick}
-          loading={loading}
-        >
-          {actionMapTitle[action]} {displaySymbol}
-        </LoadingButton>
-      </Box>
+      <LoadingButton
+        disabled={actionDisabled}
+        variant="contained"
+        onClick={handleActionButtonClick}
+        loading={loading}
+        sx={{ width: "100%" }}
+      >
+        Confirm
+      </LoadingButton>
     </>
   );
 }
