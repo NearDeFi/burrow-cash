@@ -53,6 +53,11 @@ export const getTableSorting = createSelector(
   (app) => app.tableSorting,
 );
 
+export const getDegenMode = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.degenMode,
+);
+
 export const getAssetData = createSelector(
   (state: RootState) => state.app,
   (state: RootState) => state.assets.data,

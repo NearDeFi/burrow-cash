@@ -12,6 +12,7 @@ export interface ITableSorting {
   order: IOrder;
 }
 export interface AppState {
+  degenMode: boolean;
   showModal: boolean;
   displayAsTokenValue: boolean;
   showTicker: boolean;
@@ -45,6 +46,7 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
+  degenMode: false,
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
@@ -152,6 +154,9 @@ export const appSlice = createSlice({
     setStaking(state, action) {
       state.staking = { ...state.staking, ...action.payload };
     },
+    toggleDegenMode(state) {
+      state.degenMode = !state.degenMode;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -173,6 +178,7 @@ export const {
   setTableSorting,
   toggleShowDailyReturns,
   setStaking,
+  toggleDegenMode,
 } = appSlice.actions;
 
 export default appSlice.reducer;

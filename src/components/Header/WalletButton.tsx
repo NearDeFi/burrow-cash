@@ -12,6 +12,7 @@ import { hideModal as _hideModal } from "../../redux/appSlice";
 
 import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { trackConnectWallet } from "../../telemetry";
+import { useDegenMode } from "../../hooks/hooks";
 import NearIcon from "../../assets/near-icon.svg";
 import { HamburgerMenu } from "./Menu";
 
@@ -20,9 +21,9 @@ const WalletButton = () => {
   const dispatch = useAppDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const balance = useAppSelector(getAccountBalance);
   const accountId = useAppSelector(getAccountId);
+  const { degenMode } = useDegenMode();
 
   const selectorRef = useRef<NearWalletSelector>();
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
@@ -94,7 +95,22 @@ const WalletButton = () => {
             <Typography sx={{ lineHeight: 0, fontSize: "0.85rem" }}>
               {Number.parseFloat(balance).toFixed(2)}
             </Typography>
-            <NearIcon style={{ width: "1.5rem", height: "1.5rem", marginRight: "-6px" }} />
+            <NearIcon style={{ width: "1.5rem", height: "1.5rem" }} />
+            {degenMode && (
+              <Box
+                sx={{
+                  marginRight: "-6px",
+                  backgroundColor: theme.palette.primary.light,
+                  color: theme.palette.primary.main,
+                  borderRadius: "0.3rem",
+                  fontSize: "0.65rem",
+                  px: "0.3rem",
+                  py: "0.1rem",
+                }}
+              >
+                degen
+              </Box>
+            )}
           </Box>
         </Box>
       ) : (
