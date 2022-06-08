@@ -84,7 +84,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
           onClick={setDegenMode}
           key={2}
         >
-          Degen Mode: {degenMode ? "On" : "Off"}
+          Degen Mode: {degenMode.enabled ? "On" : "Off"}
         </MenuItem>,
         <Divider key={3} />,
       ]}

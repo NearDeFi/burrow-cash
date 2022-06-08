@@ -3,7 +3,7 @@ import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import { getAccountId, getHasNonFarmedAssets, isAccountLoading } from "../redux/accountSelectors";
 import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
 import { getConfig, getSlimStats, getDegenMode } from "../redux/appSelectors";
-import { toggleDegenMode } from "../redux/appSlice";
+import { setRepayFrom, toggleDegenMode } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 
 export function useLoading() {
@@ -54,5 +54,11 @@ export function useDegenMode() {
     dispatch(toggleDegenMode());
   };
 
-  return { degenMode, setDegenMode };
+  const setRepayFromDeposits = (repayFromDeposits: boolean) => {
+    dispatch(setRepayFrom({ repayFromDeposits }));
+  };
+
+  const repayFromDeposits = degenMode.enabled && degenMode.repayFromDeposits;
+
+  return { degenMode, setDegenMode, repayFromDeposits, setRepayFromDeposits };
 }

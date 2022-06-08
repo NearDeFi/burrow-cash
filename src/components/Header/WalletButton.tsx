@@ -96,7 +96,7 @@ const WalletButton = () => {
               {Number.parseFloat(balance).toFixed(2)}
             </Typography>
             <NearIcon style={{ width: "1.5rem", height: "1.5rem" }} />
-            {degenMode && (
+            {degenMode.enabled && (
               <Box
                 sx={{
                   marginRight: "-6px",

@@ -12,7 +12,10 @@ export interface ITableSorting {
   order: IOrder;
 }
 export interface AppState {
-  degenMode: boolean;
+  degenMode: {
+    enabled: boolean;
+    repayFromDeposits: boolean;
+  };
   showModal: boolean;
   displayAsTokenValue: boolean;
   showTicker: boolean;
@@ -46,7 +49,10 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  degenMode: false,
+  degenMode: {
+    enabled: false,
+    repayFromDeposits: false,
+  },
   showModal: false,
   displayAsTokenValue: true,
   showDust: false,
@@ -155,7 +161,13 @@ export const appSlice = createSlice({
       state.staking = { ...state.staking, ...action.payload };
     },
     toggleDegenMode(state) {
-      state.degenMode = !state.degenMode;
+      state.degenMode = { ...state.degenMode, enabled: !state.degenMode.enabled };
+    },
+    setRepayFrom(state, action) {
+      state.degenMode = {
+        ...state.degenMode,
+        repayFromDeposits: action.payload.repayFromDeposits,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -179,6 +191,7 @@ export const {
   toggleShowDailyReturns,
   setStaking,
   toggleDegenMode,
+  setRepayFrom,
 } = appSlice.actions;
 
 export default appSlice.reducer;

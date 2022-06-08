@@ -21,6 +21,9 @@ export const themeOptions = {
     secondary: {
       main: "#000741",
     },
+    info: {
+      main: "#ababab",
+    },
     background: {
       default: "#F8F9FF",
     },

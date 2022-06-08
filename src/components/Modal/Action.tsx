@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Typography, Switch, Tooltip } from "@mui/material";
+import { Box, Typography, Switch, Tooltip, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
@@ -15,6 +15,7 @@ import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
+import { useDegenMode } from "../../hooks/hooks";
 
 export default function Action({ maxBorrowAmount, healthFactor }) {
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
+  const { repayFromDeposits } = useDegenMode();
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -146,10 +148,15 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         variant="contained"
         onClick={handleActionButtonClick}
         loading={loading}
-        sx={{ width: "100%" }}
+        sx={{ width: "100%", mb: "1rem" }}
       >
         Confirm
       </LoadingButton>
+      {repayFromDeposits && (
+        <Alert severity="warning">
+          This is an advanced feature. Please Do Your Own Research before using it.
+        </Alert>
+      )}
     </>
   );
 }
