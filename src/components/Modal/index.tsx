@@ -13,6 +13,8 @@ import { recomputeHealthFactorAdjust } from "../../redux/selectors/recomputeHeal
 import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHealthFactorWithdraw";
 import { recomputeHealthFactorSupply } from "../../redux/selectors/recomputeHealthFactorSupply";
 import { recomputeHealthFactorRepay } from "../../redux/selectors/recomputeHealthFactorRepay";
+import { recomputeHealthFactorRepayFromDeposits } from "../../redux/selectors/recomputeHealthFactorRepayFromDeposits";
+
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {
@@ -28,6 +30,7 @@ import {
 import Controls from "./Controls";
 import Action from "./Action";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
+import { useDegenMode } from "../../hooks/hooks";
 
 const Modal = () => {
   const isOpen = useAppSelector(getModalStatus);
@@ -35,6 +38,7 @@ const Modal = () => {
   const asset = useAppSelector(getAssetData);
   const { amount } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
+  const { repayFromDeposits } = useDegenMode();
 
   const { action = "Deposit", tokenId } = asset;
 
@@ -45,6 +49,8 @@ const Modal = () => {
       ? recomputeHealthFactorAdjust(tokenId, amount)
       : action === "Supply"
       ? recomputeHealthFactorSupply(tokenId, amount)
+      : action === "Repay" && repayFromDeposits
+      ? recomputeHealthFactorRepayFromDeposits(tokenId, amount)
       : action === "Repay"
       ? recomputeHealthFactorRepay(tokenId, amount)
       : recomputeHealthFactor(tokenId, amount),
@@ -57,6 +63,7 @@ const Modal = () => {
     ...asset,
     maxBorrowAmount,
     maxWithdrawAmount,
+    repayFromDeposits,
     healthFactor,
     amount,
   });

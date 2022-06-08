@@ -168,6 +168,10 @@ export const appSlice = createSlice({
         ...state.degenMode,
         repayFromDeposits: action.payload.repayFromDeposits,
       };
+      state.selected = {
+        ...state.selected,
+        amount: 0,
+      };
     },
   },
   extraReducers: (builder) => {
