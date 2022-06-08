@@ -45,7 +45,7 @@ export const getModalData = (asset): UIAsset & Props => {
     healthFactor,
     amount,
     maxWithdrawAmount,
-    repayFromDeposits,
+    isRepayFromDeposits,
   } = asset;
 
   const data: any = {
@@ -127,7 +127,7 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount`;
-      data.available = repayFromDeposits
+      data.available = isRepayFromDeposits
         ? maxWithdrawAmount
         : Math.min(
             isWrappedNear

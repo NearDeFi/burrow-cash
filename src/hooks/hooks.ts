@@ -58,7 +58,7 @@ export function useDegenMode() {
     dispatch(setRepayFrom({ repayFromDeposits }));
   };
 
-  const repayFromDeposits = degenMode.enabled && degenMode.repayFromDeposits;
+  const isRepayFromDeposits = degenMode.enabled && degenMode.repayFromDeposits;
 
-  return { degenMode, setDegenMode, repayFromDeposits, setRepayFromDeposits };
+  return { degenMode, setDegenMode, isRepayFromDeposits, setRepayFromDeposits };
 }

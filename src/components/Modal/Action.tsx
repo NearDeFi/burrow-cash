@@ -7,6 +7,7 @@ import { nearTokenId } from "../../utils";
 import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
 import { getModalData } from "./utils";
 import { repay } from "../../store/actions/repay";
+import { repayFromDeposits } from "../../store/actions/repayFromDeposits";
 import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
 import { borrow } from "../../store/actions/borrow";
@@ -23,7 +24,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
-  const { repayFromDeposits } = useDegenMode();
+  const { isRepayFromDeposits } = useDegenMode();
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -92,12 +93,21 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         });
         break;
       case "Repay":
-        await repay({
-          tokenId,
-          amount,
-          extraDecimals,
-          isMax,
-        });
+        if (isRepayFromDeposits) {
+          await repayFromDeposits({
+            tokenId,
+            amount,
+            extraDecimals,
+            isMax,
+          });
+        } else {
+          await repay({
+            tokenId,
+            amount,
+            extraDecimals,
+            isMax,
+          });
+        }
         break;
       default:
         break;
@@ -152,7 +162,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       >
         Confirm
       </LoadingButton>
-      {repayFromDeposits && (
+      {isRepayFromDeposits && (
         <Alert severity="warning">
           This is an advanced feature. Please Do Your Own Research before using it.
         </Alert>

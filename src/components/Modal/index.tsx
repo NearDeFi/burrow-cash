@@ -38,7 +38,7 @@ const Modal = () => {
   const asset = useAppSelector(getAssetData);
   const { amount } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
-  const { repayFromDeposits } = useDegenMode();
+  const { isRepayFromDeposits } = useDegenMode();
 
   const { action = "Deposit", tokenId } = asset;
 
@@ -49,7 +49,7 @@ const Modal = () => {
       ? recomputeHealthFactorAdjust(tokenId, amount)
       : action === "Supply"
       ? recomputeHealthFactorSupply(tokenId, amount)
-      : action === "Repay" && repayFromDeposits
+      : action === "Repay" && isRepayFromDeposits
       ? recomputeHealthFactorRepayFromDeposits(tokenId, amount)
       : action === "Repay"
       ? recomputeHealthFactorRepay(tokenId, amount)
@@ -63,7 +63,7 @@ const Modal = () => {
     ...asset,
     maxBorrowAmount,
     maxWithdrawAmount,
-    repayFromDeposits,
+    isRepayFromDeposits,
     healthFactor,
     amount,
   });

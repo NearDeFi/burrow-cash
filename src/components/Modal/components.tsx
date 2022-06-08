@@ -63,7 +63,7 @@ export const TokenInfo = ({ apy, asset }) => {
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
   const apyRewards = page === "deposit" ? depositRewards : borrowRewards;
   const isRepay = action === "Repay";
-  const { degenMode, repayFromDeposits, setRepayFromDeposits } = useDegenMode();
+  const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
   const theme = useTheme();
 
   return (
@@ -75,14 +75,14 @@ export const TokenInfo = ({ apy, asset }) => {
         <ButtonGroup size="small" aria-label="small button group" sx={{ mb: "0.2rem" }}>
           <Button
             key="wallet"
-            color={repayFromDeposits ? "info" : "primary"}
+            color={isRepayFromDeposits ? "info" : "primary"}
             onClick={() => setRepayFromDeposits(false)}
           >
             From Wallet
           </Button>
           <Button
             key="deposits"
-            color={repayFromDeposits ? "primary" : "info"}
+            color={isRepayFromDeposits ? "primary" : "info"}
             onClick={() => setRepayFromDeposits(true)}
           >
             From Deposits
