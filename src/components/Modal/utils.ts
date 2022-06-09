@@ -128,13 +128,13 @@ export const getModalData = (asset): UIAsset & Props => {
     case "Repay":
       data.totalTitle = `Repay Borrow Amount`;
       data.available = isRepayFromDeposits
-        ? maxWithdrawAmount
+        ? Math.min(maxWithdrawAmount, borrowed)
         : Math.min(
             isWrappedNear
               ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
               : available,
             borrowed,
-          ).toFixed(PERCENT_DIGITS);
+          );
       data.alerts = {};
       break;
 
