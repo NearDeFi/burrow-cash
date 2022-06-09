@@ -21,10 +21,10 @@ interface Props {
   isMax: boolean;
 }
 
-export async function getWithdrawTransactions({ tokenId, extraDecimals, amount, isMax }: Props) {
+export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props) {
   const assets = await getAssets().then(transformAssets);
   const account = await getAccount().then(transformAccount);
-  if (!account) return [];
+  if (!account) return;
 
   const asset = assets[tokenId];
   const { decimals } = asset.metadata;
@@ -119,10 +119,5 @@ export async function getWithdrawTransactions({ tokenId, extraDecimals, amount, 
     });
   }
 
-  return transactions;
-}
-
-export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props) {
-  const transactions = await getWithdrawTransactions({ tokenId, extraDecimals, amount, isMax });
   await prepareAndExecuteTransactions(transactions);
 }
