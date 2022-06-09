@@ -98,7 +98,6 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
             tokenId,
             amount,
             extraDecimals,
-            isMax,
           });
         } else {
           await repay({

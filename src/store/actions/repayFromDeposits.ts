@@ -1,65 +1,71 @@
-import BN from "bn.js";
-import { getBurrow } from "../../utils";
+import Decimal from "decimal.js";
+
+import { decimalMax, getBurrow } from "../../utils";
 import { expandTokenDecimal } from "../helper";
-import { ChangeMethodsToken } from "../../interfaces";
-import { getTokenContract, getMetadata, prepareAndExecuteTransactions } from "../tokens";
-import { FunctionCallOptions } from "../wallet";
-import { getWithdrawTransactions } from "./withdraw";
+import { ChangeMethodsOracle } from "../../interfaces";
+import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
+import { Transaction } from "../wallet";
+import { transformAccount } from "../../transformers/account";
+import getAccount from "../../api/get-account";
 
 export async function repayFromDeposits({
   tokenId,
   amount,
   extraDecimals,
-  isMax,
 }: {
   tokenId: string;
   amount: number;
   extraDecimals: number;
-  isMax: boolean;
 }) {
-  const { logicContract } = await getBurrow();
-  const tokenContract = await getTokenContract(tokenId);
+  const { logicContract, oracleContract } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
-  const functionCalls: FunctionCallOptions[] = [];
+  const account = await getAccount().then(transformAccount);
+  if (!account) return;
 
   const extraDecimalMultiplier = expandTokenDecimal(1, extraDecimals);
   const expandedAmount = expandTokenDecimal(amount, decimals);
 
-  const msg = {
-    Execute: {
-      actions: [
-        {
-          Repay: {
-            amount: expandedAmount.mul(extraDecimalMultiplier).toFixed(0),
-            token_id: tokenId,
-          },
+  const suppliedBalance = new Decimal(account.portfolio?.supplied[tokenId]?.balance || 0);
+  const decreaseCollateralAmount = decimalMax(
+    expandedAmount.mul(extraDecimalMultiplier).sub(suppliedBalance),
+    0,
+  );
+
+  const transactions: Transaction[] = [];
+
+  transactions.push({
+    receiverId: oracleContract.contractId,
+    functionCalls: [
+      {
+        methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
+        args: {
+          receiver_id: logicContract.contractId,
+          msg: JSON.stringify({
+            Execute: {
+              actions: [
+                ...(decreaseCollateralAmount.gt(0)
+                  ? [
+                      {
+                        DecreaseCollateral: {
+                          token_id: tokenId,
+                          amount: decreaseCollateralAmount.toFixed(0),
+                        },
+                      },
+                    ]
+                  : []),
+                {
+                  Repay: {
+                    token_id: tokenId,
+                    amount: expandedAmount.mul(extraDecimalMultiplier).toFixed(0),
+                  },
+                },
+              ],
+            },
+          }),
         },
-      ],
-    },
-  };
-
-  functionCalls.push({
-    methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-    gas: new BN("150000000000000"),
-    args: {
-      receiver_id: logicContract.contractId,
-      amount: expandedAmount.toFixed(0),
-      msg: JSON.stringify(msg),
-    },
+      },
+    ],
   });
 
-  const withdrawTransactions = await getWithdrawTransactions({
-    tokenId,
-    extraDecimals,
-    amount,
-    isMax,
-  });
-
-  await prepareAndExecuteTransactions([
-    ...withdrawTransactions,
-    {
-      receiverId: tokenContract.contractId,
-      functionCalls,
-    },
-  ]);
+  await prepareAndExecuteTransactions(transactions);
 }
