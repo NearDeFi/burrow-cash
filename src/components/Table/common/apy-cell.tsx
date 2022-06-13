@@ -65,7 +65,7 @@ const APYCell = ({
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px" sx={sx}>
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards && showIcons && (
+        {hasRewards && showIcons && boostedAPY !== 0 && (
           <Box component="span" position="absolute" right="-22px">
             {isLucky ? "🍀" : "🚀"}
           </Box>
