@@ -1,5 +1,4 @@
-import { Menu, MenuItem, Divider, Typography } from "@mui/material";
-
+import { Menu, MenuItem, Divider, Typography, useTheme } from "@mui/material";
 import NearWalletSelector from "@near-wallet-selector/core";
 
 import ClaimAllRewards from "../ClaimAllRewards";
@@ -9,6 +8,8 @@ import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
 import { getDisplayAsTokenValue, getShowDust } from "../../redux/appSelectors";
 import { useFullDigits } from "../../hooks/useFullDigits";
+import { useDegenMode } from "../../hooks/hooks";
+
 import {
   trackDisplayAsUsd,
   trackLogout,
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
   const accountId = useAppSelector(getAccountId);
@@ -31,6 +33,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const { fullDigits, setDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const appVersion = getLocalAppVersion();
+  const { degenMode, setDegenMode } = useDegenMode();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -76,7 +79,14 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
     >
       {accountId && [
         <ClaimAllRewards location="menu" onDone={handleClose} Button={ClaimMenuItem} key={1} />,
-        <Divider key={2} />,
+        <MenuItem
+          sx={{ backgroundColor: theme.palette.primary.light }}
+          onClick={setDegenMode}
+          key={2}
+        >
+          Degen Mode: {degenMode.enabled ? "On" : "Off"}
+        </MenuItem>,
+        <Divider key={3} />,
       ]}
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}

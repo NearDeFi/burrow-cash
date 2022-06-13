@@ -45,6 +45,7 @@ export const getModalData = (asset): UIAsset & Props => {
     healthFactor,
     amount,
     maxWithdrawAmount,
+    isRepayFromDeposits,
   } = asset;
 
   const data: any = {
@@ -126,13 +127,27 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount`;
-      data.available = Math.min(
-        isWrappedNear
-          ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
-          : available,
-        borrowed,
-      ).toFixed(PERCENT_DIGITS);
+      data.available = isRepayFromDeposits
+        ? Math.min(maxWithdrawAmount, borrowed)
+        : Math.min(
+            isWrappedNear
+              ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
+              : available,
+            borrowed,
+          );
       data.alerts = {};
+      data.rates = [
+        {
+          label: "Remaining Borrow Amount",
+          value: (borrowed - amount).toFixed(PERCENT_DIGITS),
+        },
+      ];
+      if (isRepayFromDeposits) {
+        data.rates.push({
+          label: "Remaining Deposit Amount",
+          value: (supplied + collateral - amount).toFixed(PERCENT_DIGITS),
+        });
+      }
       break;
 
     default:

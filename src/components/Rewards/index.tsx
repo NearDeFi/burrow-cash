@@ -42,6 +42,8 @@ const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
 
           const iconSize = isHorizontalLayout ? 20 : 14;
 
+          if (Number(dailyRewards) < 0.001) return null;
+
           return (
             <Stack
               direction="row"

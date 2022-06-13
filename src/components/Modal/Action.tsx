@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Typography, Switch, Tooltip } from "@mui/material";
+import { Box, Typography, Switch, Tooltip, Alert } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
@@ -7,6 +7,7 @@ import { nearTokenId } from "../../utils";
 import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
 import { getModalData } from "./utils";
 import { repay } from "../../store/actions/repay";
+import { repayFromDeposits } from "../../store/actions/repayFromDeposits";
 import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
 import { borrow } from "../../store/actions/borrow";
@@ -15,6 +16,7 @@ import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../telemetry";
+import { useDegenMode } from "../../hooks/hooks";
 
 export default function Action({ maxBorrowAmount, healthFactor }) {
   const [loading, setLoading] = useState(false);
@@ -22,6 +24,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
+  const { isRepayFromDeposits } = useDegenMode();
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -90,12 +93,20 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         });
         break;
       case "Repay":
-        await repay({
-          tokenId,
-          amount,
-          extraDecimals,
-          isMax,
-        });
+        if (isRepayFromDeposits) {
+          await repayFromDeposits({
+            tokenId,
+            amount,
+            extraDecimals,
+          });
+        } else {
+          await repay({
+            tokenId,
+            amount,
+            extraDecimals,
+            isMax,
+          });
+        }
         break;
       default:
         break;
@@ -146,10 +157,15 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         variant="contained"
         onClick={handleActionButtonClick}
         loading={loading}
-        sx={{ width: "100%" }}
+        sx={{ width: "100%", mb: "1rem" }}
       >
         Confirm
       </LoadingButton>
+      {action === "Repay" && isRepayFromDeposits && (
+        <Alert severity="warning">
+          This is an advanced feature. Please Do Your Own Research before using it.
+        </Alert>
+      )}
     </>
   );
 }

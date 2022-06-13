@@ -14,17 +14,14 @@ import getAccount from "../../api/get-account";
 import { transformAccount } from "../../transformers/account";
 import { computeWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 
-export async function withdraw({
-  tokenId,
-  extraDecimals,
-  amount,
-  isMax,
-}: {
+interface Props {
   tokenId: string;
   extraDecimals: number;
   amount: number;
   isMax: boolean;
-}) {
+}
+
+export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props) {
   const assets = await getAssets().then(transformAssets);
   const account = await getAccount().then(transformAccount);
   if (!account) return;

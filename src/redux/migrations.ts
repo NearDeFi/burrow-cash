@@ -30,4 +30,13 @@ export const migrations = {
       },
     };
   },
+  4: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        degenMode: initialState.degenMode,
+      },
+    };
+  },
 };

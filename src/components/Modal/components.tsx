@@ -1,10 +1,11 @@
-import { Box, Typography, Stack, Alert, Link } from "@mui/material";
+import { Box, Typography, Stack, Alert, Link, ButtonGroup, Button, useTheme } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
 import APYCell from "../Table/common/apy-cell";
-import { TOKEN_FORMAT } from "../../store";
+import { TOKEN_FORMAT, USD_FORMAT } from "../../store";
+import { useDegenMode } from "../../hooks/hooks";
 
 export const USNInfo = () => (
   <Box mt="1rem">
@@ -61,33 +62,48 @@ export const TokenInfo = ({ apy, asset }) => {
   const { action, symbol, tokenId, icon, depositRewards, borrowRewards, price } = asset;
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
   const apyRewards = page === "deposit" ? depositRewards : borrowRewards;
+  const isRepay = action === "Repay";
+  const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
+  const theme = useTheme();
 
   return (
     <>
-      <Typography textAlign="left" fontWeight="500" fontSize="1.3rem">
+      <Typography textAlign="left" fontWeight="500" fontSize="1.3rem" mb="1rem">
         {actionMapTitle[action]}
       </Typography>
-      <Box
-        boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
-        borderRadius={1}
-        mt="2rem"
-        p={2}
-        display="flex"
-      >
+      {isRepay && degenMode.enabled && (
+        <ButtonGroup size="small" aria-label="small button group" sx={{ mb: "0.2rem" }}>
+          <Button
+            key="wallet"
+            color={isRepayFromDeposits ? "info" : "primary"}
+            onClick={() => setRepayFromDeposits(false)}
+          >
+            From Wallet
+          </Button>
+          <Button
+            key="deposits"
+            color={isRepayFromDeposits ? "primary" : "info"}
+            onClick={() => setRepayFromDeposits(true)}
+          >
+            From Deposits
+          </Button>
+        </ButtonGroup>
+      )}
+      <Box boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)" borderRadius={1} p={2} display="flex">
         <TokenIcon icon={icon} />
         <Box ml="12px">
           <Typography fontSize="0.85rem" fontWeight="500" color="grey.800">
             {symbol}
           </Typography>
           <Typography fontSize="0.7rem" color="grey.700">
-            ${price}
+            {Number(price).toLocaleString(undefined, USD_FORMAT)}
           </Typography>
         </Box>
         <Box
           sx={{
             display: "flex",
             height: "24px",
-            bgcolor: "rgba(71, 200, 128, 0.24)",
+            bgcolor: theme.palette.background.default,
             alignItems: "center",
             borderRadius: "4px",
             px: "8px",
@@ -104,12 +120,14 @@ export const TokenInfo = ({ apy, asset }) => {
             justifyContent="center"
             sx={{
               fontSize: "0.75rem",
-              color: "#47C880",
+              color: theme.palette.secondary.main,
               minWidth: "auto",
               mr: "4px",
             }}
           />
-          <Typography sx={{ fontSize: "0.75rem", color: "#47C880", fontWeight: "bold" }}>
+          <Typography
+            sx={{ fontSize: "0.75rem", color: theme.palette.secondary.main, fontWeight: "bold" }}
+          >
             APY
           </Typography>
         </Box>

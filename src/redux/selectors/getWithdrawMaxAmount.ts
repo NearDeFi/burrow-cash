@@ -72,7 +72,7 @@ export const getWithdrawMaxAmount = (tokenId: string) =>
     (app, assets, portfolio) => {
       const asset = assets[tokenId];
       if (!asset || app.selected.tokenId !== tokenId) return 0;
-      if (!["Withdraw", "Adjust"].includes(app.selected.action as string)) return 0;
+      if (!["Withdraw", "Adjust", "Repay"].includes(app.selected.action as string)) return 0;
 
       const { metadata, config } = asset;
       const decimals = metadata.decimals + config.extra_decimals;
