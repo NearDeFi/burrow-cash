@@ -161,7 +161,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       >
         Confirm
       </LoadingButton>
-      {isRepayFromDeposits && (
+      {action === "Repay" && isRepayFromDeposits && (
         <Alert severity="warning">
           This is an advanced feature. Please Do Your Own Research before using it.
         </Alert>
