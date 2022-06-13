@@ -4,7 +4,6 @@ import Input from "../Input";
 import Slider from "../Slider";
 import { updateAmount } from "../../redux/appSlice";
 import { useAppDispatch } from "../../redux/hooks";
-import { PERCENT_DIGITS } from "../../store";
 import { trackMaxButton } from "../../telemetry";
 
 export default function Controls({ amount, available, action, tokenId }) {
@@ -31,7 +30,7 @@ export default function Controls({ amount, available, action, tokenId }) {
     dispatch(
       updateAmount({
         isMax: value === Number(available),
-        amount: Number(value.toFixed(PERCENT_DIGITS)),
+        amount: value,
       }),
     );
   };

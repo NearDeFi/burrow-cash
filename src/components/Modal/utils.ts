@@ -136,17 +136,17 @@ export const getModalData = (asset): UIAsset & Props => {
             borrowed,
           );
       data.alerts = {};
+      data.rates = [
+        {
+          label: "Remaining Borrow Amount",
+          value: (borrowed - amount).toFixed(PERCENT_DIGITS),
+        },
+      ];
       if (isRepayFromDeposits) {
-        data.rates = [
-          {
-            label: "Remaining Borrow Amount",
-            value: (borrowed - amount).toFixed(PERCENT_DIGITS),
-          },
-          {
-            label: "Remaining Deposit Amount",
-            value: (supplied + collateral - amount).toFixed(PERCENT_DIGITS),
-          },
-        ];
+        data.rates.push({
+          label: "Remaining Deposit Amount",
+          value: (supplied + collateral - amount).toFixed(PERCENT_DIGITS),
+        });
       }
       break;
 
