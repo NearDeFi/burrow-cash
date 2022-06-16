@@ -54,6 +54,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       available,
       collateral,
       sliderValue: Math.round((amount * 100) / available) || 0,
+      isRepayFromDeposits,
     });
     dispatch(hideModal());
 
