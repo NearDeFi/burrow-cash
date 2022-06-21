@@ -44,7 +44,7 @@ const Reward = ({ icon, dailyAmount, symbol, multiplier, newDailyAmount }) => {
   );
 };
 
-export const Info = ({ daily, multiplier }: any) => (
+export const Info = ({ daily, multiplier }) => (
   <Tooltip
     title={
       <Stack width="140px" spacing={0.5}>

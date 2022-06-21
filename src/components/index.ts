@@ -4,7 +4,6 @@ import Slider from "./Slider";
 import Table from "./Table";
 import Layout from "./Layout";
 import PageTitle from "./PageTitle";
-import TotalBRRR from "./TotalBRRR";
 import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 import Rewards from "./Rewards";
@@ -23,7 +22,6 @@ export {
   Slider,
   Layout,
   PageTitle,
-  TotalBRRR,
   OnboardingBRRR,
   BRRRPrice,
   Rewards,
