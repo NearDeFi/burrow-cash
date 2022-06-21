@@ -20,7 +20,7 @@ export const getPortfolioRewards = (
       assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
 
     const totalRewardsPerDay = Number(
-      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", assetDecimals),
+      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", rewardTokenDecimals),
     );
     const totalBoostedShares = Number(
       shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", assetDecimals),
