@@ -32,8 +32,5 @@ export const SliderStyled = styled(Slider)(({ theme }) => ({
   "& .MuiSlider-markLabel": {
     fontWeight: "bold",
     color: "#DADADA",
-    '&[data-index="0"]': {
-      marginLeft: "5px",
-    },
   },
 }));

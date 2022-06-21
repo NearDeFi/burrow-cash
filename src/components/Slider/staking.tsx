@@ -2,7 +2,10 @@ import pluralize from "pluralize";
 
 import { SliderStyled } from "./style";
 
-const marks = Array.from(new Array(12)).map((_, i) => ({ value: i + 1, label: i + 1 }));
+const marks = Array.from(new Array(12)).map((_, i) => ({
+  value: i + 1,
+  label: i === 0 || i === 11 ? i + 1 : "",
+}));
 
 function valuetext(value: number) {
   return `${value}%`;
@@ -16,7 +19,7 @@ interface Props {
 const Slider = ({ value = 1, onChange }: Props) => {
   return (
     <SliderStyled
-      aria-label="Amount slider"
+      aria-label="Month amount slider"
       getAriaValueText={valuetext}
       valueLabelDisplay="auto"
       value={value}

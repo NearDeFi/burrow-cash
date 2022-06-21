@@ -1,5 +1,10 @@
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, Box } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+
+import { useLayoutEffect, useState } from "react";
+import { TOKEN_FORMAT } from "../../store";
+import { useAppSelector } from "../../redux/hooks";
+import { getAccountRewards } from "../../redux/selectors/getAccountRewards";
 
 export const BrrrLogo = ({ color = "#594A42", width = 48, height = 48 }) => {
   return (
@@ -66,4 +71,31 @@ export const StakingCard = ({
       {buttonLabel}
     </LoadingButton>
   </Stack>
+);
+
+export const LiveUnclaimedAmount = ({ addAmount = 0 }) => {
+  const rewards = useAppSelector(getAccountRewards);
+  const { unclaimedAmount = 0, dailyAmount = 0 } = rewards.brrr;
+  const [unclaimed, setUnclaimed] = useState<number>(unclaimedAmount);
+
+  const count = dailyAmount / 24 / 3600 / 10;
+
+  useLayoutEffect(() => {
+    setUnclaimed(unclaimedAmount);
+    const timer = setInterval(() => setUnclaimed((u) => u + count), 60);
+    return () => clearInterval(timer);
+  }, [unclaimedAmount]);
+
+  return <span>{(addAmount + unclaimed).toLocaleString(undefined, TOKEN_FORMAT)}</span>;
+};
+
+export const Separator = ({ sx = {} }) => (
+  <Box
+    flex={1}
+    mx={1}
+    height="1px"
+    bgcolor="rgba(0, 0, 0, 0.01)"
+    border="0.5px dashed rgba(0, 0, 0, 0.1)"
+    sx={sx}
+  />
 );
