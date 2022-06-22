@@ -1,64 +1,74 @@
 import { Box, Stack, Typography, Tooltip } from "@mui/material";
-import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
+import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { TOKEN_FORMAT } from "../../store/constants";
 import { useRewards } from "../../hooks/useRewards";
 import TokenIcon from "../../components/TokenIcon";
+import { Separator } from "./components";
 
 export const StakingRewards = () => {
   const { extra } = useRewards();
 
   return (
-    <Stack direction="column" sx={{ px: [1, 2], p: 1.5 }} bgcolor="white">
-      <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1}>
-        <Typography fontSize="0.75rem" textAlign="left" fontWeight="bold">
-          Extra Rewards
-        </Typography>
-        <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-          Daily Total
-        </Typography>
-        <Typography fontSize="0.75rem" textAlign="center" fontWeight="bold">
-          Multiplier
-          <Info title="New farming multiplier" />
-        </Typography>
-        <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-          🚀 Boost
-          <Info title="Boosted total daily rewards after staking" />
-        </Typography>
-        {extra.map(([tokenId, r]) => (
-          <Reward key={tokenId} {...r} />
-        ))}
-      </Box>
-    </Stack>
+    <Box display="grid" gridTemplateColumns="auto 1fr" alignItems="center" gap={1.5}>
+      {extra.map(([tokenId, r]) => (
+        <Reward key={tokenId} {...r} />
+      ))}
+    </Box>
   );
 };
 
 const Reward = ({ icon, dailyAmount, symbol, multiplier, newDailyAmount }) => {
   return (
     <>
-      <Stack direction="row" gap={1}>
-        <TokenIcon width={18} height={18} icon={icon} />
+      <Stack direction="row" gap={1.5} alignItems="center">
+        <TokenIcon width={24} height={24} icon={icon} />
         <Typography fontSize="0.75rem" textAlign="left">
           {symbol}
         </Typography>
       </Stack>
-      <Typography fontSize="0.75rem" textAlign="right">
-        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-      <Typography fontSize="0.75rem" textAlign="center">
-        {multiplier.toFixed(2)}x
-      </Typography>
-      <Typography fontSize="0.75rem" textAlign="right" fontWeight="bold">
-        {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
+      <Stack direction="row" justifyContent="space-between">
+        <Separator sx={{ position: "relative", top: "10px", mx: "20px" }} />
+        <Typography
+          position="relative"
+          fontSize="0.75rem"
+          textAlign="right"
+          fontWeight="bold"
+          alignItems="center"
+        >
+          {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)} 💰
+          <Info daily={dailyAmount} multiplier={multiplier} />
+        </Typography>
+      </Stack>
     </>
   );
 };
 
-export const Info = ({ title, style }: { title: string; style?: React.CSSProperties }) => (
-  <Tooltip title={title}>
+export const Info = ({ daily, multiplier }) => (
+  <Tooltip
+    title={
+      <Stack width="140px" spacing={0.5}>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography fontSize="0.625rem">Current daily</Typography>
+          <Typography fontSize="0.625rem" fontWeight="medium">
+            {daily.toLocaleString(undefined, TOKEN_FORMAT)}
+          </Typography>
+        </Stack>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography fontSize="0.625rem">Multiplier</Typography>
+          <Typography fontSize="0.625rem" fontWeight="medium">
+            {multiplier.toLocaleString(undefined, TOKEN_FORMAT)}
+          </Typography>
+        </Stack>
+      </Stack>
+    }
+    placement="right"
+    arrow
+  >
     <Box component="span">
-      <FcInfo style={{ marginLeft: "5px", ...style }} />
+      <MdInfoOutline
+        style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "2px" }}
+      />
     </Box>
   </Tooltip>
 );

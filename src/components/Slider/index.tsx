@@ -3,7 +3,7 @@ import { SliderStyled } from "./style";
 const marks = [
   {
     value: 0,
-    label: "0%",
+    label: 0,
   },
   {
     value: 25,
