@@ -16,23 +16,23 @@ export const getPortfolioRewards = (
   if (!farm) return [];
   return Object.entries(farm).map(([tokenId, rewards]) => {
     const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
-    const reardTokendecimals =
+    const rewardTokenDecimals =
       assets[tokenId].metadata.decimals + assets[tokenId].config.extra_decimals;
 
     const totalRewardsPerDay = Number(
-      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", assetDecimals),
+      shrinkToken(asset.farms[type][tokenId]?.["reward_per_day"] || "0", rewardTokenDecimals),
     );
     const totalBoostedShares = Number(
       shrinkToken(asset.farms[type][tokenId]?.["boosted_shares"] || "0", assetDecimals),
     );
     const boostedShares = Number(
-      shrinkToken(farm?.[tokenId]?.boosted_shares || "0", reardTokendecimals),
+      shrinkToken(farm?.[tokenId]?.boosted_shares || "0", assetDecimals),
     );
 
     const rewardPerDay = (boostedShares / totalBoostedShares) * totalRewardsPerDay || 0;
 
     return {
-      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, reardTokendecimals) },
+      rewards: { ...rewards, reward_per_day: expandToken(rewardPerDay, rewardTokenDecimals) },
       metadata: assets[tokenId].metadata,
       config: assets[tokenId].config,
       type: "portfolio",
