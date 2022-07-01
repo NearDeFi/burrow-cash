@@ -11,10 +11,10 @@ export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
 });
 
 export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
-  const res = await fetch("https://indexer.ref-finance.net/list-token-price", {
-    mode: "cors",
-  });
-  const prices = await res.json();
+  const prices = await fetch(
+    "https://raw.githubusercontent.com/NearDeFi/token-prices/main/ref-prices.json",
+  ).then((r) => r.json());
+
   return prices;
 });
 
