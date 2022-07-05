@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-import { InfoBox, PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
+import { PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAccountId, usePortfolioAssets } from "../../hooks/hooks";
@@ -13,7 +13,6 @@ const Portfolio = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
       <BetaInfo />
       <NonFarmedAssets />
