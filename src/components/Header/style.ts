@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
+  color: "white",
   [theme.breakpoints.down("sm")]: {
     alignItems: "start",
     marginTop: "0.5rem",
@@ -42,7 +43,8 @@ export const LinkStyled = styled(Link)(({ theme }) => ({
   borderWidth: 2,
   borderStyle: "solid",
   borderColor: "transparent",
-  color: theme.palette.secondary.main,
+  color: "white",
+  opacity: 0.6,
   textDecoration: "none",
   fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   textAlign: "center",

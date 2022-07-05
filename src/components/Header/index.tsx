@@ -15,7 +15,7 @@ const MenuItem = ({ title, pathname, sx = {} }) => {
   const theme = useTheme();
   const isSelected = location.pathname === pathname;
 
-  const style = isSelected ? { borderBottomColor: theme.palette.primary.main } : {};
+  const style = isSelected ? { borderBottomColor: theme.palette.primary.main, opacity: 1 } : {};
 
   return (
     <LinkStyled to={pathname + location.search} sx={{ ...style, ...sx }}>
@@ -45,7 +45,7 @@ const Header = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ background: "linear-gradient(180deg, #000741 0%, #226062 100%)" }}>
       <Wrapper style={{ position: "relative" }}>
         {isViewingAs && (
           <Box
@@ -64,7 +64,7 @@ const Header = () => {
           </Box>
         )}
         <Logo>
-          <LogoIcon />
+          <LogoIcon style={{ fill: "white" }} />
         </Logo>
         <Menu>
           <MenuItem title="Deposit" pathname="/deposit" />
