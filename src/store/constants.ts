@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import millify from "millify";
 
 export const NANOS_PER_YEAR = 31536000000;
 export const DEFAULT_PRECISION = 60;
@@ -12,6 +13,12 @@ export const USD_FORMAT = {
   currency: "USD",
   currencyDisplay: "narrowSymbol",
   minimumFractionDigits: 2,
+};
+
+export const COMPACT_USD_FORMAT = {
+  ...USD_FORMAT,
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
 };
 
 export const TOKEN_FORMAT = {
@@ -52,3 +59,5 @@ export const CONTRACT_BETA = "contract.beta.burrow.near";
 
 export const isBeta = process.env.CONTRACT_NAME === CONTRACT_BETA;
 export const isMain = process.env.CONTRACT_NAME === CONTRACT_MAIN;
+
+export const m = (a) => millify(a, { precision: 2 });
