@@ -17,6 +17,7 @@ export interface AppState {
     repayFromDeposits: boolean;
   };
   showModal: boolean;
+  showInfo: boolean;
   protocolStats: boolean;
   displayAsTokenValue: boolean;
   showTicker: boolean;
@@ -55,6 +56,7 @@ export const initialState: AppState = {
     repayFromDeposits: false,
   },
   showModal: false,
+  showInfo: true,
   protocolStats: true,
   displayAsTokenValue: true,
   showDust: false,
@@ -149,6 +151,9 @@ export const appSlice = createSlice({
     setProtocolStats(state, action) {
       state.protocolStats = action.payload;
     },
+    setShowInfo(state, action) {
+      state.showInfo = action.payload;
+    },
     setFullDigits(state, action) {
       state.fullDigits = { ...state.fullDigits, ...action.payload };
     },
@@ -202,6 +207,7 @@ export const {
   toggleDegenMode,
   setRepayFrom,
   setProtocolStats,
+  setShowInfo,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -45,6 +45,7 @@ export const migrations = {
       app: {
         ...state.app,
         protocolStats: true,
+        showInfo: true,
       },
     };
   },
