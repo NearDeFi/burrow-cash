@@ -7,8 +7,9 @@ import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { useAccountId, useViewAs } from "../../hooks/hooks";
-import { InfoBox } from "..";
+import { useViewAs } from "../../hooks/hooks";
+// import { InfoBox } from "..";
+import { Stats } from "./stats";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
   const location = useLocation();
@@ -28,7 +29,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
   const isViewingAs = useViewAs();
-  const accountId = useAccountId();
+  // const accountId = useAccountId();
 
   useEffect(() => {
     if (isFetching) {
@@ -87,7 +88,10 @@ const Header = () => {
           <Alert severity="info">Refreshing assets data...</Alert>
         </Snackbar>
       </Wrapper>
-      <InfoBox accountId={accountId} />
+      <Stats />
+      {
+        // <InfoBox accountId={accountId} />
+      }
     </Box>
   );
 };

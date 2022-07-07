@@ -49,6 +49,7 @@ module.exports = {
     "react/require-default-props": 0,
     "react/function-component-definition": 0,
     "react/jsx-no-constructed-context-values": 0,
+    "react/no-array-index-key": 0,
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-non-null-asserted-optional-chain": 0,
