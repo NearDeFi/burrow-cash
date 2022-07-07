@@ -1,17 +1,10 @@
 import { Box, Stack } from "@mui/material";
 
-// import { useAccountId } from "../../../hooks/hooks";
 import { Stat } from "./components";
 import { Liquidity } from "./liquidity";
+import { APY } from "./apy";
 
 export const StatsContainer = () => {
-  // const accountId = useAccountId();
-
-  const apyLabels = [
-    { value: "3.5%", text: "Global" },
-    { value: "1.9%", text: "Net TVL" },
-  ];
-
   const rewardsLabels = [
     { value: "3", text: "NEAR" },
     { value: "11", text: "BRRR" },
@@ -25,7 +18,7 @@ export const StatsContainer = () => {
   return (
     <Stack direction="row" gap="2rem" px="1rem">
       <Liquidity />
-      <Stat title="APY" amount="5.4%" labels={apyLabels} />
+      <APY />
       <Stat title="Daily Rewards" amount="$32" labels={rewardsLabels} />
       <Stat title="Health Factor" amount="204%" labels={hfLabels} />
     </Stack>

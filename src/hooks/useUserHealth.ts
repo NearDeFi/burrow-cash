@@ -26,8 +26,11 @@ export function useUserHealth() {
     setDigits({ dailyReturns: !fullDigits.dailyReturns });
   };
 
+  const netTvlAPY = 4.42;
+
   return {
     netAPY,
+    netTvlAPY,
     dailyReturns,
     healthFactor,
     slimStats,
