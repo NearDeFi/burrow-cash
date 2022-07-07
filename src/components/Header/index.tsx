@@ -50,6 +50,7 @@ const Header = () => {
       sx={{
         background: "linear-gradient(180deg, #000741 0%, #226062 100%)",
         mb: { xs: "1rem", sm: "2rem" },
+        overflow: "hidden",
       }}
     >
       <Wrapper style={{ position: "relative" }}>
