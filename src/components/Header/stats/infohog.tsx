@@ -1,13 +1,20 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 
 import { useToggleInfo } from "../../../hooks/useToggleInfo";
+import { useAccountId } from "../../../hooks/hooks";
 import HogSvg from "./hog.svg";
 
 export const InfoHog = () => {
   const { showInfo, setShowInfo } = useToggleInfo();
+  const accountId = useAccountId();
 
   return (
-    <Stack ml={{ xs: 0, lg: "auto" }} direction="row" position="relative" width="300px">
+    <Stack
+      ml={{ xs: 0, [accountId ? "lg" : "sm"]: "auto" }}
+      direction="row"
+      position="relative"
+      width="300px"
+    >
       <Stack
         bgcolor="white"
         p="1rem"

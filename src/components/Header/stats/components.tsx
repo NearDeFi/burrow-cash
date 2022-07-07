@@ -63,23 +63,18 @@ export const Stat = ({
   labels: any;
   onClick?: () => void;
 }) => {
-  const amountSize = amount.length < 9 ? "3rem" : "2rem";
-
-  const amountSx = {
-    fontSize: amountSize,
-    lineHeight: "4.5rem",
-  };
-
   return (
-    <Stack
-      maxWidth="260px"
-      onClick={() => onClick && onClick()}
-      sx={{ cursor: onClick ? "pointer" : "inherit" }}
-    >
+    <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
       <Typography color="#F8F9FF" fontSize="0.875rem">
         {title}
       </Typography>
-      <Typography sx={amountSx} fontWeight="semibold">
+      <Typography
+        sx={{
+          fontSize: "3rem",
+          lineHeight: "4.5rem",
+          fontWeight: "semibold",
+        }}
+      >
         {amount}
       </Typography>
       {labels && (
