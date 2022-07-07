@@ -2,7 +2,7 @@ import { Stack } from "@mui/material";
 
 import { StatsToggleButtons } from "./components";
 import { StatsContainer } from "./stats";
-import { Hog } from "./hog";
+import { InfoHog } from "./infohog";
 
 export const Stats = () => {
   return (
@@ -10,7 +10,7 @@ export const Stats = () => {
       <StatsToggleButtons />
       <Stack direction={{ xs: "column", lg: "row" }} gap="2rem">
         <StatsContainer />
-        <Hog />
+        <InfoHog />
       </Stack>
     </Stack>
   );
