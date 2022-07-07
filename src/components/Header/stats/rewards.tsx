@@ -9,6 +9,7 @@ export const DailyRewards = () => {
 
   const labels = rewards.map((r) => ({
     value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
+    unclaimed: `${r.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)} unclaimed`,
     text: r.symbol,
     icon: r.icon,
   }));

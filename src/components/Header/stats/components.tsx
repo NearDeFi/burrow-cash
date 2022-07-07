@@ -1,5 +1,5 @@
 import { isValidElement } from "react";
-import { Box, Stack, ButtonGroup, Button, Typography } from "@mui/material";
+import { Box, Stack, ButtonGroup, Button, Typography, Tooltip } from "@mui/material";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
@@ -83,7 +83,7 @@ export const Stat = ({
             <Label>{labels}</Label>
           ) : (
             labels.map((label, key) => (
-              <Label key={key} mr={label.icon ? "10px" : 0}>
+              <Label key={key} mr={label.icon ? "10px" : 0} tooltip={label.unclaimed}>
                 {label.icon && (
                   <Box
                     position="absolute"
@@ -110,18 +110,20 @@ export const Stat = ({
   );
 };
 
-const Label = ({ children, ...props }) => (
-  <Stack
-    direction="row"
-    gap="4px"
-    bgcolor="rgba(172, 255, 255, 0.1)"
-    borderRadius="4px"
-    py="4px"
-    px="6px"
-    fontSize="0.6875rem"
-    position="relative"
-    {...props}
-  >
-    {children}
-  </Stack>
+const Label = ({ children, tooltip = "", ...props }) => (
+  <Tooltip title={tooltip} placement="top" arrow>
+    <Stack
+      direction="row"
+      gap="4px"
+      bgcolor="rgba(172, 255, 255, 0.1)"
+      borderRadius="4px"
+      py="4px"
+      px="6px"
+      fontSize="0.6875rem"
+      position="relative"
+      {...props}
+    >
+      {children}
+    </Stack>
+  </Tooltip>
 );
