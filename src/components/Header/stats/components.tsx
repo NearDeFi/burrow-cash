@@ -3,6 +3,7 @@ import { Box, Stack, ButtonGroup, Button, Typography } from "@mui/material";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
+import TokenIcon from "../../TokenIcon";
 
 const buttonStyles = {
   borderRadius: "3rem",
@@ -87,8 +88,19 @@ export const Stat = ({
             <Label>{labels}</Label>
           ) : (
             labels.map((label, key) => (
-              <Label key={key}>
-                <Box component="span" color="#ACFFD1" fontWeight={600}>
+              <Label key={key} mr={label.icon ? "10px" : 0}>
+                {label.icon && (
+                  <Box
+                    position="absolute"
+                    top="0"
+                    left="-10px"
+                    borderRadius={19}
+                    border="0.5px solid white"
+                  >
+                    <TokenIcon width={19} height={19} icon={label.icon} />
+                  </Box>
+                )}
+                <Box component="span" color="#ACFFD1" fontWeight={600} pl={label.icon ? "10px" : 0}>
                   {label.value}
                 </Box>
                 <Box component="span" fontWeight={400}>
@@ -103,7 +115,7 @@ export const Stat = ({
   );
 };
 
-const Label = ({ children }) => (
+const Label = ({ children, ...props }) => (
   <Stack
     direction="row"
     gap="4px"
@@ -112,6 +124,8 @@ const Label = ({ children }) => (
     py="4px"
     px="6px"
     fontSize="0.6875rem"
+    position="relative"
+    {...props}
   >
     {children}
   </Stack>

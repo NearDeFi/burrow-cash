@@ -46,7 +46,12 @@ const Header = () => {
   };
 
   return (
-    <Box sx={{ background: "linear-gradient(180deg, #000741 0%, #226062 100%)" }}>
+    <Box
+      sx={{
+        background: "linear-gradient(180deg, #000741 0%, #226062 100%)",
+        mb: { xs: "1rem", sm: "2rem" },
+      }}
+    >
       <Wrapper style={{ position: "relative" }}>
         {isViewingAs && (
           <Box
