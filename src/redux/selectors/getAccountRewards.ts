@@ -18,6 +18,7 @@ interface IPortfolioReward {
   boosterLogBase: number;
   newDailyAmount: number;
   multiplier: number;
+  price: number;
 }
 
 export interface IAccountRewards {
@@ -120,6 +121,7 @@ export const getAccountRewards = createSelector(
             dailyAmount,
             newDailyAmount,
             multiplier,
+            price: asset.price?.usd || 0,
           };
         });
       };
