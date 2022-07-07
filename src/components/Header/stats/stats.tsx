@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 
 import { Liquidity } from "./liquidity";
 import { APY } from "./apy";
@@ -10,15 +10,17 @@ export const StatsContainer = () => {
   const accountId = useAccountId();
 
   return (
-    <Stack direction="row" gap="2rem" px="1rem">
-      <Liquidity />
-      {accountId && (
-        <>
-          <APY />
-          <DailyRewards />
-          <HealthFactor />
-        </>
-      )}
-    </Stack>
+    <Box>
+      <Stack direction="row" gap="2rem" px="1rem" overflow="scroll" mx="-1rem" pl="2rem">
+        <Liquidity />
+        {accountId && (
+          <>
+            <APY />
+            <DailyRewards />
+            <HealthFactor />
+          </>
+        )}
+      </Stack>
+    </Box>
   );
 };
