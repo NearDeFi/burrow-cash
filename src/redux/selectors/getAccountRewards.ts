@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { omit } from "lodash";
 
-import { shrinkToken } from "../../store";
+import { NEAR_LOGO_SVG, shrinkToken } from "../../store";
 import { RootState } from "../store";
 import { Asset } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
@@ -95,6 +95,7 @@ export const getAccountRewards = createSelector(
             rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
           const { icon, symbol, name } = rewardAsset.metadata;
+          // console.log(symbol, icon, `data:image/svg+xml,%3C${NearLogo}`);
 
           const unclaimedAmount = Number(
             shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals),
@@ -113,7 +114,7 @@ export const getAccountRewards = createSelector(
           );
 
           return {
-            icon,
+            icon: icon || `data:image/svg+xml,${NEAR_LOGO_SVG}`,
             name,
             symbol,
             tokenId: rewardTokenId,
