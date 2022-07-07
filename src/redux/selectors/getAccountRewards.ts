@@ -95,7 +95,6 @@ export const getAccountRewards = createSelector(
             rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
 
           const { icon, symbol, name } = rewardAsset.metadata;
-          // console.log(symbol, icon, `data:image/svg+xml,%3C${NearLogo}`);
 
           const unclaimedAmount = Number(
             shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals),
