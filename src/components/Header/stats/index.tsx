@@ -1,6 +1,7 @@
 import { Stack } from "@mui/material";
 
-import { StatsToggleButtons, StatsContainer } from "./components";
+import { StatsToggleButtons } from "./components";
+import { StatsContainer } from "./stats";
 
 export const Stats = () => {
   return (

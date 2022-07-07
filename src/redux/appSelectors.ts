@@ -28,6 +28,11 @@ export const getFullDigits = createSelector(
   (app) => app.fullDigits,
 );
 
+export const getProtocolStats = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.protocolStats,
+);
+
 export const getAppState = createSelector(
   (state: RootState) => state.app,
   (app) => app,

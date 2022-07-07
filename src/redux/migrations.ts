@@ -39,4 +39,13 @@ export const migrations = {
       },
     };
   },
+  5: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        protocolStats: true,
+      },
+    };
+  },
 };
