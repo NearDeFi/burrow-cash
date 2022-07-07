@@ -1,10 +1,14 @@
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 
 import { Stat } from "./components";
 import { Liquidity } from "./liquidity";
 import { APY } from "./apy";
+import { HealthFactor } from "./health";
+import { useAccountId } from "../../../hooks/hooks";
 
 export const StatsContainer = () => {
+  const accountId = useAccountId();
+
   const rewardsLabels = [
     { value: "3", text: "NEAR" },
     { value: "11", text: "BRRR" },
@@ -13,14 +17,16 @@ export const StatsContainer = () => {
     { value: "4.4", text: "Aurora" },
   ];
 
-  const hfLabels = <Box color="rgba(172, 255, 209, 1)">Good</Box>;
-
   return (
     <Stack direction="row" gap="2rem" px="1rem">
       <Liquidity />
-      <APY />
-      <Stat title="Daily Rewards" amount="$32" labels={rewardsLabels} />
-      <Stat title="Health Factor" amount="204%" labels={hfLabels} />
+      {accountId && (
+        <>
+          <APY />
+          <Stat title="Daily Rewards" amount="$32" labels={rewardsLabels} />
+          <HealthFactor />
+        </>
+      )}
     </Stack>
   );
 };
