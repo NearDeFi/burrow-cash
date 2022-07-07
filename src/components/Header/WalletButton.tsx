@@ -101,7 +101,7 @@ const WalletButton = () => {
                 sx={{
                   marginRight: "-6px",
                   backgroundColor: theme.palette.primary.light,
-                  color: theme.palette.primary.main,
+                  color: theme.palette.secondary.main,
                   borderRadius: "0.3rem",
                   fontSize: "0.65rem",
                   px: "0.3rem",
