@@ -26,6 +26,9 @@ export interface IAccountRewards {
   extra: {
     [tokenId: string]: IPortfolioReward;
   };
+  net: {
+    [tokenId: string]: IPortfolioReward;
+  };
 }
 
 export const computeDailyAmount = (
@@ -126,10 +129,37 @@ export const getAccountRewards = createSelector(
         });
       };
 
-    const { supplied, borrowed } = account.portfolio.farms;
+    const computeNetLiquidityRewards = ([rewardTokenId, farmData]) => {
+      const rewardAsset = assets.data[rewardTokenId];
+      const rewardAssetDecimals = rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
+      const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
+      const totalBoostedShares = Number(
+        shrinkToken(farmData.asset_farm_reward.boosted_shares, rewardAssetDecimals),
+      );
+      const totalRewardsPerDay = Number(
+        shrinkToken(farmData.asset_farm_reward.reward_per_day, rewardAssetDecimals),
+      );
+      const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
+      const { icon, symbol, name } = rewardAsset.metadata;
+      const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
+      return {
+        icon: icon || `data:image/svg+xml,${NEAR_LOGO_SVG}`,
+        name,
+        symbol,
+        tokenId: rewardTokenId,
+        unclaimedAmount,
+        dailyAmount,
+        // newDailyAmount,
+        // multiplier,
+        price: rewardAsset.price?.usd || 0,
+      };
+    };
+
+    const { supplied, borrowed, netTvl } = account.portfolio.farms;
 
     const suppliedRewards = Object.entries(supplied).map(computeRewards("supplied")).flat();
     const borrowedRewards = Object.entries(borrowed).map(computeRewards("borrowed")).flat();
+    const netLiquidityRewards = Object.entries(netTvl).map(computeNetLiquidityRewards);
 
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
@@ -146,6 +176,10 @@ export const getAccountRewards = createSelector(
     return {
       brrr: sumRewards[brrrTokenId] || {},
       extra: omit(sumRewards, brrrTokenId) || {},
+      net: netLiquidityRewards.reduce(
+        (rewards, asset) => ({ ...rewards, [asset.tokenId]: asset }),
+        {},
+      ),
     } as IAccountRewards;
   },
 );

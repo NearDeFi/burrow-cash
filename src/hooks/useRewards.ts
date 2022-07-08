@@ -6,6 +6,7 @@ export function useRewards() {
 
   const { brrr } = rewards;
   const extra = Object.entries(rewards.extra);
+  const net = Object.entries(rewards.net);
 
-  return { brrr, extra };
+  return { brrr, extra, net };
 }
