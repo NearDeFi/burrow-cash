@@ -9,8 +9,8 @@ export const APY = () => {
   const amount = `${(netAPY + netTvlAPY).toLocaleString(undefined, APY_FORMAT)}%`;
 
   const apyLabels = [
-    { value: globalValue, text: "Global" },
-    { value: netTvlValue, text: "Net TVL" },
+    { value: globalValue, text: "Pools" },
+    { value: netTvlValue, text: "Net Liquidity" },
   ];
 
   return <Stat title="APY" amount={amount} labels={apyLabels} />;
