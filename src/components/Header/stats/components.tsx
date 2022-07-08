@@ -83,7 +83,7 @@ export const Stat = ({
             <Label>{labels}</Label>
           ) : (
             labels.map((label, key) => (
-              <Label key={key} mr={label.icon ? "10px" : 0} tooltip={label.unclaimed}>
+              <Label key={key} ml={label.icon ? "10px" : 0} tooltip={label.unclaimed}>
                 {label.icon && (
                   <Box
                     position="absolute"
