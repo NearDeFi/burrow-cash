@@ -5,15 +5,17 @@ import { APY } from "./apy";
 import { HealthFactor } from "./health";
 import { useAccountId } from "../../../hooks/hooks";
 import { DailyRewards } from "./rewards";
+import { useStatsToggle } from "../../../hooks/useStatsToggle";
 
 export const StatsContainer = () => {
   const accountId = useAccountId();
+  const { protocolStats } = useStatsToggle();
 
   return (
     <Box>
       <Stack direction="row" gap="2rem" px="1rem" overflow="scroll" mx="-1rem" pl="2rem">
         <Liquidity />
-        {accountId && (
+        {accountId && !protocolStats && (
           <>
             <APY />
             <DailyRewards />
