@@ -5,6 +5,7 @@ import { hasAssets, toUsd } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
 import { AssetsState } from "../assetState";
 import { Portfolio } from "../accountState";
+import { getAccountRewards } from "./getAccountRewards";
 
 export const getGains = (
   portfolio: Portfolio,
@@ -44,3 +45,25 @@ export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
       return netAPY || 0;
     },
   );
+
+export const getNetTvlAPY = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  getAccountRewards,
+  (assets, account, rewards) => {
+    if (!hasAssets(assets)) return 0;
+
+    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+    const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
+    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+
+    const netTvlRewards = Object.values(rewards.net).reduce(
+      (acc, r) => acc + r.dailyAmount * r.price,
+      0,
+    );
+    const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
+    const apy = (netTvlRewards / netLiquidity) * 100;
+
+    return apy || 0;
+  },
+);

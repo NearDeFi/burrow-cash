@@ -1,6 +1,6 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { getDailyReturns } from "../redux/selectors/getDailyReturns";
-import { getNetAPY } from "../redux/selectors/getNetAPY";
+import { getNetAPY, getNetTvlAPY } from "../redux/selectors/getNetAPY";
 import { getHealthFactor } from "../redux/selectors/getHealthFactor";
 import { getAppState } from "../redux/appSelectors";
 import { toggleShowDailyReturns } from "../redux/appSlice";
@@ -12,6 +12,7 @@ export function useUserHealth() {
   const dispatch = useAppDispatch();
   const { showDailyReturns } = useAppSelector(getAppState);
   const netAPY = useAppSelector(getNetAPY({ isStaking: false }));
+  const netTvlAPY = useAppSelector(getNetTvlAPY);
   const dailyReturns = useAppSelector(getDailyReturns);
   const healthFactor = useAppSelector(getHealthFactor);
   const { fullDigits, setDigits } = useFullDigits();
@@ -25,8 +26,6 @@ export function useUserHealth() {
   const toggleDigits = () => {
     setDigits({ dailyReturns: !fullDigits.dailyReturns });
   };
-
-  const netTvlAPY = 4.42;
 
   return {
     netAPY,
