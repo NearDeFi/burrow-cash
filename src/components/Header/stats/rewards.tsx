@@ -1,11 +1,11 @@
 import { useRewards } from "../../../hooks/useRewards";
-import { TOKEN_FORMAT } from "../../../store";
+import { TOKEN_FORMAT, USD_FORMAT } from "../../../store";
 import { Stat } from "./components";
 
 export const DailyRewards = () => {
-  const { brrr, extra } = useRewards();
+  const { brrr, extra, net } = useRewards();
 
-  const rewards = [brrr, ...extra.flatMap((f) => f[1])];
+  const rewards = [brrr, ...extra.flatMap((f) => f[1]), ...net.flatMap((f) => f[1])];
 
   const labels = rewards.map((r) => ({
     value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
@@ -16,5 +16,11 @@ export const DailyRewards = () => {
 
   const amount = rewards.reduce((acc, r) => acc + r.dailyAmount * r.price, 0);
 
-  return <Stat title="Daily Rewards" amount={`$${amount.toFixed(2)}`} labels={labels} />;
+  return (
+    <Stat
+      title="Daily Rewards"
+      amount={amount.toLocaleString(undefined, USD_FORMAT)}
+      labels={labels}
+    />
+  );
 };
