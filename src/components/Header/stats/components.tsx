@@ -60,7 +60,7 @@ export const Stat = ({
 }: {
   title: string;
   amount: string;
-  labels: any;
+  labels?: any;
   onClick?: () => void;
 }) => {
   return (
