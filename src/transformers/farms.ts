@@ -32,7 +32,10 @@ export const transformAccountFarms = (list) => {
     };
   });
 
-  farms.netTvl = transformFarmRewards(netTvlFarms.rewards);
+  if (netTvlFarms) {
+    farms.netTvl = transformFarmRewards(netTvlFarms.rewards);
+  }
+
   return farms;
 };
 
