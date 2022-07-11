@@ -5,7 +5,11 @@ import { Stat } from "./components";
 export const DailyRewards = () => {
   const { brrr, extra, net } = useRewards();
 
-  const rewards = [brrr, ...extra.flatMap((f) => f[1]), ...net.flatMap((f) => f[1])];
+  const rewards = [
+    ...(Object.entries(brrr).length > 0 ? [brrr] : []),
+    ...extra.flatMap((f) => f[1]),
+    ...net.flatMap((f) => f[1]),
+  ];
 
   const labels = rewards.map((r) => ({
     value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
