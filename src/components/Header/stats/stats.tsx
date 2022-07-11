@@ -13,7 +13,19 @@ export const StatsContainer = () => {
 
   return (
     <Box>
-      <Stack direction="row" gap="2rem" px="1rem" overflow="scroll" mx="-1rem" pl="2rem">
+      <Stack
+        direction="row"
+        gap="2rem"
+        px="1rem"
+        overflow="scroll"
+        mx="-1rem"
+        pl="2rem"
+        sx={{
+          "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
         <Liquidity />
         {accountId && !protocolStats && (
           <>
