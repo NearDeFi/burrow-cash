@@ -6,6 +6,7 @@ import { RootState } from "../store";
 import { Asset } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
+import { INetTvlFarmReward, INetTvlFarmRewards } from "../../interfaces";
 
 interface IPortfolioReward {
   icon: string;
@@ -79,6 +80,39 @@ export const computeDailyAmount = (
   return { dailyAmount, newDailyAmount, multiplier, totalBoostedShares, shares };
 };
 
+export const computeNetDailyAmount = (
+  asset: Asset,
+  xBRRRAmount: number,
+  farms: INetTvlFarmRewards,
+  farmData: INetTvlFarmReward,
+  boosterDecimals: number,
+) => {
+  const boosterLogBase = Number(shrinkToken(farmData.booster_log_base, boosterDecimals));
+
+  const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
+
+  const log = Math.log(xBRRRAmount) / Math.log(boosterLogBase);
+  const multiplier = log >= 0 ? 1 + log : 1;
+
+  const boostedShares = Number(shrinkToken(farmData.boosted_shares, assetDecimals));
+
+  const totalBoostedShares = Number(
+    shrinkToken(farms[asset.token_id].boosted_shares, assetDecimals),
+  );
+  const totalRewardsPerDay = Number(
+    shrinkToken(farms[asset.token_id].reward_per_day, assetDecimals),
+  );
+
+  const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
+
+  const shares = Number(shrinkToken(farmData.boosted_shares, assetDecimals)) || 0;
+  const newBoostedShares = shares * multiplier;
+  const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
+  const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
+
+  return { dailyAmount, newDailyAmount, multiplier, totalBoostedShares, shares };
+};
+
 export const getAccountRewards = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
@@ -142,6 +176,10 @@ export const getAccountRewards = createSelector(
       const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
       const { icon, symbol, name } = rewardAsset.metadata;
       const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
+
+      const newDailyAmount = dailyAmount; // TODO
+      const multiplier = 1; // TODO
+
       return {
         icon: icon || `data:image/svg+xml,${NEAR_LOGO_SVG}`,
         name,
@@ -149,8 +187,8 @@ export const getAccountRewards = createSelector(
         tokenId: rewardTokenId,
         unclaimedAmount,
         dailyAmount,
-        // newDailyAmount,
-        // multiplier,
+        newDailyAmount,
+        multiplier,
         price: rewardAsset.price?.usd || 0,
       };
     };
