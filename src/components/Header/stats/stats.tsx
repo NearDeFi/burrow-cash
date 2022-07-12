@@ -1,11 +1,27 @@
 import { Box, Stack } from "@mui/material";
 
-import { Liquidity } from "./liquidity";
+import { ProtocolLiquidity, UserLiquidity } from "./liquidity";
 import { APY } from "./apy";
 import { HealthFactor } from "./health";
 import { useAccountId } from "../../../hooks/hooks";
-import { DailyRewards } from "./rewards";
+import { UserDailyRewards, ProtocolDailyRewards } from "./rewards";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
+
+const UserStats = () => (
+  <>
+    <UserLiquidity />
+    <APY />
+    <UserDailyRewards />
+    <HealthFactor />
+  </>
+);
+
+const ProtocolStats = () => (
+  <>
+    <ProtocolLiquidity />
+    <ProtocolDailyRewards />
+  </>
+);
 
 export const StatsContainer = () => {
   const accountId = useAccountId();
@@ -26,14 +42,7 @@ export const StatsContainer = () => {
           },
         }}
       >
-        <Liquidity />
-        {accountId && !protocolStats && (
-          <>
-            <APY />
-            <DailyRewards />
-            <HealthFactor />
-          </>
-        )}
+        {protocolStats ? <ProtocolStats /> : accountId ? <UserStats /> : <ProtocolStats />}
       </Stack>
     </Box>
   );

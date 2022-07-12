@@ -1,4 +1,4 @@
-import { IAssetDetailed, IMetadata, IAssetFarmReward, INetTvlFarmReward } from "../interfaces";
+import { IAssetDetailed, IMetadata, IAssetFarmReward, INetTvlFarmRewards } from "../interfaces";
 
 export type Asset = Omit<IAssetDetailed, "farms"> & {
   metadata: IMetadata;
@@ -17,7 +17,7 @@ export interface Assets {
 }
 export interface AssetsState {
   data: Assets;
-  netTvlFarm: INetTvlFarmReward;
+  netTvlFarm: INetTvlFarmRewards;
   status: "pending" | "fulfilled" | "rejected" | "fetching" | null;
   fetchedAt: string | undefined;
 }
