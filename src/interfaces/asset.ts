@@ -56,6 +56,20 @@ interface IAssetFarmView {
   rewards: IAssetFarmReward[];
 }
 
+export interface INetTvlFarmReward {
+  [asset_id: string]: {
+    boosted_shares: string;
+    booster_log_base: string;
+    remaining_rewards: string;
+    reward_per_day: string;
+  };
+}
+
+export interface NetTvlFarm {
+  block_timestamp: string;
+  rewards: INetTvlFarmReward;
+}
+
 export interface IAssetDetailed {
   token_id: string;
   /// Total supplied including collateral, but excluding reserved.
