@@ -63,7 +63,7 @@ export const getNetTvlAPY = createSelector(
       0,
     );
     const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
-    const apy = (netTvlRewards / netLiquidity) * 100;
+    const apy = ((netTvlRewards * 365) / netLiquidity) * 100;
 
     return apy || 0;
   },
