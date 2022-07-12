@@ -81,16 +81,6 @@ export const Liquidity = () => {
     }
   };
 
-  if (!accountId) {
-    return (
-      <>
-        <Stat title="Net Liquidity" amount={amount} onClick={toggleValues} />
-        <Stat title="Deposited" amount={protocolDepositedValue} onClick={toggleValues} />
-        <Stat title="Borrowed" amount={protocolBorrowedValue} onClick={toggleValues} />
-      </>
-    );
-  }
-
   return (
     <Stat
       title="Net Liquidity"
