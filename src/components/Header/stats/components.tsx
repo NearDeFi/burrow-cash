@@ -63,6 +63,22 @@ export const Stat = ({
   labels?: any;
   onClick?: () => void;
 }) => {
+  const renderLabel = (label, key) => (
+    <Label key={key} ml={label.icon ? "10px" : 0} tooltip={label.tooltip}>
+      {label.icon && (
+        <Box position="absolute" top="0" left="-10px" borderRadius={19} border="0.5px solid white">
+          <TokenIcon width={19} height={19} icon={label.icon} />
+        </Box>
+      )}
+      <Box component="span" color="#ACFFD1" fontWeight={600} pl={label.icon ? "10px" : 0}>
+        {label.value}
+      </Box>
+      <Box component="span" fontWeight={400}>
+        {label.text}
+      </Box>
+    </Label>
+  );
+
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
       <Typography color="#F8F9FF" fontSize="0.875rem">
@@ -82,26 +98,10 @@ export const Stat = ({
           {isValidElement(labels) ? (
             <Label>{labels}</Label>
           ) : (
-            labels.map((label, key) => (
-              <Label key={key} ml={label.icon ? "10px" : 0} tooltip={label.tooltip}>
-                {label.icon && (
-                  <Box
-                    position="absolute"
-                    top="0"
-                    left="-10px"
-                    borderRadius={19}
-                    border="0.5px solid white"
-                  >
-                    <TokenIcon width={19} height={19} icon={label.icon} />
-                  </Box>
-                )}
-                <Box component="span" color="#ACFFD1" fontWeight={600} pl={label.icon ? "10px" : 0}>
-                  {label.value}
-                </Box>
-                <Box component="span" fontWeight={400}>
-                  {label.text}
-                </Box>
-              </Label>
+            labels.map((row, key) => (
+              <Stack direction="row" flexWrap="wrap" gap="4px" key={key}>
+                {row.map(renderLabel)}
+              </Stack>
             ))
           )}
         </Stack>

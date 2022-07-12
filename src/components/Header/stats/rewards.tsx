@@ -24,10 +24,8 @@ export const UserDailyRewards = () => {
   const assetLabels = assetRewards.map(transformAssetReward);
   const netLabels = netRewards.map(transformAssetReward);
   const labels = [
-    { text: "Asset Rewards:" },
-    ...assetLabels,
-    { text: "Net Liquidity Rewards:" },
-    ...netLabels,
+    [{ text: "Pools:" }, ...assetLabels],
+    [{ text: "Net Liquidity:" }, ...netLabels],
   ];
   const amount = assetRewards.reduce(sumRewards, 0) + netRewards.reduce(sumRewards, 0);
 
@@ -57,7 +55,7 @@ export const ProtocolDailyRewards = () => {
     <Stat
       title="Net Liquidity Daily Rewards"
       amount={amount.toLocaleString(undefined, USD_FORMAT)}
-      labels={labels}
+      labels={[labels]}
     />
   );
 };

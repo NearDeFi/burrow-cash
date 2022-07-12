@@ -45,7 +45,7 @@ export const ProtocolLiquidity = () => {
     <Stat
       title="Net Liquidity"
       amount={protocolNetLiquidityValue}
-      labels={netLiquidityLabels}
+      labels={[netLiquidityLabels]}
       onClick={toggleValues}
     />
   );
@@ -90,7 +90,7 @@ export const UserLiquidity = () => {
     <Stat
       title="Net Liquidity"
       amount={userNetLiquidityValue}
-      labels={netLiquidityLabels}
+      labels={[netLiquidityLabels]}
       onClick={toggleValues}
     />
   );

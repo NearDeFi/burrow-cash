@@ -13,5 +13,5 @@ export const APY = () => {
     { value: netTvlValue, text: "Net Liquidity" },
   ];
 
-  return <Stat title="APY" amount={amount} labels={apyLabels} />;
+  return <Stat title="APY" amount={amount} labels={[apyLabels]} />;
 };
