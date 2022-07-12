@@ -52,6 +52,10 @@ export const migrations = {
         ...state.account,
         portfolio: accountInitialState.portfolio,
       },
+      assets: {
+        ...state.assets,
+        netTvlFarm: {},
+      },
     };
   },
 };
