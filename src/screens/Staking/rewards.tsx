@@ -7,13 +7,33 @@ import TokenIcon from "../../components/TokenIcon";
 import { Separator } from "./components";
 
 export const StakingRewards = () => {
-  const { extra } = useRewards();
+  const { extra, net } = useRewards();
 
   return (
-    <Box display="grid" gridTemplateColumns="auto 1fr" alignItems="center" gap={1.5}>
-      {extra.map(([tokenId, r]) => (
-        <Reward key={tokenId} {...r} />
-      ))}
+    <Box>
+      <Typography fontSize="0.8rem" color="gray" mt={1}>
+        Net Liquidity Rewards
+      </Typography>
+      <Box
+        display="grid"
+        gridTemplateColumns="auto 1fr"
+        alignItems="center"
+        gap={1.5}
+        mt={1}
+        mb={3}
+      >
+        {net.map(([tokenId, r]) => (
+          <Reward key={tokenId} {...r} />
+        ))}
+      </Box>
+      <Typography fontSize="0.8rem" color="gray">
+        Asset Rewards
+      </Typography>
+      <Box display="grid" gridTemplateColumns="auto 1fr" alignItems="center" gap={1.5} mt={1}>
+        {extra.map(([tokenId, r]) => (
+          <Reward key={tokenId} {...r} />
+        ))}
+      </Box>
     </Box>
   );
 };
