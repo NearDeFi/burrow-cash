@@ -57,17 +57,19 @@ interface IAssetFarmView {
 }
 
 export interface INetTvlFarmReward {
-  [asset_id: string]: {
-    boosted_shares: string;
-    booster_log_base: string;
-    remaining_rewards: string;
-    reward_per_day: string;
-  };
+  boosted_shares: string;
+  booster_log_base: string;
+  remaining_rewards: string;
+  reward_per_day: string;
+}
+
+export interface INetTvlFarmRewards {
+  [asset_id: string]: INetTvlFarmReward;
 }
 
 export interface NetTvlFarm {
   block_timestamp: string;
-  rewards: INetTvlFarmReward;
+  rewards: INetTvlFarmRewards;
 }
 
 export interface IAssetDetailed {

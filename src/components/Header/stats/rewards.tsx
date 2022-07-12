@@ -1,17 +1,17 @@
 import { useRewards } from "../../../hooks/useRewards";
-import { TOKEN_FORMAT, USD_FORMAT } from "../../../store";
+import { TOKEN_FORMAT, USD_FORMAT, NUMBER_FORMAT } from "../../../store";
 import { Stat } from "./components";
 
-const transformReward = (r) => ({
+const transformAssetReward = (r) => ({
   value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
-  unclaimed: `${r.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)} unclaimed`,
+  tooltip: `${r.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)} unclaimed`,
   text: r.symbol,
   icon: r.icon,
 });
 
 const sumRewards = (acc, r) => acc + r.dailyAmount * r.price;
 
-export const DailyRewards = () => {
+export const UserDailyRewards = () => {
   const { brrr, extra, net } = useRewards();
 
   const assetRewards = [
@@ -21,16 +21,43 @@ export const DailyRewards = () => {
 
   const netRewards = net.flatMap((f) => f[1]);
 
-  const labels = assetRewards.map(transformReward);
-  const netLabels = netRewards.map(transformReward);
-
+  const assetLabels = assetRewards.map(transformAssetReward);
+  const netLabels = netRewards.map(transformAssetReward);
+  const labels = [
+    { text: "Asset Rewards:" },
+    ...assetLabels,
+    { text: "Net Liquidity Rewards:" },
+    ...netLabels,
+  ];
   const amount = assetRewards.reduce(sumRewards, 0) + netRewards.reduce(sumRewards, 0);
 
   return (
     <Stat
       title="Daily Rewards"
       amount={amount.toLocaleString(undefined, USD_FORMAT)}
-      labels={[...labels, { text: "Net Liquidity:" }, ...netLabels]}
+      labels={labels}
+    />
+  );
+};
+
+const transformProtocolReward = (r) => ({
+  value: r.dailyAmount.toLocaleString(undefined, NUMBER_FORMAT),
+  tooltip: `${r.remainingAmount.toLocaleString(undefined, TOKEN_FORMAT)} remaining`,
+  text: r.symbol,
+  icon: r.icon,
+});
+
+export const ProtocolDailyRewards = () => {
+  const { protocol } = useRewards();
+
+  const labels = protocol.map(transformProtocolReward);
+  const amount = protocol.reduce(sumRewards, 0);
+
+  return (
+    <Stat
+      title="Net Liquidity Daily Rewards"
+      amount={amount.toLocaleString(undefined, USD_FORMAT)}
+      labels={labels}
     />
   );
 };

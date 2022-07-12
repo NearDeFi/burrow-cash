@@ -1,6 +1,4 @@
-import { useAccountId } from "../../../hooks/hooks";
 import { useFullDigits } from "../../../hooks/useFullDigits";
-import { useStatsToggle } from "../../../hooks/useStatsToggle";
 import { useAppSelector } from "../../../redux/hooks";
 import { getTotalBalance } from "../../../redux/selectors/getTotalBalance";
 import { getTotalAccountBalance } from "../../../redux/selectors/getTotalAccountBalance";
@@ -8,16 +6,11 @@ import { m, COMPACT_USD_FORMAT } from "../../../store";
 import { trackFullDigits } from "../../../telemetry";
 import { Stat } from "./components";
 
-export const Liquidity = () => {
-  const accountId = useAccountId();
-  const { protocolStats } = useStatsToggle();
+export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
   const protocolDeposited = useAppSelector(getTotalBalance("supplied"));
   const protocolBorrowed = useAppSelector(getTotalBalance("borrowed"));
   const protocolNetLiquidity = protocolDeposited - protocolBorrowed;
-  const userDeposited = useAppSelector(getTotalAccountBalance("supplied"));
-  const userBorrowed = useAppSelector(getTotalAccountBalance("borrowed"));
-  const userNetLiquidity = userDeposited - userBorrowed;
 
   const protocolNetLiquidityValue = fullDigits?.totals
     ? protocolNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -30,6 +23,39 @@ export const Liquidity = () => {
   const protocolBorrowedValue = fullDigits?.totals
     ? protocolBorrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(protocolBorrowed)}`;
+
+  const netLiquidityLabels = [
+    {
+      value: protocolDepositedValue,
+      text: "Deposited",
+    },
+    {
+      value: protocolBorrowedValue,
+      text: "Borrowed",
+    },
+  ];
+
+  const toggleValues = () => {
+    const totals = !fullDigits?.totals;
+    trackFullDigits({ totals });
+    setDigits({ totals });
+  };
+
+  return (
+    <Stat
+      title="Net Liquidity"
+      amount={protocolNetLiquidityValue}
+      labels={netLiquidityLabels}
+      onClick={toggleValues}
+    />
+  );
+};
+
+export const UserLiquidity = () => {
+  const { fullDigits, setDigits } = useFullDigits();
+  const userDeposited = useAppSelector(getTotalAccountBalance("supplied"));
+  const userBorrowed = useAppSelector(getTotalAccountBalance("borrowed"));
+  const userNetLiquidity = userDeposited - userBorrowed;
 
   const userNetLiquidityValue = fullDigits?.user
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -45,46 +71,25 @@ export const Liquidity = () => {
 
   const netLiquidityLabels = [
     {
-      value: !accountId
-        ? protocolDepositedValue
-        : protocolStats
-        ? protocolDepositedValue
-        : userDepositedValue,
+      value: userDepositedValue,
       text: "Deposited",
     },
     {
-      value: !accountId
-        ? protocolBorrowedValue
-        : protocolStats
-        ? protocolBorrowedValue
-        : userBorrowedValue,
+      value: userBorrowedValue,
       text: "Borrowed",
     },
   ];
 
-  const amount = !accountId
-    ? protocolNetLiquidityValue
-    : protocolStats
-    ? protocolNetLiquidityValue
-    : userNetLiquidityValue;
-
   const toggleValues = () => {
-    const totals = !fullDigits?.totals;
     const user = !fullDigits?.user;
-
-    if (protocolStats || !accountId) {
-      trackFullDigits({ totals });
-      setDigits({ totals });
-    } else {
-      trackFullDigits({ user });
-      setDigits({ user });
-    }
+    trackFullDigits({ user });
+    setDigits({ user });
   };
 
   return (
     <Stat
       title="Net Liquidity"
-      amount={amount}
+      amount={userNetLiquidityValue}
       labels={netLiquidityLabels}
       onClick={toggleValues}
     />
