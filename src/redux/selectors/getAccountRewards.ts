@@ -6,7 +6,7 @@ import { RootState } from "../store";
 import { Asset } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
-import { INetTvlFarmReward, INetTvlFarmRewards } from "../../interfaces";
+import { INetTvlFarmRewards } from "../../interfaces";
 
 interface IPortfolioReward {
   icon: string;
@@ -83,11 +83,13 @@ export const computeDailyAmount = (
 export const computeNetDailyAmount = (
   asset: Asset,
   xBRRRAmount: number,
-  farms: INetTvlFarmRewards,
-  farmData: INetTvlFarmReward,
+  netTvlFarm: INetTvlFarmRewards,
+  farmData: FarmData,
   boosterDecimals: number,
 ) => {
-  const boosterLogBase = Number(shrinkToken(farmData.booster_log_base, boosterDecimals));
+  const boosterLogBase = Number(
+    shrinkToken(farmData.asset_farm_reward.booster_log_base, boosterDecimals),
+  );
 
   const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
 
@@ -97,10 +99,10 @@ export const computeNetDailyAmount = (
   const boostedShares = Number(shrinkToken(farmData.boosted_shares, assetDecimals));
 
   const totalBoostedShares = Number(
-    shrinkToken(farms[asset.token_id].boosted_shares, assetDecimals),
+    shrinkToken(netTvlFarm[asset.token_id].boosted_shares, assetDecimals),
   );
   const totalRewardsPerDay = Number(
-    shrinkToken(farms[asset.token_id].reward_per_day, assetDecimals),
+    shrinkToken(netTvlFarm[asset.token_id].reward_per_day, assetDecimals),
   );
 
   const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
@@ -121,6 +123,7 @@ export const getAccountRewards = createSelector(
   (assets, account, app, staking) => {
     const brrrTokenId = app.config.booster_token_id;
     const { xBRRR, extraXBRRRAmount } = staking;
+    const xBRRRAmount = xBRRR + extraXBRRRAmount;
 
     const computeRewards =
       (type: "supplied" | "borrowed") =>
@@ -136,8 +139,6 @@ export const getAccountRewards = createSelector(
           const unclaimedAmount = Number(
             shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals),
           );
-
-          const xBRRRAmount = xBRRR + extraXBRRRAmount;
 
           const { dailyAmount, newDailyAmount, multiplier } = computeDailyAmount(
             type,
@@ -163,7 +164,7 @@ export const getAccountRewards = createSelector(
         });
       };
 
-    const computeNetLiquidityRewards = ([rewardTokenId, farmData]) => {
+    const computeNetLiquidityRewards = ([rewardTokenId, farmData]: [string, FarmData]) => {
       const rewardAsset = assets.data[rewardTokenId];
       const rewardAssetDecimals = rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
       const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
@@ -177,8 +178,13 @@ export const getAccountRewards = createSelector(
       const { icon, symbol, name } = rewardAsset.metadata;
       const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
 
-      const newDailyAmount = dailyAmount; // TODO
-      const multiplier = 1; // TODO
+      const { newDailyAmount, multiplier } = computeNetDailyAmount(
+        rewardAsset,
+        xBRRRAmount,
+        assets.netTvlFarm,
+        farmData,
+        app.config.booster_decimals,
+      );
 
       return {
         icon: icon || `data:image/svg+xml,${NEAR_LOGO_SVG}`,
