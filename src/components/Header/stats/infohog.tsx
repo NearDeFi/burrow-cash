@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, Link } from "@mui/material";
 
 import { useToggleInfo } from "../../../hooks/useToggleInfo";
 import HogSvg from "./hog.svg";
@@ -7,20 +7,26 @@ export const InfoHog = () => {
   const { showInfo, setShowInfo } = useToggleInfo();
 
   return (
-    <Stack ml="auto" direction="row" position="relative" width="300px">
+    <Stack ml="auto" direction="row" position="relative" width={{ sx: "auto", md: "400px" }}>
       <Stack
         bgcolor="white"
         p="1rem"
-        gap="0.5rem"
+        gap="0.3rem"
         borderRadius="1rem"
-        display={showInfo ? "block" : "none"}
+        display={showInfo ? "inherit" : "none"}
       >
         <Typography color="#444444" fontSize="1rem" fontWeight="semibold">
-          Lorem ipsum!
+          Introducing Net Liquidity Farming
         </Typography>
         <Typography color="rgba(68, 68, 68, 0.6)" fontSize="0.875rem" lineHeight="1.125rem">
-          Dolor sit amet, consectetur adipiscin elit. Integer ultricies fringilla urna pulvinar
-          efficitur.
+          Effective from Tuesday (July 12th), Burrow will transition its rewards distribution model
+          from “total deposits farming” to “net liquidity farming.{" "}
+          <Link
+            href="https://burrowcash.medium.com/introducing-net-liquidity-farming-on-burrow-cbacbfdebd97"
+            target="blank"
+          >
+            Read more
+          </Link>
         </Typography>
         <Button
           variant="text"
