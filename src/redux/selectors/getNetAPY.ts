@@ -46,24 +46,25 @@ export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
     },
   );
 
-export const getNetTvlAPY = createSelector(
-  (state: RootState) => state.assets,
-  (state: RootState) => state.account,
-  getAccountRewards,
-  (assets, account, rewards) => {
-    if (!hasAssets(assets)) return 0;
+export const getNetTvlAPY = ({ isStaking = false }) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    getAccountRewards,
+    (assets, account, rewards) => {
+      if (!hasAssets(assets)) return 0;
 
-    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
-    const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+      const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+      const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
+      const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
 
-    const netTvlRewards = Object.values(rewards.net).reduce(
-      (acc, r) => acc + r.dailyAmount * r.price,
-      0,
-    );
-    const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
-    const apy = ((netTvlRewards * 365) / netLiquidity) * 100;
+      const netTvlRewards = Object.values(rewards.net).reduce(
+        (acc, r) => acc + (isStaking ? r.newDailyAmount : r.dailyAmount) * r.price,
+        0,
+      );
+      const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
+      const apy = ((netTvlRewards * 365) / netLiquidity) * 100;
 
-    return apy || 0;
-  },
-);
+      return apy || 0;
+    },
+  );
