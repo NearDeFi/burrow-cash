@@ -1,28 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
-import { hasAssets, toUsd } from "../utils";
+import { hasAssets } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
-import { AssetsState } from "../assetState";
-import { Portfolio } from "../accountState";
-import { getAccountRewards } from "./getAccountRewards";
-
-export const getGains = (
-  portfolio: Portfolio,
-  assets: AssetsState,
-  source: "supplied" | "collateral" | "borrowed",
-) =>
-  Object.keys(portfolio[source])
-    .map((id) => {
-      const asset = assets.data[id];
-
-      const { balance } = portfolio[source][id];
-      const apr = Number(portfolio[source][id].apr);
-      const balanceUSD = toUsd(balance, asset);
-
-      return [balanceUSD, apr];
-    })
-    .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+import { getAccountRewards, getGains } from "./getAccountRewards";
 
 export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
   createSelector(

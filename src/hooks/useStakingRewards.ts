@@ -6,7 +6,7 @@ import { expandToken } from "../store";
 import { IPortfolioAsset } from "../interfaces/asset";
 import { usePortfolioAssets } from "./hooks";
 import { getStaking } from "../redux/selectors/getStaking";
-import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
+import { computePoolsDailyAmount } from "../redux/selectors/getAccountRewards";
 import { getAccountPortfolio } from "../redux/accountSelectors";
 import { getAssets } from "../redux/assetsSelectors";
 
@@ -30,7 +30,7 @@ export function useStakingRewards() {
 
       const decimals = metadata.decimals + config.extra_decimals;
 
-      const { newDailyAmount } = computeDailyAmount(
+      const { newDailyAmount } = computePoolsDailyAmount(
         type,
         assets.data[asset.tokenId],
         assets.data[metadata.token_id],
