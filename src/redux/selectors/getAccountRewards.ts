@@ -187,7 +187,7 @@ export const getAccountRewards = createSelector(
             dailyAmount,
             newDailyAmount,
             multiplier,
-            price: asset.price?.usd || 0,
+            price: rewardAsset.price?.usd || 0,
           };
         });
       };
