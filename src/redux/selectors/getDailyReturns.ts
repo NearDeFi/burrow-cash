@@ -18,7 +18,7 @@ export const getDailyReturns = createSelector(
     const [gainBorrowed] = getGains(account.portfolio, assets, "borrowed");
 
     const netTvlDaily = Object.entries(rewards.net).reduce(
-      (acc, [, { dailyAmount }]) => acc + dailyAmount,
+      (acc, [, { dailyAmount, price }]) => acc + dailyAmount * price,
       0,
     );
 
