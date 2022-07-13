@@ -30,7 +30,7 @@ export const assetSlice = createSlice({
     });
     builder.addCase(fetchAssets.fulfilled, (state, action) => {
       state.data = action.payload.assets;
-      state.netTvlFarm = action.payload.netTvlFarm.rewards;
+      state.netTvlFarm = action.payload.netTvlFarm?.rewards || {};
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
     });
