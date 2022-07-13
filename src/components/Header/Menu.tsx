@@ -2,7 +2,7 @@ import { Menu, MenuItem, Divider, Typography, useTheme } from "@mui/material";
 import NearWalletSelector from "@near-wallet-selector/core";
 
 import ClaimAllRewards from "../ClaimAllRewards";
-import { getBurrow, getLocalAppVersion } from "../../utils";
+import { getBurrow, getLocalAppVersion, isTestnet } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
@@ -16,6 +16,7 @@ import {
   trackShowDust,
   trackToggleAmountDigits,
 } from "../../telemetry";
+import { useTicker } from "../../hooks/useTicker";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -34,6 +35,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const isCompact = fullDigits?.table;
   const appVersion = getLocalAppVersion();
   const { degenMode, setDegenMode } = useDegenMode();
+  const { hasTicker, toggleTicker } = useTicker();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -67,6 +69,11 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
     setDigits(digits);
   };
 
+  const handleToggleTicker = () => {
+    if (isTestnet) return;
+    toggleTicker();
+  };
+
   return (
     <Menu
       id="profile-menu"
@@ -97,6 +104,11 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
       <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust
       </MenuItem>
+      {!isTestnet && (
+        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleTicker}>
+          {hasTicker ? "Hide" : "Show"} Ticker
+        </MenuItem>
+      )}
       {accountId && [
         <Divider key={1} />,
         <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={2}>
