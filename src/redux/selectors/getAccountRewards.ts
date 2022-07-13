@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { createSelector } from "@reduxjs/toolkit";
 import { omit } from "lodash";
 
@@ -7,6 +8,7 @@ import { Asset } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
+import { getGains } from "./getNetAPY";
 
 interface IPortfolioReward {
   icon: string;
@@ -86,6 +88,7 @@ export const computeNetDailyAmount = (
   netTvlFarm: INetTvlFarmRewards,
   farmData: FarmData,
   boosterDecimals: number,
+  netLiquidity: number,
 ) => {
   const boosterLogBase = Number(
     shrinkToken(farmData.asset_farm_reward.booster_log_base, boosterDecimals),
@@ -107,7 +110,9 @@ export const computeNetDailyAmount = (
 
   const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
 
-  const shares = Number(shrinkToken(farmData.boosted_shares, assetDecimals)) || 0;
+  const netLiquidityDecimal = new Decimal(netLiquidity).mul(10 ** 18).toFixed();
+  const shares = Number(shrinkToken(netLiquidityDecimal, assetDecimals)) || 0;
+
   const newBoostedShares = shares * multiplier;
   const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
   const newDailyAmount = (newBoostedShares / newTotalBoostedShares) * totalRewardsPerDay;
@@ -124,6 +129,12 @@ export const getAccountRewards = createSelector(
     const brrrTokenId = app.config.booster_token_id;
     const { xBRRR, extraXBRRRAmount } = staking;
     const xBRRRAmount = xBRRR + extraXBRRRAmount;
+
+    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+    const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
+    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+
+    const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
 
     const computeRewards =
       (type: "supplied" | "borrowed") =>
@@ -184,6 +195,7 @@ export const getAccountRewards = createSelector(
         assets.netTvlFarm,
         farmData,
         app.config.booster_decimals,
+        netLiquidity,
       );
 
       return {
