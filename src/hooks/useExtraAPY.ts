@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 
 import { getAccountPortfolio } from "../redux/accountSelectors";
 import { getAssets, getTotalSupplyAndBorrowUSD } from "../redux/assetsSelectors";
-import { computeDailyAmount } from "../redux/selectors/getAccountRewards";
+import { computePoolsDailyAmount } from "../redux/selectors/getAccountRewards";
 import { getStaking } from "../redux/selectors/getStaking";
 import { getConfig } from "../redux/appSelectors";
 import { useAppSelector } from "../redux/hooks";
@@ -52,7 +52,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
           .toNumber() || 0
       );
 
-    const { multiplier, totalBoostedShares, shares } = computeDailyAmount(
+    const { multiplier, totalBoostedShares, shares } = computePoolsDailyAmount(
       type,
       asset,
       rewardAsset,
@@ -77,7 +77,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
 
     if (!farmData) return 0;
 
-    const { newDailyAmount } = computeDailyAmount(
+    const { newDailyAmount } = computePoolsDailyAmount(
       type,
       asset,
       rewardAsset,

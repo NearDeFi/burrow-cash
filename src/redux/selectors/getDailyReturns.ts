@@ -3,8 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
-import { getGains } from "./getNetAPY";
-import { getAccountRewards } from "./getAccountRewards";
+import { getAccountRewards, getGains } from "./getAccountRewards";
 
 export const getDailyReturns = createSelector(
   (state: RootState) => state.assets,

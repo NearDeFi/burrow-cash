@@ -4,11 +4,11 @@ import { omit } from "lodash";
 
 import { NEAR_LOGO_SVG, shrinkToken } from "../../store";
 import { RootState } from "../store";
-import { Asset } from "../assetState";
+import { Asset, AssetsState } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
-import { getGains } from "./getNetAPY";
+import { toUsd } from "../utils";
 
 interface IPortfolioReward {
   icon: string;
@@ -34,7 +34,24 @@ export interface IAccountRewards {
   };
 }
 
-export const computeDailyAmount = (
+export const getGains = (
+  portfolio: Portfolio,
+  assets: AssetsState,
+  source: "supplied" | "collateral" | "borrowed",
+) =>
+  Object.keys(portfolio[source])
+    .map((id) => {
+      const asset = assets.data[id];
+
+      const { balance } = portfolio[source][id];
+      const apr = Number(portfolio[source][id].apr);
+      const balanceUSD = toUsd(balance, asset);
+
+      return [balanceUSD, apr];
+    })
+    .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+
+export const computePoolsDailyAmount = (
   type: "supplied" | "borrowed",
   asset: Asset,
   rewardAsset: Asset,
@@ -82,7 +99,7 @@ export const computeDailyAmount = (
   return { dailyAmount, newDailyAmount, multiplier, totalBoostedShares, shares };
 };
 
-export const computeNetDailyAmount = (
+export const computeNetLiquidityDailyAmount = (
   asset: Asset,
   xBRRRAmount: number,
   netTvlFarm: INetTvlFarmRewards,
@@ -136,7 +153,7 @@ export const getAccountRewards = createSelector(
 
     const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
 
-    const computeRewards =
+    const computePoolsRewards =
       (type: "supplied" | "borrowed") =>
       ([tokenId, farm]: [string, Farm]) => {
         return Object.entries(farm).map(([rewardTokenId, farmData]) => {
@@ -151,7 +168,7 @@ export const getAccountRewards = createSelector(
             shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals),
           );
 
-          const { dailyAmount, newDailyAmount, multiplier } = computeDailyAmount(
+          const { dailyAmount, newDailyAmount, multiplier } = computePoolsDailyAmount(
             type,
             asset,
             rewardAsset,
@@ -178,18 +195,10 @@ export const getAccountRewards = createSelector(
     const computeNetLiquidityRewards = ([rewardTokenId, farmData]: [string, FarmData]) => {
       const rewardAsset = assets.data[rewardTokenId];
       const rewardAssetDecimals = rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
-      const boostedShares = Number(shrinkToken(farmData.boosted_shares, rewardAssetDecimals));
-      const totalBoostedShares = Number(
-        shrinkToken(farmData.asset_farm_reward.boosted_shares, rewardAssetDecimals),
-      );
-      const totalRewardsPerDay = Number(
-        shrinkToken(farmData.asset_farm_reward.reward_per_day, rewardAssetDecimals),
-      );
-      const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
       const { icon, symbol, name } = rewardAsset.metadata;
       const unclaimedAmount = Number(shrinkToken(farmData.unclaimed_amount, rewardAssetDecimals));
 
-      const { newDailyAmount, multiplier } = computeNetDailyAmount(
+      const { dailyAmount, newDailyAmount, multiplier } = computeNetLiquidityDailyAmount(
         rewardAsset,
         xBRRRAmount,
         assets.netTvlFarm,
@@ -213,8 +222,8 @@ export const getAccountRewards = createSelector(
 
     const { supplied, borrowed, netTvl } = account.portfolio.farms;
 
-    const suppliedRewards = Object.entries(supplied).map(computeRewards("supplied")).flat();
-    const borrowedRewards = Object.entries(borrowed).map(computeRewards("borrowed")).flat();
+    const suppliedRewards = Object.entries(supplied).map(computePoolsRewards("supplied")).flat();
+    const borrowedRewards = Object.entries(borrowed).map(computePoolsRewards("borrowed")).flat();
     const netLiquidityRewards = Object.entries(netTvl).map(computeNetLiquidityRewards);
 
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
