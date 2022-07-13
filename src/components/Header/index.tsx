@@ -8,7 +8,6 @@ import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { useViewAs } from "../../hooks/hooks";
-// import { InfoBox } from "..";
 import { Stats } from "./stats";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
@@ -29,7 +28,6 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
   const isViewingAs = useViewAs();
-  // const accountId = useAccountId();
 
   useEffect(() => {
     if (isFetching) {
