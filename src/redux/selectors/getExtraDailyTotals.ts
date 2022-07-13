@@ -14,7 +14,8 @@ export const getExtraDailyTotals = ({ isStaking = false }: { isStaking: boolean 
 
       const { extra, brrr } = rewards;
 
-      const gainBrrr = brrr.dailyAmount * (assets.data[config.booster_token_id]?.price?.usd || 0);
+      const gainBrrr =
+        (brrr.dailyAmount || 0) * (assets.data[config.booster_token_id]?.price?.usd || 0);
 
       const gainExtra = Object.keys(extra).reduce((acc, tokenId) => {
         const price = assets.data[tokenId]?.price?.usd || 0;

@@ -127,8 +127,8 @@ export const computeNetLiquidityDailyAmount = (
 
   const dailyAmount = (boostedShares / totalBoostedShares) * totalRewardsPerDay;
 
-  const netLiquidityDecimal = new Decimal(netLiquidity).mul(10 ** 18).toFixed();
-  const shares = Number(shrinkToken(netLiquidityDecimal, assetDecimals)) || 0;
+  const shares =
+    Number(shrinkToken(new Decimal(netLiquidity).mul(10 ** 18).toFixed(), assetDecimals)) || 0;
 
   const newBoostedShares = shares * multiplier;
   const newTotalBoostedShares = totalBoostedShares + newBoostedShares - boostedShares;
