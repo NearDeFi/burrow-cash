@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import { DateTime } from "luxon";
 
-import StakingPieSvg from "./pie.svg";
 import { BrrrLogo, StakingPill, StakingCard, LiveUnclaimedAmount } from "./components";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
@@ -36,7 +35,6 @@ const Staking = () => {
       spacing="2rem"
       sx={{ px: ["0rem", "2rem"], mx: "auto", mb: "2rem" }}
     >
-      <StakingPieSvg />
       <Stack direction="row" alignItems="center" spacing={2}>
         <BrrrLogo />
         <Typography fontWeight="semibold" fontSize={{ xs: "1.5rem", sm: "2rem" }} color="#232323">

@@ -1,27 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
-import { hasAssets, toUsd } from "../utils";
+import { hasAssets } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
-import { AssetsState } from "../assetState";
-import { Portfolio } from "../accountState";
-
-export const getGains = (
-  portfolio: Portfolio,
-  assets: AssetsState,
-  source: "supplied" | "collateral" | "borrowed",
-) =>
-  Object.keys(portfolio[source])
-    .map((id) => {
-      const asset = assets.data[id];
-
-      const { balance } = portfolio[source][id];
-      const apr = Number(portfolio[source][id].apr);
-      const balanceUSD = toUsd(balance, asset);
-
-      return [balanceUSD, apr];
-    })
-    .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+import { getAccountRewards, getGains } from "./getAccountRewards";
 
 export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
   createSelector(
@@ -42,5 +24,28 @@ export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
       const netAPY = (netGains / netTotals) * 100;
 
       return netAPY || 0;
+    },
+  );
+
+export const getNetTvlAPY = ({ isStaking = false }) =>
+  createSelector(
+    (state: RootState) => state.assets,
+    (state: RootState) => state.account,
+    getAccountRewards,
+    (assets, account, rewards) => {
+      if (!hasAssets(assets)) return 0;
+
+      const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+      const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
+      const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+
+      const netTvlRewards = Object.values(rewards.net).reduce(
+        (acc, r) => acc + (isStaking ? r.newDailyAmount : r.dailyAmount) * r.price,
+        0,
+      );
+      const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
+      const apy = ((netTvlRewards * 365) / netLiquidity) * 100;
+
+      return apy || 0;
     },
   );

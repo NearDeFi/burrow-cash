@@ -80,7 +80,7 @@ const WalletButton = () => {
             alignItems: ["flex-end", "center"],
           }}
         >
-          <Typography sx={{ fontWeight: "bold", fontSize: "0.85rem" }}>
+          <Typography sx={{ fontWeight: "semibold", fontSize: "0.85rem" }}>
             {accountTrim(accountId)}
           </Typography>
           <Box
@@ -95,13 +95,13 @@ const WalletButton = () => {
             <Typography sx={{ lineHeight: 0, fontSize: "0.85rem" }}>
               {Number.parseFloat(balance).toFixed(2)}
             </Typography>
-            <NearIcon style={{ width: "1.5rem", height: "1.5rem" }} />
+            <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
             {degenMode.enabled && (
               <Box
                 sx={{
                   marginRight: "-6px",
                   backgroundColor: theme.palette.primary.light,
-                  color: theme.palette.primary.main,
+                  color: theme.palette.secondary.main,
                   borderRadius: "0.3rem",
                   fontSize: "0.65rem",
                   px: "0.3rem",
@@ -130,7 +130,7 @@ const WalletButton = () => {
       )}
       <Box>
         <IconButton onClick={handleOpenMenu} sx={{ ml: "0.5rem", mr: "-0.5rem" }}>
-          <GiHamburgerMenu size={32} color={theme.palette.primary.main} />
+          <GiHamburgerMenu size={32} color="white" />
         </IconButton>
       </Box>
       <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} selector={selector} />

@@ -1,4 +1,5 @@
-import { initialState } from "./appSlice";
+import { initialState as appInitialState } from "./appSlice";
+import { initialState as accountInitialState } from "./accountState";
 
 export const migrations = {
   0: (state) => state,
@@ -7,7 +8,7 @@ export const migrations = {
       ...state,
       app: {
         ...state.app,
-        tableSorting: initialState.tableSorting,
+        tableSorting: appInitialState.tableSorting,
       },
     };
   },
@@ -17,7 +18,7 @@ export const migrations = {
       app: {
         ...state.app,
         showDailyReturns: false,
-        fullDigits: initialState.fullDigits,
+        fullDigits: appInitialState.fullDigits,
       },
     };
   },
@@ -26,7 +27,7 @@ export const migrations = {
       ...state,
       app: {
         ...state.app,
-        staking: initialState.staking,
+        staking: appInitialState.staking,
       },
     };
   },
@@ -35,7 +36,25 @@ export const migrations = {
       ...state,
       app: {
         ...state.app,
-        degenMode: initialState.degenMode,
+        degenMode: appInitialState.degenMode,
+      },
+    };
+  },
+  5: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        protocolStats: true,
+        showInfo: true,
+      },
+      account: {
+        ...state.account,
+        portfolio: accountInitialState.portfolio,
+      },
+      assets: {
+        ...state.assets,
+        netTvlFarm: {},
       },
     };
   },

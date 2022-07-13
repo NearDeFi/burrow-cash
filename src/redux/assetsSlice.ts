@@ -4,10 +4,12 @@ import { defaultNetwork, missingPriceTokens } from "../config";
 import { initialState } from "./assetState";
 import { transformAssets } from "../transformers/asstets";
 import getAssets from "../api/get-assets";
+import getFarm from "../api/get-farm";
 
 export const fetchAssets = createAsyncThunk("assets/fetchAssets", async () => {
   const assets = await getAssets().then(transformAssets);
-  return assets;
+  const netTvlFarm = await getFarm("NetTvl");
+  return { assets, netTvlFarm };
 });
 
 export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async () => {
@@ -27,7 +29,8 @@ export const assetSlice = createSlice({
       state.status = "fetching";
     });
     builder.addCase(fetchAssets.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.assets;
+      state.netTvlFarm = action.payload.netTvlFarm.rewards;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
     });

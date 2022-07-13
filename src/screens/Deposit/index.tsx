@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-import { PageTitle, InfoBox, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
+import { PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import { columns as defaultColumns } from "./tabledata";
 import Table from "../../components/Table";
 import { useAppDispatch } from "../../redux/hooks";
@@ -24,7 +24,6 @@ const Deposit = () => {
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
-      <InfoBox accountId={accountId} />
       {!accountId && <OnboardingBRRR />}
       <NonFarmedAssets />
       <PageTitle first="Deposit" second="Assets" />

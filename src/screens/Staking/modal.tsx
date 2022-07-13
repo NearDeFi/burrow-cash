@@ -20,7 +20,15 @@ import { StakingRewards } from "./rewards";
 export const StakingModal = ({ open, onClose }) => {
   const [total] = useAppSelector(getTotalBRRR);
   const [loadingStake, setLoadingStake] = useState(false);
-  const { stakingTimestamp, amount, months, setAmount, setMonths, stakingNetAPY } = useStaking();
+  const {
+    stakingTimestamp,
+    amount,
+    months,
+    setAmount,
+    setMonths,
+    stakingNetAPY,
+    stakingNetTvlAPY,
+  } = useStaking();
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
   const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : months;
 
@@ -156,7 +164,7 @@ export const StakingModal = ({ open, onClose }) => {
             </Typography>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography color="#909090" fontWeight={500} fontSize="0.75rem">
-                Net APY
+                Pools APY
               </Typography>
               <Separator />
               <Typography
@@ -169,6 +177,23 @@ export const StakingModal = ({ open, onClose }) => {
                 py="4px"
               >
                 {stakingNetAPY.toLocaleString(undefined, APY_FORMAT)}%
+              </Typography>
+            </Box>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography color="#909090" fontWeight={500} fontSize="0.75rem">
+                Net Liquidity APY
+              </Typography>
+              <Separator />
+              <Typography
+                color="#46C285"
+                fontWeight={700}
+                fontSize="0.75rem"
+                bgcolor="rgba(71, 200, 128, 0.24)"
+                borderRadius={1}
+                px="8px"
+                py="4px"
+              >
+                {stakingNetTvlAPY.toLocaleString(undefined, APY_FORMAT)}%
               </Typography>
             </Box>
             <StakingRewards />
