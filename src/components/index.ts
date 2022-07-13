@@ -8,7 +8,6 @@ import OnboardingBRRR from "./OnboardingBRRR";
 import BRRRPrice from "./BRRRPrice";
 import Rewards from "./Rewards";
 import BetaInfo from "./BetaInfo";
-import InfoBox from "./InfoBanner";
 import Ticker from "./Ticker";
 import NonFarmedAssets from "./NonFarmedAssets";
 import ClaimAllRewards from "./ClaimAllRewards";
@@ -26,7 +25,6 @@ export {
   BRRRPrice,
   Rewards,
   BetaInfo,
-  InfoBox,
   Ticker,
   NonFarmedAssets,
   ClaimAllRewards,
