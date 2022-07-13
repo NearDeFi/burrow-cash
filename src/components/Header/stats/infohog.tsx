@@ -19,8 +19,8 @@ export const InfoHog = () => {
           Introducing Net Liquidity Farming
         </Typography>
         <Typography color="rgba(68, 68, 68, 0.6)" fontSize="0.875rem" lineHeight="1.125rem">
-          Effective from Tuesday (July 12th), Burrow will transition its rewards distribution model
-          from “total deposits farming” to “net liquidity farming.{" "}
+          Effective from July 12th, Burrow will transition its rewards distribution model from
+          “total deposits farming” to “net liquidity farming.{" "}
           <Link
             href="https://burrowcash.medium.com/introducing-net-liquidity-farming-on-burrow-cbacbfdebd97"
             target="blank"
