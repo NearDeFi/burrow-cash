@@ -55,11 +55,13 @@ export const StatsToggleButtons = () => {
 export const Stat = ({
   title,
   amount,
+  tooltip = "",
   labels,
   onClick,
 }: {
   title: string;
   amount: string;
+  tooltip?: string;
   labels?: any;
   onClick?: () => void;
 }) => {
@@ -84,15 +86,17 @@ export const Stat = ({
       <Typography color="#F8F9FF" fontSize="0.875rem">
         {title}
       </Typography>
-      <Typography
-        sx={{
-          fontSize: "3rem",
-          lineHeight: "4.5rem",
-          fontWeight: "semibold",
-        }}
-      >
-        {amount}
-      </Typography>
+      <Tooltip title={tooltip} placement="top" arrow>
+        <Typography
+          sx={{
+            fontSize: "3rem",
+            lineHeight: "4.5rem",
+            fontWeight: "semibold",
+          }}
+        >
+          {amount}
+        </Typography>
+      </Tooltip>
       {labels && (
         <Stack direction="row" gap="4px" flexWrap="wrap">
           {isValidElement(labels) ? (
