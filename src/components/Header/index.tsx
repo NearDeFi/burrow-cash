@@ -95,9 +95,6 @@ const Header = () => {
         </Snackbar>
       </Wrapper>
       <Stats />
-      {
-        // <InfoBox accountId={accountId} />
-      }
     </Box>
   );
 };
