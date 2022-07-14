@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Box, IconButton, useTheme, useMediaQuery, Typography } from "@mui/material";
-import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
+import { Button, Box, Stack, IconButton, useTheme, useMediaQuery, Typography } from "@mui/material";
+import { FaUserAlt } from "@react-icons/all-files/fa/FaUserAlt";
 
 import NearWalletSelector from "@near-wallet-selector/core";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
@@ -14,7 +14,7 @@ import { getAccountBalance, getAccountId } from "../../redux/accountSelectors";
 import { trackConnectWallet } from "../../telemetry";
 import { useDegenMode } from "../../hooks/hooks";
 import NearIcon from "../../assets/near-icon.svg";
-import { HamburgerMenu } from "./Menu";
+import { UserMenu } from "./Menu";
 
 const WalletButton = () => {
   const theme = useTheme();
@@ -75,7 +75,7 @@ const WalletButton = () => {
         <Box
           sx={{
             fontSize: "0.8rem",
-            display: "flex",
+            display: ["none", "flex"],
             flexFlow: isMobile ? "column" : "row",
             alignItems: ["flex-end", "center"],
           }}
@@ -89,17 +89,29 @@ const WalletButton = () => {
               justifyContent: "flex-end",
               marginLeft: 1,
               alignItems: "center",
-              mt: ["-0.3rem", 0],
             }}
           >
-            <Typography sx={{ lineHeight: 0, fontSize: "0.85rem" }}>
-              {Number.parseFloat(balance).toFixed(2)}
-            </Typography>
-            <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: "center",
+                bgcolor: "rgba(172, 255, 255, 0.1)",
+                borderRadius: "4px",
+                pl: 1,
+                pr: 0.3,
+              }}
+            >
+              <Typography
+                sx={{ lineHeight: 0, fontSize: "0.85rem", color: "rgba(172, 255, 209, 1)" }}
+              >
+                {Number.parseFloat(balance).toFixed(2)}
+              </Typography>
+              <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
+            </Stack>
             {degenMode.enabled && (
               <Box
                 sx={{
-                  marginRight: "-6px",
+                  ml: 1,
                   backgroundColor: theme.palette.primary.light,
                   color: theme.palette.secondary.main,
                   borderRadius: "0.3rem",
@@ -129,11 +141,11 @@ const WalletButton = () => {
         </Button>
       )}
       <Box>
-        <IconButton onClick={handleOpenMenu} sx={{ ml: "0.5rem", mr: "-0.5rem" }}>
-          <GiHamburgerMenu size={32} color="white" />
+        <IconButton onClick={handleOpenMenu} sx={{ ml: "0.2rem", mr: "-0.5rem" }}>
+          <FaUserAlt size={18} color="white" />
         </IconButton>
       </Box>
-      <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} selector={selector} />
+      <UserMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} selector={selector} />
     </Box>
   );
 };

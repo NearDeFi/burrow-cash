@@ -24,7 +24,7 @@ interface Props {
   selector: null | NearWalletSelector;
 }
 
-export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
+export const UserMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useTheme, Box, Snackbar, Alert } from "@mui/material";
+import { useTheme, Box, Snackbar, Alert, IconButton } from "@mui/material";
+import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
-import LogoIcon from "../../assets/logo.svg";
-import { Wrapper, Logo, Menu, LinkStyled } from "./style";
+import FullLogoIcon from "../../assets/logo.svg";
+import LogoIcon from "../../assets/logo-icon.svg";
+import { Wrapper, Menu, LinkStyled } from "./style";
 import WalletButton from "./WalletButton";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
@@ -43,6 +45,10 @@ const Header = () => {
     setOpen(false);
   };
 
+  const handleOpenMenu = () => {
+    console.info("handleOpenMenu");
+  };
+
   return (
     <Box
       sx={{
@@ -68,9 +74,24 @@ const Header = () => {
             Read Only Mode
           </Box>
         )}
-        <Logo>
-          <LogoIcon style={{ fill: "white" }} />
-        </Logo>
+        <Box sx={{ display: { sx: "inherit", sm: "none" }, ml: "-0.5rem" }}>
+          <IconButton onClick={handleOpenMenu} sx={{ ml: "0.2rem", mr: "-0.5rem" }}>
+            <GiHamburgerMenu size={18} color="white" />
+          </IconButton>
+        </Box>
+        <Box sx={{ gridArea: "logo", display: { xs: "none", sm: "block" } }}>
+          <FullLogoIcon style={{ fill: "white" }} />
+        </Box>
+        <Box
+          sx={{
+            pt: 1,
+            gridArea: "logo",
+            justifySelf: "center",
+            display: { xs: "block", sm: "none" },
+          }}
+        >
+          <LogoIcon />
+        </Box>
         <Menu>
           <MenuItem title="Deposit" pathname="/deposit" />
           <MenuItem title="Borrow" pathname="/borrow" />

@@ -9,7 +9,7 @@ export const Stats = () => {
   const accountId = useAccountId();
 
   return (
-    <Stack mx={{ xs: "1rem", sm: "1.5rem" }} my={{ xs: "2rem" }} color="white" gap="2rem">
+    <Stack mx={{ xs: "1rem", sm: "1.5rem" }} my={{ xs: "1rem" }} color="white" gap="2rem">
       <StatsToggleButtons />
       <Stack direction={{ xs: "column", [accountId ? "lg" : "sm"]: "row" }} gap="2rem">
         <StatsContainer />

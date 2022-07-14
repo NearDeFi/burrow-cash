@@ -8,23 +8,13 @@ export const Wrapper = styled(Toolbar)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     alignItems: "start",
     marginTop: "0.5rem",
-    gridTemplateAreas: `
-    "logo wallet"
-    "menu menu"`,
+    gridTemplateAreas: `"burger logo wallet"`,
   },
   [theme.breakpoints.up("sm")]: {
     gridTemplateAreas: `"logo menu wallet"`,
     gridTemplateColumns: "auto auto 1fr",
     gap: "2rem",
   },
-}));
-
-export const Logo = styled("div")(() => ({
-  display: "flex",
-  alignItems: "center",
-  gridArea: "logo",
-  justifySelf: "start",
-  alignSelf: "center",
 }));
 
 export const Menu = styled("div")(({ theme }) => ({
@@ -36,6 +26,7 @@ export const Menu = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",
     marginTop: "1rem",
+    display: "none",
   },
 }));
 
