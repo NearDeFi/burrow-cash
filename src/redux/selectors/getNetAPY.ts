@@ -37,13 +37,12 @@ export const getNetTvlAPY = ({ isStaking = false }) =>
 
       const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
       const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-      const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
 
       const netTvlRewards = Object.values(rewards.net).reduce(
         (acc, r) => acc + (isStaking ? r.newDailyAmount : r.dailyAmount) * r.price,
         0,
       );
-      const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
+      const netLiquidity = totalCollateral + totalSupplied;
       const apy = ((netTvlRewards * 365) / netLiquidity) * 100;
 
       return apy || 0;
