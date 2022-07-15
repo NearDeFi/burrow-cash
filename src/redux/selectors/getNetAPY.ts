@@ -35,8 +35,8 @@ export const getNetTvlAPY = ({ isStaking = false }) =>
     (assets, account, rewards) => {
       if (!hasAssets(assets)) return 0;
 
-      const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
-      const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
+      const [, totalCollateral] = getGains(account.portfolio, assets, "collateral", true);
+      const [, totalSupplied] = getGains(account.portfolio, assets, "supplied", true);
 
       const netTvlRewards = Object.values(rewards.net).reduce(
         (acc, r) => acc + (isStaking ? r.newDailyAmount : r.dailyAmount) * r.price,
