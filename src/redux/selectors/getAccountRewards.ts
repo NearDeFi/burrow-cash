@@ -43,7 +43,7 @@ export const getGains = (
   Object.keys(portfolio[source])
     .map((id) => {
       const asset = assets.data[id];
-      const netTvlMultiplier = Number(asset.config.net_tvl_multiplier) / 10000;
+      const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
 
       const { balance } = portfolio[source][id];
       const apr = Number(portfolio[source][id].apr);
