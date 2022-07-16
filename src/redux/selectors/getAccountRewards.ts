@@ -38,16 +38,18 @@ export const getGains = (
   portfolio: Portfolio,
   assets: AssetsState,
   source: "supplied" | "collateral" | "borrowed",
+  withNetTvlMultiplier = false,
 ) =>
   Object.keys(portfolio[source])
     .map((id) => {
       const asset = assets.data[id];
+      const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
 
       const { balance } = portfolio[source][id];
       const apr = Number(portfolio[source][id].apr);
       const balanceUSD = toUsd(balance, asset);
 
-      return [balanceUSD, apr];
+      return [balanceUSD * (withNetTvlMultiplier ? netTvlMultiplier : 1), apr];
     })
     .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
 
