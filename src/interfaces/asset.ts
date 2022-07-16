@@ -11,7 +11,7 @@ export interface IAssetConfig {
   can_withdraw: boolean;
   can_use_as_collateral: boolean;
   can_borrow: boolean;
-  net_tvl_multiplier: string;
+  net_tvl_multiplier: number;
 }
 
 export interface IAssetEntry {
