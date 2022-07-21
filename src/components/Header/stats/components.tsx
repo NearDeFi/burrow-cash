@@ -11,7 +11,7 @@ const buttonStyles = {
   color: "white",
   borderColor: "#191f53",
   background: "#1f305a",
-  fontSize: "1.23rem",
+  fontSize: "0.75rem",
   textTransform: "none",
 } as any;
 
@@ -41,7 +41,7 @@ export const StatsToggleButtons = () => {
   if (!accountId) return null;
 
   return (
-    <ButtonGroup disableElevation variant="text" size="small">
+    <ButtonGroup disableElevation variant="text" size="small" sx={{ height: "2rem" }}>
       <Button sx={msx} onClick={() => setStats(false)}>
         My Stats
       </Button>
