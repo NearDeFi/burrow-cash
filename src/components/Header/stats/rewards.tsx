@@ -1,9 +1,11 @@
 import { useRewards } from "../../../hooks/useRewards";
+import { IPortfolioReward } from "../../../redux/selectors/getAccountRewards";
+
 import { TOKEN_FORMAT, USD_FORMAT, NUMBER_FORMAT } from "../../../store";
 import { Stat } from "./components";
 
-const transformAssetReward = (r) => ({
-  value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
+const transformAssetReward = (r: IPortfolioReward) => ({
+  value: r.newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
   tooltip: `${r.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)} unclaimed`,
   text: r.symbol,
   icon: r.icon,
