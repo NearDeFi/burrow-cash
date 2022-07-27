@@ -223,10 +223,13 @@ export const getAccountRewards = createSelector(
     };
 
     const { supplied, borrowed, netTvl } = account.portfolio.farms;
+    const hasNetTvlFarm = !!Object.entries(assets.netTvlFarm).length;
 
     const suppliedRewards = Object.entries(supplied).map(computePoolsRewards("supplied")).flat();
     const borrowedRewards = Object.entries(borrowed).map(computePoolsRewards("borrowed")).flat();
-    const netLiquidityRewards = Object.entries(netTvl).map(computeNetLiquidityRewards);
+    const netLiquidityRewards = hasNetTvlFarm
+      ? Object.entries(netTvl).map(computeNetLiquidityRewards)
+      : [];
 
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
