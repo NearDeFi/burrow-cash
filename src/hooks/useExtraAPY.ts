@@ -7,6 +7,7 @@ import { getStaking } from "../redux/selectors/getStaking";
 import { getConfig } from "../redux/appSelectors";
 import { useAppSelector } from "../redux/hooks";
 import { shrinkToken } from "../store/helper";
+import { getNetTvlAPY, getTotalNetTvlAPY } from "../redux/selectors/getNetAPY";
 
 export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const [totalSupplyUSD, totalBorrowUSD] = useAppSelector(getTotalSupplyAndBorrowUSD(assetId));
@@ -14,6 +15,12 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const portfolio = useAppSelector(getAccountPortfolio);
   const appConfig = useAppSelector(getConfig);
   const assets = useAppSelector(getAssets);
+  const userNetTvlAPY = useAppSelector(getNetTvlAPY({ isStaking: false }));
+  const totalNetTvlApy = useAppSelector(getTotalNetTvlAPY);
+
+  const hasNetTvlFarms = Object.keys(portfolio.farms.netTvl).length > 0;
+  const netLiquidityAPY = hasNetTvlFarms ? userNetTvlAPY : totalNetTvlApy;
+
   const asset = assets.data[assetId];
 
   const assetDecimals = asset.metadata.decimals + asset.config.extra_decimals;
@@ -94,5 +101,9 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     return apy;
   };
 
-  return { computeRewardAPY, computeStakingRewardAPY };
+  return {
+    computeRewardAPY,
+    computeStakingRewardAPY,
+    netLiquidityAPY,
+  };
 }

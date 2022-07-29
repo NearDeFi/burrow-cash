@@ -4,6 +4,8 @@ import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
 import { getAccountRewards, getGains } from "./getAccountRewards";
+import { getProtocolRewards } from "./getProtocolRewards";
+import { getTotalBalance } from "./getTotalBalance";
 
 export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
   createSelector(
@@ -48,3 +50,16 @@ export const getNetTvlAPY = ({ isStaking = false }) =>
       return apy || 0;
     },
   );
+
+export const getTotalNetTvlAPY = createSelector(
+  getProtocolRewards,
+  getTotalBalance("supplied"),
+  getTotalBalance("borrowed"),
+  (rewards, supplied, borrowed) => {
+    if (!rewards.length) return 0;
+    const totalNetTvlRewards = rewards.reduce((acc, r) => acc + r.remainingAmount * r.price, 0);
+    const totalProtocolLiquidity = supplied - borrowed;
+    const apy = (totalNetTvlRewards / totalProtocolLiquidity) * 100;
+    return apy;
+  },
+);
