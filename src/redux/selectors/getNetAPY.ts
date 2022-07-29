@@ -57,9 +57,9 @@ export const getTotalNetTvlAPY = createSelector(
   getTotalBalance("borrowed"),
   (rewards, supplied, borrowed) => {
     if (!rewards.length) return 0;
-    const totalNetTvlRewards = rewards.reduce((acc, r) => acc + r.remainingAmount * r.price, 0);
+    const totalDailyNetTvlRewards = rewards.reduce((acc, r) => acc + r.dailyAmount * r.price, 0);
     const totalProtocolLiquidity = supplied - borrowed;
-    const apy = (totalNetTvlRewards / totalProtocolLiquidity) * 100;
+    const apy = ((totalDailyNetTvlRewards * 365) / totalProtocolLiquidity) * 100;
     return apy;
   },
 );
