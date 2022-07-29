@@ -53,8 +53,8 @@ export const getNetTvlAPY = ({ isStaking = false }) =>
 
 export const getTotalNetTvlAPY = createSelector(
   getProtocolRewards,
-  getTotalBalance("supplied"),
-  getTotalBalance("borrowed"),
+  getTotalBalance("supplied", true),
+  getTotalBalance("borrowed", true),
   (state: RootState) => state.assets,
   (rewards, supplied, borrowed, assets) => {
     if (!rewards.length) return 0;
