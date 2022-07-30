@@ -10,7 +10,7 @@ import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
 import { toUsd } from "../utils";
 
-interface IPortfolioReward {
+export interface IPortfolioReward {
   icon: string;
   name: string;
   symbol: string;
