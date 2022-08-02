@@ -8,6 +8,7 @@ import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks/useFullDigits";
 import TokenIcon from "../TokenIcon";
 import HtmlTooltip from "../common/html-tooltip";
+import { useNetLiquidityRewards } from "../../hooks/useRewards";
 
 interface Props {
   rewards?: IReward[];
@@ -19,7 +20,8 @@ const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
-
+  const netLiquidityRewards = useNetLiquidityRewards();
+  console.info("useNetLiquidityRewards", netLiquidityRewards);
   if (!list) return null;
 
   return (

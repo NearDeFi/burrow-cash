@@ -40,3 +40,23 @@ export const getProtocolRewards = createSelector(
     return rewards;
   },
 );
+
+export const getNetLiquidityRewards = createSelector(
+  (state: RootState) => state.assets,
+  (assets) => {
+    const rewards = Object.entries(assets.netTvlFarm).map(
+      ([tokenId, farm]: [string, INetTvlFarmReward]) => {
+        const asset = assets.data[tokenId];
+        const { metadata, config, price } = asset;
+        return {
+          rewards: farm,
+          metadata,
+          config,
+          price: price?.usd ?? 0,
+        };
+      },
+    );
+
+    return rewards;
+  },
+);

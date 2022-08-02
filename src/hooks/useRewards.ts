@@ -1,6 +1,6 @@
 import { useAppSelector } from "../redux/hooks";
 import { getAccountRewards } from "../redux/selectors/getAccountRewards";
-import { getProtocolRewards } from "../redux/selectors/getProtocolRewards";
+import { getNetLiquidityRewards, getProtocolRewards } from "../redux/selectors/getProtocolRewards";
 
 export function useRewards() {
   const assetRewards = useAppSelector(getAccountRewards);
@@ -11,4 +11,9 @@ export function useRewards() {
   const net = Object.entries(assetRewards.net);
 
   return { brrr, extra, net, protocol };
+}
+
+export function useNetLiquidityRewards() {
+  const rewards = useAppSelector(getNetLiquidityRewards);
+  return rewards;
 }
