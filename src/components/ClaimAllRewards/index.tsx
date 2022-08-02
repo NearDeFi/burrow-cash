@@ -7,9 +7,10 @@ interface Props {
   Button: React.ComponentType<LoadingButtonProps | ButtonProps | MenuItemProps>;
   location: string;
   onDone?: () => void;
+  disabled?: boolean;
 }
 
-function ClaimAllRewards({ Button, location, onDone }: Props) {
+function ClaimAllRewards({ Button, location, onDone, disabled = false }: Props) {
   const { handleClaimAll, isLoading } = useClaimAllRewards(location);
 
   const loading = Button.name === "ClaimMenuItem" ? undefined : isLoading;
@@ -19,7 +20,7 @@ function ClaimAllRewards({ Button, location, onDone }: Props) {
     if (onDone) onDone();
   };
 
-  return <Button onClick={handleClick} loading={loading} />;
+  return <Button onClick={handleClick} loading={loading} disabled={disabled} />;
 }
 
 export default ClaimAllRewards;
