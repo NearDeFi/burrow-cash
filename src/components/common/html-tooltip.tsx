@@ -10,6 +10,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
     color: theme.palette.secondary.main,
     borderWidth: 0.5,
     borderStyle: "solid",
+    padding: "1rem",
   },
 }));
 
