@@ -36,10 +36,12 @@ export function useAccountId() {
 }
 
 export function useNonFarmedAssets() {
-  const liquidity = useAppSelector(getAdjustedNetLiquidity);
-  const assets = useAppSelector(getAdjustedAssets);
+  const adjustedNetLiquidity = useAppSelector(getAdjustedNetLiquidity);
   const hasNonFarmedAssets = useAppSelector(getHasNonFarmedAssets);
-  return { hasNonFarmedAssets, liquidity, assets };
+  const hasNegativeNetLiquidity = adjustedNetLiquidity < 0;
+  const assets = useAppSelector(getAdjustedAssets);
+
+  return { hasNonFarmedAssets, adjustedNetLiquidity, hasNegativeNetLiquidity, assets };
 }
 
 export function useAvailableAssets(type: "supply" | "borrow") {
