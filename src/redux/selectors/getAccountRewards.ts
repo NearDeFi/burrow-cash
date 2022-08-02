@@ -8,7 +8,7 @@ import { Asset, AssetsState } from "../assetState";
 import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
-import { toUsd } from "../utils";
+import { hasAssets, toUsd } from "../utils";
 
 interface IPortfolioReward {
   icon: string;
@@ -251,5 +251,30 @@ export const getAccountRewards = createSelector(
         {},
       ),
     } as IAccountRewards;
+  },
+);
+
+export const getAdjustedNetLiquidity = createSelector(
+  (state: RootState) => state.assets,
+  (state: RootState) => state.account,
+  (assets, account) => {
+    if (!hasAssets(assets)) return 0;
+
+    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral", true);
+    const [, totalSupplied] = getGains(account.portfolio, assets, "supplied", true);
+    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed", true);
+
+    const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
+    return netLiquidity;
+  },
+);
+
+export const getAdjustedAssets = createSelector(
+  (state: RootState) => state.assets,
+  (assets) => {
+    if (!hasAssets(assets)) return [];
+    return Object.entries(assets.data)
+      .map(([, asset]) => (asset.config.net_tvl_multiplier < 10000 ? asset : undefined))
+      .filter(Boolean) as Asset[];
   },
 );
