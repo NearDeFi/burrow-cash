@@ -16,13 +16,15 @@ interface Props {
   fontWeight?: "normal" | "bold";
 }
 
-const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
+const Rewards = ({ rewards: list = [], layout, fontWeight = "normal" }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
   const netLiquidityRewards = useNetLiquidityRewards();
-  console.info("useNetLiquidityRewards", netLiquidityRewards);
-  if (!list) return null;
+
+  const restRewards = netLiquidityRewards.filter(
+    (r) => !list.some((lr) => lr.metadata.symbol === r.metadata.symbol),
+  );
 
   return (
     <RewardsTooltip hidden={!isHorizontalLayout} isCompact={isCompact} list={list}>
@@ -59,12 +61,26 @@ const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
                   {amount}
                 </Typography>
               )}
-              <Box height={14}>
+              <Box height={iconSize}>
                 <TokenIcon width={iconSize} height={iconSize} icon={icon} />
               </Box>
             </Stack>
           );
         })}
+        {isHorizontalLayout &&
+          restRewards.map(({ metadata: { symbol, icon } }) => (
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              justifyContent="flex-end"
+              key={symbol}
+            >
+              <Box height={20}>
+                <TokenIcon width={20} height={20} icon={icon} />
+              </Box>
+            </Stack>
+          ))}
       </Stack>
     </RewardsTooltip>
   );
