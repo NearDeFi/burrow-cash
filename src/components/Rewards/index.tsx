@@ -8,6 +8,7 @@ import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks/useFullDigits";
 import TokenIcon from "../TokenIcon";
 import HtmlTooltip from "../common/html-tooltip";
+import { useNetLiquidityRewards } from "../../hooks/useRewards";
 
 interface Props {
   rewards?: IReward[];
@@ -15,15 +16,22 @@ interface Props {
   fontWeight?: "normal" | "bold";
 }
 
-const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
+const Rewards = ({ rewards: list = [], layout, fontWeight = "normal" }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
+  const netLiquidityRewards = useNetLiquidityRewards();
 
-  if (!list) return null;
+  const restRewards = netLiquidityRewards.filter(
+    (r) => !list.some((lr) => lr.metadata.symbol === r.metadata.symbol),
+  );
 
   return (
-    <RewardsTooltip hidden={!isHorizontalLayout} isCompact={isCompact} list={list}>
+    <RewardsTooltip
+      hidden={!isHorizontalLayout}
+      poolRewards={list}
+      netLiquidityRewards={netLiquidityRewards}
+    >
       <Stack
         spacing={0.75}
         direction={isHorizontalLayout ? "row" : "column"}
@@ -57,49 +65,91 @@ const Rewards = ({ rewards: list, layout, fontWeight = "normal" }: Props) => {
                   {amount}
                 </Typography>
               )}
-              <Box height={14}>
+              <Box height={iconSize}>
                 <TokenIcon width={iconSize} height={iconSize} icon={icon} />
               </Box>
             </Stack>
           );
         })}
+        {isHorizontalLayout &&
+          restRewards.map(({ metadata: { symbol, icon } }) => (
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              justifyContent="flex-end"
+              key={symbol}
+            >
+              <Box height={20}>
+                <TokenIcon width={20} height={20} icon={icon} />
+              </Box>
+            </Stack>
+          ))}
       </Stack>
     </RewardsTooltip>
   );
 };
 
-const RewardsTooltip = ({ children, hidden, isCompact, list }) => {
+const RewardsTooltip = ({ children, hidden, poolRewards, netLiquidityRewards }) => {
   if (hidden) return children;
-
+  const hasPoolRewards = poolRewards.length > 0;
+  const hasNetLiquidityRewards = netLiquidityRewards.length > 0;
   return (
     <HtmlTooltip
       title={
-        <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
-          {list.map(({ metadata, rewards, config }) => {
-            const { symbol, icon, decimals } = metadata;
-            const dailyRewards = shrinkToken(
-              rewards.reward_per_day || 0,
-              decimals + config.extra_decimals,
-            );
-            const amount = isCompact
-              ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
-              : formatRewardAmount(Number(dailyRewards));
-
-            return [
-              <Stack key={1} direction="row" alignItems="center" spacing={1}>
-                <TokenIcon width={14} height={14} icon={icon} />
-                <Typography fontSize="0.75rem">{symbol}</Typography>
-              </Stack>,
-              <Typography key={2} fontSize="0.75rem" textAlign="right">
-                {amount} / day
-              </Typography>,
-            ];
-          })}
-        </Box>
+        <Stack gap={1}>
+          {hasPoolRewards && (
+            <>
+              <Typography fontSize="0.8rem" fontWeight={600}>
+                Pool Rewards
+              </Typography>
+              <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
+                {poolRewards.map((r) => (
+                  <Reward key={r.metadata.symbol} {...r} />
+                ))}
+              </Box>
+            </>
+          )}
+          {hasNetLiquidityRewards && (
+            <>
+              <Typography fontSize="0.8rem" fontWeight={600}>
+                Net Liquidity Rewards
+              </Typography>
+              <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
+                {netLiquidityRewards.map((r) => (
+                  <Reward key={r.metadata.symbol} {...r} />
+                ))}
+              </Box>
+            </>
+          )}
+        </Stack>
       }
     >
       {children}
     </HtmlTooltip>
+  );
+};
+
+const Reward = ({ metadata, rewards, config }) => {
+  const { fullDigits } = useFullDigits();
+  const isCompact = fullDigits?.table;
+
+  const { symbol, icon, decimals } = metadata;
+  const dailyRewards = shrinkToken(rewards.reward_per_day || 0, decimals + config.extra_decimals);
+  const amount = isCompact
+    ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
+    : formatRewardAmount(Number(dailyRewards));
+
+  return (
+    <>
+      <Stack key={1} direction="row" alignItems="center" spacing={1}>
+        <TokenIcon width={14} height={14} icon={icon} />
+        <Typography fontSize="0.75rem">{symbol}</Typography>
+      </Stack>
+      <Typography key={2} fontSize="0.75rem" textAlign="right">
+        {amount} / day
+      </Typography>
+    </>
   );
 };
 

@@ -9,25 +9,11 @@ export const columns = [
     Cell: TokenCell,
   },
   {
-    label: <Label name="Rewards" title="Rewards / Day" />,
-    dataKey: "brrrBorrow",
-    align: "left",
-    sortLabelStyle: { minWidth: [90, 90, "auto"] },
-    Cell: ({ rowData }) => (
-      <Cell
-        value={rowData?.brrrBorrow}
-        rowData={rowData}
-        format="reward"
-        rewardLayout="horizontal"
-        rewards={rowData.borrowRewards}
-      />
-    ),
-  },
-  {
     label: <Label name="APY" title="Borrow APY" />,
     dataKey: "borrowApy",
     align: "right",
     sortLabelStyle: { minWidth: [70, 70, "auto"] },
+    cellStyle: { pl: 0, pr: "2rem" },
     Cell: ({ rowData }) => (
       <Cell
         value={rowData?.borrowApy}
@@ -39,10 +25,27 @@ export const columns = [
     ),
   },
   {
+    label: <Label name="Rewards" title="Rewards / Day" />,
+    dataKey: "rewards",
+    align: "left",
+    sortLabelStyle: { minWidth: [90, 90, "auto"] },
+    cellStyle: { pr: 0 },
+    Cell: ({ rowData }) => (
+      <Cell
+        value={rowData?.brrrBorrow}
+        rowData={rowData}
+        format="reward"
+        rewardLayout="horizontal"
+        rewards={rowData.borrowRewards}
+      />
+    ),
+  },
+  {
     label: <Label name="Liquidity" title="Available Liquidity" />,
     dataKey: "availableLiquidity",
     align: "right",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
+    cellStyle: { pl: 0 },
     Cell: ({ rowData }) => (
       <Cell value={rowData?.availableLiquidity} rowData={rowData} format="amount" />
     ),
