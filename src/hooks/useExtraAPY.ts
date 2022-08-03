@@ -101,9 +101,12 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     return apy;
   };
 
+  const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
+
   return {
     computeRewardAPY,
     computeStakingRewardAPY,
     netLiquidityAPY,
+    netTvlMultiplier,
   };
 }

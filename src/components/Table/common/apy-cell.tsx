@@ -19,10 +19,11 @@ const APYCell = ({
   sx = {},
 }) => {
   const isBorrow = page === "borrow";
-  const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY } = useExtraAPY({
-    tokenId,
-    isBorrow,
-  });
+  const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
+    useExtraAPY({
+      tokenId,
+      isBorrow,
+    });
   const hasRewards = list?.length > 0;
 
   if (hiddenAssets.includes(tokenId)) return <Box />;
@@ -45,7 +46,7 @@ const APYCell = ({
 
   const sign = isBorrow ? -1 : 1;
   const apy = isStaking ? stakingExtraAPY : extraAPY;
-  const boostedAPY = baseAPY + netLiquidityAPY + sign * apy;
+  const boostedAPY = baseAPY + netLiquidityAPY * netTvlMultiplier + sign * apy;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
@@ -89,10 +90,11 @@ const ToolTip = ({
   isStaking,
 }) => {
   const theme = useTheme();
-  const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY } = useExtraAPY({
-    tokenId,
-    isBorrow,
-  });
+  const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
+    useExtraAPY({
+      tokenId,
+      isBorrow,
+    });
 
   return (
     <HtmlTooltip
@@ -108,7 +110,7 @@ const ToolTip = ({
             Net Liquidity APY
           </Typography>
           <Typography fontSize="0.75rem" textAlign="right">
-            {toAPY(netLiquidityAPY)}%
+            {toAPY(netLiquidityAPY * netTvlMultiplier)}%
           </Typography>
           {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
