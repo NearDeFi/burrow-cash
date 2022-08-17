@@ -46,7 +46,7 @@ const APYCell = ({
 
   const sign = isBorrow ? -1 : 1;
   const apy = isStaking ? stakingExtraAPY : extraAPY;
-  const boostedAPY = baseAPY + netLiquidityAPY * netTvlMultiplier + sign * apy;
+  const boostedAPY = baseAPY + (isBorrow ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return (
@@ -106,12 +106,14 @@ const ToolTip = ({
           <Typography fontSize="0.75rem" textAlign="right">
             {toAPY(baseAPY)}%
           </Typography>
-          <Typography pl="22px" fontSize="0.75rem">
-            Net Liquidity APY
-          </Typography>
-          <Typography fontSize="0.75rem" textAlign="right">
-            {toAPY(netLiquidityAPY * netTvlMultiplier)}%
-          </Typography>
+          {!isBorrow && [
+            <Typography pl="22px" fontSize="0.75rem" key={0}>
+              Net Liquidity APY
+            </Typography>,
+            <Typography fontSize="0.75rem" textAlign="right" key={1}>
+              {toAPY(netLiquidityAPY * netTvlMultiplier)}%
+            </Typography>,
+          ]}
           {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
 
