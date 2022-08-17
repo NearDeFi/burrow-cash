@@ -58,7 +58,7 @@ export const Cell = ({
 
   if (isAPY)
     return <APYCell rewards={rewards} baseAPY={value} page={page} tokenId={rowData.tokenId} />;
-  if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} />;
+  if (isReward) return <Rewards rewards={rewards} layout={rewardLayout} page={page} />;
   if (!value) return <Box>-</Box>;
 
   const displayValue = formatMap[format](value);

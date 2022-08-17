@@ -14,13 +14,14 @@ interface Props {
   rewards?: IReward[];
   layout?: "horizontal" | "vertical";
   fontWeight?: "normal" | "bold";
+  page?: "deposit" | "borrow";
 }
 
-const Rewards = ({ rewards: list = [], layout, fontWeight = "normal" }: Props) => {
+const Rewards = ({ rewards: list = [], layout, fontWeight = "normal", page }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
-  const netLiquidityRewards = useNetLiquidityRewards();
+  const netLiquidityRewards = page === "deposit" ? useNetLiquidityRewards() : [];
 
   const restRewards = netLiquidityRewards.filter(
     (r) => !list.some((lr) => lr.metadata.symbol === r.metadata.symbol),
