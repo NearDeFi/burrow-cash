@@ -1,3 +1,6 @@
+import { Tooltip, Box } from "@mui/material";
+import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
+
 import { useFullDigits } from "../../../hooks/useFullDigits";
 import { useAppSelector } from "../../../redux/hooks";
 import { getTotalBalance } from "../../../redux/selectors/getTotalBalance";
@@ -5,6 +8,7 @@ import { getTotalAccountBalance } from "../../../redux/selectors/getTotalAccount
 import { m, COMPACT_USD_FORMAT } from "../../../store";
 import { trackFullDigits } from "../../../telemetry";
 import { Stat } from "./components";
+import { getAdjustedNetLiquidity } from "../../../redux/selectors/getAccountRewards";
 
 export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
@@ -56,10 +60,15 @@ export const UserLiquidity = () => {
   const userDeposited = useAppSelector(getTotalAccountBalance("supplied"));
   const userBorrowed = useAppSelector(getTotalAccountBalance("borrowed"));
   const userNetLiquidity = userDeposited - userBorrowed;
+  const adjustedNetLiquidity = useAppSelector(getAdjustedNetLiquidity);
 
   const userNetLiquidityValue = fullDigits?.user
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(userNetLiquidity)}`;
+
+  const userAdjustedNetLiquidityValue = fullDigits?.user
+    ? adjustedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
+    : `$${m(adjustedNetLiquidity)}`;
 
   const userDepositedValue = fullDigits?.user
     ? userDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -70,14 +79,16 @@ export const UserLiquidity = () => {
     : `$${m(userBorrowed)}`;
 
   const netLiquidityLabels = [
-    {
-      value: userDepositedValue,
-      text: "Deposited",
-    },
-    {
-      value: userBorrowedValue,
-      text: "Borrowed",
-    },
+    [
+      {
+        value: userDepositedValue,
+        text: "Deposited",
+      },
+      {
+        value: userBorrowedValue,
+        text: "Borrowed",
+      },
+    ],
   ];
 
   const toggleValues = () => {
@@ -86,11 +97,22 @@ export const UserLiquidity = () => {
     setDigits({ user });
   };
 
+  const title = (
+    <Tooltip title={`Your full net liquidity is: ${userNetLiquidityValue}`} placement="top" arrow>
+      <Box component="span">
+        <span>Net Liquidity</span>
+        <MdInfoOutline
+          style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "2px" }}
+        />
+      </Box>
+    </Tooltip>
+  );
+
   return (
     <Stat
-      title="Net Liquidity"
-      amount={userNetLiquidityValue}
-      labels={[netLiquidityLabels]}
+      title={title}
+      amount={userAdjustedNetLiquidityValue}
+      labels={netLiquidityLabels}
       onClick={toggleValues}
     />
   );

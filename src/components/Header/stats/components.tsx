@@ -59,7 +59,7 @@ export const Stat = ({
   labels,
   onClick,
 }: {
-  title: string;
+  title: string | React.ReactElement;
   amount: string;
   tooltip?: string;
   labels?: any;
@@ -83,9 +83,13 @@ export const Stat = ({
 
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
-      <Typography color="#F8F9FF" fontSize="0.875rem">
-        {title}
-      </Typography>
+      {typeof title === "string" ? (
+        <Typography color="#F8F9FF" fontSize="0.875rem">
+          {title}
+        </Typography>
+      ) : (
+        title
+      )}
       <Tooltip title={tooltip} placement="top" arrow>
         <Typography
           sx={{
