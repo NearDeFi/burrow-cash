@@ -8,7 +8,7 @@ import { getTotalAccountBalance } from "../../../redux/selectors/getTotalAccount
 import { m, COMPACT_USD_FORMAT } from "../../../store";
 import { trackFullDigits } from "../../../telemetry";
 import { Stat } from "./components";
-import { getAdjustedNetLiquidity } from "../../../redux/selectors/getAccountRewards";
+import { getWeightedNetLiquidity } from "../../../redux/selectors/getAccountRewards";
 
 export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
@@ -29,14 +29,16 @@ export const ProtocolLiquidity = () => {
     : `$${m(protocolBorrowed)}`;
 
   const netLiquidityLabels = [
-    {
-      value: protocolDepositedValue,
-      text: "Deposited",
-    },
-    {
-      value: protocolBorrowedValue,
-      text: "Borrowed",
-    },
+    [
+      {
+        value: protocolDepositedValue,
+        text: "Deposited",
+      },
+      {
+        value: protocolBorrowedValue,
+        text: "Borrowed",
+      },
+    ],
   ];
 
   const toggleValues = () => {
@@ -49,7 +51,7 @@ export const ProtocolLiquidity = () => {
     <Stat
       title="Net Liquidity"
       amount={protocolNetLiquidityValue}
-      labels={[netLiquidityLabels]}
+      labels={netLiquidityLabels}
       onClick={toggleValues}
     />
   );
@@ -60,15 +62,15 @@ export const UserLiquidity = () => {
   const userDeposited = useAppSelector(getTotalAccountBalance("supplied"));
   const userBorrowed = useAppSelector(getTotalAccountBalance("borrowed"));
   const userNetLiquidity = userDeposited - userBorrowed;
-  const adjustedNetLiquidity = useAppSelector(getAdjustedNetLiquidity);
+  const weightedNetLiquidity = useAppSelector(getWeightedNetLiquidity);
 
   const userNetLiquidityValue = fullDigits?.user
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(userNetLiquidity)}`;
 
-  const userAdjustedNetLiquidityValue = fullDigits?.user
-    ? adjustedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(adjustedNetLiquidity)}`;
+  const userWeightedNetLiquidityValue = fullDigits?.user
+    ? weightedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
+    : `$${m(weightedNetLiquidity)}`;
 
   const userDepositedValue = fullDigits?.user
     ? userDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -100,7 +102,7 @@ export const UserLiquidity = () => {
   const title = (
     <Tooltip title={`Your full net liquidity is: ${userNetLiquidityValue}`} placement="top" arrow>
       <Box component="span">
-        <span>Net Liquidity</span>
+        <span>Weighted Net Liquidity</span>
         <MdInfoOutline
           style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "2px" }}
         />
@@ -111,7 +113,7 @@ export const UserLiquidity = () => {
   return (
     <Stat
       title={title}
-      amount={userAdjustedNetLiquidityValue}
+      amount={userWeightedNetLiquidityValue}
       labels={netLiquidityLabels}
       onClick={toggleValues}
     />

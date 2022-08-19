@@ -15,7 +15,7 @@ const sumRewards = (acc, r) => acc + r.dailyAmount * r.price;
 
 export const UserDailyRewards = () => {
   const { brrr, extra, net } = useRewards();
-  const { adjustedNetLiquidity, hasNegativeNetLiquidity, assets } = useNonFarmedAssets();
+  const { weightedNetLiquidity, hasNegativeNetLiquidity, assets } = useNonFarmedAssets();
 
   const assetRewards = [
     ...(Object.entries(brrr).length > 0 ? [brrr] : []),
@@ -29,7 +29,7 @@ export const UserDailyRewards = () => {
     ? [
         {
           value: "not farming...",
-          tooltip: <NotFarmingNetLiquidity assets={assets} liquidity={adjustedNetLiquidity} />,
+          tooltip: <NotFarmingNetLiquidity assets={assets} liquidity={weightedNetLiquidity} />,
         },
       ]
     : netRewards.map(transformAssetReward);
@@ -52,7 +52,7 @@ export const UserDailyRewards = () => {
 const NotFarmingNetLiquidity = ({ assets, liquidity }) => (
   <Stack gap="1">
     <Typography fontSize="0.85rem">
-      Your adjusted net liquidity is <b>{liquidity.toLocaleString(undefined, USD_FORMAT)}</b> which
+      Your weighted net liquidity is <b>{liquidity.toLocaleString(undefined, USD_FORMAT)}</b> which
       is below 0.
     </Typography>
     <Typography fontSize="0.85rem">

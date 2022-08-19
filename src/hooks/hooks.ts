@@ -5,7 +5,7 @@ import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
 import { getConfig, getSlimStats, getDegenMode } from "../redux/appSelectors";
 import { setRepayFrom, toggleDegenMode } from "../redux/appSlice";
 import { getViewAs } from "../utils";
-import { getAdjustedAssets, getAdjustedNetLiquidity } from "../redux/selectors/getAccountRewards";
+import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -36,12 +36,12 @@ export function useAccountId() {
 }
 
 export function useNonFarmedAssets() {
-  const adjustedNetLiquidity = useAppSelector(getAdjustedNetLiquidity);
+  const weightedNetLiquidity = useAppSelector(getWeightedNetLiquidity);
   const hasNonFarmedAssets = useAppSelector(getHasNonFarmedAssets);
-  const hasNegativeNetLiquidity = adjustedNetLiquidity < 0;
-  const assets = useAppSelector(getAdjustedAssets);
+  const hasNegativeNetLiquidity = weightedNetLiquidity < 0;
+  const assets = useAppSelector(getWeightedAssets);
 
-  return { hasNonFarmedAssets, adjustedNetLiquidity, hasNegativeNetLiquidity, assets };
+  return { hasNonFarmedAssets, weightedNetLiquidity, hasNegativeNetLiquidity, assets };
 }
 
 export function useAvailableAssets(type: "supply" | "borrow") {

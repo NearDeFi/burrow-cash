@@ -254,7 +254,7 @@ export const getAccountRewards = createSelector(
   },
 );
 
-export const getAdjustedNetLiquidity = createSelector(
+export const getWeightedNetLiquidity = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (assets, account) => {
@@ -269,7 +269,7 @@ export const getAdjustedNetLiquidity = createSelector(
   },
 );
 
-export const getAdjustedAssets = createSelector(
+export const getWeightedAssets = createSelector(
   (state: RootState) => state.assets,
   (assets) => {
     if (!hasAssets(assets)) return [];
