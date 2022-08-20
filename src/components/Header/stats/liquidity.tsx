@@ -101,8 +101,9 @@ export const UserLiquidity = () => {
 
   const title = (
     <Tooltip title={`Your full net liquidity is: ${userNetLiquidityValue}`} placement="top" arrow>
-      <Box component="span">
-        <span>Weighted Net Liquidity</span>
+      <Box component="span" maxWidth={120}>
+        <Box>Weighted</Box>
+        <span>Net Liquidity</span>
         <MdInfoOutline
           style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "2px" }}
         />
