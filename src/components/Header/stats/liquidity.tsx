@@ -2,18 +2,16 @@ import { Box } from "@mui/material";
 
 import { useFullDigits } from "../../../hooks/useFullDigits";
 import { useAppSelector } from "../../../redux/hooks";
-import { getTotalBalance } from "../../../redux/selectors/getTotalBalance";
 import { getTotalAccountBalance } from "../../../redux/selectors/getTotalAccountBalance";
 import { m, COMPACT_USD_FORMAT } from "../../../store";
 import { trackFullDigits } from "../../../telemetry";
 import { Stat } from "./components";
 import { getWeightedNetLiquidity } from "../../../redux/selectors/getAccountRewards";
+import { useProtocolNetLiquidity } from "../../../hooks/useNetLiquidity";
 
 export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
-  const protocolDeposited = useAppSelector(getTotalBalance("supplied"));
-  const protocolBorrowed = useAppSelector(getTotalBalance("borrowed"));
-  const protocolNetLiquidity = protocolDeposited - protocolBorrowed;
+  const { protocolBorrowed, protocolDeposited, protocolNetLiquidity } = useProtocolNetLiquidity();
 
   const protocolNetLiquidityValue = fullDigits?.totals
     ? protocolNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)

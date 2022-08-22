@@ -8,16 +8,17 @@ import { shrinkToken } from "../../store/helper";
 import { useFullDigits } from "../../hooks/useFullDigits";
 import TokenIcon from "../TokenIcon";
 import HtmlTooltip from "../common/html-tooltip";
-import { useNetLiquidityRewards } from "../../hooks/useRewards";
+import { useNetLiquidityRewards, useProRataNetLiquidityReward } from "../../hooks/useRewards";
 
 interface Props {
   rewards?: IReward[];
   layout?: "horizontal" | "vertical";
   fontWeight?: "normal" | "bold";
   page?: "deposit" | "borrow";
+  tokenId: string;
 }
 
-const Rewards = ({ rewards: list = [], layout, fontWeight = "normal", page }: Props) => {
+const Rewards = ({ rewards: list = [], layout, fontWeight = "normal", page, tokenId }: Props) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
   const isHorizontalLayout = layout === "horizontal";
@@ -32,6 +33,7 @@ const Rewards = ({ rewards: list = [], layout, fontWeight = "normal", page }: Pr
       hidden={!isHorizontalLayout}
       poolRewards={list}
       netLiquidityRewards={netLiquidityRewards}
+      tokenId={tokenId}
     >
       <Stack
         spacing={0.75}
@@ -91,7 +93,7 @@ const Rewards = ({ rewards: list = [], layout, fontWeight = "normal", page }: Pr
   );
 };
 
-const RewardsTooltip = ({ children, hidden, poolRewards, netLiquidityRewards }) => {
+const RewardsTooltip = ({ children, hidden, poolRewards, netLiquidityRewards, tokenId }) => {
   if (hidden) return children;
   const hasPoolRewards = poolRewards.length > 0;
   const hasNetLiquidityRewards = netLiquidityRewards.length > 0;
@@ -118,7 +120,7 @@ const RewardsTooltip = ({ children, hidden, poolRewards, netLiquidityRewards }) 
               </Typography>
               <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
                 {netLiquidityRewards.map((r) => (
-                  <Reward key={r.metadata.symbol} {...r} />
+                  <Reward key={r.metadata.symbol} {...r} tokenId={tokenId} />
                 ))}
               </Box>
             </>
@@ -131,15 +133,16 @@ const RewardsTooltip = ({ children, hidden, poolRewards, netLiquidityRewards }) 
   );
 };
 
-const Reward = ({ metadata, rewards, config }) => {
+const Reward = ({ metadata, rewards, config, tokenId }) => {
   const { fullDigits } = useFullDigits();
   const isCompact = fullDigits?.table;
-
   const { symbol, icon, decimals } = metadata;
   const dailyRewards = shrinkToken(rewards.reward_per_day || 0, decimals + config.extra_decimals);
+  const rewardAmount = useProRataNetLiquidityReward(tokenId, dailyRewards);
+
   const amount = isCompact
-    ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
-    : formatRewardAmount(Number(dailyRewards));
+    ? millify(Number(rewardAmount), { precision: PERCENT_DIGITS })
+    : formatRewardAmount(Number(rewardAmount));
 
   return (
     <>
