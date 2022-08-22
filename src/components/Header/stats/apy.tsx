@@ -15,5 +15,13 @@ export const APY = () => {
 
   const tooltip = `${dailyReturns.toLocaleString(undefined, USD_FORMAT)} / day`;
 
-  return <Stat title="APY" amount={amount} tooltip={tooltip} labels={[apyLabels]} />;
+  return (
+    <Stat
+      title="APY"
+      titleTooltip="Your total APY"
+      amount={amount}
+      tooltip={tooltip}
+      labels={[apyLabels]}
+    />
+  );
 };

@@ -33,5 +33,12 @@ export const HealthFactor = () => {
 
   const hfLabels = <Box color={color}>{label}</Box>;
 
-  return <Stat title="Health Factor" amount={amount} labels={hfLabels} />;
+  return (
+    <Stat
+      title="Health Factor"
+      titleTooltip="Your health factor (if it's below 100% you're up for liquidation)"
+      amount={amount}
+      labels={hfLabels}
+    />
+  );
 };

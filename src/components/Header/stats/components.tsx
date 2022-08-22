@@ -1,5 +1,6 @@
 import { isValidElement } from "react";
 import { Box, Stack, ButtonGroup, Button, Typography, Tooltip } from "@mui/material";
+import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
@@ -54,12 +55,14 @@ export const StatsToggleButtons = () => {
 
 export const Stat = ({
   title,
+  titleTooltip = "",
   amount,
   tooltip = "",
   labels,
   onClick,
 }: {
   title: string | React.ReactElement;
+  titleTooltip?: string | React.ReactElement;
   amount: string;
   tooltip?: string;
   labels?: any;
@@ -84,13 +87,22 @@ export const Stat = ({
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
       <Stack height={40} justifyContent="end">
-        {typeof title === "string" ? (
-          <Typography color="#F8F9FF" fontSize="0.875rem">
-            {title}
-          </Typography>
-        ) : (
-          title
-        )}
+        <Tooltip title={titleTooltip} placement="top" arrow>
+          <Stack direction="row" alignItems="end" width="max-content">
+            {typeof title === "string" ? (
+              <Typography color="#F8F9FF" fontSize="0.875rem">
+                {title}
+              </Typography>
+            ) : (
+              title
+            )}
+            {titleTooltip && (
+              <MdInfoOutline
+                style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "-2px" }}
+              />
+            )}
+          </Stack>
+        </Tooltip>
       </Stack>
       <Tooltip title={tooltip} placement="top" arrow>
         <Typography

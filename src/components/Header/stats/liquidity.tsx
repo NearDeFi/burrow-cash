@@ -1,5 +1,4 @@
-import { Tooltip, Box } from "@mui/material";
-import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
+import { Box } from "@mui/material";
 
 import { useFullDigits } from "../../../hooks/useFullDigits";
 import { useAppSelector } from "../../../redux/hooks";
@@ -50,6 +49,7 @@ export const ProtocolLiquidity = () => {
   return (
     <Stat
       title="Net Liquidity"
+      titleTooltip="Protocol liquid balance"
       amount={protocolNetLiquidityValue}
       labels={netLiquidityLabels}
       onClick={toggleValues}
@@ -100,20 +100,16 @@ export const UserLiquidity = () => {
   };
 
   const title = (
-    <Tooltip title={`Your full net liquidity is: ${userNetLiquidityValue}`} placement="top" arrow>
-      <Box component="span" maxWidth={120}>
-        <Box>Weighted</Box>
-        <span>Net Liquidity</span>
-        <MdInfoOutline
-          style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "2px" }}
-        />
-      </Box>
-    </Tooltip>
+    <Box component="span" maxWidth={120}>
+      <Box>Weighted</Box>
+      <span>Net Liquidity</span>
+    </Box>
   );
 
   return (
     <Stat
       title={title}
+      titleTooltip={`Your full net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
       labels={netLiquidityLabels}
       onClick={toggleValues}

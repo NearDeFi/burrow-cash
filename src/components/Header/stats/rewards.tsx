@@ -43,6 +43,7 @@ export const UserDailyRewards = () => {
   return (
     <Stat
       title="Daily Rewards"
+      titleTooltip="Your total daily rewards from asset pools and net liquidity"
       amount={amount.toLocaleString(undefined, USD_FORMAT)}
       labels={labels}
     />
@@ -98,6 +99,7 @@ export const ProtocolDailyRewards = () => {
   return (
     <Stat
       title="Net Liquidity Daily Rewards"
+      titleTooltip="Total protocol daily rewards from net liquidity"
       amount={amount.toLocaleString(undefined, USD_FORMAT)}
       labels={[labels]}
     />
