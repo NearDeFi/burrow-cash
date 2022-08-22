@@ -40,6 +40,7 @@ export const StatsContainer = () => {
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
             display: "none",
           },
+          scrollbarWidth: "none",
         }}
       >
         {protocolStats ? <ProtocolStats /> : accountId ? <UserStats /> : <ProtocolStats />}
