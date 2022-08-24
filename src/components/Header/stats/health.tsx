@@ -36,7 +36,7 @@ export const HealthFactor = () => {
   return (
     <Stat
       title="Health Factor"
-      titleTooltip="Your health factor (if it's below 100% you're up for liquidation)"
+      titleTooltip="Represents the combined collateral ratios of the borrowed assets. If it is less than 100%, your account can be partially liquidated"
       amount={amount}
       labels={hfLabels}
     />

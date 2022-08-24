@@ -18,7 +18,7 @@ export const APY = () => {
   return (
     <Stat
       title="APY"
-      titleTooltip="Your total APY"
+      titleTooltip="Net APY of all supply and borrow positions, including base APYs and incentives"
       amount={amount}
       tooltip={tooltip}
       labels={[apyLabels]}

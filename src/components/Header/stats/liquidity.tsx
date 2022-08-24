@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { useFullDigits } from "../../../hooks/useFullDigits";
 import { useAppSelector } from "../../../redux/hooks";
@@ -97,17 +97,12 @@ export const UserLiquidity = () => {
     setDigits({ user });
   };
 
-  const title = (
-    <Box component="span" maxWidth={120}>
-      <Box>Weighted</Box>
-      <span>Net Liquidity</span>
-    </Box>
-  );
+  const title = <Typography>Weighted Net Liquidity</Typography>;
 
   return (
     <Stat
       title={title}
-      titleTooltip={`Your full net liquidity is: ${userNetLiquidityValue}`}
+      titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
       labels={netLiquidityLabels}
       onClick={toggleValues}

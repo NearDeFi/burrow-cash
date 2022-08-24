@@ -98,7 +98,7 @@ export const Stat = ({
             )}
             {titleTooltip && (
               <MdInfoOutline
-                style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "-2px" }}
+                style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "-6px" }}
               />
             )}
           </Stack>
