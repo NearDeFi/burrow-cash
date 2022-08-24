@@ -27,8 +27,7 @@ export default function OnboardingBRRR() {
           </span>{" "}
           by supplying and borrowing assets on Burrow.
           <Box textAlign="left" pt="0.75rem">
-            Up to 6% of the total supply will be distributed to early users and supporters within
-            the first 3 months!
+            Up to 50% of the total supply will be distributed to users and supporters!
           </Box>
         </Box>
       </Stack>
@@ -37,7 +36,7 @@ export default function OnboardingBRRR() {
         color="secondary"
         variant="outlined"
         target="_blank"
-        href="https://burrowcash.medium.com/burrow-is-live-on-mainnet-read-this-faq-to-get-started-add1572075a4"
+        href="https://burrowcash.medium.com/a-high-level-overview-of-brrr-tokenomics-b9b12abec3b6"
       >
         <Box whiteSpace="nowrap" px="1rem">
           LEARN MORE

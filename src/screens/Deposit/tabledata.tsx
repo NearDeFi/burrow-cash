@@ -25,7 +25,7 @@ export const columns = [
     ),
   },
   {
-    label: <Label name="Rewards" title="Rewards / Day" />,
+    label: <Label name="Rewards" title="Estimated Rewards / Day" />,
     dataKey: "rewards",
     align: "left",
     sortLabelStyle: { minWidth: [90, 90, "auto"] },
