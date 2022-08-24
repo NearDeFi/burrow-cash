@@ -19,8 +19,13 @@ export const APY = () => {
 
   const apyLabels = [
     [
-      { value: globalValue, text: "Pools" },
-      { value: netLiquidityValue, text: "Net Liquidity", tooltip: netLiquidityTooltip },
+      { value: globalValue, text: "Pools", color: netAPY < 0 ? "red" : "green" },
+      {
+        value: netLiquidityValue,
+        text: "Net Liquidity",
+        tooltip: netLiquidityTooltip,
+        color: hasNegativeNetLiquidity ? "yellow" : "green",
+      },
     ],
   ];
 

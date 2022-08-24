@@ -53,6 +53,23 @@ export const StatsToggleButtons = () => {
   );
 };
 
+const COLORS = {
+  green: {
+    bgcolor: "rgba(172, 255, 255, 0.1)",
+    color: "#ACFFD1",
+  },
+  yellow: {
+    bgcolor: "rgba(255, 255, 172, 0.1)",
+    color: "#FFAC00",
+  },
+  red: {
+    bgcolor: "rgba(255, 172, 172, 0.1)",
+    color: "#FFACAC",
+  },
+};
+
+const getColor = (color = "green") => COLORS[color];
+
 export const Stat = ({
   title,
   titleTooltip = "",
@@ -69,13 +86,23 @@ export const Stat = ({
   onClick?: () => void;
 }) => {
   const renderLabel = (label, key) => (
-    <Label key={key} ml={label.icon ? "10px" : 0} tooltip={label.tooltip}>
+    <Label
+      key={key}
+      ml={label.icon ? "10px" : 0}
+      bgcolor={getColor(label.color).bgcolor}
+      tooltip={label.tooltip}
+    >
       {label.icon && (
         <Box position="absolute" top="0" left="-10px" borderRadius={19} border="0.5px solid white">
           <TokenIcon width={19} height={19} icon={label.icon} />
         </Box>
       )}
-      <Box component="span" color="#ACFFD1" fontWeight={600} pl={label.icon ? "10px" : 0}>
+      <Box
+        component="span"
+        color={getColor(label.color).color}
+        fontWeight={600}
+        pl={label.icon ? "10px" : 0}
+      >
         {label.value}
       </Box>
       <Box component="span" fontWeight={400}>
@@ -132,12 +159,12 @@ export const Stat = ({
   );
 };
 
-const Label = ({ children, tooltip = "", ...props }) => (
+const Label = ({ children, tooltip = "", bgcolor = "rgba(172, 255, 255, 0.1)", ...props }) => (
   <Tooltip title={tooltip} placement="top" arrow>
     <Stack
       direction="row"
       gap="4px"
-      bgcolor="rgba(172, 255, 255, 0.1)"
+      bgcolor={bgcolor}
       borderRadius="4px"
       py="4px"
       px="6px"
