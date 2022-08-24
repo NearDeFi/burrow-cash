@@ -11,11 +11,7 @@ import { useProtocolNetLiquidity } from "../../../hooks/useNetLiquidity";
 
 export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
-  const { protocolBorrowed, protocolDeposited, protocolNetLiquidity } = useProtocolNetLiquidity();
-
-  const protocolNetLiquidityValue = fullDigits?.totals
-    ? protocolNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(protocolNetLiquidity)}`;
+  const { protocolBorrowed, protocolDeposited } = useProtocolNetLiquidity();
 
   const protocolDepositedValue = fullDigits?.totals
     ? protocolDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -25,19 +21,6 @@ export const ProtocolLiquidity = () => {
     ? protocolBorrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(protocolBorrowed)}`;
 
-  const netLiquidityLabels = [
-    [
-      {
-        value: protocolDepositedValue,
-        text: "Deposited",
-      },
-      {
-        value: protocolBorrowedValue,
-        text: "Borrowed",
-      },
-    ],
-  ];
-
   const toggleValues = () => {
     const totals = !fullDigits?.totals;
     trackFullDigits({ totals });
@@ -45,13 +28,20 @@ export const ProtocolLiquidity = () => {
   };
 
   return (
-    <Stat
-      title="Net Liquidity"
-      titleTooltip="Protocol liquid balance"
-      amount={protocolNetLiquidityValue}
-      labels={netLiquidityLabels}
-      onClick={toggleValues}
-    />
+    <>
+      <Stat
+        title="Deposited"
+        titleTooltip="Total deposits"
+        amount={protocolDepositedValue}
+        onClick={toggleValues}
+      />
+      <Stat
+        title="Borrowed"
+        titleTooltip="Total borrows"
+        amount={protocolBorrowedValue}
+        onClick={toggleValues}
+      />
+    </>
   );
 };
 
