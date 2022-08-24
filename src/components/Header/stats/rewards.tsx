@@ -26,7 +26,7 @@ export const UserDailyRewards = () => {
 
   const labels = [
     [{ text: "Pools:" }, ...assetLabels],
-    [{ text: "Net Liquidity:" }, ...netLabels],
+    netLabels.length ? [{ text: "Net Liquidity:" }, ...netLabels] : [],
   ];
   const amount = assetRewards.reduce(sumRewards, 0) + netRewards.reduce(sumRewards, 0);
 
