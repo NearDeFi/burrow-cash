@@ -227,8 +227,11 @@ export const getAccountRewards = createSelector(
 
     const suppliedRewards = Object.entries(supplied).map(computePoolsRewards("supplied")).flat();
     const borrowedRewards = Object.entries(borrowed).map(computePoolsRewards("borrowed")).flat();
+
     const netLiquidityRewards = hasNetTvlFarm
-      ? Object.entries(netTvl).map(computeNetLiquidityRewards)
+      ? Object.entries(netTvl)
+          .filter(([tokenId]) => assets.netTvlFarm[tokenId])
+          .map(computeNetLiquidityRewards)
       : [];
 
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
