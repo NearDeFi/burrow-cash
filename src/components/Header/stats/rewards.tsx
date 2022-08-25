@@ -33,7 +33,7 @@ export const UserDailyRewards = () => {
   return (
     <Stat
       title="Daily Rewards"
-      titleTooltip="Estimated daily rewards combing base APYs and all incentives"
+      titleTooltip="Estimated daily reward from incentives"
       amount={amount.toLocaleString(undefined, USD_FORMAT)}
       labels={labels}
     />
