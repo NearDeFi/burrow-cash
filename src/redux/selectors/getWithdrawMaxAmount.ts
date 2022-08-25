@@ -49,7 +49,7 @@ export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfo
     const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets);
 
     const adjustedPricedDiff = decimalMax(0, adjustedCollateralSum.sub(adjustedBorrowedSum));
-    const safeAdjustedPricedDiff = adjustedPricedDiff.mul(99).div(100);
+    const safeAdjustedPricedDiff = adjustedPricedDiff.mul(999).div(1000);
 
     const safePricedDiff = safeAdjustedPricedDiff.div(asset.config.volatility_ratio).mul(10000);
 
