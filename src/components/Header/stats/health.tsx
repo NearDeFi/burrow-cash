@@ -33,5 +33,12 @@ export const HealthFactor = () => {
 
   const hfLabels = <Box color={color}>{label}</Box>;
 
-  return <Stat title="Health Factor" amount={amount} labels={hfLabels} />;
+  return (
+    <Stat
+      title="Health Factor"
+      titleTooltip="Represents the combined collateral ratios of the borrowed assets. If it is less than 100%, your account can be partially liquidated"
+      amount={amount}
+      labels={hfLabels}
+    />
+  );
 };

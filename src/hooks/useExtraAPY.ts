@@ -8,6 +8,7 @@ import { getConfig } from "../redux/appSelectors";
 import { useAppSelector } from "../redux/hooks";
 import { shrinkToken } from "../store/helper";
 import { getNetTvlAPY, getTotalNetTvlAPY } from "../redux/selectors/getNetAPY";
+import { useNonFarmedAssets } from "./hooks";
 
 export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const [totalSupplyUSD, totalBorrowUSD] = useAppSelector(getTotalSupplyAndBorrowUSD(assetId));
@@ -17,9 +18,15 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
   const assets = useAppSelector(getAssets);
   const userNetTvlAPY = useAppSelector(getNetTvlAPY({ isStaking: false }));
   const totalNetTvlApy = useAppSelector(getTotalNetTvlAPY);
+  const { hasNegativeNetLiquidity } = useNonFarmedAssets();
 
   const hasNetTvlFarms = Object.keys(portfolio.farms.netTvl).length > 0;
-  const netLiquidityAPY = hasNetTvlFarms ? userNetTvlAPY : totalNetTvlApy;
+
+  const netLiquidityAPY = hasNegativeNetLiquidity
+    ? 0
+    : hasNetTvlFarms
+    ? userNetTvlAPY
+    : totalNetTvlApy;
 
   const asset = assets.data[assetId];
 

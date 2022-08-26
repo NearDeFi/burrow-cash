@@ -1,20 +1,17 @@
+import { Typography } from "@mui/material";
+
 import { useFullDigits } from "../../../hooks/useFullDigits";
 import { useAppSelector } from "../../../redux/hooks";
-import { getTotalBalance } from "../../../redux/selectors/getTotalBalance";
 import { getTotalAccountBalance } from "../../../redux/selectors/getTotalAccountBalance";
 import { m, COMPACT_USD_FORMAT } from "../../../store";
 import { trackFullDigits } from "../../../telemetry";
 import { Stat } from "./components";
+import { getWeightedNetLiquidity } from "../../../redux/selectors/getAccountRewards";
+import { useProtocolNetLiquidity } from "../../../hooks/useNetLiquidity";
 
 export const ProtocolLiquidity = () => {
   const { fullDigits, setDigits } = useFullDigits();
-  const protocolDeposited = useAppSelector(getTotalBalance("supplied"));
-  const protocolBorrowed = useAppSelector(getTotalBalance("borrowed"));
-  const protocolNetLiquidity = protocolDeposited - protocolBorrowed;
-
-  const protocolNetLiquidityValue = fullDigits?.totals
-    ? protocolNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(protocolNetLiquidity)}`;
+  const { protocolBorrowed, protocolDeposited } = useProtocolNetLiquidity();
 
   const protocolDepositedValue = fullDigits?.totals
     ? protocolDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -24,17 +21,6 @@ export const ProtocolLiquidity = () => {
     ? protocolBorrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(protocolBorrowed)}`;
 
-  const netLiquidityLabels = [
-    {
-      value: protocolDepositedValue,
-      text: "Deposited",
-    },
-    {
-      value: protocolBorrowedValue,
-      text: "Borrowed",
-    },
-  ];
-
   const toggleValues = () => {
     const totals = !fullDigits?.totals;
     trackFullDigits({ totals });
@@ -42,12 +28,20 @@ export const ProtocolLiquidity = () => {
   };
 
   return (
-    <Stat
-      title="Net Liquidity"
-      amount={protocolNetLiquidityValue}
-      labels={[netLiquidityLabels]}
-      onClick={toggleValues}
-    />
+    <>
+      <Stat
+        title="Deposited"
+        titleTooltip="Total deposits"
+        amount={protocolDepositedValue}
+        onClick={toggleValues}
+      />
+      <Stat
+        title="Borrowed"
+        titleTooltip="Total borrows"
+        amount={protocolBorrowedValue}
+        onClick={toggleValues}
+      />
+    </>
   );
 };
 
@@ -56,10 +50,15 @@ export const UserLiquidity = () => {
   const userDeposited = useAppSelector(getTotalAccountBalance("supplied"));
   const userBorrowed = useAppSelector(getTotalAccountBalance("borrowed"));
   const userNetLiquidity = userDeposited - userBorrowed;
+  const weightedNetLiquidity = useAppSelector(getWeightedNetLiquidity);
 
   const userNetLiquidityValue = fullDigits?.user
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(userNetLiquidity)}`;
+
+  const userWeightedNetLiquidityValue = fullDigits?.user
+    ? weightedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
+    : `$${m(weightedNetLiquidity)}`;
 
   const userDepositedValue = fullDigits?.user
     ? userDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
@@ -70,14 +69,16 @@ export const UserLiquidity = () => {
     : `$${m(userBorrowed)}`;
 
   const netLiquidityLabels = [
-    {
-      value: userDepositedValue,
-      text: "Deposited",
-    },
-    {
-      value: userBorrowedValue,
-      text: "Borrowed",
-    },
+    [
+      {
+        value: userDepositedValue,
+        text: "Deposited",
+      },
+      {
+        value: userBorrowedValue,
+        text: "Borrowed",
+      },
+    ],
   ];
 
   const toggleValues = () => {
@@ -86,11 +87,14 @@ export const UserLiquidity = () => {
     setDigits({ user });
   };
 
+  const title = <Typography>Weighted Net Liquidity</Typography>;
+
   return (
     <Stat
-      title="Net Liquidity"
-      amount={userNetLiquidityValue}
-      labels={[netLiquidityLabels]}
+      title={title}
+      titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
+      amount={userWeightedNetLiquidityValue}
+      labels={netLiquidityLabels}
       onClick={toggleValues}
     />
   );

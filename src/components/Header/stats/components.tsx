@@ -1,5 +1,6 @@
 import { isValidElement } from "react";
 import { Box, Stack, ButtonGroup, Button, Typography, Tooltip } from "@mui/material";
+import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
@@ -52,27 +53,56 @@ export const StatsToggleButtons = () => {
   );
 };
 
+const COLORS = {
+  green: {
+    bgcolor: "rgba(172, 255, 255, 0.1)",
+    color: "#ACFFD1",
+  },
+  yellow: {
+    bgcolor: "rgba(255, 255, 172, 0.1)",
+    color: "#FFAC00",
+  },
+  red: {
+    bgcolor: "rgba(255, 172, 172, 0.1)",
+    color: "#FFACAC",
+  },
+};
+
+const getColor = (color = "green") => COLORS[color];
+
 export const Stat = ({
   title,
+  titleTooltip = "",
   amount,
   tooltip = "",
   labels,
   onClick,
 }: {
-  title: string;
+  title: string | React.ReactElement;
+  titleTooltip?: string | React.ReactElement;
   amount: string;
   tooltip?: string;
   labels?: any;
   onClick?: () => void;
 }) => {
   const renderLabel = (label, key) => (
-    <Label key={key} ml={label.icon ? "10px" : 0} tooltip={label.tooltip}>
+    <Label
+      key={key}
+      ml={label.icon ? "10px" : 0}
+      bgcolor={getColor(label.color).bgcolor}
+      tooltip={label.tooltip}
+    >
       {label.icon && (
         <Box position="absolute" top="0" left="-10px" borderRadius={19} border="0.5px solid white">
           <TokenIcon width={19} height={19} icon={label.icon} />
         </Box>
       )}
-      <Box component="span" color="#ACFFD1" fontWeight={600} pl={label.icon ? "10px" : 0}>
+      <Box
+        component="span"
+        color={getColor(label.color).color}
+        fontWeight={600}
+        pl={label.icon ? "10px" : 0}
+      >
         {label.value}
       </Box>
       <Box component="span" fontWeight={400}>
@@ -83,9 +113,24 @@ export const Stat = ({
 
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
-      <Typography color="#F8F9FF" fontSize="0.875rem">
-        {title}
-      </Typography>
+      <Stack height={40} justifyContent="end">
+        <Tooltip title={titleTooltip} placement="top" arrow>
+          <Stack direction="row" alignItems="end" width="max-content">
+            {typeof title === "string" ? (
+              <Typography color="#F8F9FF" fontSize="0.875rem">
+                {title}
+              </Typography>
+            ) : (
+              title
+            )}
+            {titleTooltip && (
+              <MdInfoOutline
+                style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "-6px" }}
+              />
+            )}
+          </Stack>
+        </Tooltip>
+      </Stack>
       <Tooltip title={tooltip} placement="top" arrow>
         <Typography
           sx={{
@@ -114,12 +159,12 @@ export const Stat = ({
   );
 };
 
-const Label = ({ children, tooltip = "", ...props }) => (
+const Label = ({ children, tooltip = "", bgcolor = "rgba(172, 255, 255, 0.1)", ...props }) => (
   <Tooltip title={tooltip} placement="top" arrow>
     <Stack
       direction="row"
       gap="4px"
-      bgcolor="rgba(172, 255, 255, 0.1)"
+      bgcolor={bgcolor}
       borderRadius="4px"
       py="4px"
       px="6px"

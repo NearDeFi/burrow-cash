@@ -37,6 +37,7 @@ export const columns = [
         format="reward"
         rewardLayout="horizontal"
         rewards={rowData.borrowRewards}
+        page="borrow"
       />
     ),
   },
