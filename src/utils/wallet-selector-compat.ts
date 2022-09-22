@@ -11,6 +11,7 @@ import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
 
 import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME, WALLET_CONNECT_ID } from "../config";
+import { isTestnet } from "../utils";
 
 declare global {
   interface Window {
@@ -56,7 +57,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
   selector = await setupWalletSelector({
     modules: [setupNearWallet(), setupSender(), walletConnect],
     network: defaultNetwork,
-    debug: true,
+    debug: !!isTestnet,
   });
 
   // @ts-ignore - accountsChanged is not (yet) in the type definition in @near-wallet-selector/core

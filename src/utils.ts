@@ -3,6 +3,7 @@ import BN from "bn.js";
 import Decimal from "decimal.js";
 
 import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+
 import {
   ChangeMethodsLogic,
   ChangeMethodsOracle,
