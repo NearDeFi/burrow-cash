@@ -1,5 +1,5 @@
 import { Account, Contract } from "near-api-js";
-import NearWalletSelector from "@near-wallet-selector/core";
+import type { WalletSelector } from "@near-wallet-selector/core";
 
 import { IPrices } from "./oracle";
 import { IMetadata, AssetEntry, IAssetDetailed, Balance, NetTvlFarm } from "./asset";
@@ -20,7 +20,7 @@ export interface IConfig {
 }
 
 export interface IBurrow {
-  selector: NearWalletSelector;
+  selector: WalletSelector;
   account: Account;
   changeAccount: (accountId: string) => void;
   fetchData: () => void;

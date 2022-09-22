@@ -38,7 +38,8 @@ export const executeMultipleTransactions = async (transactions) => {
   }));
 
   try {
-    await selector.signAndSendTransactions({
+    const wallet = await selector.wallet();
+    await wallet.signAndSendTransactions({
       transactions: selectorTransactions,
     });
   } catch (e: any) {

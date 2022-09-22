@@ -68,7 +68,8 @@ export const getBurrow = async ({
   if (!hideModalCached && !!hideModal) hideModalCached = hideModal;
   if (!signOutCached && !!signOut)
     signOutCached = async () => {
-      await selector?.signOut().catch((err) => {
+      const wallet = await selector.wallet();
+      await wallet.signOut().catch((err) => {
         console.error("Failed to sign out");
         console.error(err);
       });

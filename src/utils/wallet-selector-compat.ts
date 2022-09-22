@@ -1,13 +1,22 @@
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { Near } from "near-api-js/lib/near";
 import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
 
-import getConfig, { LOGIC_CONTRACT_NAME, defaultNetwork } from "../config";
-import { nearWalletIcon, senderWalletIcon } from "../assets/icons";
+import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "../config";
+
+declare global {
+  interface Window {
+    selector: WalletSelector;
+    modal: WalletSelectorModal;
+  }
+}
 
 interface WalletMethodArgs {
   signerId?: string;
@@ -26,36 +35,36 @@ interface GetWalletSelectorArgs {
 let near: Near;
 let accountId;
 let init = false;
-let selector: NearWalletSelector | null = null;
+let selector: WalletSelector | null = null;
 
 export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
   if (init) return selector;
   init = true;
 
-  selector = await NearWalletSelector.init({
-    wallets: [
-      setupNearWallet({
-        iconUrl: nearWalletIcon,
-      }),
-      setupSender({
-        iconUrl: senderWalletIcon,
-      }),
-    ],
+  selector = await setupWalletSelector({
+    modules: [setupNearWallet(), setupSender()],
     network: defaultNetwork,
-    contractId: LOGIC_CONTRACT_NAME,
+    debug: true,
   });
 
+  // @ts-ignore - accountsChanged is not (yet) in the type definition in @near-wallet-selector/core
   selector.on("accountsChanged", (e) => {
+    // @ts-ignore
     accountId = e.accounts[0]?.accountId;
     if (accountId) {
       onAccountChange(accountId);
     }
   });
 
-  const defaultAccountId = (await selector.getAccounts())?.[0]?.accountId;
+  const state = selector.store.getState();
+  const wallet = await selector.wallet(state.selectedWalletId ?? "near-wallet");
+  const defaultAccountId = (await wallet.getAccounts())?.[0]?.accountId;
   if (defaultAccountId) accountId = defaultAccountId;
 
   await onAccountChange(accountId);
+
+  const modal = setupModal(selector, { contractId: LOGIC_CONTRACT_NAME });
+  window.modal = modal;
 
   return selector;
 };
@@ -94,7 +103,9 @@ export const functionCall = async ({
     throw new Error("functionCall error: methodName undefined");
   }
 
-  return selector.signAndSendTransaction({
+  const wallet = await selector.wallet();
+
+  return wallet.signAndSendTransaction({
     receiverId: contractId,
     actions: [
       {

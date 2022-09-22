@@ -1,5 +1,4 @@
 import { Menu, MenuItem, Divider, Typography, useTheme } from "@mui/material";
-import NearWalletSelector from "@near-wallet-selector/core";
 
 import ClaimAllRewards from "../ClaimAllRewards";
 import { getBurrow, getLocalAppVersion, isTestnet } from "../../utils";
@@ -21,10 +20,9 @@ import { useTicker } from "../../hooks/useTicker";
 interface Props {
   anchorEl: null | HTMLElement;
   setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-  selector: null | NearWalletSelector;
 }
 
-export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
+export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
@@ -53,7 +51,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl, selector }: Props) => {
 
   const handleSwitchWallet = async () => {
     await handleSignOut();
-    selector?.show();
+    window.modal.show();
   };
 
   const handleSignOut = async () => {
