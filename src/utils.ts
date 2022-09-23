@@ -204,3 +204,7 @@ export function decimalMin(a: string | number | Decimal, b: string | number | De
   b = new Decimal(b);
   return a.lt(b) ? a : b;
 }
+
+export function isReactNative(): boolean {
+  return false;
+}
