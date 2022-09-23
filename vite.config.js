@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        app: "./src/index.html",
+        app: "./index.html",
       },
       external: ["react-dom/client"],
     },

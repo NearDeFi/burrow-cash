@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 1234",
     "build:parcel": "parcel build src/index.html --public-url ./ --no-cache && yarn sentry-upload",
     "clean": "rm -rf public && rm -rf dist && rm -rf .parcel-cache",
     "analyze": "BUNDLE_BUDDY=true parcel build src/index.html --reporter @parcel/reporter-bundle-buddy",
