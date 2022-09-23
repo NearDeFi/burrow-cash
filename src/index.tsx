@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -35,8 +35,13 @@ init({
   release: "v1",
 });
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container!);
+
+// @ts-ignore
+root.render(
   <ErrorBoundary fallback={FallbackError}>
+    {/* @ts-ignore */}
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
@@ -46,6 +51,4 @@ ReactDOM.render(
       </PersistGate>
     </Provider>
   </ErrorBoundary>,
-
-  document.querySelector("#root"),
 );
