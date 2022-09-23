@@ -10,5 +10,6 @@ export default defineConfig({
       },
       external: ["react-dom/client"],
     },
+    outDir: "public",
   },
 });
