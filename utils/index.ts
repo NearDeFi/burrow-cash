@@ -178,12 +178,8 @@ export function accountTrim(accountId: string) {
     : accountId;
 }
 
-const versionRegex = /index\.(.*)\.js/;
-
 export const getLocalAppVersion = () => {
-  const script = document.querySelector("#burrow-script")?.["src"];
-  const version = script ? script.match(versionRegex)[1] : "0000";
-  return version;
+  return process.env.CONFIG_BUILD_ID;
 };
 
 export const getRemoteAppVersion = async () => {
@@ -191,7 +187,8 @@ export const getRemoteAppVersion = async () => {
   const html = await res.text();
   const parser = new DOMParser();
   const htmlDoc = parser.parseFromString(html, "text/html");
-  return htmlDoc.querySelector("#burrow-script")?.["src"]?.match(versionRegex)[1];
+  const data = JSON.parse(htmlDoc.querySelector("#__NEXT_DATA__")?.textContent as string);
+  return data.buildId;
 };
 
 export function decimalMax(a: string | number | Decimal, b: string | number | Decimal): Decimal {

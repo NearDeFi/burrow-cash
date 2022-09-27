@@ -26,8 +26,6 @@ const integrations = [new Integrations.BrowserTracing()] as Array<
   Integrations.BrowserTracing | any
 >;
 
-console.info("CONFIG_BUILD_ID", process.env.CONFIG_BUILD_ID);
-
 if (isPostHogEnabled) {
   integrations.push(new posthogJs.SentryIntegration(posthog, SENTRY_ORG, SENTRY_PID));
 }

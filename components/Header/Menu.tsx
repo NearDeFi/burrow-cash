@@ -119,7 +119,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
       ]}
       <Divider key={2} />
       <MenuItem sx={{ backgroundColor: "white" }}>
-        <Typography fontSize="0.75rem">App Version: {appVersion}</Typography>
+        <Typography fontSize="0.75rem">App Build Id: {appVersion}</Typography>
       </MenuItem>
     </Menu>
   );
