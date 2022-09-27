@@ -10,8 +10,10 @@ export function transformAssets({
   metadata: IMetadata[];
 }): Assets {
   const data = assets.reduce((map, asset) => {
+    const assetMetadata = metadata.find((m) => m.token_id === asset.token_id) as IMetadata;
+    if (!assetMetadata || !asset.config) return map;
     map[asset.token_id] = {
-      metadata: metadata.find((m) => m.token_id === asset.token_id) as IMetadata,
+      metadata: assetMetadata,
       ...asset,
       farms: transformAssetFarms(asset.farms),
     };
