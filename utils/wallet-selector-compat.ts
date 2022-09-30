@@ -30,7 +30,7 @@ interface WalletMethodArgs {
 }
 
 interface GetWalletSelectorArgs {
-  onAccountChange: (accountId: string | null) => void;
+  onAccountChange: (accountId?: string | null) => void;
 }
 
 // caches in module so we don't re-init every time we need it
@@ -42,7 +42,7 @@ let selector: WalletSelector | null = null;
 const walletConnect = setupWalletConnect({
   projectId: WALLET_CONNECT_ID,
   metadata: {
-    name: "NEAR Wallet Selector",
+    name: "Burrow Cash",
     description: "Burrow with NEAR Wallet Selector",
     url: "https://github.com/near/wallet-selector",
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
@@ -61,12 +61,17 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
   });
 
   // @ts-ignore - accountsChanged is not (yet) in the type definition in @near-wallet-selector/core
+  // selector.on("accountsChanged", (e) => {
+  //   // @ts-ignore
+  //   accountId = e.accounts[0]?.accountId;
+  //   if (accountId) {
+  //     onAccountChange(accountId);
+  //   }
+  // });
+
   selector.on("accountsChanged", (e) => {
-    // @ts-ignore
-    accountId = e.accounts[0]?.accountId;
-    if (accountId) {
-      onAccountChange(accountId);
-    }
+    console.info("accountsChanged", e);
+    onAccountChange();
   });
 
   const state = selector.store.getState();
