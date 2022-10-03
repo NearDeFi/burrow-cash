@@ -61,7 +61,7 @@ export const accountSlice = createSlice({
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
 
-      if (!action.payload?.accountId || !state.accountId) return;
+      if (!action.payload?.accountId) return;
 
       const { accountId, balances, portfolio } = action.payload;
 

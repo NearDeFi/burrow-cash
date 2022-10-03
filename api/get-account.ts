@@ -2,10 +2,10 @@ import { getAssetsDetailed } from "../store";
 
 import getBalance from "./get-balance";
 import getPortfolio from "./get-portfolio";
-import { getBurrow } from "../utils";
+import { getAccount as getAccountWallet } from "../utils/wallet-selector-compat";
 
 const getAccount = async () => {
-  const { account } = await getBurrow();
+  const account = await getAccountWallet();
   const { accountId } = account;
 
   if (accountId) {

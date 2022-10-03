@@ -94,7 +94,7 @@ export const getNear = () => {
   return near;
 };
 
-export const getAccount = async (viewAsAccountId: string | null) => {
+export const getAccount = async (viewAsAccountId?: string | null) => {
   near = getNear();
   return new Account(near.connection, viewAsAccountId || accountId || window.accountId);
 };
