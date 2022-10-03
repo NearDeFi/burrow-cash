@@ -33,8 +33,8 @@ const WalletButton = () => {
   };
 
   const fetchData = () => {
-    dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
     dispatch(fetchAccount());
+    dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
   };
 
   const signOut = () => {

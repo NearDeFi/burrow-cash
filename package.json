@@ -64,6 +64,7 @@
     "react-use": "^17.4.0",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
+    "rxjs": "^7.5.7",
     "serve": "^14.0.1",
     "timeago-react": "^3.0.5"
   },

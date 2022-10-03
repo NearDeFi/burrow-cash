@@ -56,15 +56,12 @@ export const getBurrow = async ({
   };
 
   const changeAccount = async () => {
-    resetBurrow = true;
-    await getBurrow();
     refreshAccount();
   };
 
   if (!selector) {
     selector = await getWalletSelector({
       onAccountChange: changeAccount,
-      refreshAccount,
     });
   }
 

@@ -9,6 +9,7 @@ import { Near } from "near-api-js/lib/near";
 import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
+import { map, distinctUntilChanged } from "rxjs";
 
 import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME, WALLET_CONNECT_ID } from "./config";
 import { isTestnet } from ".";
@@ -16,6 +17,7 @@ import { isTestnet } from ".";
 declare global {
   interface Window {
     selector: WalletSelector;
+    selectorSubscription: any;
     modal: WalletSelectorModal;
   }
 }
@@ -31,7 +33,6 @@ interface WalletMethodArgs {
 
 interface GetWalletSelectorArgs {
   onAccountChange: (accountId?: string | null) => void;
-  refreshAccount: () => void;
 }
 
 // caches in module so we don't re-init every time we need it
@@ -51,10 +52,7 @@ const walletConnect = setupWalletConnect({
   chainId: `near:${defaultNetwork}`,
 });
 
-export const getWalletSelector = async ({
-  onAccountChange,
-  refreshAccount,
-}: GetWalletSelectorArgs) => {
+export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
   if (init) return selector;
   init = true;
 
@@ -64,30 +62,20 @@ export const getWalletSelector = async ({
     debug: !!isTestnet,
   });
 
-  // @ts-ignore - accountsChanged is not (yet) in the type definition in @near-wallet-selector/core
-  selector.on("accountsChanged", (e) => {
-    // @ts-ignore
-    accountId = e.accounts[0]?.accountId;
-    if (accountId) {
-      onAccountChange(accountId);
-    }
-  });
-
-  // @ts-ignore - signedIn is not (yet) in the type definition in @near-wallet-selector/core
-  selector.on("signedIn", (e) => {
-    console.info("signedIn", e);
-    refreshAccount();
-  });
-
-  const state = selector.store.getState();
-  const wallet = await selector.wallet(state.selectedWalletId ?? "near-wallet");
-  const defaultAccountId = (await wallet.getAccounts())?.[0]?.accountId;
-  if (defaultAccountId) accountId = defaultAccountId;
-
-  await onAccountChange(accountId);
+  const subscription = selector.store.observable
+    .pipe(
+      map((s) => s.accounts),
+      distinctUntilChanged(),
+    )
+    .subscribe((nextAccounts) => {
+      console.info("Accounts Update", nextAccounts);
+      accountId = nextAccounts[0]?.accountId;
+      onAccountChange();
+    });
 
   const modal = setupModal(selector, { contractId: LOGIC_CONTRACT_NAME });
   window.modal = modal;
+  window.selectorSubscription = subscription;
 
   return selector;
 };
