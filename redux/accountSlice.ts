@@ -34,6 +34,9 @@ export const accountSlice = createSlice({
   initialState,
   reducers: {
     logoutAccount: () => initialState,
+    setAccountId: (state, action) => {
+      state.accountId = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(farmClaimAll.pending, (state, action) => {
@@ -57,7 +60,8 @@ export const accountSlice = createSlice({
       state.isClaiming = undefined;
       state.status = action.meta.requestStatus;
       state.fetchedAt = new Date().toString();
-      if (!action.payload?.accountId) return;
+
+      if (!action.payload?.accountId || !state.accountId) return;
 
       const { accountId, balances, portfolio } = action.payload;
 
@@ -71,5 +75,5 @@ export const accountSlice = createSlice({
   },
 });
 
-export const { logoutAccount } = accountSlice.actions;
+export const { logoutAccount, setAccountId } = accountSlice.actions;
 export default accountSlice.reducer;

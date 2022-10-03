@@ -19,7 +19,7 @@ export interface FunctionCallOptions {
 }
 
 export const executeMultipleTransactions = async (transactions) => {
-  const { account, selector, fetchData, hideModal, signOut } = await getBurrow();
+  const { account, selector, hideModal, signOut } = await getBurrow();
 
   const selectorTransactions: Array<SelectorTransaction> = transactions.map((t) => ({
     signerId: account.accountId,
@@ -58,8 +58,7 @@ export const executeMultipleTransactions = async (transactions) => {
     );
     return;
   }
-  /// will refresh for injected wallets (near wallet would have redirected by now)
-  await fetchData();
+
   hideModal();
 };
 

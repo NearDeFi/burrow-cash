@@ -4,7 +4,7 @@ import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
-import { logoutAccount, fetchAccount } from "../../redux/accountSlice";
+import { logoutAccount, fetchAccount, setAccountId } from "../../redux/accountSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getBurrow, accountTrim } from "../../utils";
 
@@ -32,7 +32,8 @@ const WalletButton = () => {
     dispatch(_hideModal());
   };
 
-  const fetchData = () => {
+  const fetchData = (id?: string) => {
+    dispatch(setAccountId(id));
     dispatch(fetchAccount());
     dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
   };
@@ -47,6 +48,7 @@ const WalletButton = () => {
 
     selectorRef.current = s;
     setSelector(s);
+    window.selector = s;
   };
 
   useEffect(() => {

@@ -24,7 +24,7 @@ export const getViewAs = () => {
 };
 
 interface GetBurrowArgs {
-  fetchData?: () => void | null;
+  fetchData?: (id: string) => void | null;
   hideModal?: () => void | null;
   signOut?: () => void | null;
 }
@@ -51,12 +51,8 @@ export const getBurrow = async ({
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
 
-  const refreshAccount = () => {
-    if (fetchData) fetchData();
-  };
-
-  const changeAccount = async () => {
-    refreshAccount();
+  const changeAccount = async (accountId) => {
+    if (fetchData) fetchData(accountId);
   };
 
   if (!selector) {

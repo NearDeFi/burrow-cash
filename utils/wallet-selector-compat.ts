@@ -19,6 +19,7 @@ declare global {
     selector: WalletSelector;
     selectorSubscription: any;
     modal: WalletSelectorModal;
+    accountId: string;
   }
 }
 
@@ -70,7 +71,8 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
     .subscribe((nextAccounts) => {
       console.info("Accounts Update", nextAccounts);
       accountId = nextAccounts[0]?.accountId;
-      onAccountChange();
+      window.accountId = accountId;
+      onAccountChange(accountId);
     });
 
   const modal = setupModal(selector, { contractId: LOGIC_CONTRACT_NAME });
@@ -94,7 +96,7 @@ export const getNear = () => {
 
 export const getAccount = async (viewAsAccountId: string | null) => {
   near = getNear();
-  return new Account(near.connection, viewAsAccountId || accountId);
+  return new Account(near.connection, viewAsAccountId || accountId || window.accountId);
 };
 
 export const functionCall = async ({
