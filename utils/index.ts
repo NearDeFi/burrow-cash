@@ -51,15 +51,20 @@ export const getBurrow = async ({
   if (burrow && !resetBurrow) return burrow;
   resetBurrow = false;
 
+  const refreshAccount = () => {
+    if (fetchData) fetchData();
+  };
+
   const changeAccount = async () => {
     resetBurrow = true;
     await getBurrow();
-    if (fetchData) fetchData();
+    refreshAccount();
   };
 
   if (!selector) {
     selector = await getWalletSelector({
       onAccountChange: changeAccount,
+      refreshAccount,
     });
   }
 
@@ -72,8 +77,7 @@ export const getBurrow = async ({
       if (!selector) return;
       const wallet = await selector.wallet();
       await wallet.signOut().catch((err) => {
-        console.error("Failed to sign out");
-        console.error(err);
+        console.error("Failed to sign out", err);
       });
       if (hideModal) hideModal();
       signOut();

@@ -31,6 +31,7 @@ interface WalletMethodArgs {
 
 interface GetWalletSelectorArgs {
   onAccountChange: (accountId?: string | null) => void;
+  refreshAccount: () => void;
 }
 
 // caches in module so we don't re-init every time we need it
@@ -50,7 +51,10 @@ const walletConnect = setupWalletConnect({
   chainId: `near:${defaultNetwork}`,
 });
 
-export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
+export const getWalletSelector = async ({
+  onAccountChange,
+  refreshAccount,
+}: GetWalletSelectorArgs) => {
   if (init) return selector;
   init = true;
 
@@ -61,17 +65,18 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
   });
 
   // @ts-ignore - accountsChanged is not (yet) in the type definition in @near-wallet-selector/core
-  // selector.on("accountsChanged", (e) => {
-  //   // @ts-ignore
-  //   accountId = e.accounts[0]?.accountId;
-  //   if (accountId) {
-  //     onAccountChange(accountId);
-  //   }
-  // });
-
   selector.on("accountsChanged", (e) => {
-    console.info("accountsChanged", e);
-    onAccountChange();
+    // @ts-ignore
+    accountId = e.accounts[0]?.accountId;
+    if (accountId) {
+      onAccountChange(accountId);
+    }
+  });
+
+  // @ts-ignore - signedIn is not (yet) in the type definition in @near-wallet-selector/core
+  selector.on("signedIn", (e) => {
+    console.info("signedIn", e);
+    refreshAccount();
   });
 
   const state = selector.store.getState();
