@@ -3,7 +3,8 @@ import posthogJs from "posthog-js";
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY as string;
 const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST as string;
 
-export const isPostHogEnabled = POSTHOG_KEY && POSTHOG_HOST;
+// export const isPostHogEnabled = POSTHOG_KEY && POSTHOG_HOST;
+export const isPostHogEnabled = false;
 
 const initPostHog = () => {
   if (typeof window !== "undefined" && isPostHogEnabled) {
