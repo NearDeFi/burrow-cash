@@ -12,6 +12,7 @@ export interface ITableSorting {
   order: IOrder;
 }
 export interface AppState {
+  disclaimerAgreed: boolean;
   degenMode: {
     enabled: boolean;
     repayFromDeposits: boolean;
@@ -51,6 +52,7 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
+  disclaimerAgreed: false,
   degenMode: {
     enabled: false,
     repayFromDeposits: false,
@@ -183,6 +185,9 @@ export const appSlice = createSlice({
         amount: 0,
       };
     },
+    setDisclaimerAggreed(state, action) {
+      state.disclaimerAgreed = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -208,6 +213,7 @@ export const {
   setRepayFrom,
   setProtocolStats,
   setShowInfo,
+  setDisclaimerAggreed,
 } = appSlice.actions;
 
 export default appSlice.reducer;

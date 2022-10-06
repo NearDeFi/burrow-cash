@@ -15,6 +15,8 @@ import { trackConnectWallet } from "../../utils/telemetry";
 import { useDegenMode } from "../../hooks/hooks";
 import NearIcon from "../../public/near-icon.svg";
 import { HamburgerMenu } from "./Menu";
+import Disclaimer from "../Disclaimer";
+import { useDisclaimer } from "../../hooks/useDisclaimer";
 
 const WalletButton = () => {
   const theme = useTheme();
@@ -24,6 +26,8 @@ const WalletButton = () => {
   const balance = useAppSelector(getAccountBalance);
   const accountId = useAppSelector(getAccountId);
   const { degenMode } = useDegenMode();
+  const [isDisclaimerOpen, setDisclaimer] = useState(false);
+  const { getDisclaimer: hasAgreedDisclaimer } = useDisclaimer();
 
   const selectorRef = useRef<WalletSelector>();
   const [selector, setSelector] = useState<WalletSelector | null>(null);
@@ -56,6 +60,10 @@ const WalletButton = () => {
   }, []);
 
   const onWalletButtonClick = async () => {
+    if (!hasAgreedDisclaimer) {
+      setDisclaimer(true);
+      return;
+    }
     if (accountId) return;
     trackConnectWallet();
     window.modal.show();
@@ -138,6 +146,7 @@ const WalletButton = () => {
         </IconButton>
       </Box>
       <HamburgerMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
+      <Disclaimer isOpen={isDisclaimerOpen} onClose={() => setDisclaimer(false)} />
     </Box>
   );
 };

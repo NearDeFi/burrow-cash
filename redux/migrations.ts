@@ -58,4 +58,13 @@ export const migrations = {
       },
     };
   },
+  6: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        disclaimerAgreed: false,
+      },
+    };
+  },
 };

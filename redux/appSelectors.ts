@@ -68,6 +68,11 @@ export const getDegenMode = createSelector(
   (app) => app.degenMode,
 );
 
+export const getDisclaimerAgreed = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.disclaimerAgreed,
+);
+
 export const getAssetData = createSelector(
   (state: RootState) => state.app,
   (state: RootState) => state.assets.data,

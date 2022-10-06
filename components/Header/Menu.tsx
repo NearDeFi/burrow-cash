@@ -16,6 +16,7 @@ import {
   trackToggleAmountDigits,
 } from "../../utils/telemetry";
 import { useTicker } from "../../hooks/useTicker";
+import { useDisclaimer } from "../../hooks/useDisclaimer";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -34,6 +35,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const appVersion = getLocalAppVersion();
   const { degenMode, setDegenMode } = useDegenMode();
   const { hasTicker, toggleTicker } = useTicker();
+  const { setDisclaimer } = useDisclaimer();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -59,6 +61,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
     signOut();
     trackLogout();
     handleClose();
+    setDisclaimer(false);
   };
 
   const handleToggleAmountDigits = () => {
