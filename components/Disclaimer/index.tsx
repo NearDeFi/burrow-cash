@@ -1,5 +1,4 @@
 import {
-  Grid,
   Modal,
   Typography,
   Link,
@@ -30,21 +29,27 @@ export default function Disclaimer({ isOpen = false, onClose }) {
 
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <Grid container direction="column" justifyContent="center" alignItems="center" height="100vh">
-        <Grid
-          item
-          bgcolor="white"
-          p="2rem"
-          m="2rem"
-          borderRadius="0.5rem"
-          width={{ small: "100%", md: "460px" }}
-          position="relative"
-          color="#444444"
-        >
-          <CloseButton onClose={onClose} />
-          <Typography variant="h5" component="h5" color="black">
-            Disclaimer
-          </Typography>
+      <Box
+        bgcolor="white"
+        p="2rem"
+        m="2rem"
+        borderRadius="0.5rem"
+        width={{ small: "100%", md: "460px" }}
+        position="relative"
+        color="#444444"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          mx: "auto",
+          maxHeight: "90vh",
+          overflow: "hidden",
+        }}
+      >
+        <CloseButton onClose={onClose} />
+        <Typography variant="h5" component="h5" color="black">
+          Disclaimer
+        </Typography>
+        <Box sx={{ overflow: "scroll" }}>
           <FormControlLabel
             control={
               <Checkbox sx={{ mt: 1 }} checked={checked1} onClick={() => setChecked1(!checked1)} />
@@ -126,27 +131,26 @@ export default function Disclaimer({ isOpen = false, onClose }) {
               </Typography>
             </ListItem>
           </List>
-          <Box display="flex" justifyContent="center" flexDirection="column">
-            <Button
-              variant="contained"
-              sx={{ mx: "2rem", my: "1rem" }}
-              disabled={!checked1 || !checked2}
-              onClick={handleAgree}
-            >
-              Agree & Confirm
-            </Button>
-            <Typography
-              fontSize="0.625rem"
-              textAlign="center"
-              mx="4rem"
-              color="rgba(68, 68, 68, 0.6)"
-            >
-              By clicking this button you acknowledge and agree to all statements in this
-              disclaimer.
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
+        </Box>
+        <Box display="flex" justifyContent="center" flexDirection="column">
+          <Button
+            variant="contained"
+            sx={{ mx: "2rem", my: "1rem" }}
+            disabled={!checked1 || !checked2}
+            onClick={handleAgree}
+          >
+            Agree & Confirm
+          </Button>
+          <Typography
+            fontSize="0.625rem"
+            textAlign="center"
+            mx="4rem"
+            color="rgba(68, 68, 68, 0.6)"
+          >
+            By clicking this button you acknowledge and agree to all statements in this disclaimer.
+          </Typography>
+        </Box>
+      </Box>
     </Modal>
   );
 }
