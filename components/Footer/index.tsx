@@ -61,7 +61,7 @@ export const Terms = () => (
       color="secondary.main"
       target="_blank"
     >
-      Terms of Service
+      Declaration and Disclaimers
     </Link>
   </>
 );
