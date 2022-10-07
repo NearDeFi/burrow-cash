@@ -3,6 +3,5 @@ import Portfolio from "./Portfolio";
 import Deposit from "./Deposit";
 import Staking from "./Staking";
 import Bridge from "./Bridge";
-import { Terms, Privacy } from "./Legal";
 
-export { Portfolio, Deposit, Borrow, Staking, Terms, Privacy, Bridge };
+export { Portfolio, Deposit, Borrow, Staking, Bridge };

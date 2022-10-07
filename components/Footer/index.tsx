@@ -16,6 +16,9 @@ const Footer = () => (
         <Logo />
       </LogoWrapper>
       <Copyright variant="h6">© 2022 All Rights Reserved.</Copyright>
+      <LinksWrapper>
+        <Terms />
+      </LinksWrapper>
     </CopyWrapper>
     <LinksWrapper>
       <Links />
@@ -52,12 +55,13 @@ const Links = () => (
 export const Terms = () => (
   <>
     <Divider orientation="vertical" flexItem color="secondary" />
-    <Link href="/terms" underline="none" color="secondary.main">
+    <Link
+      href="https://github.com/NearDeFi/burrow-cash/blob/testnet/DECLARATION.md"
+      underline="none"
+      color="secondary.main"
+      target="_blank"
+    >
       Terms of Service
-    </Link>
-    <Divider orientation="vertical" flexItem color="secondary" />
-    <Link href="/privacy" underline="none" color="secondary.main">
-      Privacy Policy
     </Link>
   </>
 );
