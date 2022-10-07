@@ -43,6 +43,10 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           mx: "auto",
           maxHeight: "90vh",
           overflow: "hidden",
+          "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+            display: "none",
+          },
+          scrollbarWidth: "none",
         }}
       >
         <CloseButton onClose={onClose} />
