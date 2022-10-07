@@ -58,7 +58,10 @@ export default function Disclaimer({ isOpen = false, onClose }) {
             label={
               <Typography mt="1rem" fontSize="0.75rem">
                 I have read and understood the{" "}
-                <Link href="https://docs.burrow.cash/product-docs/disclaimer" target="_blank">
+                <Link
+                  href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
+                  target="_blank"
+                >
                   Declaration and Disclaimers
                 </Link>
                 , that such understanding is irrevocable and will apply to all of my uses of the

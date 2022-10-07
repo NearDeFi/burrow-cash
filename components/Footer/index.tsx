@@ -56,7 +56,7 @@ export const Terms = () => (
   <>
     <Divider orientation="vertical" flexItem color="secondary" />
     <Link
-      href="https://github.com/NearDeFi/burrow-cash/blob/testnet/DECLARATION.md"
+      href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
       underline="none"
       color="secondary.main"
       target="_blank"

@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
 
 import { useViewAs } from "../../hooks/hooks";
 import { useTicker } from "../../hooks/useTicker";
@@ -9,23 +8,12 @@ import Footer from "../Footer";
 import Header from "../Header";
 import Ticker from "../Ticker";
 import Blocked from "../Blocked";
+import { useBlocked } from "../../hooks/useBlocked";
 
 const Layout = ({ children }) => {
   const isViewingAs = useViewAs();
   const { hasTicker } = useTicker();
-  const [isBlocked, setBlocked] = useState(false);
-
-  const checkBlocked = async () => {
-    const ip = await fetch("https://brrr.burrow.cash/api/is-blocked").then((r) => r.json());
-
-    if (ip.blocked) {
-      setBlocked(ip.blocked);
-    }
-  };
-
-  useEffect(() => {
-    checkBlocked();
-  }, []);
+  const isBlocked = useBlocked();
 
   return (
     <Box

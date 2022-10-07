@@ -19,7 +19,10 @@ export default function Blocked() {
             Use of burrow.cash is not available to people or companies who are residents of, or are
             located, incorporated, or have a registered agent in, the United States or a restricted
             territory. For more information, please see the{" "}
-            <Link href="https://docs.burrow.cash/product-docs/disclaimer" target="_blank">
+            <Link
+              href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
+              target="_blank"
+            >
               Declaration and Disclaimers
             </Link>
             .
