@@ -72,10 +72,11 @@ export const getDisclaimerAgreed = createSelector(
   (state: RootState) => state.app,
   (app) => app.disclaimerAgreed,
 );
-export const getBlocked = createSelector(
-  (state: RootState) => state.app,
-  (app) => app.isBlocked,
-);
+export const getBlocked = (ip: string | undefined) =>
+  createSelector(
+    (state: RootState) => state.app,
+    (app) => (ip ? app.isBlocked[ip] : undefined),
+  );
 
 export const getAssetData = createSelector(
   (state: RootState) => state.app,

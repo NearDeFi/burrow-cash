@@ -11,8 +11,11 @@ export interface ITableSorting {
   property: string;
   order: IOrder;
 }
+
 export interface AppState {
-  isBlocked: boolean | undefined;
+  isBlocked: {
+    [ip: string]: boolean;
+  };
   disclaimerAgreed: boolean;
   degenMode: {
     enabled: boolean;
@@ -53,7 +56,7 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  isBlocked: undefined,
+  isBlocked: {},
   disclaimerAgreed: false,
   degenMode: {
     enabled: false,
@@ -191,7 +194,8 @@ export const appSlice = createSlice({
       state.disclaimerAgreed = action.payload;
     },
     setBlocked(state, action) {
-      state.isBlocked = action.payload;
+      const { ip, blocked } = action.payload;
+      state.isBlocked[ip] = blocked;
     },
   },
   extraReducers: (builder) => {

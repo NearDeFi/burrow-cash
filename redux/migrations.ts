@@ -76,4 +76,13 @@ export const migrations = {
       },
     };
   },
+  8: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        isBlocked: {},
+      },
+    };
+  },
 };
