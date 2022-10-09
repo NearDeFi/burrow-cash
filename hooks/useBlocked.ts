@@ -20,9 +20,13 @@ export function useBlocked() {
     dispatch(setBlocked(ipInfo));
   };
 
-  useEffect(() => {
+  const check = async () => {
+    await getIp();
     checkBlocked();
-    getIp();
+  };
+
+  useEffect(() => {
+    check();
   }, []);
 
   return !!isBlocked;
