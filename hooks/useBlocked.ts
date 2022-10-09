@@ -10,7 +10,7 @@ export function useBlocked() {
   const isBlocked = useAppSelector(getBlocked(ip));
 
   const getIp = async () => {
-    const ipInfo = await fetch("https://api.ipify.org?format=json").then((r) => r.json());
+    const ipInfo = await fetch("https://brrr.burrow.cash/api/ip").then((r) => r.json());
     setIp(ipInfo.ip);
   };
 
