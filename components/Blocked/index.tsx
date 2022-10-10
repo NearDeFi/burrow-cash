@@ -18,7 +18,7 @@ export default function Blocked() {
           <Typography mt="1rem">
             Use of burrow.cash is not available to people or companies who are residents of, or are
             located, incorporated, or have a registered agent in, the United States or a restricted
-            territory. For more information, please see the{" "}
+            territory. VPNs are also blocked. For more information, please see the{" "}
             <Link
               href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
               target="_blank"
