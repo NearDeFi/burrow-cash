@@ -1,3 +1,4 @@
+import NextLink from "next/link";
 import {
   Modal,
   Typography,
@@ -62,12 +63,11 @@ export default function Disclaimer({ isOpen = false, onClose }) {
             label={
               <Typography mt="1rem" fontSize="0.75rem">
                 I have read and understood the{" "}
-                <Link
-                  href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
-                  target="_blank"
-                >
-                  Declaration and Disclaimers
-                </Link>
+                <NextLink href="/declaration" passHref>
+                  <Link href="/declaration" target="_blank">
+                    Declaration and Disclaimers
+                  </Link>
+                </NextLink>
                 , that such understanding is irrevocable and will apply to all of my uses of the
                 Site without me providing confirmation in each specific instance.
               </Typography>

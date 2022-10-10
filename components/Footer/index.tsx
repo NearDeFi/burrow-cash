@@ -1,4 +1,5 @@
 import { Link, Divider, Box } from "@mui/material";
+import NextLink from "next/link";
 
 import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
 import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
@@ -17,7 +18,7 @@ const Footer = () => (
       </LogoWrapper>
       <Copyright variant="h6">© 2022 All Rights Reserved.</Copyright>
       <LinksWrapper>
-        <Terms />
+        <Declaration />
       </LinksWrapper>
     </CopyWrapper>
     <LinksWrapper>
@@ -52,17 +53,14 @@ const Links = () => (
   </Box>
 );
 
-export const Terms = () => (
+export const Declaration = () => (
   <>
     <Divider orientation="vertical" flexItem color="secondary" />
-    <Link
-      href="https://github.com/NearDeFi/burrow-cash/blob/main/DECLARATION.md"
-      underline="none"
-      color="secondary.main"
-      target="_blank"
-    >
-      Declaration and Disclaimers
-    </Link>
+    <NextLink href="/declaration" passHref>
+      <Link href="/declaration" underline="none" color="secondary.main">
+        Declaration and Disclaimers
+      </Link>
+    </NextLink>
   </>
 );
 

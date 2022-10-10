@@ -66,7 +66,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
             <Head>
-              <meta name="viewport" content="viewport-fit=cover" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
               <title>Burrow Cash</title>
             </Head>
             <Layout>
