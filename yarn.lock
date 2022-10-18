@@ -1853,6 +1853,15 @@
     "@near-wallet-selector/core" "7.0.3"
     "@near-wallet-selector/my-near-wallet" "7.0.3"
 
+"@near-wallet-selector/nightly@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/nightly/-/nightly-7.1.0.tgz#a50ad8545ce1dbd18cb7b5a57e7769490a06d764"
+  integrity sha512-s34ZYdFZDxiW1kReSeIGNxaunNePxg0ZxQoWpPS6BTT6lV7pmuM2VHxgsBTv/GtXj9u6isbaACOtJpp31bFxEw==
+  dependencies:
+    "@near-wallet-selector/core" "7.1.0"
+    "@near-wallet-selector/wallet-utils" "7.1.0"
+    is-mobile "^3.1.1"
+
 "@near-wallet-selector/sender@^7.0.3":
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/@near-wallet-selector/sender/-/sender-7.0.3.tgz#12b2695ea18497a05ad55eeb1ec0a60765b907a3"

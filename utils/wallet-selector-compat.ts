@@ -11,6 +11,7 @@ import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
 import { map, distinctUntilChanged } from "rxjs";
+import { setupNightly } from "@near-wallet-selector/nightly";
 
 import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME, WALLET_CONNECT_ID } from "./config";
 import { isTestnet } from ".";
@@ -59,7 +60,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
   init = true;
 
   selector = await setupWalletSelector({
-    modules: [setupNearWallet(), setupSender(), walletConnect, setupHereWallet()],
+    modules: [setupNearWallet(), setupSender(), walletConnect, setupHereWallet(), setupNightly()],
     network: defaultNetwork,
     debug: !!isTestnet,
   });
