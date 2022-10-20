@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
-  exportTrailingSlash: true,
+  trailingSlash: true,
   webpack(config, { isServer, webpack, buildId }) {
     config.plugins.push(
       new webpack.DefinePlugin({
