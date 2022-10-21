@@ -14,7 +14,7 @@ import { Stats } from "./stats";
 const MenuItem = ({ title, pathname, sx = {} }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isSelected = router.asPath === pathname;
+  const isSelected = router.asPath.includes(pathname);
 
   const style = isSelected ? { borderBottomColor: theme.palette.primary.main, opacity: 1 } : {};
 
