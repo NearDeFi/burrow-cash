@@ -12,7 +12,6 @@ const {
     format: { parseNearAmount },
   },
 } = nearAPI;
-import { get, set, del } from "./store";
 import contractPath from "url:../assets/neth.wasm";
 
 const FUNDING_ACCOUNT_ID = "neth.testnet";
@@ -28,22 +27,36 @@ const half_gas = "50000000000000";
 const attachedDeposit = parseNearAmount("0.3");
 const attachedDepositMapping = parseNearAmount("0.02");
 
+/// LocalStorage Helpers
+
+const get = (k) => {
+  const v = localStorage.getItem(k);
+  if (v?.charAt(0) !== "{") {
+    return v;
+  }
+  try {
+    return JSON.parse(v);
+  } catch (e) {
+    console.warn(e);
+  }
+};
+const set = (k, v) => localStorage.setItem(k, typeof v === "string" ? v : JSON.stringify(v));
+const del = (k) => localStorage.removeItem(k);
+
 /// NEAR setup
 
-let near, connection, keyStore, networkId, contractAccount, accountSuffix;
-
+const keyStore = new BrowserLocalStorageKeyStore();
+let near, connection, networkId, contractAccount, accountSuffix;
 export const initConnection = (network) => {
-  keyStore = new BrowserLocalStorageKeyStore();
   near = new Near({
     ...network,
     deps: { keyStore },
   });
   connection = near.connection;
-  const { networkId } = network;
+  networkId = network.networkId;
   contractAccount = new Account(connection, networkId === "mainnet" ? "near" : networkId);
   accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
 };
-
 export const getConnection = () => {
   return { near, connection, keyStore, networkId, contractAccount, accountSuffix };
 };
@@ -485,7 +498,9 @@ const getUnlimitedKeyAccount = async (signer, ethAddress) => {
   return { account, accountId, secretKey };
 };
 
-/// helpers for eth signing (also use in apps)
+/** 
+ * The access key payloads, unlimited and limited
+ */
 
 const appKeyPayload = (accountId, appKeyNonce) => ({
   WARNING: `Creating key for: ${accountId}`,
@@ -498,7 +513,9 @@ const unlimitedKeyPayload = (accountId) => ({
   description: `ONLY sign on this website: ${"https://example.com"}`,
 });
 
-/// main domain, types and eth signTypedData method
+/** 
+ * main domain, types and eth signTypedData method
+ */ 
 
 const domain = {
   name: "NETH",
@@ -592,7 +609,9 @@ const keyPairFromEthSig = async (signer, json) => {
   return generateSeedPhrase(sigHash.substring(2, 34));
 };
 
-/// apps
+/**
+ * Used by apps to signIn and signAndSendTransactions
+ */
 
 /// ethereum
 
@@ -719,8 +738,6 @@ export const signAndSendTransactions = async ({ transactions }) => {
     transactions: transformedTxs,
   });
 
-  //   console.log(args);
-
   const res = await account.functionCall({
     contractId: accountId,
     methodName: "execute",
@@ -729,8 +746,6 @@ export const signAndSendTransactions = async ({ transactions }) => {
   });
   return res;
 };
-
-/// helpers
 
 /// helpers
 

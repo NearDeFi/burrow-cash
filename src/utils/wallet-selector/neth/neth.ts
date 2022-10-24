@@ -7,9 +7,9 @@ import {
   waitFor,
 } from "@near-wallet-selector/core";
 import { nearWalletIcon } from "../assets/icons";
-import { getNear, signIn, signOut, signAndSendTransactions, initConnection } from "./neth";
+import { getNear, signIn, signOut, signAndSendTransactions, initConnection } from "./neth-lib";
 
-export { initConnection } from "./neth";
+export { initConnection } from "./neth-lib";
 
 declare global {
   interface Window {
@@ -161,6 +161,7 @@ export function setupMetaMask({
         downloadUrl:
           "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
         deprecated: false,
+        available: true,
       },
       init: MetaMask,
     };
