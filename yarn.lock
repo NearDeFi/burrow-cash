@@ -7791,10 +7791,10 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
-neth@^0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/neth/-/neth-0.5.7.tgz#72bb3723d78f3ac7ca13e49fbc30a211585cf655"
-  integrity sha512-hIxMdZqrHoPYeR4nmTfr+h52dsqRrxQ64i4ho3Ck7UGxfS3Evl2zTh6IPH+otewuz0wkOnCxf+aOD5BYcZiLtg==
+neth@^0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/neth/-/neth-0.5.8.tgz#641196752e4d0d35cd3e72c272c030c9311af839"
+  integrity sha512-koA3XU31LCGYOq0gmrVuhlNv5xn8SPUwtiHKMtw01wA/vnayLg/gdFDp2Nkv9uNP3ZqCN2GpQ2J/BUyQwS711Q==
   dependencies:
     "@near-wallet-selector/core" "^7.1.0"
     ava "^4.3.3"
