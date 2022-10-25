@@ -1,8 +1,44 @@
 import { createTheme } from "@mui/material/styles";
 
+import { ITheme } from "../redux/appSlice";
+
 const defaultTheme = createTheme();
 
-export const themeOptions = {
+const light = {
+  mode: "light",
+  primary: {
+    main: "#47C880",
+    light: "#D5EFE6",
+  },
+  secondary: {
+    main: "#000741",
+  },
+  info: {
+    main: "#ababab",
+  },
+  background: {
+    default: "#F8F9FF",
+  },
+};
+
+const dark = {
+  mode: "light",
+  primary: {
+    main: "#47C880",
+    light: "#000",
+  },
+  secondary: {
+    main: "#fff",
+  },
+  info: {
+    main: "#ababab",
+  },
+  background: {
+    default: "#F8F9FF",
+  },
+};
+
+export const themeOptions = (t: ITheme) => ({
   breakpoints: {
     values: {
       xs: 0,
@@ -12,22 +48,7 @@ export const themeOptions = {
       xl: 1536,
     },
   },
-  palette: {
-    type: "light",
-    primary: {
-      main: "#47C880",
-      light: "#D5EFE6",
-    },
-    secondary: {
-      main: "#000741",
-    },
-    info: {
-      main: "#ababab",
-    },
-    background: {
-      default: "#F8F9FF",
-    },
-  },
-};
+  palette: t === "light" ? light : dark,
+});
 
-export default createTheme(defaultTheme, themeOptions);
+export default (t: ITheme) => createTheme(defaultTheme, themeOptions(t));

@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { PersistGate } from "redux-persist/integration/react";
 import { init, ErrorBoundary } from "@sentry/react";
-import { ThemeProvider } from "@mui/material/styles";
 import { Integrations } from "@sentry/tracing";
 import posthogJs from "posthog-js";
 import { useIdle, useInterval } from "react-use";
@@ -12,7 +11,6 @@ import { useIdle, useInterval } from "react-use";
 import "../styles/global.css";
 import { store, persistor } from "../redux/store";
 import { FallbackError, Layout, Modal } from "../components";
-import theme from "../utils/theme";
 import { posthog, isPostHogEnabled } from "../utils/telemetry";
 import { useAppDispatch } from "../redux/hooks";
 import { fetchAssets, fetchRefPrices } from "../redux/assetsSlice";
@@ -64,17 +62,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <ErrorBoundary fallback={FallbackError}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <Head>
-              <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <title>Burrow Cash</title>
-            </Head>
-            <Layout>
-              <Init />
-              <Modal />
-              <Component {...pageProps} />
-            </Layout>
-          </ThemeProvider>
+          <Head>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Burrow Cash</title>
+          </Head>
+          <Layout>
+            <Init />
+            <Modal />
+            <Component {...pageProps} />
+          </Layout>
         </PersistGate>
       </Provider>
     </ErrorBoundary>

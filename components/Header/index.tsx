@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import LogoIcon from "../../public/logo.svg";
 import WalletButton from "./WalletButton";
+import DarkSwitch from "../DarkSwitch";
 import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
@@ -83,7 +84,10 @@ const Header = () => {
             sx={{ color: "#47C880", fontWeight: "bold" }}
           />
         </Menu>
-        <WalletButton />
+        <Box display="flex" justifyContent="flex-end">
+          <DarkSwitch />
+          <WalletButton />
+        </Box>
         <Snackbar
           open={open}
           autoHideDuration={2000}

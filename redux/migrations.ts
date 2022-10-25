@@ -85,4 +85,13 @@ export const migrations = {
       },
     };
   },
+  9: (state) => {
+    return {
+      ...state,
+      app: {
+        ...state.app,
+        theme: "light",
+      },
+    };
+  },
 };
