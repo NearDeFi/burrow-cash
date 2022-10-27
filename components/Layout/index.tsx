@@ -34,6 +34,7 @@ const Layout = ({ children }) => {
           WebkitTapHighlightColor: "transparent",
           position: "relative",
           filter: isBlocked ? "blur(10px)" : "none",
+          backgroundColor: "background.paper",
         }}
       >
         <AnimatePresence>

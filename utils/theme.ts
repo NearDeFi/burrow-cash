@@ -50,6 +50,7 @@ declare module "@mui/material/styles" {
       };
       footerText: string;
       footerIcon: string;
+      text: string;
     };
   }
 }
@@ -62,6 +63,7 @@ const custom = {
     },
     footerText: "#7f83a0",
     footerIcon: "#000",
+    text: "#000",
   },
   dark: {
     headerGradient: {
@@ -70,6 +72,7 @@ const custom = {
     },
     footerText: "#7f83a0",
     footerIcon: "#7f83a0",
+    text: "#fff",
   },
 };
 
