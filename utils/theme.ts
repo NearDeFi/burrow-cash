@@ -19,6 +19,7 @@ const palette = {
     },
     background: {
       default: "#F8F9FF",
+      paper: "#fff",
     },
   },
   dark: {
@@ -35,6 +36,7 @@ const palette = {
     },
     background: {
       default: "#1b1d3a",
+      paper: "#1b1d3a",
     },
   },
 };
@@ -46,6 +48,8 @@ declare module "@mui/material/styles" {
         from: string;
         to: string;
       };
+      footerText: string;
+      footerIcon: string;
     };
   }
 }
@@ -56,12 +60,16 @@ const custom = {
       from: "#000741",
       to: "#226062",
     },
+    footerText: "#7f83a0",
+    footerIcon: "#000",
   },
   dark: {
     headerGradient: {
       from: "#000242",
       to: "#000242",
     },
+    footerText: "#7f83a0",
+    footerIcon: "#7f83a0",
   },
 };
 
