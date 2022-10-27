@@ -31,7 +31,7 @@ function NonFarmedAssets() {
 const ClaimButton = (props) => (
   <LoadingButton
     size="small"
-    color="secondary"
+    color="primary"
     variant="outlined"
     sx={{
       display: "flex",

@@ -86,7 +86,19 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                   active={sorting.property === dataKey}
                   direction={sorting.property === dataKey ? sorting.order : "asc"}
                   onClick={createSortHandler(dataKey)}
-                  sx={{ minWidth: [100, 100, "auto"], ...(sortLabelStyle || {}) }}
+                  sx={{
+                    "&:hover": {
+                      color: "primary.main",
+                    },
+                    "&.Mui-active": {
+                      color: "primary.main",
+                    },
+                    "& .MuiTableSortLabel-icon": {
+                      color: `${theme.palette.primary.main} !important`,
+                    },
+                    minWidth: [100, 100, "auto"],
+                    ...(sortLabelStyle || {}),
+                  }}
                 >
                   {label}
                   {sorting.property === dataKey ? (

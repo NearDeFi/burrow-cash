@@ -33,7 +33,7 @@ export default function OnboardingBRRR() {
       </Stack>
       <LoadingButton
         size="small"
-        color="secondary"
+        color="primary"
         variant="outlined"
         target="_blank"
         href="https://burrowcash.medium.com/a-high-level-overview-of-brrr-tokenomics-b9b12abec3b6"
