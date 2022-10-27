@@ -30,6 +30,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
   const isViewingAs = useViewAs();
+  const theme = useTheme();
 
   useEffect(() => {
     if (isFetching) {
@@ -45,10 +46,11 @@ const Header = () => {
     setOpen(false);
   };
 
+  // 000424
   return (
     <Box
       sx={{
-        background: "linear-gradient(180deg, #000741 0%, #226062 100%)",
+        background: `linear-gradient(180deg, ${theme.custom.headerGradient.from} 0%, ${theme.custom.headerGradient.to} 100%)`,
         mb: { xs: "1rem", sm: "2rem" },
         overflow: "hidden",
       }}

@@ -9,16 +9,16 @@ export const InfoHog = () => {
   return (
     <Stack ml="auto" direction="row" position="relative" width={{ sx: "auto", md: "400px" }}>
       <Stack
-        bgcolor="white"
+        bgcolor="background.default"
         p="1rem"
         gap="0.3rem"
         borderRadius="1rem"
         display={showInfo ? "inherit" : "none"}
       >
-        <Typography color="#444444" fontSize="1rem" fontWeight="semibold">
+        <Typography color="secondary.main" fontSize="1rem" fontWeight="semibold">
           Introducing Net Liquidity Farming
         </Typography>
-        <Typography color="rgba(68, 68, 68, 0.6)" fontSize="0.875rem" lineHeight="1.125rem">
+        <Typography color="info.main" fontSize="0.875rem" lineHeight="1.125rem">
           Effective from July 13th, Burrow will transition its rewards distribution model from
           “total deposits farming” to “net liquidity farming.{" "}
           <Link
