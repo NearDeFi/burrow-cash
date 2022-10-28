@@ -70,4 +70,6 @@ const getConfig = (env: string) => {
   }
 };
 
+export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
+
 export default getConfig;

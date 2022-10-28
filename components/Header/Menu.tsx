@@ -1,7 +1,7 @@
 import { Menu, MenuItem, Divider, Typography, useTheme } from "@mui/material";
 
 import ClaimAllRewards from "../ClaimAllRewards";
-import { getBurrow, getLocalAppVersion, isTestnet } from "../../utils";
+import { getBurrow, getLocalAppVersion } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
@@ -17,6 +17,7 @@ import {
 } from "../../utils/telemetry";
 import { useTicker } from "../../hooks/useTicker";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
+import { isTestnet } from "../../utils/config";
 
 interface Props {
   anchorEl: null | HTMLElement;
