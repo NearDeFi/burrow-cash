@@ -4,6 +4,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupModal } from "@near-wallet-selector/modal-ui";
@@ -14,8 +15,12 @@ import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
 import { map, distinctUntilChanged } from "rxjs";
 
-import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME, WALLET_CONNECT_ID } from "./config";
-import { isTestnet } from ".";
+import getConfig, {
+  defaultNetwork,
+  LOGIC_CONTRACT_NAME,
+  WALLET_CONNECT_ID,
+  isTestnet,
+} from "./config";
 
 declare global {
   interface Window {
@@ -56,6 +61,10 @@ const walletConnect = setupWalletConnect({
   chainId: `near:${defaultNetwork}`,
 });
 
+const myNearWallet = setupMyNearWallet({
+  walletUrl: isTestnet ? "https://testnet.mynearwallet.com" : "https://app.mynearwallet.com",
+});
+
 export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
   if (init) return selector;
   init = true;
@@ -67,6 +76,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
       walletConnect,
       setupHereWallet(),
       setupNightly(),
+      myNearWallet,
       setupMeteorWallet(),
     ],
     network: defaultNetwork,
