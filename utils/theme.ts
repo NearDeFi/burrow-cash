@@ -35,8 +35,8 @@ const palette = {
       main: "#c1c2ce",
     },
     background: {
-      default: "#1b1d3a",
-      paper: "#1b1d3a",
+      default: "#1A1D3A",
+      paper: "#1A1D3A",
     },
   },
 };
@@ -67,8 +67,8 @@ const custom = {
   },
   dark: {
     headerGradient: {
-      from: "#000242",
-      to: "#000242",
+      from: "#000424",
+      to: "#000424",
     },
     footerText: "#7f83a0",
     footerIcon: "#7f83a0",
