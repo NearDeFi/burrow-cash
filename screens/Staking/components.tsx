@@ -1,4 +1,4 @@
-import { Typography, Stack, Box } from "@mui/material";
+import { Typography, Stack, Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { useLayoutEffect, useState } from "react";
@@ -42,36 +42,41 @@ export const StakingCard = ({
   onClick,
   isDisabled = false,
   isLoading = false,
-}) => (
-  <Stack
-    spacing={2}
-    sx={{
-      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.15)",
-      p: "1.5rem",
-      minWidth: "200px",
-      alignItems: "center",
-      borderRadius: "0.5rem",
-    }}
-  >
-    <BrrrLogo color={color} width={40} height={40} />
-    <Typography fontSize="1.2rem" fontWeight="semibold" color={color}>
-      {value}
-    </Typography>
-    <Typography fontSize="0.65rem" color="#767676">
-      {label}
-    </Typography>
-    <LoadingButton
-      size="small"
-      variant="contained"
-      onClick={onClick}
-      sx={{ minWidth: 130 }}
-      disabled={isDisabled}
-      loading={isLoading}
+}) => {
+  const theme = useTheme();
+
+  return (
+    <Stack
+      spacing={2}
+      sx={{
+        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.15)",
+        p: "1.5rem",
+        minWidth: "200px",
+        alignItems: "center",
+        borderRadius: "0.5rem",
+        bgcolor: theme.custom.background,
+      }}
     >
-      {buttonLabel}
-    </LoadingButton>
-  </Stack>
-);
+      <BrrrLogo color={color} width={40} height={40} />
+      <Typography fontSize="1.2rem" fontWeight="semibold" color={color}>
+        {value}
+      </Typography>
+      <Typography fontSize="0.65rem" color="#767676">
+        {label}
+      </Typography>
+      <LoadingButton
+        size="small"
+        variant="contained"
+        onClick={onClick}
+        sx={{ minWidth: 130 }}
+        disabled={isDisabled}
+        loading={isLoading}
+      >
+        {buttonLabel}
+      </LoadingButton>
+    </Stack>
+  );
+};
 
 export const LiveUnclaimedAmount = ({ addAmount = 0 }) => {
   const rewards = useAppSelector(getAccountRewards);

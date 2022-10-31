@@ -40,7 +40,11 @@ const Staking = () => {
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <BrrrLogo />
-        <Typography fontWeight="semibold" fontSize={{ xs: "1.5rem", sm: "2rem" }} color="#232323">
+        <Typography
+          fontWeight="semibold"
+          fontSize={{ xs: "1.5rem", sm: "2rem" }}
+          color={theme.custom.textStaking}
+        >
           <LiveUnclaimedAmount addAmount={total} /> BRRR
         </Typography>
       </Stack>
