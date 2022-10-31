@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Typography, Switch, Tooltip, Alert } from "@mui/material";
+import { Box, Typography, Switch, Tooltip, Alert, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
@@ -25,6 +25,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
   const { isRepayFromDeposits } = useDegenMode();
+  const theme = useTheme();
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -132,7 +133,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
     <>
       {showToggle && (
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="0.5rem">
-          <Typography variant="body1" fontSize="0.85rem">
+          <Typography variant="body1" fontSize="0.85rem" color={theme.palette.secondary.main}>
             Use as Collateral
           </Typography>
           {!canUseAsCollateral && (

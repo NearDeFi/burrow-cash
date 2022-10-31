@@ -56,6 +56,7 @@ declare module "@mui/material/styles" {
       textStaking: string;
       background: string;
       backgroundStaking: string;
+      notConnectedBg: string;
     };
   }
 }
@@ -72,6 +73,7 @@ const custom = {
     textStaking: "#232323",
     background: "#fff",
     backgroundStaking: "#fff",
+    notConnectedBg: "rgba(255,255,255,0.85)",
   },
   dark: {
     headerGradient: {
@@ -84,6 +86,7 @@ const custom = {
     textStaking: "#fff",
     background: "#000424",
     backgroundStaking: "#31344E",
+    notConnectedBg: "rgba(0,0,0,0.85)",
   },
 };
 
