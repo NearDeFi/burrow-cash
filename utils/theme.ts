@@ -57,6 +57,7 @@ declare module "@mui/material/styles" {
       background: string;
       backgroundStaking: string;
       notConnectedBg: string;
+      scrollbarBg: string;
     };
   }
 }
@@ -74,6 +75,7 @@ const custom = {
     background: "#fff",
     backgroundStaking: "#fff",
     notConnectedBg: "rgba(255,255,255,0.85)",
+    scrollbarBg: "none",
   },
   dark: {
     headerGradient: {
@@ -87,6 +89,7 @@ const custom = {
     background: "#000424",
     backgroundStaking: "#31344E",
     notConnectedBg: "rgba(0,0,0,0.85)",
+    scrollbarBg: "rgba(0,0,0,0.5)",
   },
 };
 

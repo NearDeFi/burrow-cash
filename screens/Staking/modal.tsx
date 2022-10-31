@@ -91,6 +91,9 @@ export const StakingModal = ({ open, onClose }) => {
           maxHeight: "620px",
           maxWidth: 440,
           backgroundColor: "background.paper",
+          "& *::-webkit-scrollbar": {
+            backgroundColor: theme.custom.scrollbarBg,
+          },
         }}
       >
         <Stack sx={{ overflowY: "auto", p: ["1.2rem", "2rem"] }} direction="column" spacing={2}>

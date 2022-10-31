@@ -81,7 +81,13 @@ const Modal = () => {
 
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
-      <Wrapper>
+      <Wrapper
+        sx={{
+          "& *::-webkit-scrollbar": {
+            backgroundColor: theme.custom.scrollbarBg,
+          },
+        }}
+      >
         <Box sx={{ overflowY: "auto", p: ["1.5rem", "2rem"] }}>
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />

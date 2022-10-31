@@ -57,7 +57,7 @@ export const CloseButton = ({ onClose, ...props }) => (
     sx={{ cursor: "pointer" }}
     {...props}
   >
-    <CloseIcon fontSize="small" />
+    <CloseIcon fontSize="small" color="info" />
   </Box>
 );
 
