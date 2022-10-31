@@ -13,6 +13,7 @@ const palette = {
     },
     secondary: {
       main: "#000741",
+      light: "#c1c2ce",
     },
     info: {
       main: "#444",
@@ -30,6 +31,7 @@ const palette = {
     },
     secondary: {
       main: "#fff",
+      light: "#3F4361",
     },
     info: {
       main: "#c1c2ce",
@@ -53,6 +55,7 @@ declare module "@mui/material/styles" {
       text: string;
       textStaking: string;
       background: string;
+      backgroundStaking: string;
     };
   }
 }
@@ -68,6 +71,7 @@ const custom = {
     text: "#000",
     textStaking: "#232323",
     background: "#fff",
+    backgroundStaking: "#fff",
   },
   dark: {
     headerGradient: {
@@ -79,6 +83,7 @@ const custom = {
     text: "#fff",
     textStaking: "#fff",
     background: "#000424",
+    backgroundStaking: "#31344E",
   },
 };
 

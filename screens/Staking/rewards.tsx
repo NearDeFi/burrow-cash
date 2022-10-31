@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, Tooltip } from "@mui/material";
+import { Box, Stack, Typography, Tooltip, useTheme } from "@mui/material";
 import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { TOKEN_FORMAT } from "../../store/constants";
@@ -39,11 +39,12 @@ export const StakingRewards = () => {
 };
 
 const Reward = ({ icon, dailyAmount, symbol, multiplier, newDailyAmount }) => {
+  const theme = useTheme();
   return (
     <>
       <Stack direction="row" gap={1.5} alignItems="center">
         <TokenIcon width={24} height={24} icon={icon} />
-        <Typography fontSize="0.75rem" textAlign="left">
+        <Typography fontSize="0.75rem" textAlign="left" color={theme.palette.info.main}>
           {symbol}
         </Typography>
       </Stack>
@@ -55,6 +56,7 @@ const Reward = ({ icon, dailyAmount, symbol, multiplier, newDailyAmount }) => {
           textAlign="right"
           fontWeight="bold"
           alignItems="center"
+          color={theme.palette.info.main}
         >
           {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)} 💰
           <Info daily={dailyAmount} multiplier={multiplier} />

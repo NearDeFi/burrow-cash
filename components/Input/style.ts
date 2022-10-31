@@ -8,6 +8,12 @@ export const Input = styled(OutlinedInput)(({ theme }) => ({
   "&.MuiOutlinedInput-root": {
     "& > fieldset": {
       borderWidth: 1,
+      borderColor: theme.palette.secondary.light,
+    },
+  },
+  "&.MuiOutlinedInput-root:hover": {
+    "& > fieldset": {
+      borderColor: theme.palette.primary.main,
     },
   },
 }));
