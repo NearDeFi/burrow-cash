@@ -1,4 +1,4 @@
-import { Menu, Divider, Typography, useTheme } from "@mui/material";
+import { Menu, Divider, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 import ClaimAllRewards from "../ClaimAllRewards";
 import { getBurrow, getLocalAppVersion } from "../../utils";
@@ -19,6 +19,7 @@ import { useTicker } from "../../hooks/useTicker";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
 import { isTestnet } from "../../utils/config";
 import { StyledMenuItem } from "./style";
+import { DarkModeMenuItem } from "../DarkSwitch";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -38,6 +39,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const { degenMode, setDegenMode } = useDegenMode();
   const { hasTicker, toggleTicker } = useTicker();
   const { setDisclaimer } = useDisclaimer();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -87,6 +89,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
         "aria-labelledby": "logout-button",
       }}
     >
+      {isMobile && <DarkModeMenuItem />}
       {accountId && [
         <ClaimAllRewards location="menu" onDone={handleClose} Button={ClaimMenuItem} key={1} />,
         <StyledMenuItem
