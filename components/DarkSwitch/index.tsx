@@ -20,7 +20,7 @@ export default function DarkSwitch() {
       }}
       onClick={toggle}
     >
-      {theme === "light" ? <DarkIcon /> : <LightIcon />}
+      {theme === "dark" ? <DarkIcon /> : <LightIcon />}
     </Box>
   );
 }
@@ -31,7 +31,7 @@ export const DarkModeMenuItem = () => {
     <StyledMenuItem onClick={toggle}>
       <Stack direction="row" justifyContent="space-between" flex="1">
         <span>Toggle {theme === "light" ? "Dark" : "Light"} Mode</span>
-        {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+        {theme === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
       </Stack>
     </StyledMenuItem>
   );
