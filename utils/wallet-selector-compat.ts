@@ -4,8 +4,8 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
-// import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
@@ -76,8 +76,8 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
       walletConnect,
       setupHereWallet(),
       setupNightly(),
-      // setupMeteorWallet(),
       myNearWallet,
+      setupMeteorWallet(),
     ],
     network: defaultNetwork,
     debug: !!isTestnet,
