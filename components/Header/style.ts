@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Toolbar, Link } from "@mui/material";
+import { Toolbar, Link, MenuItem } from "@mui/material";
 
 export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
@@ -57,5 +57,12 @@ export const LinkStyled = styled(Link)(({ theme }) => ({
   ":hover": {
     borderWidth: 2,
     borderBottomColor: theme.palette.primary.main,
+  },
+}));
+
+export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  color: theme.custom.text,
+  "&:hover": {
+    backgroundColor: theme.palette.primary.light,
   },
 }));

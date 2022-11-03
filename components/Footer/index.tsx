@@ -1,4 +1,4 @@
-import { Link, Divider, Box } from "@mui/material";
+import { Link, Divider, Box, useTheme } from "@mui/material";
 import NextLink from "next/link";
 
 import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
@@ -6,62 +6,99 @@ import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
 import { FaMedium } from "@react-icons/all-files/fa/FaMedium";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 
-import Logo from "../../public/logo.svg";
+import Logo from "./logo.svg";
 import Gitbook from "../../public/GitBook.svg";
 import { Wrapper, CopyWrapper, LinksWrapper, LogoWrapper, Copyright } from "./style";
 
-const Footer = () => (
-  <Wrapper>
-    <CopyWrapper>
-      <LogoWrapper>
-        <Logo />
-      </LogoWrapper>
-      <Copyright variant="h6">© 2022 All Rights Reserved.</Copyright>
+const Footer = () => {
+  const theme = useTheme();
+  return (
+    <Wrapper>
+      <CopyWrapper>
+        <LogoWrapper>
+          <Logo />
+        </LogoWrapper>
+        <Copyright variant="h6" color={theme.custom.footerText}>
+          © 2022 All Rights Reserved.
+        </Copyright>
+        <LinksWrapper>
+          <Declaration />
+        </LinksWrapper>
+      </CopyWrapper>
       <LinksWrapper>
-        <Declaration />
+        <Links />
       </LinksWrapper>
-    </CopyWrapper>
-    <LinksWrapper>
-      <Links />
-    </LinksWrapper>
-  </Wrapper>
-);
+    </Wrapper>
+  );
+};
 
-const Links = () => (
-  <Box
-    display="grid"
-    gridTemplateColumns="repeat(5, 1fr)"
-    alignItems="center"
-    lineHeight="0"
-    sx={{ gap: ["0.5rem", "1rem"] }}
-  >
-    <Link href="https://github.com/NearDeFi/" title="GitHub" target="_blank" color="#000">
-      <FaGithub />
-    </Link>
-    <Link href="https://discord.gg/gUWBKy9Vur" title="Discord" target="_blank" color="#000">
-      <FaDiscord />
-    </Link>
-    <Link href="https://twitter.com/burrowcash" title="Twitter" target="_blank" color="#000">
-      <FaTwitter />
-    </Link>
-    <Link href="https://burrowcash.medium.com/" title="Medium" target="_blank" color="#000">
-      <FaMedium />
-    </Link>
-    <Link href="https://docs.burrow.cash/" title="Docs" target="_blank" color="#000" width="16px">
-      <Gitbook />
-    </Link>
-  </Box>
-);
-
-export const Declaration = () => (
-  <>
-    <Divider orientation="vertical" flexItem color="secondary" />
-    <NextLink href="/declaration" passHref>
-      <Link href="/declaration" underline="none" color="secondary.main">
-        Declaration and Disclaimers
+const Links = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      display="grid"
+      gridTemplateColumns="repeat(5, 1fr)"
+      alignItems="center"
+      lineHeight="0"
+      sx={{ gap: ["0.5rem", "1rem"] }}
+    >
+      <Link
+        href="https://github.com/NearDeFi/"
+        title="GitHub"
+        target="_blank"
+        color={theme.custom.footerIcon}
+      >
+        <FaGithub />
       </Link>
-    </NextLink>
-  </>
-);
+      <Link
+        href="https://discord.gg/gUWBKy9Vur"
+        title="Discord"
+        target="_blank"
+        color={theme.custom.footerIcon}
+      >
+        <FaDiscord />
+      </Link>
+      <Link
+        href="https://twitter.com/burrowcash"
+        title="Twitter"
+        target="_blank"
+        color={theme.custom.footerIcon}
+      >
+        <FaTwitter />
+      </Link>
+      <Link
+        href="https://burrowcash.medium.com/"
+        title="Medium"
+        target="_blank"
+        color={theme.custom.footerIcon}
+      >
+        <FaMedium />
+      </Link>
+      <Link
+        href="https://docs.burrow.cash/"
+        title="Docs"
+        target="_blank"
+        color={theme.custom.footerIcon}
+        width="16px"
+      >
+        <Gitbook fill={theme.custom.footerIcon} />
+      </Link>
+    </Box>
+  );
+};
+
+export const Declaration = () => {
+  const theme = useTheme();
+  return (
+    <>
+      <Divider orientation="vertical" flexItem color="secondary" />
+      <NextLink href="/declaration" passHref>
+        <Link href="/declaration" underline="none" color={theme.custom.footerText}>
+          Declaration and Disclaimers
+        </Link>
+      </NextLink>
+    </>
+  );
+};
 
 export default Footer;

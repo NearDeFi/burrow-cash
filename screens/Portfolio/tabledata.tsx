@@ -5,8 +5,8 @@ import { WithdrawCell, RepayCell, AdjustCell } from "./cells";
 
 export const suppliedColumns = [
   {
-    label: "Name",
-    dataKey: "symbol",
+    label: "Asset",
+    dataKey: "asset",
     Cell: TokenCell,
   },
   {

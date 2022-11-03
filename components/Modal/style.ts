@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 
 export const Wrapper = styled(Box)(({ theme }) => ({
   boxShadow: "4px 4px 4px rgba(0, 7, 65, 0.1)",
-  backgroundColor: "white",
+  backgroundColor: theme.palette.background.paper,
   borderRadius: "8px",
   position: "relative",
   display: "flex",

@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, ThemeProvider, useTheme } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useViewAs } from "../../hooks/hooks";
+import { useDarkMode, useViewAs } from "../../hooks/hooks";
 import { useTicker } from "../../hooks/useTicker";
 import CheckNewAppVersion from "../CheckNewAppVersion";
 import Footer from "../Footer";
@@ -9,11 +9,18 @@ import Header from "../Header";
 import Ticker from "../Ticker";
 import Blocked from "../Blocked";
 import { useBlocked } from "../../hooks/useBlocked";
+import selectTheme from "../../utils/theme";
 
-const Layout = ({ children }) => {
+export const Theme = ({ children }) => {
+  const { theme: t } = useDarkMode();
+
+  return <ThemeProvider theme={selectTheme(t)}>{children}</ThemeProvider>;
+};
+
+const PageGrid = ({ children }) => {
   const isViewingAs = useViewAs();
-  const { hasTicker } = useTicker();
   const isBlocked = useBlocked();
+  const theme = useTheme();
 
   return (
     <Box
@@ -26,25 +33,39 @@ const Layout = ({ children }) => {
         WebkitTapHighlightColor: "transparent",
         position: "relative",
         filter: isBlocked ? "blur(10px)" : "none",
+        background: theme.custom.pageBackground,
       }}
     >
-      <AnimatePresence>
-        {hasTicker && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 40, transition: { duration: 0.5 } }}
-            exit={{ opacity: 0, height: 0, transition: { duration: 0.5 } }}
-          >
-            <Ticker />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Header />
-      <main>{children}</main>
-      <Footer />
-      <CheckNewAppVersion />
-      {isBlocked && <Blocked />}
+      {children}
     </Box>
+  );
+};
+
+const Layout = ({ children }) => {
+  const { hasTicker } = useTicker();
+  const isBlocked = useBlocked();
+
+  return (
+    <Theme>
+      <PageGrid>
+        <AnimatePresence>
+          {hasTicker && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 40, transition: { duration: 0.5 } }}
+              exit={{ opacity: 0, height: 0, transition: { duration: 0.5 } }}
+            >
+              <Ticker />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <CheckNewAppVersion />
+        {isBlocked && <Blocked />}
+      </PageGrid>
+    </Theme>
   );
 };
 

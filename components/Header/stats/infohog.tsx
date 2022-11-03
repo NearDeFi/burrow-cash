@@ -1,24 +1,28 @@
 import { Box, Button, Stack, Typography, Link } from "@mui/material";
 
 import { useToggleInfo } from "../../../hooks/useToggleInfo";
+import { useDarkMode } from "../../../hooks/hooks";
 import HogSvg from "./hog.svg";
+import HogLowSvg from "./hog-low.svg";
+import HogLowFaceSvg from "./hog-low-face.svg";
 
 export const InfoHog = () => {
   const { showInfo, setShowInfo } = useToggleInfo();
+  const { isDark } = useDarkMode();
 
   return (
     <Stack ml="auto" direction="row" position="relative" width={{ sx: "auto", md: "400px" }}>
       <Stack
-        bgcolor="white"
+        bgcolor="background.default"
         p="1rem"
         gap="0.3rem"
         borderRadius="1rem"
         display={showInfo ? "inherit" : "none"}
       >
-        <Typography color="#444444" fontSize="1rem" fontWeight="semibold">
+        <Typography color="secondary.main" fontSize="1rem" fontWeight="semibold">
           Introducing Net Liquidity Farming
         </Typography>
-        <Typography color="rgba(68, 68, 68, 0.6)" fontSize="0.875rem" lineHeight="1.125rem">
+        <Typography color="info.main" fontSize="0.875rem" lineHeight="1.125rem">
           Effective from July 13th, Burrow will transition its rewards distribution model from
           “total deposits farming” to “net liquidity farming.{" "}
           <Link
@@ -37,11 +41,31 @@ export const InfoHog = () => {
         </Button>
       </Stack>
       <Box
-        sx={{ position: "absolute", cursor: "pointer", bottom: "-50px", right: "20px" }}
-        onClick={() => setShowInfo(true)}
+        sx={{
+          position: "absolute",
+          right: "20px",
+          bottom: "-32px",
+          overflow: "hidden",
+        }}
       >
-        <HogSvg />
+        <Box
+          sx={{
+            cursor: "pointer",
+            mb: isDark ? "-4px" : "-20px",
+          }}
+          onClick={() => setShowInfo(true)}
+        >
+          {isDark ? <HogLowSvg /> : <HogSvg />}
+        </Box>
       </Box>
+      {isDark && (
+        <Box
+          sx={{ position: "absolute", right: "37px", bottom: "-44px", cursor: "pointer" }}
+          onClick={() => setShowInfo(true)}
+        >
+          <HogLowFaceSvg />
+        </Box>
+      )}
     </Stack>
   );
 };

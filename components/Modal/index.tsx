@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Modal as MUIModal, Typography, Box, Stack } from "@mui/material";
+import { Modal as MUIModal, Typography, Box, Stack, useTheme } from "@mui/material";
 
 import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -39,6 +39,7 @@ const Modal = () => {
   const { amount } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
   const { isRepayFromDeposits } = useDegenMode();
+  const theme = useTheme();
 
   const { action = "Deposit", tokenId } = asset;
 
@@ -80,7 +81,13 @@ const Modal = () => {
 
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
-      <Wrapper>
+      <Wrapper
+        sx={{
+          "& *::-webkit-scrollbar": {
+            backgroundColor: theme.custom.scrollbarBg,
+          },
+        }}
+      >
         <Box sx={{ overflowY: "auto", p: ["1.5rem", "2rem"] }}>
           {!accountId && <NotConnected />}
           <CloseButton onClose={handleClose} />
@@ -94,8 +101,9 @@ const Modal = () => {
             mt="2rem"
             p={2}
             gap={0.5}
+            sx={{ backgroundColor: theme.custom.backgroundStaking }}
           >
-            <Typography fontWeight="400" mb="1rem">
+            <Typography fontWeight="400" mb="1rem" color={theme.palette.secondary.main}>
               Details
             </Typography>
             <HealthFactor value={healthFactor} />
@@ -103,7 +111,7 @@ const Modal = () => {
               <Typography fontSize="0.85rem" color="gray">
                 <span>{totalTitle}</span>
               </Typography>
-              <Typography fontSize="0.85rem" fontWeight="500">
+              <Typography fontSize="0.85rem" fontWeight="500" color={theme.palette.secondary.main}>
                 {total}
               </Typography>
             </Box>

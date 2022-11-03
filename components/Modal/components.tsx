@@ -26,24 +26,27 @@ export const USNInfo = () => (
   </Box>
 );
 
-export const NotConnected = () => (
-  <Box
-    position="absolute"
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    top="0"
-    left="0"
-    right="0"
-    bottom="0"
-    bgcolor="rgba(255,255,255,0.85)"
-    zIndex="1"
-  >
-    <Typography variant="h5" bgcolor="#fff">
-      Please connect your wallet
-    </Typography>
-  </Box>
-);
+export const NotConnected = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      position="absolute"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      bgcolor={theme.custom.notConnectedBg}
+      zIndex="1"
+    >
+      <Typography variant="h5" color={theme.palette.info.main}>
+        Please connect your wallet
+      </Typography>
+    </Box>
+  );
+};
 
 export const CloseButton = ({ onClose, ...props }) => (
   <Box
@@ -54,7 +57,7 @@ export const CloseButton = ({ onClose, ...props }) => (
     sx={{ cursor: "pointer" }}
     {...props}
   >
-    <CloseIcon fontSize="small" />
+    <CloseIcon fontSize="small" color="info" />
   </Box>
 );
 
@@ -68,7 +71,13 @@ export const TokenInfo = ({ apy, asset }) => {
 
   return (
     <>
-      <Typography textAlign="left" fontWeight="500" fontSize="1.3rem" mb="1rem">
+      <Typography
+        textAlign="left"
+        fontWeight="500"
+        fontSize="1.3rem"
+        mb="1rem"
+        color={theme.palette.secondary.main}
+      >
         {actionMapTitle[action]}
       </Typography>
       {isRepay && degenMode.enabled && (
@@ -89,13 +98,19 @@ export const TokenInfo = ({ apy, asset }) => {
           </Button>
         </ButtonGroup>
       )}
-      <Box boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)" borderRadius={1} p={2} display="flex">
+      <Box
+        boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
+        borderRadius={1}
+        p={2}
+        display="flex"
+        sx={{ backgroundColor: theme.custom.backgroundStaking }}
+      >
         <TokenIcon icon={icon} />
         <Box ml="12px">
-          <Typography fontSize="0.85rem" fontWeight="500" color="grey.800">
+          <Typography fontSize="0.85rem" fontWeight="500" color={theme.palette.secondary.main}>
             {symbol}
           </Typography>
-          <Typography fontSize="0.7rem" color="grey.700">
+          <Typography fontSize="0.7rem" color={theme.palette.secondary.main}>
             {Number(price).toLocaleString(undefined, USD_FORMAT)}
           </Typography>
         </Box>

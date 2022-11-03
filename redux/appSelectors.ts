@@ -72,11 +72,17 @@ export const getDisclaimerAgreed = createSelector(
   (state: RootState) => state.app,
   (app) => app.disclaimerAgreed,
 );
+
 export const getBlocked = (ip: string | undefined) =>
   createSelector(
     (state: RootState) => state.app,
     (app) => (ip ? app.isBlocked[ip] : undefined),
   );
+
+export const getTheme = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.theme,
+);
 
 export const getAssetData = createSelector(
   (state: RootState) => state.app,

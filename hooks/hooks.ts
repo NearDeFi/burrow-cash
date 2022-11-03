@@ -2,8 +2,8 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import { getAccountId, getHasNonFarmedAssets, isAccountLoading } from "../redux/accountSelectors";
 import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
-import { getConfig, getSlimStats, getDegenMode } from "../redux/appSelectors";
-import { setRepayFrom, toggleDegenMode } from "../redux/appSlice";
+import { getConfig, getSlimStats, getDegenMode, getTheme } from "../redux/appSelectors";
+import { setRepayFrom, toggleDegenMode, setTheme } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
 
@@ -67,4 +67,15 @@ export function useDegenMode() {
   const isRepayFromDeposits = degenMode.enabled && degenMode.repayFromDeposits;
 
   return { degenMode, setDegenMode, isRepayFromDeposits, setRepayFromDeposits };
+}
+
+export function useDarkMode() {
+  const theme = useAppSelector(getTheme);
+  const dispatch = useAppDispatch();
+
+  const toggle = () => {
+    dispatch(setTheme(theme === "light" ? "dark" : "light"));
+  };
+
+  return { toggle, theme, isDark: theme === "dark" };
 }

@@ -4,8 +4,8 @@ import TokenCell from "../../components/Table/common/token-cell";
 
 export const columns = [
   {
-    label: "Name",
-    dataKey: "name",
+    label: "Asset",
+    dataKey: "asset",
     Cell: TokenCell,
   },
   {

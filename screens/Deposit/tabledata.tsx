@@ -4,8 +4,8 @@ import Label from "../../components/Table/common/label";
 
 export const columns = [
   {
-    label: "Name",
-    dataKey: "name",
+    label: "Asset",
+    dataKey: "asset",
     Cell: TokenCell,
   },
   {
