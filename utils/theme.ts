@@ -46,10 +46,8 @@ const palette = {
 declare module "@mui/material/styles" {
   interface Theme {
     custom: {
-      headerGradient: {
-        from: string;
-        to: string;
-      };
+      headerBackground: string;
+      pageBackground: string;
       footerText: string;
       footerIcon: string;
       text: string;
@@ -64,10 +62,9 @@ declare module "@mui/material/styles" {
 
 const custom = {
   light: {
-    headerGradient: {
-      from: "#000741",
-      to: "#226062",
-    },
+    headerBackground:
+      "linear-gradient(225deg, rgba(255, 219, 211, 1) 0%, rgba(79, 141, 199, 1) 100%)",
+    pageBackground: "linear-gradient(239.61deg, #FBFAFA 0%, #EDF4F9 101.74%)",
     footerText: "#7f83a0",
     footerIcon: "#000",
     text: "#000",
@@ -78,10 +75,8 @@ const custom = {
     scrollbarBg: "none",
   },
   dark: {
-    headerGradient: {
-      from: "#000424",
-      to: "#000424",
-    },
+    headerBackground: "linear-gradient(225deg, rgba(0, 36, 25, 1) 0%, rgba(0, 4, 36, 1) 100%)",
+    pageBackground: "linear-gradient(239.61deg, #1A3732 0%, #1A1E3A 101.74%)",
     footerText: "#7f83a0",
     footerIcon: "#7f83a0",
     text: "#fff",

@@ -77,5 +77,5 @@ export function useDarkMode() {
     dispatch(setTheme(theme === "light" ? "dark" : "light"));
   };
 
-  return { toggle, theme };
+  return { toggle, theme, isDark: theme === "dark" };
 }

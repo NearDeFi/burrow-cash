@@ -1,4 +1,4 @@
-import { Box, ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider, useTheme } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useDarkMode, useViewAs } from "../../hooks/hooks";
@@ -9,34 +9,45 @@ import Header from "../Header";
 import Ticker from "../Ticker";
 import Blocked from "../Blocked";
 import { useBlocked } from "../../hooks/useBlocked";
-import theme from "../../utils/theme";
+import selectTheme from "../../utils/theme";
 
 export const Theme = ({ children }) => {
   const { theme: t } = useDarkMode();
 
-  return <ThemeProvider theme={theme(t)}>{children}</ThemeProvider>;
+  return <ThemeProvider theme={selectTheme(t)}>{children}</ThemeProvider>;
+};
+
+const PageGrid = ({ children }) => {
+  const isViewingAs = useViewAs();
+  const isBlocked = useBlocked();
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateRows: "auto auto 1fr auto",
+        gridTemplateColumns: "100%",
+        minHeight: "100%",
+        border: isViewingAs ? "10px solid #47C880" : "none",
+        WebkitTapHighlightColor: "transparent",
+        position: "relative",
+        filter: isBlocked ? "blur(10px)" : "none",
+        background: theme.custom.pageBackground,
+      }}
+    >
+      {children}
+    </Box>
+  );
 };
 
 const Layout = ({ children }) => {
-  const isViewingAs = useViewAs();
   const { hasTicker } = useTicker();
   const isBlocked = useBlocked();
 
   return (
     <Theme>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateRows: "auto auto 1fr auto",
-          gridTemplateColumns: "100%",
-          minHeight: "100%",
-          border: isViewingAs ? "10px solid #47C880" : "none",
-          WebkitTapHighlightColor: "transparent",
-          position: "relative",
-          filter: isBlocked ? "blur(10px)" : "none",
-          backgroundColor: "background.paper",
-        }}
-      >
+      <PageGrid>
         <AnimatePresence>
           {hasTicker && (
             <motion.div
@@ -53,7 +64,7 @@ const Layout = ({ children }) => {
         <Footer />
         <CheckNewAppVersion />
         {isBlocked && <Blocked />}
-      </Box>
+      </PageGrid>
     </Theme>
   );
 };

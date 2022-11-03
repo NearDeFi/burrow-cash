@@ -9,7 +9,7 @@ import DarkSwitch from "../DarkSwitch";
 import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { useViewAs } from "../../hooks/hooks";
+import { useDarkMode, useViewAs } from "../../hooks/hooks";
 import { Stats } from "./stats";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
@@ -31,6 +31,7 @@ const Header = () => {
   const isFetching = useAppSelector(isAssetsFetching);
   const isViewingAs = useViewAs();
   const theme = useTheme();
+  const { isDark } = useDarkMode();
 
   useEffect(() => {
     if (isFetching) {
@@ -46,11 +47,10 @@ const Header = () => {
     setOpen(false);
   };
 
-  // 000424
   return (
     <Box
       sx={{
-        background: `linear-gradient(180deg, ${theme.custom.headerGradient.from} 0%, ${theme.custom.headerGradient.to} 100%)`,
+        background: theme.custom.headerBackground,
         mb: { xs: "1rem", sm: "2rem" },
         overflow: "hidden",
       }}
@@ -83,7 +83,10 @@ const Header = () => {
           <MenuItem
             title="Bridge"
             pathname="/bridge"
-            sx={{ color: "#47C880", fontWeight: "bold" }}
+            sx={{
+              color: isDark ? theme.palette.primary.main : theme.palette.primary.light,
+              fontWeight: "bold",
+            }}
           />
         </Menu>
         <Box display="flex" justifyContent="flex-end">
