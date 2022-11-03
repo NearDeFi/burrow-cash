@@ -52,7 +52,6 @@ const Header = () => {
       sx={{
         background: theme.custom.headerBackground,
         mb: { xs: "1rem", sm: "2rem" },
-        overflow: "hidden",
       }}
     >
       <Wrapper style={{ position: "relative" }}>

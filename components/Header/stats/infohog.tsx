@@ -1,10 +1,14 @@
 import { Box, Button, Stack, Typography, Link } from "@mui/material";
 
 import { useToggleInfo } from "../../../hooks/useToggleInfo";
+import { useDarkMode } from "../../../hooks/hooks";
 import HogSvg from "./hog.svg";
+import HogLowSvg from "./hog-low.svg";
+import HogLowFaceSvg from "./hog-low-face.svg";
 
 export const InfoHog = () => {
   const { showInfo, setShowInfo } = useToggleInfo();
+  const { isDark } = useDarkMode();
 
   return (
     <Stack ml="auto" direction="row" position="relative" width={{ sx: "auto", md: "400px" }}>
@@ -37,11 +41,31 @@ export const InfoHog = () => {
         </Button>
       </Stack>
       <Box
-        sx={{ position: "absolute", cursor: "pointer", bottom: "-50px", right: "20px" }}
-        onClick={() => setShowInfo(true)}
+        sx={{
+          position: "absolute",
+          right: "20px",
+          bottom: "-32px",
+          overflow: "hidden",
+        }}
       >
-        <HogSvg />
+        <Box
+          sx={{
+            cursor: "pointer",
+            mb: isDark ? "-4px" : "-20px",
+          }}
+          onClick={() => setShowInfo(true)}
+        >
+          {isDark ? <HogLowSvg /> : <HogSvg />}
+        </Box>
       </Box>
+      {isDark && (
+        <Box
+          sx={{ position: "absolute", right: "37px", bottom: "-44px", cursor: "pointer" }}
+          onClick={() => setShowInfo(true)}
+        >
+          <HogLowFaceSvg />
+        </Box>
+      )}
     </Stack>
   );
 };
