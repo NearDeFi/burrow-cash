@@ -37,8 +37,8 @@ const palette = {
       main: "#c1c2ce",
     },
     background: {
-      default: "#1A1D3A",
-      paper: "#1A1D3A",
+      default: "#1A3632",
+      paper: "#1A1E3A",
     },
   },
 };
