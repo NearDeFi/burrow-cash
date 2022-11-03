@@ -78,6 +78,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                   fontSize: 12,
                   padding,
                   ...(cellStyle || {}),
+                  borderBottom: "none",
                 }}
                 key={dataKey}
                 sortDirection={sorting.property === dataKey ? sorting.order : false}
@@ -87,6 +88,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                   direction={sorting.property === dataKey ? sorting.order : "asc"}
                   onClick={createSortHandler(dataKey)}
                   sx={{
+                    color: theme.custom.tableLabelColor,
                     "&:hover": {
                       color: "primary.main",
                     },
@@ -134,6 +136,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                         fontWeight: "bold",
                         padding,
                         ...(cellStyle || {}),
+                        borderBottomColor: theme.custom.tableCellBorderBottomColor,
                       }}
                     >
                       <Cell rowData={rowData} />

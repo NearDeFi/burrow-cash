@@ -56,6 +56,8 @@ declare module "@mui/material/styles" {
       backgroundStaking: string;
       notConnectedBg: string;
       scrollbarBg: string;
+      tableLabelColor: string;
+      tableCellBorderBottomColor: string;
     };
   }
 }
@@ -73,6 +75,8 @@ const custom = {
     backgroundStaking: "#fff",
     notConnectedBg: "rgba(255,255,255,0.85)",
     scrollbarBg: "none",
+    tableLabelColor: "#8E9295",
+    tableCellBorderBottomColor: "#DBDDE1",
   },
   dark: {
     headerBackground: "linear-gradient(225deg, rgba(0, 36, 25, 1) 0%, rgba(0, 4, 36, 1) 100%)",
@@ -85,6 +89,8 @@ const custom = {
     backgroundStaking: "#31344E",
     notConnectedBg: "rgba(0,0,0,0.85)",
     scrollbarBg: "rgba(0,0,0,0.5)",
+    tableLabelColor: "#767E87",
+    tableCellBorderBottomColor: "#313C4C",
   },
 };
 
