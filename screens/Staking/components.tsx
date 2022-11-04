@@ -54,7 +54,7 @@ export const StakingCard = ({
         minWidth: "200px",
         alignItems: "center",
         borderRadius: "0.5rem",
-        bgcolor: theme.custom.background,
+        bgcolor: theme.custom.stakingCardBg,
       }}
     >
       <BrrrLogo color={color} width={40} height={40} />

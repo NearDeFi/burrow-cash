@@ -1,33 +1,34 @@
 import { isValidElement } from "react";
-import { Box, Stack, ButtonGroup, Button, Typography, Tooltip } from "@mui/material";
+import { Box, Stack, ButtonGroup, Button, Typography, Tooltip, useTheme } from "@mui/material";
 import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
 import TokenIcon from "../../TokenIcon";
 
-const buttonStyles = {
-  borderRadius: "3rem",
-  px: "1.5rem",
-  color: "white",
-  borderColor: "#191f53",
-  background: "#1f305a",
-  fontSize: "0.75rem",
-  textTransform: "none",
-} as any;
-
-const buttonActiveStyles = {
-  background: "white",
-  border: "2px solid #1f305a !important",
-  color: "#191f53",
-  "&:hover": {
-    background: "white",
-  },
-};
-
 export const StatsToggleButtons = () => {
   const { protocolStats, setStats } = useStatsToggle();
   const accountId = useAccountId();
+  const theme = useTheme();
+
+  const buttonStyles = {
+    borderRadius: "4px",
+    px: "1.5rem",
+    color: "white",
+    borderColor: theme.custom.userMenuColor,
+    background: theme.custom.userMenuColor,
+    fontSize: "0.75rem",
+    textTransform: "none",
+  } as any;
+
+  const buttonActiveStyles = {
+    background: "white",
+    border: `2px solid ${theme.custom.userMenuColor} !important`,
+    color: "#191f53",
+    "&:hover": {
+      background: "white",
+    },
+  };
 
   const msx = {
     ...buttonStyles,

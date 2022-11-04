@@ -120,7 +120,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
                 cursor: onRowClick && "pointer",
-                "&:hover": { background: onRowClick && theme.palette.background.default },
+                "&:hover": { background: onRowClick && theme.palette.background.paper },
                 padding,
               }}
               onClick={() => onRowClick && rowData && onRowClick(rowData)}
