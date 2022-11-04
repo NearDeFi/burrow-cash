@@ -28,12 +28,12 @@ const PageGrid = ({ children }) => {
         display: "grid",
         gridTemplateRows: "auto auto 1fr auto",
         gridTemplateColumns: "100%",
-        minHeight: "100%",
         border: isViewingAs ? "10px solid #47C880" : "none",
         WebkitTapHighlightColor: "transparent",
         position: "relative",
         filter: isBlocked ? "blur(10px)" : "none",
         background: theme.custom.pageBackground,
+        minHeight: "100vh",
       }}
     >
       {children}

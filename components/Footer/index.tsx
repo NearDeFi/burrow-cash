@@ -91,7 +91,7 @@ export const Declaration = () => {
   const theme = useTheme();
   return (
     <>
-      <Divider orientation="vertical" flexItem color="secondary" />
+      <Divider orientation="vertical" flexItem color={theme.palette.background.paper} />
       <NextLink href="/declaration" passHref>
         <Link href="/declaration" underline="none" color={theme.custom.footerText}>
           Declaration and Disclaimers
