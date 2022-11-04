@@ -114,7 +114,15 @@ export const Stat = ({
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
       <Stack height={40} justifyContent="end">
-        <Tooltip title={titleTooltip} placement="top" arrow>
+        <Tooltip
+          title={titleTooltip}
+          placement="top"
+          arrow
+          componentsProps={{
+            tooltip: { style: { backgroundColor: "rgba(255,255,255,0.1)" } },
+            arrow: { style: { color: "rgba(255,255,255,0.1)" } },
+          }}
+        >
           <Stack direction="row" alignItems="end" width="max-content">
             {typeof title === "string" ? (
               <Typography color="#F8F9FF" fontSize="0.875rem">
