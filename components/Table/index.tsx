@@ -78,6 +78,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                   fontSize: 12,
                   padding,
                   ...(cellStyle || {}),
+                  borderBottom: "none",
                 }}
                 key={dataKey}
                 sortDirection={sorting.property === dataKey ? sorting.order : false}
@@ -86,7 +87,20 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                   active={sorting.property === dataKey}
                   direction={sorting.property === dataKey ? sorting.order : "asc"}
                   onClick={createSortHandler(dataKey)}
-                  sx={{ minWidth: [100, 100, "auto"], ...(sortLabelStyle || {}) }}
+                  sx={{
+                    color: theme.custom.tableLabelColor,
+                    "&:hover": {
+                      color: "primary.main",
+                    },
+                    "&.Mui-active": {
+                      color: "primary.main",
+                    },
+                    "& .MuiTableSortLabel-icon": {
+                      color: `${theme.palette.primary.main} !important`,
+                    },
+                    minWidth: [100, 100, "auto"],
+                    ...(sortLabelStyle || {}),
+                  }}
                 >
                   {label}
                   {sorting.property === dataKey ? (
@@ -106,7 +120,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
                 cursor: onRowClick && "pointer",
-                "&:hover": { background: onRowClick && theme.palette.background.default },
+                "&:hover": { background: onRowClick && theme.palette.background.paper },
                 padding,
               }}
               onClick={() => onRowClick && rowData && onRowClick(rowData)}
@@ -122,6 +136,7 @@ function Table({ rows, columns, onRowClick, sorting, sx = {} }: TableProps) {
                         fontWeight: "bold",
                         padding,
                         ...(cellStyle || {}),
+                        borderBottomColor: theme.custom.tableCellBorderBottomColor,
                       }}
                     >
                       <Cell rowData={rowData} />

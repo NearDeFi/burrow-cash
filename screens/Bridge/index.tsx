@@ -5,7 +5,7 @@ import RainbowBridgeSvg from "./rainbow-bridge.svg";
 
 const Bridge = () => {
   return (
-    <Card sx={{ maxWidth: "500px", mx: ["1rem", "auto"], my: "2rem" }}>
+    <Card sx={{ maxWidth: "500px", mx: ["1rem", "auto"], my: "2rem", bgcolor: "white" }}>
       <CardContent>
         <Stack spacing="1rem">
           <Typography>

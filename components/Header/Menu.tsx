@@ -1,7 +1,7 @@
-import { Menu, MenuItem, Divider, Typography, useTheme } from "@mui/material";
+import { Menu, Divider, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 import ClaimAllRewards from "../ClaimAllRewards";
-import { getBurrow, getLocalAppVersion, isTestnet } from "../../utils";
+import { getBurrow, getLocalAppVersion } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getAccountId } from "../../redux/accountSelectors";
 import { toggleDisplayValues, toggleShowDust } from "../../redux/appSlice";
@@ -17,6 +17,9 @@ import {
 } from "../../utils/telemetry";
 import { useTicker } from "../../hooks/useTicker";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
+import { isTestnet } from "../../utils/config";
+import { StyledMenuItem } from "./style";
+import { DarkModeMenuItem } from "../DarkSwitch";
 
 interface Props {
   anchorEl: null | HTMLElement;
@@ -36,6 +39,7 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
   const { degenMode, setDegenMode } = useDegenMode();
   const { hasTicker, toggleTicker } = useTicker();
   const { setDisclaimer } = useDisclaimer();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -85,51 +89,52 @@ export const HamburgerMenu = ({ anchorEl, setAnchorEl }: Props) => {
         "aria-labelledby": "logout-button",
       }}
     >
+      {isMobile && <DarkModeMenuItem />}
       {accountId && [
         <ClaimAllRewards location="menu" onDone={handleClose} Button={ClaimMenuItem} key={1} />,
-        <MenuItem
-          sx={{ backgroundColor: theme.palette.primary.light }}
+        <StyledMenuItem
+          sx={{ backgroundColor: theme.palette.primary.main }}
           onClick={setDegenMode}
           key={2}
         >
           Degen Mode: {degenMode.enabled ? "On" : "Off"}
-        </MenuItem>,
+        </StyledMenuItem>,
         <Divider key={3} />,
       ]}
-      <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleDisplayValues}>
+      <StyledMenuItem onClick={handleToggleDisplayValues}>
         Display Values As {displayAsTokenValue ? "USD" : "Token"}
-      </MenuItem>
-      <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleAmountDigits}>
+      </StyledMenuItem>
+      <StyledMenuItem onClick={handleToggleAmountDigits}>
         Display {isCompact ? "Full" : "Compact"} Amounts
-      </MenuItem>
-      <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleShowDust}>
+      </StyledMenuItem>
+      <StyledMenuItem onClick={handleToggleShowDust}>
         {showDust ? "Hide" : "Show"} Dust
-      </MenuItem>
+      </StyledMenuItem>
       {!isTestnet && (
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleToggleTicker}>
+        <StyledMenuItem onClick={handleToggleTicker}>
           {hasTicker ? "Hide" : "Show"} Ticker
-        </MenuItem>
+        </StyledMenuItem>
       )}
       {accountId && [
         <Divider key={1} />,
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSwitchWallet} key={2}>
+        <StyledMenuItem onClick={handleSwitchWallet} key={2}>
           Switch Wallet
-        </MenuItem>,
+        </StyledMenuItem>,
         <Divider key={3} />,
-        <MenuItem sx={{ backgroundColor: "white" }} onClick={handleSignOut} key={4}>
+        <StyledMenuItem onClick={handleSignOut} key={4}>
           Sign Out
-        </MenuItem>,
+        </StyledMenuItem>,
       ]}
       <Divider key={2} />
-      <MenuItem sx={{ backgroundColor: "white" }}>
+      <StyledMenuItem>
         <Typography fontSize="0.75rem">App Build Id: {appVersion}</Typography>
-      </MenuItem>
+      </StyledMenuItem>
     </Menu>
   );
 };
 
 const ClaimMenuItem = (props) => (
-  <MenuItem name="menu" sx={{ backgroundColor: "white" }} {...props}>
+  <StyledMenuItem name="menu" {...props}>
     Claim All Rewards
-  </MenuItem>
+  </StyledMenuItem>
 );

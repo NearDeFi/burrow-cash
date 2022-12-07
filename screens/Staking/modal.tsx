@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, Stack, Box, Typography, Alert } from "@mui/material";
+import { Modal, Stack, Box, Typography, Alert, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { DateTime } from "luxon";
 import pluralize from "pluralize";
@@ -31,6 +31,7 @@ export const StakingModal = ({ open, onClose }) => {
   } = useStaking();
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
   const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : months;
+  const theme = useTheme();
 
   const invalidAmount = amount > total;
   const invalidMonths = months < selectedMonths;
@@ -84,18 +85,21 @@ export const StakingModal = ({ open, onClose }) => {
           position: "relative",
           background: "white",
           mx: "auto",
-
           borderRadius: [0, "0.5rem"],
           height: ["100%", "80vh"],
           top: "calc(50% - 40vh)",
           maxHeight: "620px",
           maxWidth: 440,
+          backgroundColor: "background.paper",
+          "& *::-webkit-scrollbar": {
+            backgroundColor: theme.custom.scrollbarBg,
+          },
         }}
       >
         <Stack sx={{ overflowY: "auto", p: ["1.2rem", "2rem"] }} direction="column" spacing={2}>
           <Stack direction="row" spacing={1.5} alignItems="center">
             <BrrrLogo color="#594a42" width={40} height={40} />
-            <Typography color="#232323" fontWeight="semibold" fontSize="1.125rem">
+            <Typography color={theme.custom.textStaking} fontWeight="semibold" fontSize="1.125rem">
               Stake BRRR
             </Typography>
             <CloseButton onClose={onClose} />
@@ -152,11 +156,12 @@ export const StakingModal = ({ open, onClose }) => {
               fontWeight: "medium",
               p: "1.5rem",
               px: "1.2rem",
+              backgroundColor: theme.custom.backgroundStaking,
             }}
           >
             <Typography
               sx={{
-                color: "#232323",
+                color: theme.custom.textStaking,
                 fontSize: "1rem",
               }}
             >

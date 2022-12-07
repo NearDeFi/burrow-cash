@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 import { PageTitle, OnboardingBRRR, BetaInfo, NonFarmedAssets } from "../../components";
 import Table from "../../components/Table";
@@ -10,6 +10,7 @@ const Portfolio = () => {
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
   const { sorting, setSorting } = useTableSorting();
   const accountId = useAccountId();
+  const theme = useTheme();
 
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
@@ -25,7 +26,9 @@ const Portfolio = () => {
           sorting={{ name: "portfolioDeposited", ...sorting.portfolioDeposited, setSorting }}
         />
       ) : (
-        <Box textAlign="center">No deposited assets yet</Box>
+        <Box textAlign="center" color={theme.custom.text}>
+          No deposited assets yet
+        </Box>
       )}
       <PageTitle first="Borrowed" second="Assets" />
       {borrowedRows.length ? (
@@ -36,7 +39,9 @@ const Portfolio = () => {
           sorting={{ name: "portfolioBorrowed", ...sorting.portfolioBorrowed, setSorting }}
         />
       ) : (
-        <Box textAlign="center">No borrowed assets yet</Box>
+        <Box textAlign="center" color={theme.custom.text}>
+          No borrowed assets yet
+        </Box>
       )}
     </Box>
   );

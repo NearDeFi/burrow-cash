@@ -2,7 +2,7 @@ import { Contract } from "near-api-js";
 import BN from "bn.js";
 import Decimal from "decimal.js";
 
-import getConfig, { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+import { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
 
 import {
   ChangeMethodsLogic,
@@ -14,9 +14,6 @@ import { IBurrow, IConfig } from "../interfaces/burrow";
 import { getContract } from "../store";
 
 import { getWalletSelector, getAccount, functionCall } from "./wallet-selector-compat";
-
-/// pass networkId to wallet-selector-compat then call init on near-utils / neth
-export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
 
 export const getViewAs = () => {
   const url = new URL(window.location.href.replace("/#", ""));

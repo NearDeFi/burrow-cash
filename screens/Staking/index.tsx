@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Box, useTheme } from "@mui/material";
 import { DateTime } from "luxon";
 
 import { BrrrLogo, StakingPill, StakingCard, LiveUnclaimedAmount } from "./components";
@@ -11,6 +11,7 @@ import { useClaimAllRewards } from "../../hooks/useClaimAllRewards";
 import { trackUnstake } from "../../utils/telemetry";
 import { unstake } from "../../store/actions/unstake";
 import { StakingModal } from "./modal";
+import { useAccountId } from "../../hooks/hooks";
 
 const Staking = () => {
   const [total] = useAppSelector(getTotalBRRR);
@@ -18,6 +19,8 @@ const Staking = () => {
   const { handleClaimAll, isLoading } = useClaimAllRewards("staking");
   const [loadingUnstake, setLoadingUnstake] = useState(false);
   const [isModalOpen, openModal] = useState(false);
+  const accountId = useAccountId();
+  const theme = useTheme();
 
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
   const disabledUnstake = DateTime.now() < unstakeDate;
@@ -28,7 +31,7 @@ const Staking = () => {
     setLoadingUnstake(true);
   };
 
-  return (
+  return accountId ? (
     <Stack
       alignItems="center"
       mt="2rem"
@@ -37,7 +40,11 @@ const Staking = () => {
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <BrrrLogo />
-        <Typography fontWeight="semibold" fontSize={{ xs: "1.5rem", sm: "2rem" }} color="#232323">
+        <Typography
+          fontWeight="semibold"
+          fontSize={{ xs: "1.5rem", sm: "2rem" }}
+          color={theme.custom.textStaking}
+        >
           <LiveUnclaimedAmount addAmount={total} /> BRRR
         </Typography>
       </Stack>
@@ -81,6 +88,16 @@ const Staking = () => {
       </Stack>
       <StakingModal open={isModalOpen} onClose={() => openModal(false)} />
     </Stack>
+  ) : (
+    <Box
+      sx={{
+        display: "grid",
+        placeItems: "center",
+        minHeight: "200px",
+      }}
+    >
+      <Typography color={theme.custom.text}>Please connect your wallet.</Typography>
+    </Box>
   );
 };
 

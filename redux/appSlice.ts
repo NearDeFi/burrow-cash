@@ -12,7 +12,10 @@ export interface ITableSorting {
   order: IOrder;
 }
 
+export type ITheme = "light" | "dark";
+
 export interface AppState {
+  theme: ITheme;
   isBlocked: {
     [ip: string]: boolean;
   };
@@ -57,6 +60,7 @@ export interface AppState {
 
 export const initialState: AppState = {
   isBlocked: {},
+  theme: "light",
   disclaimerAgreed: false,
   degenMode: {
     enabled: false,
@@ -197,6 +201,9 @@ export const appSlice = createSlice({
       const { ip, blocked } = action.payload;
       state.isBlocked[ip] = blocked;
     },
+    setTheme(state, action) {
+      state.theme = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -224,6 +231,7 @@ export const {
   setShowInfo,
   setDisclaimerAggreed,
   setBlocked,
+  setTheme,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -9,6 +9,7 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
@@ -20,6 +21,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const { setDisclaimer } = useDisclaimer();
+  const theme = useTheme();
 
   const handleAgree = () => {
     trackConnectWallet();
@@ -31,13 +33,13 @@ export default function Disclaimer({ isOpen = false, onClose }) {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box
-        bgcolor="white"
+        bgcolor={theme.palette.background.paper}
         p="2rem"
         m="2rem"
         borderRadius="0.5rem"
         width={{ small: "100%", md: "460px" }}
         position="relative"
-        color="#444444"
+        color={theme.palette.info.main}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -51,7 +53,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
         }}
       >
         <CloseButton onClose={onClose} />
-        <Typography variant="h5" component="h5" color="black">
+        <Typography variant="h5" component="h5">
           Disclaimer
         </Typography>
         <Box sx={{ overflow: "scroll" }}>
@@ -148,12 +150,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           >
             Agree & Confirm
           </Button>
-          <Typography
-            fontSize="0.625rem"
-            textAlign="center"
-            mx="4rem"
-            color="rgba(68, 68, 68, 0.6)"
-          >
+          <Typography fontSize="0.625rem" textAlign="center" mx="4rem">
             By clicking this button you acknowledge and agree to all statements in this disclaimer.
           </Typography>
         </Box>

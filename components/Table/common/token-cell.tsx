@@ -1,4 +1,4 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 
 import { USD_FORMAT } from "../../../store/constants";
 import { BRRRPrice } from "../../index";
@@ -7,7 +7,7 @@ import TokenIcon from "../../TokenIcon";
 
 const TokenCell = ({ rowData }) => {
   const isBurrowToken = useIsBurrowToken(rowData.tokenId);
-
+  const theme = useTheme();
   return (
     <Box display="flex" alignItems="center">
       <Box>
@@ -24,7 +24,7 @@ const TokenCell = ({ rowData }) => {
             {isBurrowToken && !rowData.price ? (
               <BRRRPrice />
             ) : (
-              <Box>
+              <Box color={theme.custom.tableLabelColor} fontWeight="medium" fontSize="0.75rem">
                 {rowData.price ? rowData.price.toLocaleString(undefined, USD_FORMAT) : "$-.-"}
               </Box>
             )}

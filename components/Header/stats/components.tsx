@@ -1,33 +1,34 @@
 import { isValidElement } from "react";
-import { Box, Stack, ButtonGroup, Button, Typography, Tooltip } from "@mui/material";
+import { Box, Stack, ButtonGroup, Button, Typography, Tooltip, useTheme } from "@mui/material";
 import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
 import TokenIcon from "../../TokenIcon";
 
-const buttonStyles = {
-  borderRadius: "3rem",
-  px: "1.5rem",
-  color: "white",
-  borderColor: "#191f53",
-  background: "#1f305a",
-  fontSize: "0.75rem",
-  textTransform: "none",
-} as any;
-
-const buttonActiveStyles = {
-  background: "white",
-  border: "2px solid #1f305a !important",
-  color: "#191f53",
-  "&:hover": {
-    background: "white",
-  },
-};
-
 export const StatsToggleButtons = () => {
   const { protocolStats, setStats } = useStatsToggle();
   const accountId = useAccountId();
+  const theme = useTheme();
+
+  const buttonStyles = {
+    borderRadius: "4px",
+    px: "1.5rem",
+    color: "white",
+    borderColor: theme.custom.userMenuColor,
+    background: theme.custom.userMenuColor,
+    fontSize: "0.75rem",
+    textTransform: "none",
+  } as any;
+
+  const buttonActiveStyles = {
+    background: "white",
+    border: `2px solid ${theme.custom.userMenuColor} !important`,
+    color: "#191f53",
+    "&:hover": {
+      background: "white",
+    },
+  };
 
   const msx = {
     ...buttonStyles,
@@ -114,7 +115,15 @@ export const Stat = ({
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
       <Stack height={40} justifyContent="end">
-        <Tooltip title={titleTooltip} placement="top" arrow>
+        <Tooltip
+          title={titleTooltip}
+          placement="top"
+          arrow
+          componentsProps={{
+            tooltip: { style: { backgroundColor: "rgba(255,255,255,0.1)" } },
+            arrow: { style: { color: "rgba(255,255,255,0.1)" } },
+          }}
+        >
           <Stack direction="row" alignItems="end" width="max-content">
             {typeof title === "string" ? (
               <Typography color="#F8F9FF" fontSize="0.875rem">
@@ -125,7 +134,12 @@ export const Stat = ({
             )}
             {titleTooltip && (
               <MdInfoOutline
-                style={{ marginLeft: "3px", color: "#909090", position: "relative", top: "-6px" }}
+                style={{
+                  marginLeft: "3px",
+                  color: "white",
+                  position: "relative",
+                  top: "-6px",
+                }}
               />
             )}
           </Stack>

@@ -5,10 +5,11 @@ import Link from "next/link";
 
 import LogoIcon from "../../public/logo.svg";
 import WalletButton from "./WalletButton";
+import DarkSwitch from "../DarkSwitch";
 import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { useViewAs } from "../../hooks/hooks";
+import { useDarkMode, useViewAs } from "../../hooks/hooks";
 import { Stats } from "./stats";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
@@ -29,6 +30,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
   const isViewingAs = useViewAs();
+  const theme = useTheme();
+  const { isDark } = useDarkMode();
 
   useEffect(() => {
     if (isFetching) {
@@ -47,9 +50,8 @@ const Header = () => {
   return (
     <Box
       sx={{
-        background: "linear-gradient(180deg, #000741 0%, #226062 100%)",
+        background: theme.custom.headerBackground,
         mb: { xs: "1rem", sm: "2rem" },
-        overflow: "hidden",
       }}
     >
       <Wrapper style={{ position: "relative" }}>
@@ -80,10 +82,16 @@ const Header = () => {
           <MenuItem
             title="Bridge"
             pathname="/bridge"
-            sx={{ color: "#47C880", fontWeight: "bold" }}
+            sx={{
+              color: isDark ? theme.palette.primary.main : theme.palette.primary.light,
+              fontWeight: "bold",
+            }}
           />
         </Menu>
-        <WalletButton />
+        <Box display="flex" justifyContent="flex-end">
+          <DarkSwitch />
+          <WalletButton />
+        </Box>
         <Snackbar
           open={open}
           autoHideDuration={2000}
