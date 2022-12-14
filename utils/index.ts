@@ -46,7 +46,19 @@ export const getBurrow = async ({
   hideModal,
   signOut,
 }: GetBurrowArgs = {}): Promise<IBurrow> => {
-  if (burrow && !resetBurrow) return burrow;
+  /// because it's being called by multiple components on startup
+  /// all calls wait until setup is complete and then return burrow instance promise
+  const getBurrowInternal = async () => {
+    if (burrow) return burrow;
+    await new Promise((res) => {
+      setTimeout(() => {
+        res({});
+      }, 250);
+    });
+    return getBurrowInternal();
+  };
+
+  if (!resetBurrow) return getBurrowInternal();
   resetBurrow = false;
 
   const changeAccount = async (accountId) => {
@@ -73,6 +85,7 @@ export const getBurrow = async ({
       if (hideModal) hideModal();
       signOut();
     };
+  const signIn = () => selector.signIn();
 
   const view = async (
     contract: Contract,
@@ -97,6 +110,7 @@ export const getBurrow = async ({
     }
   };
 
+  /// TODO is this deprecated???
   const call = async (
     contract: Contract,
     methodName: string,
@@ -104,7 +118,7 @@ export const getBurrow = async ({
     deposit = "1",
   ) => {
     const { contractId } = contract;
-    const gas = new BN(150000000000000);
+    const gas = new BN(50000000000000);
     const attachedDeposit = new BN(deposit);
 
     return functionCall({
@@ -151,6 +165,7 @@ export const getBurrow = async ({
     fetchData: fetchDataCached,
     hideModal: hideModalCached,
     signOut: signOutCached,
+    signIn,
     account,
     logicContract,
     oracleContract,

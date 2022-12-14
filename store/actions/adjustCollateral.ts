@@ -1,3 +1,4 @@
+import BN from "bn.js";
 import Decimal from "decimal.js";
 
 import { decimalMin, getBurrow } from "../../utils";
@@ -54,6 +55,7 @@ export async function adjustCollateral({
         functionCalls: [
           {
             methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
+            gas: new BN("100000000000000"),
             args: {
               receiver_id: logicContract.contractId,
               msg: JSON.stringify({

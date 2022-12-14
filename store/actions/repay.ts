@@ -75,7 +75,7 @@ export async function repay({
 
   functionCalls.push({
     methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-    gas: new BN("150000000000000"),
+    gas: new BN("50000000000000"),
     args: {
       receiver_id: logicContract.contractId,
       amount: expandedAmountToken.toFixed(0),

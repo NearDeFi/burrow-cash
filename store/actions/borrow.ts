@@ -64,6 +64,7 @@ export async function borrow({
     functionCalls: [
       {
         methodName: ChangeMethodsOracle[ChangeMethodsOracle.oracle_call],
+        gas: new BN("100000000000000"),
         args: {
           receiver_id: logicContract.contractId,
           msg: JSON.stringify(borrowTemplate),

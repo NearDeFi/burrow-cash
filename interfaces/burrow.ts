@@ -23,9 +23,10 @@ export interface IBurrow {
   selector: WalletSelector;
   account: Account;
   changeAccount: (accountId: string) => void;
-  fetchData: () => void;
+  fetchData: (id?: string) => void;
   hideModal: () => void;
   signOut: () => void;
+  signIn: () => void;
   logicContract: Contract;
   oracleContract: Contract;
   config: IConfig;

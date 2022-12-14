@@ -19,13 +19,13 @@ export interface FunctionCallOptions {
 }
 
 export const executeMultipleTransactions = async (transactions) => {
-  const { account, selector, hideModal, signOut } = await getBurrow();
+  const { account, selector, hideModal, signOut, fetchData } = await getBurrow();
 
   const selectorTransactions: Array<SelectorTransaction> = transactions.map((t) => ({
     signerId: account.accountId,
     receiverId: t.receiverId,
     actions: t.functionCalls.map(
-      ({ methodName, args = {}, gas = "150000000000000", attachedDeposit = "1" }) => ({
+      ({ methodName, args = {}, gas = "50000000000000", attachedDeposit = "1" }) => ({
         type: "FunctionCall",
         params: {
           methodName,
@@ -42,6 +42,7 @@ export const executeMultipleTransactions = async (transactions) => {
     await wallet.signAndSendTransactions({
       transactions: selectorTransactions,
     });
+    if (fetchData) fetchData(account.accountId);
   } catch (e: any) {
     if (/reject/.test(e)) {
       alert("Transaction was rejected in wallet. Please try again!");
@@ -59,7 +60,7 @@ export const executeMultipleTransactions = async (transactions) => {
     return;
   }
 
-  hideModal();
+  if (hideModal) hideModal();
 };
 
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
