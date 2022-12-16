@@ -54,14 +54,14 @@ export async function deposit({
             ? [
                 {
                   methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
-                  gas: new BN("5000000000000"),
+                  gas: new BN("100000000000000"),
                   attachedDeposit: new BN(extraDeposit.toFixed(0)),
                 },
               ]
             : []),
           {
             methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-            gas: new BN("50000000000000"),
+            gas: new BN("100000000000000"),
             args: {
               receiver_id: logicContract.contractId,
               amount: expandedAmount.toFixed(0),

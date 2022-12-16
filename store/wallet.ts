@@ -25,7 +25,7 @@ export const executeMultipleTransactions = async (transactions) => {
     signerId: account.accountId,
     receiverId: t.receiverId,
     actions: t.functionCalls.map(
-      ({ methodName, args = {}, gas = "50000000000000", attachedDeposit = "1" }) => ({
+      ({ methodName, args = {}, gas = "100000000000000", attachedDeposit = "1" }) => ({
         type: "FunctionCall",
         params: {
           methodName,

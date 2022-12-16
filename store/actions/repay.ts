@@ -53,7 +53,7 @@ export async function repay({
     functionCalls.push(...(await registerNearFnCall(account.accountId, tokenContract)));
     functionCalls.push({
       methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
-      gas: new BN("5000000000000"),
+      gas: new BN("10000000000000"),
       attachedDeposit: new BN(toWrapAmount.toFixed(0)),
     });
   }
@@ -75,7 +75,7 @@ export async function repay({
 
   functionCalls.push({
     methodName: ChangeMethodsToken[ChangeMethodsToken.ft_transfer_call],
-    gas: new BN("50000000000000"),
+    gas: new BN("100000000000000"),
     args: {
       receiver_id: logicContract.contractId,
       amount: expandedAmountToken.toFixed(0),
